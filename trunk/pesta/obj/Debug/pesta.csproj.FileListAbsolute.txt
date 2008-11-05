@@ -1,0 +1,9 @@
+C:\Users\sean\Documents\Visual Studio 2008\Projects\pesta\pesta\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\sean\Documents\Visual Studio 2008\Projects\pesta\pesta\bin\Debug\Pesta.NET.dll
+C:\Users\sean\Documents\Visual Studio 2008\Projects\pesta\pesta\bin\Debug\Pesta.NET.pdb
+C:\Users\sean\Documents\Visual Studio 2008\Projects\pesta\pesta\bin\Debug\IKVM.OpenJDK.ClassLibrary.dll
+C:\Users\sean\Documents\Visual Studio 2008\Projects\pesta\pesta\bin\Debug\IKVM.Runtime.dll
+C:\Users\sean\Documents\Visual Studio 2008\Projects\pesta\pesta\obj\Debug\Pesta.NET.dll
+C:\Users\sean\Documents\Visual Studio 2008\Projects\pesta\pesta\obj\Debug\Pesta.NET.pdb
+C:\Users\sean\Documents\Visual Studio 2008\Projects\pesta\pesta\bin\Debug\shindig.dll
+C:\Users\sean\Documents\Visual Studio 2008\Projects\pesta\pesta\bin\Debug\IKVM.Runtime.JNI.dll
