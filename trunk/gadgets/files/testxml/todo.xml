@@ -1,0 +1,935 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>  
+	<ModulePrefs title="__MSG_title__" description="__MSG_desc__" author_email="info@labpixies.com" directory_title="__MSG_gTitle__" title_url="http://www.labpixies.com" screenshot="http://www.labpixies.com/campaigns/todo/images/screenshot.gif" thumbnail="http://www.labpixies.com/campaigns/todo/images/thumbnail.jpg" height="270" render_inline="never">				
+    	<Require feature="views"/>  
+		<Require feature="dynamic-height"/>	
+		<Require feature="setprefs"/>	
+		<Require feature="analytics"/> 
+		<Locale messages="http://www.labpixies.com/campaigns/todo2/i18n/all_all.xml"/> 
+	    <Locale lang="de" messages="http://www.labpixies.com/campaigns/todo2/i18n/de_all.xml"/>
+		<Locale lang="de" country="AT" messages="http://www.labpixies.com/campaigns/todo2/i18n/de_at.xml"/> 
+		<Locale lang="de" country="CH" messages="http://www.labpixies.com/campaigns/todo2/i18n/de_ch.xml"/> 
+		<Locale lang="fr" messages="http://www.labpixies.com/campaigns/todo2/i18n/fr_all.xml"/>
+		<Locale lang="fr" country="CH" messages="http://www.labpixies.com/campaigns/todo2/i18n/fr_ch.xml"/> 
+		<Locale lang="fr" country="BE" messages="http://www.labpixies.com/campaigns/todo2/i18n/fr_be.xml"/> 
+		<Locale lang="pl" messages="http://www.labpixies.com/campaigns/todo2/i18n/pl_all.xml"/>
+		<Locale lang="es" messages="http://www.labpixies.com/campaigns/todo2/i18n/es_all.xml"/>
+		<Locale lang="pt-BR" messages="http://www.labpixies.com/campaigns/todo2/i18n/pt_all.xml"/>
+		<Locale lang="pt-PT" messages="http://www.labpixies.com/campaigns/todo2/i18n/pt_pt.xml"/>
+		<Locale lang="ru" messages="http://www.labpixies.com/campaigns/todo2/i18n/ru_all.xml"/>
+		<Locale lang="nl" messages="http://www.labpixies.com/campaigns/todo2/i18n/nl_all.xml"/>
+		<Locale lang="nl" country="BE" messages="http://www.labpixies.com/campaigns/todo2/i18n/nl_be.xml"/>
+		<Locale lang="it" messages="http://www.labpixies.com/campaigns/todo2/i18n/it_all.xml"/>
+		<Locale lang="it" country="CH" messages="http://www.labpixies.com/campaigns/todo2/i18n/it_ch.xml"/> 
+		<Locale lang="iw" messages="http://www.labpixies.com/campaigns/todo2/i18n/iw_all.xml"/>
+		<Locale lang="se" messages="http://www.labpixies.com/campaigns/todo2/i18n/se_all.xml"/>
+		<Locale lang="da" messages="http://www.labpixies.com/campaigns/todo2/i18n/dk_all.xml"/>
+		<Locale lang="no" messages="http://www.labpixies.com/campaigns/todo2/i18n/no_all.xml"/>
+		<Locale lang="fi" messages="http://www.labpixies.com/campaigns/todo2/i18n/fi_all.xml"/>
+  	</ModulePrefs> 
+	<UserPref name="todos" datatype="hidden" default_value=""/>
+	<UserPref name="saved_tasks" datatype="hidden" default_value=""/>
+	
+	<Content type="html">  
+  	<![CDATA[ 
+	<!-- Old ToDo Gadget -->
+	
+	<title>ToDo</title>
+	<style type="text/css">
+	<!--
+	body, html {
+		margin: 0;
+		padding: 0;
+		background-color: #ffffff;
+	}
+
+	.style0{
+	font-size: 1px;
+	}
+	.style1 {
+		font-family: Arial, Helvetica, sans-serif;
+		font-size: 9px;
+	}
+	.style2 {
+		font-family: Arial, Helvetica, sans-serif;
+		font-size: 12px;
+		font-weight: bold;
+		height: 16px;
+		background-color: Transparent;
+		border: 0px solid Transparent;
+		width: 140px;
+		align: bottom;
+	    overflow: hidden;
+		padding-top:1px;
+	}
+	.style3 {
+		font-family: Arial, Helvetica, sans-serif;
+		font-size: 12px;
+		font-weight: bold;
+		height: 16px;
+		background-color: Transparent;
+		border: 0px solid Transparent;
+		width: 140px;
+		align: bottom;
+	    overflow: hidden;
+	}
+	.style4 {
+		font-family: Arial, Helvetica, sans-serif;
+		font-size: 12px;
+		font-weight: bold;
+		height: 16px;
+		background-color: Transparent;
+	    border: 0px solid Transparent;
+		width: 140px;
+		align: bottom;
+	    overflow: hidden;
+	}
+
+	#lp_ad_div a:link, #lp_ad_div a:visited	{text-decoration:none;color:#006CB3;font-family: Verdana, Arial, sans-serif; font-size:11px;}
+	#lp_ad_div a:hover, #lp_ad_div a:active	{text-decoration:underline;color:#006CB3;font-family: Verdana, Arial, sans-serif; font-size:11px;}
+
+	a.tdada:link{font-size:11px;text-decoration:none;color:#006CB3;font-family:Verdana,Arial,sans-serif;}
+	a.tdada:visited{font-size:11px;text-decoration:none;color:#006CB3;font-family:Verdana,Arial,sans-serif;}
+	a.tdada:hover{font-size:11px;text-decoration:underline;color:#006CB3;font-family:Verdana,Arial,sans-serif;}
+	a.tdada:active{font-size:11px;text-decoration:underline;color:#006CB3;font-family:Verdana,Arial,sans-serif;}
+
+	-->
+	</style>
+	
+	<!--[if IE 6]>
+	<script type="text/javascript">
+	try {//IE fix, causes it to automatically cache background image
+	document.execCommand("BackgroundImageCache", false, true);
+	}
+	catch(e){
+	}
+	</script>
+	<![endif]-->
+
+	<!-- PUT THIS TAG IN THE head SECTION -->
+	<script type="text/javascript" src="http://partner.googleadservices.com/gampad/google_service.js">
+	</script>
+	<script type="text/javascript">
+	  GS_googleAddAdSenseService("ca-pub-8123415297019784");
+	  GS_googleEnableAllServices();
+	</script>
+	<script type="text/javascript">
+	  GA_googleAddSlot("ca-pub-8123415297019784", "todo_txt");
+	</script>
+	<script type="text/javascript">
+	  GA_googleFetchAds();
+	</script>
+	<!-- END OF TAG FOR head SECTION -->
+
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
+	<script src="http://www.google-analytics.com/ga.js" type="text/javascript"></script>	
+
+	<script type="text/javascript">
+	var $lp=jQuery.noConflict();
+
+	var _gadgetID = 33;
+	var pageTracker = _gat._getTracker("UA-345375-1");
+	pageTracker._initData();
+	
+	var MAX_TASK_LEN = 70;
+	  
+  var mMENU = _IG_GetCachedUrl("http://cdn.labpixies.com/infra/js/menu.js");
+	document.write('<scr'+'ipt type="text/javascript" src="'+mMENU+'"></scr'+'ipt>');  
+    
+	var IMAGES_BASE = "http://cdn.labpixies.com/campaigns/todo/images/";
+	var DELIMITER = "_#$LAB_UDI$#_";
+	var EXT_DELIMITER = "_#$LAB_MATAN$#_";
+	
+	var tasks = new Array();
+	var prefs = null;
+	
+	var currentColorSelection = 0;
+	var colors = new Array("#000000", "#E22974","#DC4A20","#006CB3","#7E9D1E","#ED1C24","#737373","#F7941D","#662D91");
+	
+	function track_event(view, obj)
+	{					 		
+		try 
+		{ 
+			pageTracker._trackEvent('ToDo', view, obj);
+		}
+		catch(e){}
+	}
+	
+	//task class element
+	function taskElement(){
+		this.text_color = "black";
+		this.content = "";
+		this.position = 0;
+		this.isEmpty = false;
+
+		this.toString = function(){
+		  var txt = "";
+		  
+		  if (!this.isEmpty) {
+			txt += ('<div><table width="226" height="24" border="0" cellpadding="0" cellspacing="0">'+
+						'<tr>'+
+						'<td width="10">'+
+							'<table width="10" border="0" cellspacing="0" cellpadding="0">'+
+							'<tr>'+
+								'<td><img title="__MSG_priority__" onclick="changeOrder(-1,'+this.position+');" onmouseout="on_image_out(this);" onmouseover="on_image_over(this);" src='+this.getUpImage()+' width="10" height="8" /></td>'+
+							'</tr>'+
+							'<tr>'+
+								'<td><img title="__MSG_priority__" onclick="changeOrder(1,'+this.position+');" onmouseout="on_image_out(this);" onmouseover="on_image_over(this);" src='+this.getDownImage()+' width="10" height="8" /></td>'+
+							'</tr>'+
+							'</table>'+
+						'</td>');
+            
+     if(__MSG_leftAlign__){
+					txt += ('<td width="16">&nbsp;</td>'+'<td width="10"><span style="width:10px;color:'+ this.text_color+';" id="numElm'+ this.position +'" class="style2">'+ (this.position+1) +'.</span> </td>'+
+						'<td id="inputCont'+this.position+'" width="140" ><div onclick="startEdit('+ this.position +');" onfocus="startEdit('+ this.position +');" style="color:'+ this.text_color+';"  class="style2"   id="content'+ this.position +'">&nbsp;'+ this.content +'</div></td>');
+		 }else{
+				  txt += ('<td dir="rtl" id="inputCont'+this.position+'" width="140" ><div onclick="startEdit('+ this.position +');" onfocus="startEdit('+ this.position +');" style="color:'+ this.text_color+';"  class="style2"   id="content'+ this.position +'">&nbsp;'+ this.content +'</div></td>'+
+                  '<td  width="10"><span dir="rtl" style="width:10px;color:'+ this.text_color+';" id="numElm'+ this.position +'" class="style2">'+ (this.position+1) +'.</span> </td>'+'<td width="12">&nbsp;</td>');
+     }
+          txt += ('<td width="50"><img title="__MSG_delete__" onclick="removeElement('+ this.position +');" onmouseout="on_image_out(this);" onmouseover="on_image_over(this);" src="'+_IG_GetImageUrl(IMAGES_BASE+"remove_off.gif")+'" width="11" height="11" /><img title="__MSG_change__" onclick="toggleColorPal('+ this.position +');" onmouseout="on_image_out(this);" onmouseover="on_image_over(this);" src="'+_IG_GetImageUrl(IMAGES_BASE+"color_off.gif")+'" width="11" height="11" /></td>'+
+						'</tr>'+
+					'</table></div>');
+		  }else{
+			txt += ('<div><table width="226" height="24" border="0" cellpadding="0" cellspacing="0">'+
+						'<tr>'+
+						'<td width="10">'+
+							'<table width="10" border="0" cellspacing="0" cellpadding="0">'+
+							'<tr>'+
+								'<td><img onmouseout="on_image_out(this);" onmouseover="on_image_over(this);" src="'+_IG_GetImageUrl(IMAGES_BASE+"no_up_down.gif")+'" width="10" height="8" /></td>'+
+							'</tr>'+
+							'<tr>'+
+								'<td><img onmouseout="on_image_out(this);" onmouseover="on_image_over(this);" src="'+_IG_GetImageUrl(IMAGES_BASE+"no_up_down.gif")+'" width="10" height="8" /></td>'+
+							'</tr>'+
+							'</table>'+
+						'</td>');
+       if(__MSG_leftAlign__){
+					txt += ('<td width="16">&nbsp;</td>'+'<td width="10"><span style="width:10px;color:'+ this.text_color+';" id="numElm'+ this.position +'" class="style2">'+ (this.position+1) +'. </td>'+
+						'<td id="inputCont'+this.position+'" width="140" ><div  onclick="startEdit('+ this.position +');" onfocus="startEdit('+ this.position +');" style="color:'+ this.text_color+';"    class="style2"   id="content'+ this.position +'" >&nbsp;'+ this.content +'</div></td>');
+		   }else{
+				    txt += ('<td dir="rtl" id="inputCont'+this.position+'" width="140" ><div  onclick="startEdit('+ this.position +');" onfocus="startEdit('+ this.position +');" style="color:'+ this.text_color+';"    class="style2"   id="content'+ this.position +'" >&nbsp;'+ this.content +'</div></td>'+
+            '<td dir="rtl" width="10"><span style="width:10px;color:'+ this.text_color+';" id="numElm'+ this.position +'" class="style2">'+ (this.position+1) +'. </td>'+'<td width="12">&nbsp;</td>');			
+       }
+          txt += ('<td width="50"></td>'+
+						'</tr>'+
+					'</table></div>');
+			}
+			return txt;
+		};
+
+		this.getUpImage = function(){
+		  return (this.position == 0 ? (_IG_GetImageUrl(IMAGES_BASE+"no_up_down.gif")) : (_IG_GetImageUrl(IMAGES_BASE+"up_off.gif")));
+		};
+
+		this.getDownImage = function(){
+		  return (this.position == 6 || (this.position==tasks.length-2 && tasks[tasks.length-1].isEmpty) ? (_IG_GetImageUrl(IMAGES_BASE+"no_up_down.gif")) : (_IG_GetImageUrl(IMAGES_BASE+"down_off.gif")));
+		};
+		
+		this.getTextStyle = function(){
+			return (this.content == "__MSG_empty__" ? "style3" : "style2");
+		}
+
+		this.serialize = function(){
+			return (this.position + DELIMITER + this.content.substr(0, MAX_TASK_LEN) + DELIMITER + this.text_color);
+		};
+
+		this.deserialize = function(token){
+			var tokArr = token.split(DELIMITER);
+			this.position = parseInt(tokArr[0]);
+			this.content = tokArr[1];
+			this.text_color = tokArr[2];
+		};
+		
+		
+	}	
+	
+	function onKeyHandle(e,index){
+		var keynum;
+		var keychar;
+		var numcheck;
+		
+		if(window.event) // IE
+		{
+			keynum = e.keyCode;
+		}
+		else if(e.which) // Netscape/Firefox/Opera
+		{
+			keynum = e.which;
+		}
+				
+		if (keynum == 13) {
+			
+			try{
+				_gel("content"+index).blur();
+			}catch(e){}
+			
+			if (_gel("content"+index).value == "") {
+				endEdit(index);
+			}
+			return false;
+		}
+		
+		return true;
+	}
+		
+	function changeOrder(dir,index){
+		if (dir==-1 && index==0) {
+			return;
+		}
+		if ((dir==1 && index==6) || (index == tasks.length-1 && dir==1)) {
+			return;
+		}
+		if (tasks[index+dir].isEmpty) {
+			return;
+		}
+		
+		var temp = tasks[index+dir];
+		tasks[index+dir] = tasks[index];
+		tasks[index] = temp;
+				
+		track_event('V1', 'ReorderTask')
+		saveTasks();
+		updateTaskDisplay();
+		
+	}
+	
+	function switchToInput(index){
+		//take content from div
+		//put in input
+		_gel("inputCont"+index).innerHTML = '<input maxlength="'+MAX_TASK_LEN+'" onblur="endEdit('+ tasks[index].position +');" style="color:'+ tasks[index].text_color+';" onkeypress="onKeyHandle(event,'+ tasks[index].position +');" onchange="endEdit('+ tasks[index].position +');" type="text" class="style2"   id="content'+ tasks[index].position +'" value="'+ tasks[index].content +'" />';
+		 
+	}
+	
+	function startEdit(index){
+		switchToInput(index);
+		if (tasks[index].isEmpty) {
+			_gel("content"+index).value = "";
+		}
+		_gel("content"+index).focus();
+		_gel("content"+index).select();
+		
+	}
+	
+	function endEdit(index){
+		
+		//remove focus to avoid blinking cursor
+		_gel("content"+index).blur();
+		//reset the text so the input will display the string from starting index
+		var text = _gel("content"+index).value;
+		
+		if(text==null){
+			//no text to enter, problem that can happen in safari
+			// return and do nothing
+			return;
+		}
+		
+		if (text == "") {
+			if (tasks[index].isEmpty) {
+				text = "__MSG_empty__";
+			}else{
+				removeElement(index);
+				return;
+			}
+			
+		}
+		
+		var old_content = tasks[index].content;
+		
+		tasks[index].content = text.replace(/"/g,"&quot;");
+		
+		
+		if (tasks[index].isEmpty) {
+			if (tasks[index].content != "__MSG_empty__") {
+				tasks[index].text_color = "black";
+				tasks[index].isEmpty = false;
+				_gel("content"+index).title = text;
+				addEmptyTask();
+				saveTasks();				
+				track_event('V1', 'NewTask')				
+			}
+		}else{
+			if(tasks[index].content){
+				
+				if (tasks[index].content != old_content) {
+					saveTasks();
+				}
+			}
+		}
+		
+		updateTaskDisplay();
+		
+		return false;
+	}
+	
+	function removeElement(index){
+		
+		if (tasks[index].isEmpty) {
+			return;
+		}
+	
+		tasks.splice(index,1);		
+		track_event('V1', 'RemoveTask')		
+		
+		saveTasks();
+		updateTasks();
+	}
+
+	function toggleColorPal(index){
+		
+		if(index == -1 || _gel("colormap").style.display == ""){
+			_gel("colormap").style.display = "none";
+			return;
+		}
+		
+		currentColorSelection = index;
+		
+		var refernceTop,referenceLeft;
+		
+		//refernceTop = lp_getAbsoluteTop("test1");
+		//referenceLeft = lp_getAbsoluteLeft("test1");
+		refernceTop = $lp("#test1").offset().top;
+		referenceLeft = $lp("#test1").offset().left;
+				
+		var top = refernceTop+42+(24*index);
+		var left = referenceLeft+178;
+		
+		
+		_gel("colormap").style.top = (top+"px");
+		_gel("colormap").style.left = (left+"px");
+		
+		_gel("colormap").style.display = "";
+	}
+
+	function on_image_over(elm){
+		elm.src = elm.src.replace("_off","_on");
+	}
+	
+	function on_image_out(elm){
+		elm.src = elm.src.replace("_on","_off");
+	}
+
+	function setColor(colIndex){
+		
+		//if (tasks[currentColorSelection].isEmpty) {
+		//	return;
+		//}
+		
+		tasks[currentColorSelection].text_color = colors[colIndex];		
+		track_event('V1', 'ColorTask')
+		
+		saveTasks();
+		toggleColorPal(-1);
+		updateTasks();
+	}
+		
+	function load(){
+		prefs = new _IG_Prefs();
+		setImages();
+		updateTasks();
+		//saveTasks(); 
+		
+		if (__MSG_show_ad__==1)
+			gadgets.lp.menu.deploy("menu_div",{"textDirection":"__MSG_tdDir__","lang":"__MSG_lang__"});
+		else
+			$lp('#menu_div').hide();
+		
+		_IG_AdjustIFrameHeight();
+	}
+	
+	function setImages() {
+		
+		_gel("bg_of_all").style.background = 'transparent url('+_IG_GetImageUrl(IMAGES_BASE+"__MSG_back__")+') 0px 0px no-repeat';
+		_gel("colormap").src = _IG_GetImageUrl(IMAGES_BASE+"color_pallete.gif");
+	}
+	
+	/*
+	 * This function should parse the current saved tasks and update tasks display
+	 */
+	function updateTasks(){
+		
+		clearTasks();
+		
+		var taskStr = "";
+		try {
+			if (prefs)
+				taskStr = prefs.getString("saved_tasks");
+		} catch (eee) {}
+		
+		var taskNum = 0;
+		var taskTokens = null;
+		var i = 0;
+		
+		if (taskStr != null) {
+			taskTokens = taskStr.split(EXT_DELIMITER);
+			taskNum = taskTokens.length;
+		}
+		
+		for(i=1;i < taskNum;i++){
+			var currTask = new taskElement();
+			currTask.deserialize(taskTokens[i]);
+			tasks.push(currTask);
+		}
+		
+		if (i < 8) {
+			addEmptyTask();
+		}
+		
+		updateTaskDisplay();
+	}
+	
+	function addEmptyTask(){
+		var position = tasks.length;
+		if (position >= 7) {
+			return;
+		}
+		var token = (position+DELIMITER+"__MSG_empty__"+DELIMITER+"#A7A7A7");
+		var currTask = new taskElement();
+		currTask.isEmpty = true;
+		currTask.deserialize(token);
+		tasks.push(currTask);
+	}
+	
+	function saveTasks(){
+		var i = 0;
+		var saveSTR = "";
+		
+		for(i=0;i < tasks.length;i++){
+			
+			if (!tasks[i].isEmpty) {
+				saveSTR += EXT_DELIMITER;
+				saveSTR += tasks[i].serialize();
+				
+			}
+		}
+		
+		try {
+			if (prefs)
+				prefs.set("saved_tasks", saveSTR);
+		} catch (eee) {}
+		
+	}
+	
+	function clearTasks(){
+		while(tasks.pop()){}
+	}
+	
+	function updateTaskDisplay(){
+		var i = 0;
+		
+		for(i=0;i<7;i++){
+		  _gel("elmCont"+i).innerHTML = "";
+		}
+		
+		i = 0;
+		
+		for(i=0;i < tasks.length;i++){
+		  
+		  var container = _gel("elmCont"+i);
+		  tasks[i].position = i;
+		  container.innerHTML = tasks[i].toString();
+		  container.title = tasks[i].content.replace(/&quot;/g,'"');
+		}
+	}
+	
+	</script>
+	</head>
+
+	<body>
+		<center>		
+			<div id="menu_div" style='height:23px;'></div>
+			<table width="240"  border="0" cellpadding="0" cellspacing="0" >
+				<tr>
+					<td id="bg_of_all">
+						<table id="test1" width="240" height="228" border="0" cellpadding="0" cellspacing="0">
+							<tr>
+								<td width="14">&nbsp;</td>
+								<td width="226">
+									<table  width="226" border="0" cellspacing="0" cellpadding="0" >
+										<tr>
+											<td height="42">&nbsp;</td>
+										</tr>
+										<tr>
+											<td align="left" id="elmCont0" height="24"></td>
+										</tr>
+										<tr>
+											<td align="left" id="elmCont1" height="24"></td>
+										</tr>
+										<tr>
+											<td align="left" id="elmCont2" height="24"></td>
+										</tr>
+										<tr>
+											<td align="left" id="elmCont3" height="24"></td>
+										</tr>
+										<tr>
+											<td align="left" id="elmCont4" height="24"></td>
+										</tr>
+										<tr>
+											<td align="left" id="elmCont5" height="24"></td>
+										</tr>
+										<tr>
+											<td align="left" id="elmCont6" height="24"></td>
+										</tr>
+										<tr>
+											<td height="18" id="why"><span class="style1">&nbsp;</span></td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>				
+			</table>
+				
+			<!-- PUT THIS TAG IN DESIRED LOCATION OF SLOT todo_txt -->
+			<div style="width:100%;">
+				<script type="text/javascript">
+				if (__MSG_show_ad__==0) {
+                    document.write('<a class="tdada" target="_top" href="__MSG_ad_link_1__">__MSG_ad_text_1__</a>');                         
+                 }
+				else {
+					GA_googleFillSlot("todo_txt");
+				}				
+				</script>
+			</div>
+			<!-- END OF TAG FOR SLOT todo_txt -->
+		</center>
+  				
+		<img style="position:absolute;display:none;" src="" name="colormap" width="23" height="23" border="0" usemap="#colormapMap" id="colormap" />
+		<map name="colormapMap" id="colormapMap">
+			<area shape="rect" coords="1,14,7,21" 	onclick="setColor(8);"  />
+			<area shape="rect" coords="8,14,14,21" 	onclick="setColor(7);"  />
+			<area shape="rect" coords="15,14,21,21" onClick="setColor(6);"  />
+			<area shape="rect" coords="15,7,21,14" 	onclick="setColor(5);"  />
+			<area shape="rect" coords="8,7,14,14" 	onclick="setColor(4);"  />
+			<area shape="rect" coords="1,7,7,14" 	onclick="setColor(3);"  />
+			<area shape="rect" coords="15,1,21,8" 	onclick="setColor(2);"  />
+			<area shape="rect" coords="8,1,14,8" 	onclick="setColor(1);"  />
+			<area shape="rect" coords="1,1,7,8"		onclick="setColor(0);"  />
+		</map>
+		
+			<!-- init module operations -->
+		<script type="text/javascript">
+			_IG_RegisterOnloadHandler(load);
+		</script>
+		
+		<!-- init google analytics -->
+		<script type="text/javascript">
+			_IG_Analytics("UA-345375-1", "/todo");
+		</script>
+		
+	]]>  
+	</Content>  
+	   	
+	<Content type="html" view="profile,home">  
+	<![CDATA[	
+		<title>ToDo</title>
+		<script language="JavaScript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>		
+		<script language="JavaScript" src="http://www.google-analytics.com/ga.js"></script>			
+		
+		<!--[if IE 6]>
+		<script type="text/javascript">
+		try {//IE fix, causes it to automatically cache background image
+		document.execCommand("BackgroundImageCache", false, true);
+		}
+		catch(e){
+		}
+		</script>
+		<![endif]-->
+		
+		<!-- PUT THIS TAG IN THE head SECTION -->
+		<script type="text/javascript" src="http://partner.googleadservices.com/gampad/google_service.js">
+		</script>
+		<script type="text/javascript">
+		  GS_googleAddAdSenseService("ca-pub-8123415297019784");
+		  GS_googleEnableAllServices();
+		</script>
+		<script type="text/javascript">
+		  GA_googleAddSlot("ca-pub-8123415297019784", "todo_txt");
+		</script>
+		<script type="text/javascript">
+		  GA_googleFetchAds();
+		</script>
+		<!-- END OF TAG FOR head SECTION -->
+		
+		<script language="JavaScript">
+			var $lp = jQuery.noConflict();
+
+			var SERVER_BASE_URL = "http://cdn.labpixies.com/";
+			
+			mSIDEBAR = _IG_GetCachedUrl(SERVER_BASE_URL + "infra/js/sidebar.js");
+			document.write('<scr'+'ipt type="text/javascript" src="'+mSIDEBAR+'"></scr'+'ipt>');
+
+			mTODO = _IG_GetCachedUrl("http://www.labpixies.com/campaigns/todo/todo.js");
+			document.write('<scr'+'ipt type="text/javascript" src="'+mTODO+'"></scr'+'ipt>');
+
+			var LP_email_subj = '__MSG_email_subj__'; 
+			var LP_owner_title = '__MSG_owner_title__'; 
+			var LP_guest_title = '__MSG_guest_title__'; 
+			var LP_more_my = ' __MSG_more_my__'; 
+			var LP_add_first = '__MSG_add_first__'; 
+			var LP_add_more = '__MSG_add_more__'; 
+			var LP_more_first = ' __MSG_more_first__'; 								
+			var LP_no_guest = '__MSG_no_guest__';
+			var LP_guest_see_full = '__MSG_guest_see_full__';
+			var LP_guest_more_many = '__MSG_guest_more_many__';
+			var LP_guest_more_one = '__MSG_guest_more_one__';			 				
+			var LP_notification_added = ' __MSG_notification_added__';
+			var LP_notification_marked = ' __MSG_notification_marked__';
+			var LP_notification_completed = ' __MSG_notification_completed__';			
+			var LP_max_data_length = '__MSG_max_data_length__';
+			var LP_add_new_task = '__MSG_add_new_task__'; 			
+			var LP_g_add_more = '__MSG_g_add_more__';
+			var LP_g_view_all = '__MSG_g_view_all__';
+			var LP_g_add_new = '__MSG_g_add_new__';
+			
+			var _gadgetID = 33;						
+		</script>					
+		
+		<script language="JavaScript">		
+			mCSS = _IG_GetCachedUrl(SERVER_BASE_URL + "campaigns/todo/todo_profile.css");
+			document.write('<link rel="stylesheet" type="text/css" media="all" href="'+mCSS+'"/>');
+			
+			function deploy_todo_profile()
+			{										
+				//titles of the sidebar panels
+				var addSidebarParams = {}; 
+				// menu and callbacks
+				var addParams = {}; 
+				
+				// todo deploy is fired once all the OS data is ready in the sidebar
+				addParams.osGotDataCallback = gadgets.lp.campaigns.todo.deploy;				
+				addParams.osRequestCallback = gadgets.lp.campaigns.todo.fill_os_request;
+				addParams.isShowAd = __MSG_show_ad__;
+												
+				gadgets.lp.sidebar.deploy('td_pr_main_container', addSidebarParams, addParams)				
+				
+				$lp(window).resize(function(){gadgets.lp.campaigns.todo.set_profile_width()});
+			}
+
+			//gadgets.util.registerOnLoadHandler(deploy_todo_profile);	
+			_IG_RegisterOnloadHandler(deploy_todo_profile);			
+		</script>				
+			
+		<div id="td_pr_main_container" style="width:100%;text-align:center;">
+			<div id="td_pr_inner_container" class="td_pr_container" style="padding-top:10px;width:300px;height:275px;margin-left:auto;margin-right:auto;">
+				<table cellspacing="0" cellpadding="0" border="0" class="td_pr_items_table">
+					<tr height="37">
+						<td class="td_pr_table_title" width="5">&nbsp;</td>
+						<td class="td_pr_table_title" style="font-size:10px;font-weight:bold;font-family:Arial;color:#C5A618" valign="top" align="left" id="td_pr_top_menu_left">__MSG_owner_title__</td>
+						<td class="td_pr_table_title" valign="top" align="right" id="td_pr_top_menu">&nbsp;</td>						
+						<td width="3"><div class="td_pr_top_right_corner" id="td_pr_top_title_right"></div></td>
+					</tr>
+				</table>
+	
+				<!-- TO DO ITEMS -->
+				<div id="td_pr_items">
+	
+				</div>
+	
+				<!-- LAST 3 LINES --> 
+				
+				<table cellspacing="0" cellpadding="0" border="0" class="td_pr_items_table">
+					<tr height="24">
+						<td width="20" class="td_pr_last_lines td_pr_border_bottom" align="center">&nbsp;</td>
+						<td width="3" class="td_pr_red td_pr_border_bottom"><div class="td_pr_red_cell_btm" style="width:3px;height:24px"></div></td>
+						<td width="26" class="td_pr_border_bottom" align="center">&nbsp;</td>
+						<td class="td_pr_border_bottom">&nbsp;</td>
+						<td width="3" class="td_pr_right_cell" valign="top"><div class="td_pr_right_blue"></td>
+					</tr>
+				</table>
+				
+				<table cellspacing="0" cellpadding="0" border="0" class="td_pr_items_table">
+					<tr height="24">
+						<td width="20" class="td_pr_last_lines td_pr_border_bottom" align="center"><div  style="width:20px;height:24px">&nbsp;</div></td>
+						<td width="3" class="td_pr_red td_pr_border_bottom"><div class="td_pr_red_cell_btm" style="width:3px;height:24px"></div></td>
+						<td class="td_pr_border_bottom" style="padding-left:6px"><a class="td_pr_item_text" id="td_pr_more_items" href="javascript:void(0)"></a>&nbsp;</td>
+						<td class="td_pr_border_bottom" style="padding-right:6px" align="right">&nbsp;<a class="td_pr_item_text" id="td_pr_view_items" href="javascript:void(0)"></a></td>
+						<td width="3" class="td_pr_right_cell" valign="top"><div class="td_pr_right_blue"></td>
+					</tr>
+				</table>
+			
+				<table cellspacing="0" cellpadding="0" border="0" class="td_pr_items_table">
+					<tr>
+						<td width="20" class="td_pr_last_lines" align="center" style="height:7px;line-height:7px;font-size:1px">&nbsp;</td>
+						<td width="3" class="td_pr_red" style="height:7px;line-height:7px;font-size:1px">&nbsp;</td>
+						<td width="26" align="center" style="height:7px;line-height:7px;font-size:1px">&nbsp;</td>
+						<td style="height:7px;line-height:7px;font-size:1px">&nbsp;</td>
+						<td width="3" class="td_pr_right_cell" valign="top" style="height:7px;line-height:7px;font-size:1px"><div class="td_pr_right_blue" style="height:7px"></td>
+					</tr>
+				</table>
+				
+				<table cellspacing="0" cellpadding="0" border="0"  width="100%">
+					<tr>
+						<td width="26" style="height:3px;line-height:3px;font-size:1px" class="td_pr_bottom_left" valign="top"><div id="td_pr_bottom_left_div" style="height:3px;width:36px;overflow:hidden;"></div></td>	
+						<td width="100%"  style="height:3px;line-height:3px;font-size:1px" class="td_pr_bottom_right" valign="top"><div style="height:3px;width:100%;overflow:hidden;"></div></td>	
+						<td width="3" style="height:3px;line-height:3px;font-size:1px" align="right" valign="top"><div id="td_pr_right_corner" style="height:3px;width:3px;overflow:hidden;"></div></td>
+					</tr>
+				</table>							
+			</div>
+		</div>
+		
+		<div style="width:100%;margin-top:5px;" align="center">
+			<!-- PUT THIS TAG IN DESIRED LOCATION OF SLOT todo_txt -->
+			<script type="text/javascript">
+			  GA_googleFillSlot("todo_txt");
+			</script>
+			<!-- END OF TAG FOR SLOT todo_txt -->
+		</div>
+		
+		<div id="td_size_cont" style="width:100%;height:1px;"><img width="1" height="1" class="td_pr_empty"/></div>	
+		
+		<script>
+			try {
+				_IG_Analytics("UA-345375-1", "/todo_"+gadgets.views.getCurrentView().getName().toLowerCase());
+			} catch (e) {};
+		</script>
+	]]>  
+	</Content>
+	
+	<Content type="html" view="canvas">  
+  	<![CDATA[	
+		<title>ToDo</title>
+		<script language="JavaScript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>		
+		<script language="JavaScript" src="http://www.google-analytics.com/ga.js"></script>			
+
+		<!--[if IE 6]>
+		<script type="text/javascript">
+		try {//IE fix, causes it to automatically cache background image
+		document.execCommand("BackgroundImageCache", false, true);
+		}
+		catch(e){
+		}
+		</script>
+		<![endif]-->		
+				
+		<script language="JavaScript">
+			var $lp = jQuery.noConflict();
+
+			var SERVER_BASE_URL = "http://cdn.labpixies.com/";
+			
+			mSIDEBAR = _IG_GetCachedUrl(SERVER_BASE_URL + "infra/js/sidebar.js");
+			document.write('<scr'+'ipt type="text/javascript" src="'+mSIDEBAR+'"></scr'+'ipt>');
+
+			mTODO = _IG_GetCachedUrl("http://www.labpixies.com/campaigns/todo/todo.js");
+			document.write('<scr'+'ipt type="text/javascript" src="'+mTODO+'"></scr'+'ipt>');
+
+			var LP_email_subj = '__MSG_email_subj__'; 
+			var LP_owner_title = '__MSG_owner_title__'; 
+			var LP_guest_title = '__MSG_guest_title__'; 
+			var LP_more_my = ' __MSG_more_my__'; 
+			var LP_add_first = '__MSG_add_first__'; 
+			var LP_add_more = '__MSG_add_more__'; 
+			var LP_more_first = ' __MSG_more_first__'; 								
+			var LP_no_guest = '__MSG_no_guest__';
+			var LP_guest_see_full = '__MSG_guest_see_full__';
+			var LP_guest_more_many = '__MSG_guest_more_many__';
+			var LP_guest_more_one = '__MSG_guest_more_one__';			 				
+			var LP_notification_added = ' __MSG_notification_added__';
+			var LP_notification_marked = ' __MSG_notification_marked__';
+			var LP_notification_completed = ' __MSG_notification_completed__';			
+			var LP_max_data_length = '__MSG_max_data_length__';
+			var LP_add_new_task = '__MSG_add_new_task__'; 			
+			var LP_g_add_more = '__MSG_g_add_more__';
+			var LP_g_view_all = '__MSG_g_view_all__';
+			var LP_g_add_new = '__MSG_g_add_new__';
+			
+			var _gadgetID = 33;						
+		</script>	
+		
+		<script language="JavaScript">				
+			mCSS = _IG_GetCachedUrl(SERVER_BASE_URL + "campaigns/todo/todo_canvas.css");
+			document.write('<link rel="stylesheet" type="text/css" media="all" href="'+mCSS+'"/>');
+			
+			function deploy_todo_canvas()
+			{											
+				var addSidebarParams = {}; //titles of the sidebar panels
+				var addParams = {}; // menu and callbacks		
+
+				// IE workaround
+				$lp('.td_cv_title_menu_link').hover(
+					function()
+					{
+						$lp(this).css('color','#f3f378');
+					},
+					function()
+					{
+						$lp(this).css('color','#c5a618');
+					}
+				);
+				 
+				// todo deploy is fired once all the OS data is ready in the sidebar				
+				addParams.osGotDataCallback = gadgets.lp.campaigns.todo.deploy;								
+				addParams.osRequestCallback = gadgets.lp.campaigns.todo.fill_os_request;
+				addParams.isShowAd = __MSG_show_ad__;				
+				
+				addParams.title = 'More Options';
+						
+				addSidebarParams.notifications = 'ToDo';
+				addSidebarParams.friendslist = 'Friends ToDo\'s';
+								
+				gadgets.lp.sidebar.deploy('td_cv_main_container', addSidebarParams, addParams);																						
+			}		
+			
+			//gadgets.util.registerOnLoadHandler(deploy_todo_canvas);
+			_IG_RegisterOnloadHandler(deploy_todo_canvas);
+			
+		</script>	
+					
+		<div id="td_cv_main_container">				
+			<table width="100%" cellpadding="0" cellspacing="0" border="0">
+				<tr>
+					<td valign="top">
+						<table class="td_cv_top" cellpadding="0" cellspacing="0" border="0">
+							<tr>
+								<td class="td_cv_title" valign="top" id="td_cv_title">My ToDo List</td>
+								<td class="td_cv_title_menu" valign="top"><a href="javascript:window.print()" class="td_cv_title_menu_link">__MSG_print_list__</a><b>|</b><a href="javascript:gadgets.lp.campaigns.todo.email_list()" class="td_cv_title_menu_link">__MSG_email_list__</a></td>
+								<td class="td_cv_title_right"></td>	
+							</tr>	
+						</table>	
+						
+						<table class="td_cv_items" id="td_cv_items" cellpadding="0" cellspacing="0" border="0">				
+							<tr id="td_cv_item_top" class="td_cv_item" height="1">
+								<td height="1"><img class="td_cv_empty" height="1"/></td>
+								<td height="1" class="td_cv_item_eye_first"><img class="td_cv_empty" height="1" width="37"/></td>
+								<td height="1" class="td_cv_item_count_first" valign="top"><img class="td_cv_empty" width="1" height="1"/></td>
+								<td height="1" class="td_cv_item_text_first"><img class="td_cv_empty" width="1" height="1"/></td>
+								<td height="1"><img class="td_cv_empty" width="25" height="1"/></td>
+								<td height="1"><img class="td_cv_empty" width="25" height="1"/></td>
+								<td height="1"><img class="td_cv_empty" width="25" height="1"/></td>
+								<td height="1" class="td_cv_item_right"><img class="td_cv_empty" width="3" height="1"/></td>		
+							</tr>		
+						</table>
+						
+						<div id="td_cv_edit_task_container" class="td_cv_edit_cont_div"><textarea class="td_cv_edit_task" size="70" name="td_cv_edit_task_item" id="td_cv_edit_task_item"></textarea></div>
+					</td>
+				</tr>
+			</table>
+			
+			<div id="td_cv_comments"></div>
+
+		</div>
+		
+		<div style="clear:both;height:10px"></div>
+		<div style="margin-left:20px;width:760px; height:106px; background-image:url(http://cdn.labpixies.com/infra/images/ad_unit_bg_760.png)">
+			<div style="text-align:left; margin-left:22px; padding-top:9px;">
+				<script type="text/javascript"><!--					
+					google_ad_client = "pub-8123415297019784";
+					/* Todo - Leaderboard - Bottom */
+					google_ad_slot = "9639400690";
+					google_ad_width = 728;
+					google_ad_height = 90;
+					//-->
+				</script>
+				<script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>
+			</div>
+		</div>
+		
+		<div id="td_size_cont" style="width:100%;height:1px;"><img width="1" height="1" class="td_cv_empty"/></div>	
+		
+		<script>
+		try {
+			_IG_Analytics("UA-345375-1", "/todo_"+gadgets.views.getCurrentView().getName().toLowerCase());
+		} catch (e) {};
+		</script>	
+	]]>  
+  	</Content>	 	
+</Module>

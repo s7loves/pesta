@@ -1,0 +1,1075 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Module>
+<ModulePrefs title="Today's Horoscope" title_url="http://www.tarot.com/go/google-ig/rss-horo-dailyhoro/?sign=__UP_sign__" directory_title="Daily Horoscopes" description="Daily horoscopes courtesy of tarot.com" render_inline="optional" height="200" author="csindia-gadgets" author_email="gadgetfactory@google.com">
+  <Preload href="http://feeds.tarot.com/f/ws/igoogle/birthdate/__UP_month____UP_day____UP_year__/?partner=igoogle&amp;key=a9a51c94bbb165f9&amp;type=xml"/>
+  <Locale lang="en" messages="/ig/modules/horoscope_content/horo_string_en_All.xml"/>
+  <Require feature="views"/>
+  <Require feature="setprefs"/>
+  <Require feature="dynamic-height"/>
+  <Require feature="settitle"/>
+</ModulePrefs>
+<UserPref name="day" display_name="__MSG_bday__" datatype="string" default_value=""/>
+<UserPref name="month" display_name="__MSG_bmon__" datatype="enum" default_value="__MSG_january__">
+  <EnumValue value="1" display_value="__MSG_january__"/>
+  <EnumValue value="2" display_value="__MSG_february__"/>
+  <EnumValue value="3" display_value="__MSG_march__"/>
+  <EnumValue value="4" display_value="__MSG_april__"/>
+  <EnumValue value="5" display_value="__MSG_may__"/>
+  <EnumValue value="6" display_value="__MSG_june__"/>
+  <EnumValue value="7" display_value="__MSG_july__"/>
+  <EnumValue value="8" display_value="__MSG_august__"/>
+  <EnumValue value="9" display_value="__MSG_september__"/>
+  <EnumValue value="10" display_value="__MSG_october__"/>
+  <EnumValue value="11" display_value="__MSG_november__"/>
+  <EnumValue value="12" display_value="__MSG_december__"/>
+</UserPref>
+
+<UserPref name="year" display_name="__MSG_byear__" datatype="string" default_value=""/>
+<UserPref name="sign" datatype="enum" default_value="Gemini">
+  <EnumValue value="All Signs" display_value="General Horoscope"/>
+  <EnumValue value="Aries" display_value="Aries (March 21 - April 19)"/>
+  <EnumValue value="Taurus" display_value="Taurus (April 20 - May 20)"/>
+  <EnumValue value="Gemini" display_value="Gemini (May 21 - June 20)"/>
+  <EnumValue value="Cancer" display_value="Cancer (June 21 - July 22)"/>
+  <EnumValue value="Leo" display_value="Leo (July 23 - August 22)"/>
+  <EnumValue value="Virgo" display_value="Virgo (August 23 - September 22)"/>
+
+  <EnumValue value="Libra" display_value="Libra (September 23 - October 22)"/>
+  <EnumValue value="Scorpio" display_value="Scorpio (October 23 - November 21)"/>
+  <EnumValue value="Sagittarius" display_value="Sagittarius (November 22 - December 21)"/>
+  <EnumValue value="Capricorn" display_value="Capricorn (December 22 - January 19)"/>
+  <EnumValue value="Aquarius" display_value="Aquarius (January 20 - February 18)"/>
+  <EnumValue value="Pisces" display_value="Pisces (February 19 - March 20)"/>
+</UserPref>
+<Content type="html">
+<![CDATA[
+  <div style="display:none;" id='hidden__MODULE_ID__'></div>
+  <div style="padding:7px; vertical-align:top; font-size:12px;"
+       id='t__MODULE_ID__'></div>
+  <script>
+  function showMsg__MODULE_ID__(msg) {
+     var htmlmsg = '<div style="text-align:left; padding-top:5px;">' + msg + '</div>';
+     _gel('t__MODULE_ID__').innerHTML = htmlmsg;
+  }
+
+  // If the local date is the same as the date in PST, return null.  
+  // Else return the local date as a string YYYYMMDD.
+  function generateDateString__MODULE_ID__() {
+    var local_date = new Date();
+    var local_days = local_date.getDate();
+
+    var pst_date = new Date();
+    var gmt_minus_pst_minutes = 8 * 60;    // TODO: account for daylight savings
+    var gmt_minus_local_minutes = local_date.getTimezoneOffset();
+    var pst_minus_local_minutes = gmt_minus_local_minutes - gmt_minus_pst_minutes;
+    var pst_minus_local_millis = pst_minus_local_minutes * 60 * 1000;
+    pst_date.setTime(local_date.getTime() + pst_minus_local_millis);
+
+    var pst_days = pst_date.getDate();
+    if (local_days == pst_days) {       // no need to check months or year
+      return null;
+    }
+
+    var local_year = local_date.getFullYear();
+    var local_month = local_date.getMonth() + 1;
+
+    var str = local_year.toString();
+    str += (local_month < 10) ? "0" + local_month : local_month;
+    str += (local_days < 10) ? "0" + local_days : local_days;
+    return str;
+  }
+
+  function logclick__MODULE_ID__(action) {
+     var url = _args()["url"];
+     var prefs = new _IG_Prefs(__MODULE_ID__);
+     var sign = prefs.getString("sign");
+     _gel('t__MODULE_ID__').innerHTML += "<img width=1 height=1 src='/ig/nop?url="+_esc(url)+"&action="+_esc(action)+"&sign="+_esc(sign)+"'>";
+  }
+
+  function tarot__MODULE_ID__() {
+     var prefs = new _IG_Prefs(__MODULE_ID__);
+     var sign = prefs.getString("sign");
+     // People might have "" stored in their prefs from older versions of
+     // the gadget.  Historically we treated this as Gemini, so we continue the
+     // same behavior.  (But it breaks preload.)
+     if (sign == null || sign == "") { sign = "Gemini"; }
+
+     var url = "http://www.tarot.com/rss/generate.php?code=google-ig&feed=daily_horoscope&sign=" + _esc(sign);
+
+     // Only append date if necessary (it defeats prefetching).  Tarot.com
+     // assumes PST if no date is specified, so we check if the user's date is
+     // the same as the date in PST.  (This is true at least half the time.)
+     var date = generateDateString__MODULE_ID__();
+     if (date) {
+       url += "&date=" + date; 
+     }
+
+     _IG_FetchXmlContent(url, function (response) {
+        if (response == null || typeof(response) != "object" || response.firstChild == null) {
+           showMsg__MODULE_ID__("Horoscope information is currently not available.  Please try again later.");
+           return;
+        }
+
+        var htmlobj = _gel("hidden__MODULE_ID__");
+        var foundData = false;
+        // get the child nodes of "item"
+        var nodeList = response.getElementsByTagName("item").item(0).childNodes;
+        // look for description/#cdata-section.  This will contain the goods
+        for (var i = 0; i <  nodeList.length; i++) {
+           var node = nodeList.item(i);
+           if (node.nodeName == "description") {
+              var childNodes = node.childNodes;
+              for (var j = 0; j <  childNodes.length; j++) {
+                 var childNode = childNodes.item(j);
+                 if (childNode.nodeName == "#cdata-section") {
+                    foundData = true;
+                    htmlobj.innerHTML = childNode.nodeValue;
+                 }
+              }
+           }
+        }
+        if (!foundData) {
+           showMsg__MODULE_ID__("internal error: could not find horoscope description.");
+           return;
+        }
+
+        // convert the sign name into its numeric ID
+        var sign_number = -1;
+        var signs = new Array("All Signs", "Aries", "Taurus", "Gemini", "Cancer", "Leo",
+           "Virgo", "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces");
+        for (var i = 0; i < signs.length; i++) {
+           if (sign == signs[i]) {
+             sign_number = i;
+             break;
+           }
+        }
+        if (sign_number == -1) {
+           showMsg__MODULE_ID__("internal error: unknown horoscope sign.");
+           return;
+        }
+
+        // use the browser to parse the HTML, which lives in a CDATA section
+        // in the description of this feed.  This is safe to do because browsers
+        // will not execute JS code when you set .innerHTML
+        var reading = htmlobj.getElementsByTagName("div")[2].innerHTML;
+        var reading_date = htmlobj.getElementsByTagName("div")[3].innerHTML;
+
+	// Historically we use "everyone.gif", not "all signs.js".  This is
+        // probably good, as browsers use several ways of encoding whitespace in
+        // URLs and it's not clear how our server will map it to static files.
+	if (sign == "All Signs") {
+          sign = "everyone";
+        }
+
+        // format the reading into HTML
+        var html = '<a target=_blank onclick="logclick__MODULE_ID__(\'logo\');"';
+        html += ' href="http://www.tarot.com/go/google-ig/rss-horo-dailyhoroitem/?sign='+_esc(sign.toLowerCase())+'">';
+        html += '<img src=/ig/modules/horoscope_content/'+_esc(sign.toLowerCase())+'.gif';
+        html += ' title="Tarot.com "+_hesc(sign)+" Horoscope" border="0" height="75" width="75"';
+        html += ' style="vertical-align: top; float: left; position: relative; padding-right: 20px; padding-left: 5px;">';
+        html += '</a>';
+        html += _hesc(reading);
+        html += '<div style="float:left;margin-top: 18px;"><font size=-1>By <a target=_blank href="http://www.tarot.com/about-us/bios/levine">';
+        html += 'Rick Levine</a></font></div>';       
+        html += '<div style="padding-right: 5px; text-align:right;"><font size=-1>';
+        html += _hesc(reading_date) + "<br>";
+        html += '<a target=_blank onclick="logclick__MODULE_ID__(\'more\');"';
+        html += ' href="http://www.tarot.com/go/google-ig/rss-horo-more/?sign='+sign_number+'">';
+        html += 'more from Tarot.com &raquo;</a>';
+        html += '</div>';
+        _gel('t__MODULE_ID__').innerHTML = html;
+        //_IG_AdjustIFrameHeight();
+     });
+  }
+  _IG_RegisterOnloadHandler(tarot__MODULE_ID__);
+  </script>
+]]>
+</Content>
+<Content type="html" view="home, canvas">
+<![CDATA[
+<div id='enterBday__MODULE_ID__' style='display:none' class='bDay__MODULE_ID__'>
+  __MSG_enter_dob__<br>
+  <img src='/ig/modules/horoscope_content/everyone.gif'
+       class='bdayPic__MODULE_ID__'>
+  <table id='bdayTable__MODULE_ID__'>
+    <tr>
+      <td  class='bDay__MODULE_ID__'>__MSG_day__</td>
+      <td><input id='day__MODULE_ID__' maxlength=2 class='bdayInput__MODULE_ID__'
+        type=text></td>
+    </tr>
+    <tr>
+      <td style='padding-right:6px'  class='bDay__MODULE_ID__'>__MSG_mon__</td>
+      <td>
+         <select id='month__MODULE_ID__'>
+          <option value=1>__MSG_january__</option>
+          <option value=2>__MSG_february__</option>
+          <option value=3>__MSG_march__</option>
+          <option value=4>__MSG_april__</option>
+          <option value=5>__MSG_may__</option>
+          <option value=6>__MSG_june__</option>
+          <option value=7>__MSG_july__</option>
+          <option value=8>__MSG_august__</option>
+          <option value=9>__MSG_september__</option>
+          <option value=10>__MSG_october__</option>
+          <option value=11>__MSG_november__</option>
+          <option value=12>__MSG_december__</option>
+        </select>
+      </td>
+    </tr>
+    <tr>
+      <td  class='bDay__MODULE_ID__'>__MSG_year__</td>
+      <td>
+        <input id='year__MODULE_ID__' maxlength=4
+              class='bdayInput__MODULE_ID__' type=text>
+        <input type=button value=OK onclick='saveBirthday__MODULE_ID__()' />
+      </td>
+    </tr>
+    <tr>
+      <td colspan=2 align=center><div id='err__MODULE_ID__'
+          style='color:#FF0000'></div>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<div id='tarot__MODULE_ID__'>
+  <table width='100%' cellspacing='0' cellpadding='0'>
+    <tr>
+      <td id='mainCell__MODULE_ID__' vAlign='top'>
+        <div id='horoscope_max__MODULE_ID__'>
+        <br>
+          <table width='100%' cellspacing='0' cellpadding='0'>
+            <tr>
+              <td id='numerology__MODULE_ID__' class=section_title__MODULE_ID__>
+                __MSG_numerology__
+             </td>
+              <td id='todayTitle__MODULE_ID__' class=section_title__MODULE_ID__>
+                __MSG_daily_card__
+              </td>
+            </tr>
+            <tr>
+              <td id='number__MODULE_ID__' valign='top'
+                  width='50%' style='padding-right:35px;'></td>
+              <td id='card__MODULE_ID__' valign='top'></td>
+            </tr>
+          </table>
+          <br>
+          <table width='100%' cellspacing='0' cellpadding='0'>
+            <tr>
+              <td id='lovehoro__MODULE_ID__' class=section_title__MODULE_ID__
+                  colspan=2>
+                __MSG_weekly_horoscope__
+              </td>
+            </tr>
+            <tr>
+              <td id='pic__MODULE_ID__' valign='top'  style='padding-top:6px;'>
+              </td>
+              <td id='weekly_reading__MODULE_ID__' valign='top'></td>
+            </tr>
+          </table>
+          <br>
+          <table cellspacing='0' cellpadding='1' border='0' width='100%'>
+            <tr>
+              <td id='headcelebs__MODULE_ID__' ></td>
+                <td class='section_title__MODULE_ID__' width='50%'>
+                <div class='section_title__MODULE_ID__'>
+                  __MSG_changing_sky__
+                </div>
+              </td>
+            </tr>
+            <tr>
+               <td id='celebs__MODULE_ID__' valign='top'></td>
+               <td valign='top' width='50%'>
+                <div style='clear:left'  id='sky__MODULE_ID__'></div>
+              </td>
+            </tr>
+          </table>
+          <br>
+          <table cellspacing='0' cellpadding='1' border='0' width='100%'>
+            <tr>
+              <td class='section_title__MODULE_ID__' width='100%' valign='top'>
+                  __MSG_featured_article__
+              </td>
+            </tr>
+             <tr>
+              <td id='feature_articles__MODULE_ID__' width='50%' valign='top'
+               style='padding-top:6px'>
+              </td>
+            </tr>
+          </table>
+          <br>
+          <table cellspacing='0' cellpadding='1' border='0' width='100%'>
+            <tr>
+              <td class='section_title__MODULE_ID__' valign='top'>
+                __MSG_more_articles__
+              </td>
+             </tr>
+            <tr>
+             <td style='clear:left;padding:4px;' id='articles__MODULE_ID__'
+              valign='top'>
+            </tr>
+          </table>
+        </div>
+    </div>
+  </td>
+  <td id='blogCell__MODULE_ID__' valign='top'
+        style='padding-top: 4px; padding-left: 10px;'>
+    <div id='header_Blogs__MODULE_ID__'
+        class='section_title__MODULE_ID__'></div>
+    <div id='recent_blog__MODULE_ID__'></div>
+  </td>
+  </tr>
+</table>
+</div>
+<style>
+#horoscope_max__MODULE_ID__, #weekly_horoscope__MODULE_ID__ {display:none;}
+.pic__MODULE_ID__, #cardImg__MODULE_ID__, #numImg__MODULE_ID__ {
+  padding-right: 10px;
+  padding-left: 5px;
+  float: left;
+}
+.author__MODULE_ID__ {clear:left;float:left;}
+#articles__MODULE_ID__, #sky__MODULE_ID__, #cosmic_guidance__MODULE_ID__{
+  font-size: 12px;
+  text-align: left;
+}
+.bDay__MODULE_ID__ {
+  font-size: 13px;
+  text-align: left;
+}
+.recent_blogs__MODULE_ID__ {font-size:12px;padding:5px;}
+.celeb__MODULE_ID__, .article__MODULE_ID__ , .sky__MODULE_ID__ {
+  clear: left;
+  padding-bottom: 2px;
+  vertical-align: top;
+}
+.section_title__MODULE_ID__, .headCompat__MODULE_ID__,
+.headLeastCompat__MODULE_ID__ {
+  clear: left;
+  font-weight: bold;
+  font-size: 14px;
+}
+#daily_reading__MODULE_ID__, #weekly_reading__MODULE_ID__,
+#celebs__MODULE_ID__, #card__MODULE_ID__, #number__MODULE_ID__,
+#compat__MODULE_ID__, #leastCompat__MODULE_ID__, #author__MODULE_ID__,
+#date__MODULE_ID__, #feature_articles__MODULE_ID__ {
+  font-size: 12px;
+  text-align: justify;
+  padding-right: 20px;
+}
+#bdayTable__MODULE_ID__ {padding-top:12px;}
+#bdayTable__MODULE_ID__ td {vertical-align:middle;}
+.bdayInput__MODULE_ID__ {padding-left:2px;padding-right:2px;}
+#year__MODULE_ID__ {
+  width:4em;
+}
+#day__MODULE_ID__ {width:2em;}
+.bdayPic__MODULE_ID__ {float:left;padding-right:6px;padding-top:8px;}
+</style>
+
+<script>
+var prefs__MODULE_ID__ = new _IG_Prefs(__MODULE_ID__);
+
+var PIC_TPL__MODULE_ID__ =
+  '<a target=_blank href="' +
+  'http://www.tarot.com/go/google-ig/rss-horo-dailyhoroitem/?sign=%SIGN%">' +
+  '<img class="pic__MODULE_ID__" align="left" src="' +
+  'http://gfx.tarot.com/images/astrology/sun-signs/75x75/%SIGN_NUMBER%.gif" ' +
+  'title="Tarot.com %CAPITAL_SIGN% Horoscope" border="0" height="75" ' +
+  'width="75"></a>';
+
+var LOVEPIC_TPL__MODULE_ID__ =
+  '<a href="http://www.tarot.com/astrology/weekly//?code=igoogle' +
+  '&displaySign=%SIGN_NUMBER%" target="_blank"><img height="100" width="75" ' +
+  'border="0" align="left" title="__MSG_weekly_horoscope__" ' +
+  'src="/ig/modules/horoscope_content/love.jpg" ' +
+  'class="pic__MODULE_ID__"/></a>';
+
+var ARTICLE_TPL__MODULE_ID__ =
+  '<div class=article__MODULE_ID__ style="padding-bottom:4px;">' +
+  '<a href="%ARTICLE_URL%" target="_blank">%ARTICLE_TITLE%</a>' +
+  '</div>';
+
+var CELEB_TPL__MODULE_ID__ =
+  '<tr><td><a href="%CELEB_URL%" target="_blank">' +
+  '%CELEB_NAME%</a></td><td></td><td>%CELEB_BDAY%</td></tr>';
+
+var CARD_TPL__MODULE_ID__ =
+  '<table cellspacing=0 cellpadding=0 border=0><tr><td vAlign="top" ' +
+  ' style="padding-top:6px">' +
+  '<a href="%MORE_LINK%" target=_blank>' +
+  '<img border=0 id="cardImg__MODULE_ID__" height=80px; src="%CARD_IMAGE_URL%">' +
+  '</a></td><td id="card__MODULE_ID__" valign="top" style="padding-top:6px;">' +
+  '<b>%CARD_TITLE%</b><br><br><b>%CARD_NAME%: </b>%CARD_MOTTO% <br><br>Deck: ' +
+  '<a href="%DECK_URL%" target="_blank">%DECK_NAME%</a><br></td></tr></table>';
+
+var NUMBER_TPL__MODULE_ID__ =
+  '<table cellspacing=0 cellpadding=0 border=0><tr><td vAlign="top" ' +
+  ' style="padding-top:6px">' +
+  '<a href="http://www.tarot.com/numerology/daily/?%DOB%" target="_blank">' +
+  '<img border="0" width="75" height="75" id="numImg__MODULE_ID__" ' +
+  'align="left" src="%NUM_IMAGE_URL%"/></a></td><td id="number__MODULE_ID__" ' +
+  'style="padding-top:6px" vAlign="top">%NUMEROLOGY%</td>' +
+  '</tr></table>';
+
+var CHANGING_SKY__MODULE_ID__ =
+  '<tr><td style="padding-right:5px"><a href="%PLANET_URL%" target="_blank">' +
+  '%PLANET_TITLE1%</a></td><td>%PLANET_TITLE2%</td></tr>';
+
+var COSMIC_GUIDANCE__MODULE_ID__ =
+  '<div class=cosmic_guidance__MODULE_ID__>' +
+  '<a href="%COSMIC_URL%" target="_blank">%COSMIC_TITLE%</a>' +
+  '</div>';
+
+var RECENT_BLOGS__MODULE_ID__ =
+  '<div class=recent_blogs__MODULE_ID__>' +
+  '<a href="%BLOG_URL%" target="_blank">%BLOG_TITLE%</a>&nbsp;<br>' +
+  '%BLOG_DESC%</div>';
+
+var MORE_HOROSCOPE_URL =
+  'http://www.tarot.com/astrology/daily-horoscope/^1-horoscope/?scopeDay=';
+
+var day, month, year;
+
+/**
+ * display message
+ * @param {string} msg message to be displayed.
+ */
+function showMsg__MODULE_ID__(msg) {
+  var htmlmsg =
+    '<div style="text-align:left; font-color:#FF0000; padding-top:5px;">' +
+      msg + '</div>';
+  _gel('tarot__MODULE_ID__').innerHTML = htmlmsg;
+}
+
+/**
+ * parse blog feed
+ * @param {object} response blog feed.
+ */
+function parseBlogsData__MODULE_ID__(response) {
+  if (response == null || typeof(response) != 'object' ||
+     response.firstChild == null) {
+    showMsg__MODULE_ID__('__MSG_blogs_not_found__');
+    return;
+  }
+
+  var blogsRoot = response.getElementsByTagName('item');
+  var blogHtml = '';
+  if (blogsRoot != null) {
+    for (var i = 0; i < blogsRoot.length; i++) {
+      var item = blogsRoot.item(i);
+      var title = getValue__MODULE_ID__(item, 'title');
+      var url = getValue__MODULE_ID__(item, 'link');
+      var pdate = getValue__MODULE_ID__(item, 'pubDate');
+      var description = getValue__MODULE_ID__(item, 'description');
+      if (description.length > 80) {
+        var index = description.indexOf(' ', 80);
+        description = description.substr(0, index);
+        description = description + '...';
+      }
+      blogHtml = blogHtml + RECENT_BLOGS__MODULE_ID__;
+      blogHtml = blogHtml.replace(/%BLOG_TITLE%/g, title);
+      blogHtml = blogHtml.replace(/%BLOG_URL%/g, url);
+      blogHtml = blogHtml.replace(/%BLOG_DESC%/g, description);
+    }
+  }
+  _gel('recent_blog__MODULE_ID__').innerHTML = blogHtml;
+  //_IG_AdjustIFrameHeight();
+}
+
+/**
+ * get date string in yyyymmdd format
+ * @return {string} date string.
+ */
+function getDate__MODULE_ID__() {
+  var d = new Date();
+  var day1 = d.getDate().toString();
+  if (day1.length == 1)
+    day1 = '0' + day1;
+  var mon = (d.getMonth() + 1).toString();
+  if (mon.length == 1)
+    mon = '0' + mon;
+  var yr = d.getYear().toString();
+  return (yr + mon + day1);
+}
+var signName;
+/**
+ * parse horoscope feed
+ * @param {object} response feed response of horoscope request.
+ */
+function parseTarotData__MODULE_ID__(response) {
+  if (response == null || typeof(response) != 'object' ||
+      response.firstChild == null) {
+    showMsg__MODULE_ID__('__MSG_horoscope_not_found__');
+    return;
+  }
+
+  signName = getSign__MODULE_ID__(month, day);
+  prefs__MODULE_ID__.set('sign', signName);
+  var signNumber = -1;
+  var sign_labels = ['__MSG_all_signs__', '__MSG_aries_wd__',
+                     '__MSG_taurus_wd__', '__MSG_gemini_wd__',
+                     '__MSG_cancer_wd__', '__MSG_leo_wd__',
+                     '__MSG_virgo_wd__', '__MSG_libra_wd__',
+                     '__MSG_scorpio_wd__', '__MSG_sagittarius_wd__',
+                     '__MSG_capricorn_wd__', '__MSG_aquarius_wd__',
+                     '__MSG_pisces_wd__'];
+  var index, str;
+  for (var i = 0; i < sign_labels.length; i++) {
+    if (i > 0) {
+      index = sign_labels[i].indexOf(' ');
+      str = sign_labels[i].substr(0, index);
+    } else {
+       str = sign_labels[i];
+    }
+    if (signName == str) {
+      signNumber = i;
+      break;
+    }
+  }
+
+  var daily_info = response.getElementsByTagName('daily_horoscope').item(0);
+  var signs = daily_info.getElementsByTagName('sign_content');
+  var sign = signs.item(signNumber);
+  var picHTML = PIC_TPL__MODULE_ID__;
+  picHTML = picHTML.replace(/%SIGN%/g, _hesc(signName.toLowerCase()));
+  picHTML = picHTML.replace(/%CAPITAL_SIGN%/g, _hesc(signName));
+  picHTML = picHTML.replace(/%SIGN_NUMBER%/g, signNumber);
+  var reading = getValue__MODULE_ID__(sign, 'interp');
+  if (gadgets.views.getCurrentView('__MODULE_ID__').getName() == 'canvas') {
+    var moreUrl = MORE_HOROSCOPE_URL;
+    moreUrl = moreUrl.replace('^1', signName.toLowerCase());
+    _gel('daily_pic__MODULE_ID__').innerHTML = picHTML;
+    var html = ['<div style="font-weight:bold; padding-top: 6px;">',
+              '__MSG_todays_horoscope__</div>',
+              '__MSG_by__ <a href="http://www.tarot.com/go/igoogle/',
+              'igoogle-rick-bio/?code=igoogle" target="_blank">',
+              '__MSG_daily_horo_author__</a><br><br>', _hesc(reading),
+              '  <nobr><a href="', moreUrl,
+              '" target="_blank">__MSG_more_from_tarot__</a></nobr>'];
+    _gel('todayTitle__MODULE_ID__').innerHTML = sign_labels[signNumber];
+    _gel('daily_reading__MODULE_ID__').innerHTML = html.join('');
+    _gel('tarot__MODULE_ID__').style.width = '95%';
+    _gel('tarot__MODULE_ID__').style.paddingTop = '5px';
+    _gel('horoscope_max__MODULE_ID__').style.display = 'block';
+    _gel('lovehoro__MODULE_ID__').innerHTML += signName;
+    var celebs = sign.getElementsByTagName('celeb_info');
+    addCelebrities__MODULE_ID__(celebs, _hesc(signName));
+    addCard__MODULE_ID__(response);
+    addNumber__MODULE_ID__(response);
+  } else {
+    _gel('daily_reading__MODULE_ID__').innerHTML = picHTML +
+                                                          _hesc(reading);
+    var htmlDate = ['<nobr>',
+    '<a href="http://www.tarot.com/go/google-ig/rss-horo-more/?sign=',
+    signNumber, '" target="_blank">__MSG_moretorrent__</a></nobr>'];
+    _gel('date__MODULE_ID__').innerHTML = htmlDate.join('');
+    //_IG_AdjustIFrameHeight();
+    return;
+  }
+
+  picHTML = LOVEPIC_TPL__MODULE_ID__;
+  picHTML = picHTML.replace(/%SIGN_NUMBER%/g, signNumber);
+  _gel('pic__MODULE_ID__').innerHTML = picHTML;
+
+  var weeklyInfo = response.getElementsByTagName('weekly_horoscope').item(0);
+  var signs = weeklyInfo.getElementsByTagName('sign_content');
+  var sign = signs.item(signNumber);
+  var reading = getValue__MODULE_ID__(sign, 'interp');
+  var htmlText = ['<div id="author__MODULE_ID__" style="padding-top: 5px;">',
+      '__MSG_by__ <a href="http://www.tarot.com/go/igoogle/igoogle-jawer-bio/?',
+      'code=igoogle" target="_blank">__MSG_weekly_horo_author__</a></div><br>',
+      _hesc(reading)];
+  _gel('weekly_reading__MODULE_ID__').innerHTML = htmlText.join('');
+
+  var articlesHtml = [];
+  var textHtml;
+  var moreArticles = response.getElementsByTagName('feature_item');
+  for (var i = 0; i < moreArticles.length; i++) {
+    var moreArticle = moreArticles.item(i);
+    textHtml = ARTICLE_TPL__MODULE_ID__;
+    var articleUrl = getValue__MODULE_ID__(moreArticle, 'article_url');
+    var articleTitle = getValue__MODULE_ID__(moreArticle, 'article_title');
+    textHtml = textHtml.replace(/%ARTICLE_URL%/g, articleUrl);
+    textHtml = textHtml.replace(/%ARTICLE_TITLE%/g, _hesc(articleTitle));
+    articlesHtml.push(textHtml);
+  }
+  _gel('articles__MODULE_ID__').innerHTML = articlesHtml.join('');
+
+  articlesHtml = [];
+  var featuredArticles = response.getElementsByTagName('featured_article')[0];
+  if (featuredArticles == undefined || featuredArticles == null)
+    return;
+  var article = featuredArticles.getElementsByTagName('article')[0];
+  if (article != undefined) {
+    var articleTitle = getValue__MODULE_ID__(article, 'header');
+    if (articleTitle != '')
+      articleTitle = '<b>' + articleTitle + ':</b><br><br>';
+    var subheader = getValue__MODULE_ID__(article, 'subheader');
+    var articleImg = getValue__MODULE_ID__(article, 'img');
+    var articleContent = getValue__MODULE_ID__(article, 'copy');
+    var link = featuredArticles.getElementsByTagName('link')[0];
+    var moreUrl = getValue__MODULE_ID__(link, 'link_url');
+    articlesHtml.push('<img class="pic__MODULE_ID__" height="75" width="78" ',
+                    'border="0" src="', articleImg, '"/>', articleTitle,
+                    '<b>', subheader, '</b><br>', articleContent, '<nobr>',
+                    '<a href="', moreUrl, '" target="_blank">__MSG_more__</a>',
+                    '</nobr>');
+    _gel('feature_articles__MODULE_ID__').innerHTML = articlesHtml.join('');
+  }
+
+  var astroNewsToday = response.getElementsByTagName('astro_news_today')[0];
+  if (astroNewsToday == undefined || astroNewsToday == null)
+    return;
+  var changingSky = astroNewsToday.getElementsByTagName('our_changing_sky')[0];
+  var planet = changingSky.getElementsByTagName('planet');
+  var planetHtml = ['<table id="sky__MODULE_ID__" border=0>'];
+  var planetName1 = [];
+  for (var j = 0; j < planet.length; j++) {
+    var planetItem = planet.item(j);
+    var planetName = getValue__MODULE_ID__(planetItem, 'planet_name');
+    planetName1 = [];
+    var planetName2 = [];
+    var tmp = planetName;
+    var k = 0;
+    for (; k < 3; k++){
+      planetName1.push(tmp.substr(0, tmp.indexOf(' ')), ' ');
+      tmp = tmp.substring(tmp.indexOf(' ') + 1);
+    }
+    var arrDate = tmp.split(' to ');
+    var arrDate1 = arrDate[0].split(' ');
+    var arrDate2 = arrDate[1].split(' ');
+    if (arrDate1[1].length == 2)
+      arrDate1[1] = '0' + arrDate1[1];
+    if (arrDate2[1].length == 2)
+      arrDate2[1] = '0' + arrDate2[1];
+    planetName2.push(arrDate1.join(' '), 'to', arrDate2.join(' '));
+    var planetUrl = getValue__MODULE_ID__(planetItem, 'planet_url');
+    textHtml = CHANGING_SKY__MODULE_ID__;
+    textHtml = textHtml.replace(/%PLANET_TITLE1%/g, planetName1.join(''));
+    textHtml = textHtml.replace(/%PLANET_TITLE2%/g, '  ' +
+    planetName2.join(' '));
+    textHtml = textHtml.replace(/%PLANET_URL%/g, planetUrl);
+    planetHtml.push(textHtml);
+  }
+  planetHtml.push('</table>');
+  _gel('sky__MODULE_ID__').innerHTML = planetHtml.join('');
+  //_IG_AdjustIFrameHeight();
+}
+
+/**
+ * add celebrities
+ * @param {object} celebs element.
+ * @param {string} signname name of sunsign.
+ */
+function addCelebrities__MODULE_ID__(celebs, signname) {
+  var html = ['<div class=section_title__MODULE_ID__>',
+             _hesc(signname + ' __MSG_celebrities__'), '</div>'];
+
+  var month_names = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  _gel('headcelebs__MODULE_ID__').innerHTML = html.join('');
+  html = ['<table border=0 id="celebs__MODULE_ID__">'];
+  for (var j = 0; j < celebs.length; j++) {
+    var celeb = celebs.item(j);
+    var celebName = getValue__MODULE_ID__(celeb, 'name');
+    var celebBday = getValue__MODULE_ID__(celeb, 'birthdate');
+    var arrDate = celebBday.split('/');
+    celebBday = month_names[parseInt(arrDate[0], 10) - 1] + ' ' + arrDate[1] +
+                 ', ' + arrDate[2];
+    var celebUrl = getValue__MODULE_ID__(celeb, 'url');
+    textHtml = CELEB_TPL__MODULE_ID__;
+    textHtml = textHtml.replace(/%CELEB_NAME%/g, _hesc(celebName));
+    textHtml = textHtml.replace(/%CELEB_BDAY%/g, _hesc(celebBday));
+    textHtml = textHtml.replace(/%CELEB_URL%/g, _hesc(celebUrl));
+
+    html.push(textHtml);
+  }
+  html.push('</table>');
+  _gel('celebs__MODULE_ID__').innerHTML = html.join('');
+}
+
+/**
+ * add daily card
+ * @param {object} xml card element.
+ */
+function addCard__MODULE_ID__(xml) {
+  var dailyCard = xml.getElementsByTagName('daily_card').item(0);
+  var title = getValue__MODULE_ID__(dailyCard, 'title');
+  var index = title.indexOf('for');
+  if (index != -1) {
+    var title1 = title.substr(index + 4);
+    var arrDate = title1.split(' ');
+    if (arrDate[1] < 10)
+      arrDate[1] = '0' + arrDate[1];
+    title = title.substr(0, index + 4) +
+            arrDate[0].substr(0, 3) + ' ' + arrDate[1] +
+            ', ' + arrDate[2];
+  }
+  var card = dailyCard.getElementsByTagName('card').item(0);
+  var imgUrl = getValue__MODULE_ID__(card, 'img');
+  var motto = getValue__MODULE_ID__(card, 'motto');
+  var name = getValue__MODULE_ID__(card, 'name');
+  var deck = getValue__MODULE_ID__(card, 'deck_name');
+  var deckUrl = getValue__MODULE_ID__(card, 'deck_url');
+  var moreLink = getValue__MODULE_ID__(card, 'url');
+  var html = CARD_TPL__MODULE_ID__;
+
+  html = html.replace(/%CARD_TITLE%/g, title);
+  html = html.replace(/%CARD_IMAGE_URL%/g, imgUrl);
+  html = html.replace(/%CARD_MOTTO%/g, _hesc(motto));
+  html = html.replace(/%CARD_NAME%/g, _hesc(name));
+  html = html.replace(/%DECK_NAME%/g, _hesc(deck));
+  html = html.replace(/%DECK_URL%/g, _hesc(deckUrl));
+  html = html.replace(/%MORE_LINK%/g, _hesc(moreLink));
+  _gel('card__MODULE_ID__').innerHTML = html;
+}
+
+/**
+ * add numerology
+ * @param {object} xml numerology element.
+ */
+function addNumber__MODULE_ID__(xml) {
+  var dailyNumber = xml.getElementsByTagName('daily_number').item(0);
+  var node = dailyNumber.getElementsByTagName('personalized_content').item(0);
+  var imgUrl = getValue__MODULE_ID__(node, 'img');
+  var content = getValue__MODULE_ID__(node, 'interp');
+  var strDOB = 'mon1=' + month + '&day1=' + day + '&year1=' + year;
+  var link = dailyNumber.getElementsByTagName('link').item(0);
+  var html = NUMBER_TPL__MODULE_ID__;
+  html = html.replace(/%NUM_IMAGE_URL%/g, _hesc(imgUrl));
+  html = html.replace(/%NUMEROLOGY%/g, _hesc(content));
+  html = html.replace(/%DOB%/g, strDOB);
+  _gel('number__MODULE_ID__').innerHTML = html;
+}
+
+/**
+ * add compatiblity list
+ * @param {object} sign compatibility element.
+ */
+function addCompatibileSign__MODULE_ID__(sign) {
+  var html = [];
+  var mostCompat = sign.getElementsByTagName('most_compatible');
+  if (mostCompat == null || mostCompat == undefined)
+    return;
+  var signItems = mostCompat[0].getElementsByTagName('sign_item');
+  for (var i = 0; i < signItems.length; i++) {
+    var signItem = signItems.item(i)
+    var mostCompatName = getValue__MODULE_ID__(signItem, 'name');
+    var mostCompatUrl = getValue__MODULE_ID__(signItem, 'url');
+    html.push('<a href="', mostCompatUrl, '" target="_blank">',
+              mostCompatName, '</a><br>');
+  }
+  _gel('compat__MODULE_ID__').innerHTML = html.join('');
+  html = [];
+  var leastCompat = sign.getElementsByTagName('least_compatible');
+  signItems = leastCompat[0].getElementsByTagName('sign_item');
+  for (i = 0; i < signItems.length; i++) {
+    var signItem = signItems.item(i)
+    var leastCompatName = getValue__MODULE_ID__(signItem, 'name');
+    var leastCompatUrl = getValue__MODULE_ID__(signItem, 'url');
+    html.push('<a href="', leastCompatUrl, '" target="_blank">',
+              leastCompatName, '</a><br>');
+  }
+  _gel('leastCompat__MODULE_ID__').innerHTML = html.join('');
+}
+
+/**
+ * get the value of a particular node
+ * @param {object} node element node.
+ * @param {string} name element name.
+ * @return {string} value of the node.
+ */
+function getValue__MODULE_ID__(node, name) {
+  var item = node.getElementsByTagName(name).item(0);
+  if (item == undefined || item == null)
+    return '';
+  var childNode = item.childNodes[0];
+  if (childNode == undefined || childNode == null)
+    return '';
+  return childNode.nodeValue;
+}
+
+/**
+ * get the sun sign according to month and date
+ * @param {string} m month.
+ * @param {string} d date.
+ * @return {string} sun sign.
+ */
+function getSign__MODULE_ID__(m, d) {
+  var sunSign = '';
+  d = parseInt(d, 10);
+  switch (parseInt(m, 10)) {
+    case 1:
+        if (d <= 19) {
+          sunSign = '__MSG_capricorn__';
+        } else {
+          sunSign = '__MSG_aquarius__';
+        }
+      break;
+    case 2:
+        if (d <= 18) {
+          sunSign = '__MSG_aquarius__';
+        } else {
+          sunSign = '__MSG_pisces__';
+        }
+      break;
+    case 3:
+        if (d <= 20) {
+          sunSign = '__MSG_pisces__';
+        } else {
+          sunSign = '__MSG_aries__';
+        }
+      break;
+    case 4:
+        if (d <= 19) {
+          sunSign = '__MSG_aries__';
+        } else {
+          sunSign = '__MSG_taurus__';
+        }
+      break;
+    case 5:
+        if (d <= 20) {
+          sunSign = '__MSG_taurus__';
+        } else {
+          sunSign = '__MSG_gemini__';
+        }
+      break;
+    case 6:
+        if (d <= 20) {
+          sunSign = '__MSG_gemini__';
+        } else {
+          sunSign = '__MSG_cancer__';
+        }
+      break;
+    case 7:
+        if (d <= 21) {
+          sunSign = '__MSG_cancer__';
+        } else {
+          sunSign = '__MSG_leo__';
+        }
+      break;
+    case 8:
+        if (d <= 23) {
+          sunSign = '__MSG_leo__';
+        } else {
+          sunSign = '__MSG_virgo__';
+        }
+      break;
+    case 9:
+        if (d <= 22) {
+          sunSign = '__MSG_virgo__';
+        } else {
+          sunSign = '__MSG_libra__';
+        }
+      break;
+    case 10:
+        if (d <= 22) {
+          sunSign = '__MSG_libra__';
+        } else {
+          sunSign = '__MSG_scorpio__';
+        }
+      break;
+    case 11:
+        if (d <= 21) {
+          sunSign = '__MSG_scorpio__';
+        } else {
+          sunSign = '__MSG_sagittarius__';
+        }
+      break;
+    case 12:
+        if (d <= 21) {
+          sunSign = '__MSG_sagittarius__';
+        } else {
+          sunSign = '__MSG_capricorn__';
+        }
+      break;
+  }
+  return sunSign;
+}
+
+/**
+ * fetch tarot feed
+ */
+function fetchTarotData__MODULE_ID__() {
+  if (day.length == 1) {
+    day = '0' + day;
+  }
+  if (month.length == 1) {
+    month = '0' + month;
+  }
+  var birthday = '' + month + day + year;
+  var url = 'http://feeds.tarot.com/f/ws/igoogle/birthdate/' +
+             birthday + '/?partner=igoogle&key=a9a51c94bbb165f9&type=xml';
+  _IG_FetchXmlContent(url, parseTarotData__MODULE_ID__);
+}
+
+/**
+ * fetch blog feed
+ */
+function fetchblogs__MODULE_ID__() {
+ var url =
+  'http://www.tarot.com/blog/wp-rss2.php?author_name=creporter&code=igoogle';
+ _IG_FetchXmlContent(url, parseBlogsData__MODULE_ID__);
+}
+
+/**
+ * validate date of birth entered by user
+ * @param {boolean} dayFlag true if day is to be validated.
+ * @param {string} strValue value to be validated.
+ * @return {boolean} true/false.
+ */
+function doValidate__MODULE_ID__(dayFlag, strValue) {
+  var len = strValue.length;
+  if (!len || !(parseInt(strValue, 10))) {
+    return false;
+  }
+
+  if (dayFlag) { // for date validation
+    var mon = _gel('month__MODULE_ID__').value;
+    var year = _gel('year__MODULE_ID__').value;
+    // february normal and leap year case
+    if (mon == 2) {
+      var dayInFeb = 28;
+      if ((year % 4 == 0) && ((year % 100 != 0) || (year % 400 == 0))) {
+        dayInFeb = 29;
+      }
+      if (parseInt(strValue, 10) > dayInFeb) {
+        return false;
+      }
+    }
+    else if (mon == 4 || mon == 6 ||
+      mon == 9 || mon == 11) {
+      if (parseInt(strValue, 10) > 30) {
+        return false;
+      }
+    }
+    else {
+      if (parseInt(strValue, 10) > 31) {
+        return false;
+      }
+    }
+  } else { // for year validation
+    if (len != 4)
+      return false;
+  }
+
+  // numeric value validation
+  var ch;
+  for (var i = 0; i < len; i++) {
+    ch = strValue.charAt(i);
+    if (ch < '0' || ch > '9') {
+      return false;
+    }
+  }
+  return true;
+}
+
+/**
+ * save birthday
+ */
+function saveBirthday__MODULE_ID__() {
+  _gel('err__MODULE_ID__').innerHTML = '';
+  day = _gel('day__MODULE_ID__').value;
+
+  if (!doValidate__MODULE_ID__(true, day)) {
+    _gel('err__MODULE_ID__').innerHTML = '__MSG_invalid_date__';
+    //_IG_AdjustIFrameHeight();
+    return;
+  }
+
+  month = _gel('month__MODULE_ID__').value;
+  year = _gel('year__MODULE_ID__').value;
+
+  if (!doValidate__MODULE_ID__(false, year)) {
+    _gel('err__MODULE_ID__').innerHTML = '__MSG_invalid_year__';
+   // _IG_AdjustIFrameHeight();
+    return;
+  }
+
+  prefs__MODULE_ID__.set('day', day);
+  prefs__MODULE_ID__.set('month', month);
+  prefs__MODULE_ID__.set('year', year);
+  prefs__MODULE_ID__.set('sign', getSign__MODULE_ID__(month, day));
+  loadHoroscopeGadget__MODULE_ID__();
+}
+
+/**
+ * set initial variables and call fetching feed functions
+ */
+function loadHoroscopeGadget__MODULE_ID__() {
+  day = prefs__MODULE_ID__.getString('day');
+  month = prefs__MODULE_ID__.getString('month');
+  year = prefs__MODULE_ID__.getString('year');
+  signName = getSign__MODULE_ID__(month, day);
+  prefs__MODULE_ID__.set('sign', signName);
+
+  if (prefs__MODULE_ID__.getString('day') == '' ||
+      prefs__MODULE_ID__.getString('year') == '') {
+    _gel('enterBday__MODULE_ID__').style.display = 'block';
+    _gel('tarot__MODULE_ID__').style.display = 'none';
+  } else {
+
+    var title = '__MSG_todays_horoscope_for__ ' + signName;
+    _IG_SetTitle(title, __MODULE_ID__);
+    createHoroTable__MODULE_ID__();
+    _gel('tarot__MODULE_ID__').style.display = 'block';
+    _gel('enterBday__MODULE_ID__').style.display = 'none';
+    fetchTarotData__MODULE_ID__();
+    if (gadgets.views.getCurrentView('__MODULE_ID__').getName() == 'canvas') {
+      _gel('mainCell__MODULE_ID__').style.width = '80%';
+      _gel('mainCell__MODULE_ID__').style.borderRight = '1px solid #c9d7f1';
+      _gel('header_Blogs__MODULE_ID__').innerHTML = '__MSG_recent_blogs__';
+      fetchblogs__MODULE_ID__();
+    } else {
+      _gel('date__MODULE_ID__').style.paddingRight = '7px';
+      _gel('date__MODULE_ID__').style.paddingTop = '7px';
+      _gel('author__MODULE_ID__').style.paddingTop = '7px';
+      _gel('daily_reading__MODULE_ID__').style.paddingRight = '7px';
+      _gel('recent_blog__MODULE_ID__').style.height = '0px';
+      _gel('blogCell__MODULE_ID__').style.display = 'none';
+      _gel('blogCell__MODULE_ID__').innerHTML = '';
+    }
+  }
+}
+
+/**
+ * create daily horoscope table
+ */
+function createHoroTable__MODULE_ID__() {
+  var html = ['<table width="100%" cellspacing="0" cellpadding="0"><tr>'];
+  if (gadgets.views.getCurrentView('__MODULE_ID__').getName() == 'canvas') {
+    html.push('<td id="todayTitle__MODULE_ID__"',
+              ' class=section_title__MODULE_ID__',
+              ' colspan="2"></td></tr><tr><td id="daily_pic__MODULE_ID__" ',
+              'style="vertical-align: top; padding-top: 6px;"></td><td id=',
+              'daily_reading__MODULE_ID__ style="vertical-align:top"></td>',
+              '</tr>');
+  } else {
+    html.push('<td style="vertical-align:top"><div id=',
+              'daily_reading__MODULE_ID__></div><div id="author__MODULE_ID__" ',
+              'style="float: left; vertical-align:bottom; padding-top:5">',
+              '__MSG_by__ <a href="http://www.tarot.com/go/igoogle/',
+              'igoogle-rick-bio/?code=igoogle" target="_blank">',
+              '__MSG_daily_horo_author__</a></div><div id="date__MODULE_ID__" ',
+              'style="text-align:right;vertical-align:bottom"></div></td>');
+  }
+  html.push('</tr></table>');
+  _gel('mainCell__MODULE_ID__').innerHTML = html.join('') +
+                                      _gel('mainCell__MODULE_ID__').innerHTML;
+}
+/**
+ * set canvas or home view
+ * @param {string} viewName view name.
+ */
+function setView__MODULE_ID__(viewName) {
+  _gel('tarot__MODULE_ID__').innerHTML = '';
+  gadgets.views.requestNavigateTo(new gadgets.views.View(viewName));
+}
+
+// entry point
+_IG_RegisterOnloadHandler(loadHoroscopeGadget__MODULE_ID__);
+</script>
+]]>
+</Content>
+</Module>
