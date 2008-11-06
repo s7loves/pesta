@@ -1,0 +1,18 @@
+#summary How to install and use pesta
+= Introduction =
+Pesta was built using Visual Studio 2008 and requires .NET Framework 3.5. Support for .NET Framework 2.0 is possible by using List<> instead of HashSet<> collections. The following describes the necessary steps to get a sample site using Pesta.
+
+= Details =
+pesta contains 2 main folders
+ * pesta - The Pesta.NET.dll
+ * PestaSample - The sample site using Pesta
+
+
+Now, you can
+=== Method 1 ===
+Open the pesta.sln in _pesta_ which when compiled will give you Pesta.NET.dll. Then open PestaSample as a website and then add a reference to Pesta.NET.dll. You should now be able to simply start debugging or view Default.aspx in the browser and there should be some useful links
+
+
+=== Method 2 ===
+Download VS 2008 Web Deployment project [http://www.microsoft.com/downloads/details.aspx?familyId=0AA30AE8-C73B-4BDD-BB1B-FE697256C459&displaylang=en here]. Open PestaSample as a website. Right click on PestaSample in VS and "Add web deployment project". Once this is done, you should now be able to add pesta.sln as an existing project. Don't forget to add pesta as a reference to the PestaSample website. Now you can debug and run the project.
+
