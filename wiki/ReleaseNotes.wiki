@@ -39,8 +39,7 @@ _What does not work (if it hasn't been tested, it's broken)_
  * Code injection support (possible candidate, http://ninject.org/)
  * Remove use of IKVM and all java libraries
  * Remove use of Jayrock.JSON to use the code from JSON.org. Why? There are slight differences between the two implementations.
-
-
+ * Ensure pesta adheres to standard by running compliance tests at http://code.google.com/p/opensocial-resources/wiki/ComplianceTests
 
 
 
