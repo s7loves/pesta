@@ -39,7 +39,7 @@ namespace Pesta
     public class RestfulRequestItem : RequestItem
     {
         protected static String X_HTTP_METHOD_OVERRIDE = "X-HTTP-Method-Override";
-        protected static String SOCIAL_RESTFUL_PATH = HttpRuntime.AppDomainAppVirtualPath + "/social/rest/";
+        protected static String SOCIAL_RESTFUL_PATH = HttpRuntime.AppDomainAppVirtualPath.Equals("/") ? "/social/rest/" : HttpRuntime.AppDomainAppVirtualPath + "/social/rest/";
         private String url;
 
         private Dictionary<String, List<String>> parameters;
