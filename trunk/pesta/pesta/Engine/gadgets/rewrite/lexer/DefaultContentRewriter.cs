@@ -185,7 +185,15 @@ namespace Pesta
         {
             get
             {
-                return HttpRuntime.AppDomainAppVirtualPath + "/gadgets/proxy.ashx?url=";
+                if (!HttpRuntime.AppDomainAppVirtualPath.Equals("/"))
+                {
+                    return HttpRuntime.AppDomainAppVirtualPath + "/gadgets/proxy.ashx?url=";
+                }
+                else
+                {
+                    return "/gadgets/proxy.ashx?url=";
+                }
+                
             }
         }
 
@@ -194,7 +202,15 @@ namespace Pesta
         {
             get 
             {
-                return HttpRuntime.AppDomainAppVirtualPath + "/gadgets/concat.ashx?"; 
+                if (!HttpRuntime.AppDomainAppVirtualPath.Equals("/"))
+                {
+                    return HttpRuntime.AppDomainAppVirtualPath + "/gadgets/concat.ashx?"; 
+                }
+                else
+                {
+                    return "/gadgets/concat.ashx?"; 
+                }
+                
             }
         }
 
