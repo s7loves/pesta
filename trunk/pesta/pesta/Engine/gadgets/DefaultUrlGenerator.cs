@@ -171,8 +171,8 @@ namespace Pesta
 
         protected DefaultUrlGenerator()
         {
-            this.iframePrefix = HttpRuntime.AppDomainAppVirtualPath + "/gadgets/ifr.ashx?";
-            this.jsPrefix = HttpRuntime.AppDomainAppVirtualPath + "/gadgets/js/";
+            this.iframePrefix = HttpRuntime.AppDomainAppVirtualPath.Equals("/") ? "/gadgets/ifr.ashx?" : HttpRuntime.AppDomainAppVirtualPath + "/gadgets/ifr.ashx?";
+            this.jsPrefix = HttpRuntime.AppDomainAppVirtualPath.Equals("/") ? "/gadgets/js/" : HttpRuntime.AppDomainAppVirtualPath + "/gadgets/js/";
             GadgetFeatureRegistry registry = GadgetFeatureRegistry.Instance;
 
             StringBuilder jsBuf = new StringBuilder();
