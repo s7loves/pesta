@@ -33,17 +33,23 @@ public abstract class Name
 {
     public class Field : EnumBaseType<Field>
     {
+        /// <summary>
+        /// Initializes a new instance of the Field class.
+        /// </summary>
+        public Field()
+        {
+        }
         public Field(int key, string value) 
             : base(key,value)
         {
 
         }
-        public static readonly Field ADDITIONAL_NAME = new Field("additionalName");
-        public static readonly Field FAMILY_NAME = new Field("familyName");
-        public static readonly Field GIVEN_NAME = new Field("givenName");
-        public static readonly Field HONORIFIC_PREFIX = new Field("honorificPrefix");
-        public static readonly Field HONORIFIC_SUFFIX = new Field("honorificSuffix");
-        public static readonly Field FORMATTED = new Field("formatted");
+        public static readonly Field ADDITIONAL_NAME = new Field(1, "additionalName");
+        public static readonly Field FAMILY_NAME = new Field(2, "familyName");
+        public static readonly Field GIVEN_NAME = new Field(3, "givenName");
+        public static readonly Field HONORIFIC_PREFIX = new Field(4, "honorificPrefix");
+        public static readonly Field HONORIFIC_SUFFIX = new Field(5, "honorificSuffix");
+        public static readonly Field FORMATTED = new Field(6, "formatted");
 
         private readonly String jsonString;
 

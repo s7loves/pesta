@@ -83,7 +83,7 @@ namespace Pesta
         */
         public abstract class Preconditions<T>
         {
-            public static void requireNotEmpty(IList<T> coll, String message)
+            public static void requireNotEmpty(ICollection<T> coll, String message)
             {
                 if (coll.Count == 0)
                 {
@@ -91,7 +91,7 @@ namespace Pesta
                 }
             }
 
-            public static void requireEmpty(IList<T> list, String message)
+            public static void requireEmpty(ICollection<T> list, String message)
             {
                 if (list.Count != 0)
                 {
@@ -99,7 +99,7 @@ namespace Pesta
                 }
             }
 
-            public static void requireSingular(IList<T> coll, String message)
+            public static void requireSingular(ICollection<T> coll, String message)
             {
                 if (coll.Count != 1)
                 {
@@ -107,7 +107,7 @@ namespace Pesta
                 }
             }
 
-            public static void requirePlural(IList<T> coll, String message)
+            public static void requirePlural(ICollection<T> coll, String message)
             {
                 if (coll.Count <= 1)
                 {

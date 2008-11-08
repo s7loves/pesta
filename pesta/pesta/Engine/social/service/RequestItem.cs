@@ -88,7 +88,7 @@ namespace Pesta
             }
         }
 
-        public List<UserId> getUsers()
+        public HashSet<UserId> getUsers()
         {
             List<String> ids = getListParameter(USER_ID);
             if (ids.Count == 0)
@@ -103,7 +103,7 @@ namespace Pesta
                     throw new ArgumentException("No userId provided and viewer not available");
                 }
             }
-            List<UserId> userIds = new List<UserId>();
+            HashSet<UserId> userIds = new HashSet<UserId>();
             foreach (String id in ids)
             {
                 userIds.Add(UserId.fromJson(id));
@@ -194,15 +194,15 @@ namespace Pesta
             return filterValue == null ? "" : filterValue;
         }
 
-        public List<String> getFields()
+        public HashSet<String> getFields()
         {
-            return getFields(new List<String>());
+            return getFields(new HashSet<String>());
         }
 
-        public List<String> getFields(List<String> defaultValue)
+        public HashSet<String> getFields(HashSet<String> defaultValue)
         {
-            List<String> result = new List<string>();
-            result.AddRange(getListParameter(FIELDS));
+            HashSet<String> result = new HashSet<string>();
+            result.UnionWith(getListParameter(FIELDS));
             if (result.Count == 0)
             {
                 return defaultValue;

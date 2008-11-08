@@ -68,9 +68,9 @@ namespace Pesta
             request.applyUrlTemplate(PEOPLE_PATH);
 
             GroupId groupId = request.getGroup();
-            List<String> optionalPersonId = request.getListParameter("personId");
-            List<String> fields = request.getFields(Person.Field.DEFAULT_FIELDS);
-            List<UserId> userIds = request.getUsers();
+            HashSet<String> optionalPersonId = new HashSet<string>(request.getListParameter("personId"));
+            HashSet<String> fields = request.getFields(Person.Field.DEFAULT_FIELDS);
+            HashSet<UserId> userIds = request.getUsers();
 
             // Preconditions
             DataRequestHandler.Preconditions<UserId>.requireNotEmpty(userIds, "No userId specified");
@@ -94,7 +94,9 @@ namespace Pesta
                 {
                     if (groupId.getType() == GroupId.Type.self)
                     {
-                        return personService.getPerson(userIds[0], fields, request.getToken());
+                        IEnumerator<UserId> iuserid = userIds.GetEnumerator();
+                        iuserid.MoveNext();
+                        return personService.getPerson(iuserid.Current, fields, request.getToken());
                     }
                     else
                     {
@@ -103,13 +105,14 @@ namespace Pesta
                 }
                 else if (optionalPersonId.Count == 1)
                 {
-                    // TODO: Add some crazy concept to handle the userId?
+                    IEnumerator<string> ipersonid = optionalPersonId.GetEnumerator();
+                    ipersonid.MoveNext();
                     return personService.getPerson(new UserId(UserId.Type.userId,
-                        optionalPersonId[0]), fields, request.getToken());
+                        ipersonid.Current), fields, request.getToken());
                 }
                 else
                 {
-                    List<UserId> personIds = new List<UserId>();
+                    HashSet<UserId> personIds = new HashSet<UserId>();
                     foreach (String pid in optionalPersonId)
                     {
                         personIds.Add(new UserId(UserId.Type.userId, pid));

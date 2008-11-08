@@ -33,47 +33,53 @@ public abstract class Activity
 {
     public class Field : EnumBaseType<Field>
     {
+        /// <summary>
+        /// Initializes a new instance of the Field class.
+        /// </summary>
+        public Field()
+        {
+        }
         public Field(int key, string value)
             : base(key, value)
         {
 
         }
         /** the json field for appId. */
-        public static readonly Field APP_ID = new Field("appId");
+        public static readonly Field APP_ID = new Field(1,"appId");
         /** the json field for body. */
-        public static readonly Field BODY = new Field("body");
+        public static readonly Field BODY = new Field(2, "body");
         /** the json field for bodyId. */
-        public static readonly Field BODY_ID = new Field("bodyId");
+        public static readonly Field BODY_ID = new Field(3, "bodyId");
         /** the json field for externalId. */
-        public static readonly Field EXTERNAL_ID = new Field("externalId");
+        public static readonly Field EXTERNAL_ID = new Field(4, "externalId");
         /** the json field for id. */
-        public static readonly Field ID = new Field("id");
+        public static readonly Field ID = new Field(5, "id");
         /** the json field for updated. */
-        public static readonly Field LAST_UPDATED = new Field("updated"); /* Needed to support the RESTful api */
+        public static readonly Field LAST_UPDATED = new Field(6, "updated"); /* Needed to support the RESTful api */
         /** the json field for mediaItems. */
-        public static readonly Field MEDIA_ITEMS = new Field("mediaItems");
+        public static readonly Field MEDIA_ITEMS = new Field(7, "mediaItems");
         /** the json field for postedTime. */
-        public static readonly Field POSTED_TIME = new Field("postedTime");
+        public static readonly Field POSTED_TIME = new Field(8, "postedTime");
         /** the json field for priority. */
-        public static readonly Field PRIORITY = new Field("priority");
+        public static readonly Field PRIORITY = new Field(9, "priority");
         /** the json field for streamFaviconUrl. */
-        public static readonly Field STREAM_FAVICON_URL = new Field("streamFaviconUrl");
+        public static readonly Field STREAM_FAVICON_URL = new Field(10, "streamFaviconUrl");
         /** the json field for streamSourceUrl. */
-        public static readonly Field STREAM_SOURCE_URL = new Field("streamSourceUrl");
+        public static readonly Field STREAM_SOURCE_URL = new Field(11, "streamSourceUrl");
         /** the json field for streamTitle. */
-        public static readonly Field STREAM_TITLE = new Field("streamTitle");
+        public static readonly Field STREAM_TITLE = new Field(12, "streamTitle");
         /** the json field for streamUrl. */
-        public static readonly Field STREAM_URL = new Field("streamUrl");
+        public static readonly Field STREAM_URL = new Field(13, "streamUrl");
         /** the json field for templateParams. */
-        public static readonly Field TEMPLATE_PARAMS = new Field("templateParams");
+        public static readonly Field TEMPLATE_PARAMS = new Field(14, "templateParams");
         /** the json field for title. */
-        public static readonly Field TITLE = new Field("title");
+        public static readonly Field TITLE = new Field(15, "title");
         /** the json field for titleId. */
-        public static readonly Field TITLE_ID = new Field("titleId");
+        public static readonly Field TITLE_ID = new Field(16, "titleId");
         /** the json field for url. */
-        public static readonly Field URL = new Field("url");
+        public static readonly Field URL = new Field(17, "url");
         /** the json field for userId. */
-        public static readonly Field USER_ID = new Field("userId");
+        public static readonly Field USER_ID = new Field(18, "userId");
 
         /**
         * The json field that the instance represents.

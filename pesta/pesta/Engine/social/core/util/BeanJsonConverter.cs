@@ -141,7 +141,7 @@ public class BeanJsonConverter : BeanConverter
             try 
             {
                 Object val = getter.method.Invoke(pojo, EMPTY_OBJECT);
-                if (val != null) 
+                if (val != null && val.ToString() != "0" && val.ToString() != "False") 
                 {
                     toReturn.Put(getter.fieldName, translateObjectToJson(val));
                 }
@@ -285,24 +285,24 @@ public class BeanJsonConverter : BeanConverter
         }
         else if (expectedType.GetInterface("IList") != null) 
         {
-            Type type = method.GetGenericArguments()[0];
+            Type type = expectedType.GetGenericArguments()[0];
             Type rawType;
             Type listElementClass;
+            
+            listElementClass = type;
+            rawType = typeof(List<>).MakeGenericType(new Type[] { type });
 
-            listElementClass = (Type)type;
-            rawType = listElementClass;
-
-            List<Object> list = new List<object>();
+            Object list = Activator.CreateInstance(rawType);
             JsonArray JsonArray = JsonObject[fieldName] as JsonArray;
             for (int i = 0; i < JsonArray.Length; i++) 
             {
                 if (typeof(Enums<>).IsAssignableFrom(rawType)) 
                 {
-                    list.Add(convertEnum(listElementClass, JsonArray.GetObject(i)));
+                    ((IList)list).Add(convertEnum(listElementClass, JsonArray.GetObject(i)));
                 } 
                 else 
                 {
-                    list.Add(convertToObject(JsonArray.GetString(i), listElementClass));
+                    ((IList)list).Add(convertToObject(JsonArray.GetString(i), listElementClass));
                 }
             }
             value = list;
@@ -310,7 +310,7 @@ public class BeanJsonConverter : BeanConverter
         }
         else if (expectedType.GetInterface("IDictionary") != null) 
         {
-            Type[] types = method.GetGenericArguments();
+            Type[] types = expectedType.GetGenericArguments();
             Type valueClass = types[1];
 
             // We only support keys being typed as Strings.

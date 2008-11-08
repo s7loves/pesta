@@ -99,18 +99,18 @@ namespace Pesta
             this.db = db;
         }
 
-        public RestfulCollection<Activity> getActivities(List<UserId> userIds, GroupId groupId,
-            String appId, List<String> fields, SecurityToken token)
+        public RestfulCollection<Activity> getActivities(HashSet<UserId> userIds, GroupId groupId,
+            String appId, HashSet<String> fields, SecurityToken token)
         {
             List<Activity> result = new List<Activity>();
             try
             {
-                List<String> idSet = getIdSet(userIds, groupId, token);
+                HashSet<String> idSet = getIdSet(userIds, groupId, token);
                 foreach (String id in idSet)
                 {
-                    if (((JsonObject)db[ACTIVITIES_TABLE]).Contains(id))
+                    if (db.getJSONObject(ACTIVITIES_TABLE).Contains(id))
                     {
-                        JsonArray activities = ((JsonObject)db[ACTIVITIES_TABLE])[id] as JsonArray;
+                        JsonArray activities = db.getJSONObject(ACTIVITIES_TABLE)[id] as JsonArray;
                         for (int i = 0; i < activities.Length; i++)
                         {
                             JsonObject activity = activities[i] as JsonObject;
@@ -134,15 +134,15 @@ namespace Pesta
         }
 
         public RestfulCollection<Activity> getActivities(UserId userId, GroupId groupId, String appId,
-                    List<String> fields, List<String> activityIds, SecurityToken token)
+                    HashSet<String> fields, HashSet<String> activityIds, SecurityToken token)
         {
             List<Activity> result = new List<Activity>();
             try
             {
                 String user = userId.getUserId(token);
-                if (((JsonObject)db[ACTIVITIES_TABLE]).Contains(user))
+                if (db.getJSONObject(ACTIVITIES_TABLE).Contains(user))
                 {
-                    JsonArray activities = ((JsonObject)db[ACTIVITIES_TABLE])[user] as JsonArray;
+                    JsonArray activities = db.getJSONObject(ACTIVITIES_TABLE)[user] as JsonArray;
                     for (int i = 0; i < activities.Length; i++)
                     {
                         JsonObject activity = activities[i] as JsonObject;
@@ -162,14 +162,14 @@ namespace Pesta
         }
 
         public Activity getActivity(UserId userId,
-            GroupId groupId, String appId, List<String> fields, String activityId, SecurityToken token)
+            GroupId groupId, String appId, HashSet<String> fields, String activityId, SecurityToken token)
         {
             try
             {
                 String user = userId.getUserId(token);
-                if (((JsonObject)db[ACTIVITIES_TABLE]).Contains(user))
+                if (db.getJSONObject(ACTIVITIES_TABLE).Contains(user))
                 {
-                    JsonArray activities = ((JsonObject)db[ACTIVITIES_TABLE])[user] as JsonArray;
+                    JsonArray activities = db.getJSONObject(ACTIVITIES_TABLE)[user] as JsonArray;
                     for (int i = 0; i < activities.Length; i++)
                     {
                         JsonObject activity = activities[i] as JsonObject;
@@ -189,14 +189,14 @@ namespace Pesta
         }
 
         public void deleteActivities(UserId userId, GroupId groupId, String appId,
-                        List<String> activityIds, SecurityToken token)
+                        HashSet<String> activityIds, SecurityToken token)
         {
             try
             {
                 String user = userId.getUserId(token);
-                if (((JsonObject)db[ACTIVITIES_TABLE]).Contains(user))
+                if (db.getJSONObject(ACTIVITIES_TABLE).Contains(user))
                 {
-                    JsonArray activities = ((JsonObject)db[ACTIVITIES_TABLE])[user] as JsonArray;
+                    JsonArray activities = db.getJSONObject(ACTIVITIES_TABLE)[user] as JsonArray;
                     if (activities != null)
                     {
                         JsonArray newList = new JsonArray();
@@ -208,7 +208,7 @@ namespace Pesta
                                 newList.Put(activity);
                             }
                         }
-                        ((JsonObject)db[ACTIVITIES_TABLE]).Put(user, newList);
+                        db.getJSONObject(ACTIVITIES_TABLE).Put(user, newList);
                         // TODO. This seems very odd that we return no useful response in this case
                         // There is no way to represent not-found
                         // if (found) { ??
@@ -224,7 +224,7 @@ namespace Pesta
         }
 
         public void createActivity(UserId userId, GroupId groupId, String appId,
-                            List<String> fields, Activity activity, SecurityToken token)
+                            HashSet<String> fields, Activity activity, SecurityToken token)
         {
             // Are fields really needed here?
             try
@@ -234,11 +234,11 @@ namespace Pesta
                 {
                     jsonObject.Put(Activity.Field.ID.Value, DateTime.Now.Ticks);
                 }
-                JsonArray jsonArray = ((JsonObject)db[ACTIVITIES_TABLE])[userId.getUserId(token)] as JsonArray;
+                JsonArray jsonArray = db.getJSONObject(ACTIVITIES_TABLE)[userId.getUserId(token)] as JsonArray;
                 if (jsonArray == null)
                 {
                     jsonArray = new JsonArray();
-                    ((JsonObject)db[ACTIVITIES_TABLE]).Put(userId.getUserId(token), jsonArray);
+                    db.getJSONObject(ACTIVITIES_TABLE).Put(userId.getUserId(token), jsonArray);
                 }
                 jsonArray.Put(jsonObject);
             }
@@ -248,15 +248,15 @@ namespace Pesta
             }
         }
 
-        public override RestfulCollection<Person> getPeople(List<UserId> userIds, GroupId groupId,
-            CollectionOptions options, List<String> fields, SecurityToken token)
+        public override RestfulCollection<Person> getPeople(HashSet<UserId> userIds, GroupId groupId,
+            CollectionOptions options, HashSet<String> fields, SecurityToken token)
         {
             List<Person> result = new List<Person>();
             try
             {
                 JsonArray people = db[PEOPLE_TABLE] as JsonArray;
 
-                List<String> idSet = getIdSet(userIds, groupId, token);
+                HashSet<String> idSet = getIdSet(userIds, groupId, token);
 
                 for (int i = 0; i < people.Length; i++)
                 {
@@ -295,7 +295,7 @@ namespace Pesta
             }
         }
 
-        public override Person getPerson(UserId id, List<String> fields, SecurityToken token)
+        public override Person getPerson(UserId id, HashSet<String> fields, SecurityToken token)
         {
             try
             {
@@ -317,13 +317,13 @@ namespace Pesta
             }
         }
 
-        public DataCollection getPersonData(List<UserId> userIds, GroupId groupId,
-                                        String appId, List<String> fields, SecurityToken token)
+        public DataCollection getPersonData(HashSet<UserId> userIds, GroupId groupId,
+                                        String appId, HashSet<String> fields, SecurityToken token)
         {
             try
             {
                 Dictionary<String, Dictionary<String, String>> idToData = new Dictionary<string, Dictionary<string, string>>();
-                List<String> idSet = getIdSet(userIds, groupId, token);
+                HashSet<String> idSet = getIdSet(userIds, groupId, token);
                 foreach (String id in idSet)
                 {
                     JsonObject personData;
@@ -335,7 +335,9 @@ namespace Pesta
                     {
                         if (fields.Count != 0)
                         {
-                            personData = new JsonObject(db.getJSONObject(DATA_TABLE).getJSONObject(id), fields.ToArray());
+                            string[] datafields = new string[fields.Count];
+                            fields.CopyTo(datafields);
+                            personData = new JsonObject(db.getJSONObject(DATA_TABLE).getJSONObject(id), datafields);
                         }
                         else
                         {
@@ -359,7 +361,7 @@ namespace Pesta
             }
         }
 
-        public void deletePersonData(UserId userId, GroupId groupId, String appId, List<String> fields, SecurityToken token)
+        public void deletePersonData(UserId userId, GroupId groupId, String appId, HashSet<String> fields, SecurityToken token)
         {
             try
             {
@@ -387,7 +389,7 @@ namespace Pesta
         }
 
         public void updatePersonData(UserId userId, GroupId groupId, String appId,
-                        List<String> fields, Dictionary<String, String> values, SecurityToken token)
+                        HashSet<String> fields, Dictionary<String, String> values, SecurityToken token)
         {
             // TODO: this seems redundant. No need to pass both fields and a map of field->value
             // TODO: According to rest, yes there is. If a field is in the param list but not in the map
@@ -416,16 +418,16 @@ namespace Pesta
         /**
         * Get the set of user id's from a user and group
         */
-        private List<String> getIdSet(UserId user, GroupId group, SecurityToken token)
+        private HashSet<String> getIdSet(UserId user, GroupId group, SecurityToken token)
         {
             String userId = user.getUserId(token);
 
             if (group == null)
             {
-                return new List<string>() { userId };
+                return new HashSet<string>() { userId };
             }
 
-            List<String> returnVal = new List<string>();
+            HashSet<String> returnVal = new HashSet<string>();
             switch (group.getType())
             {
                 case GroupId.Type.all:
@@ -450,37 +452,41 @@ namespace Pesta
         /**
         * Get the set of user id's for a set of users and a group
         */
-        private List<String> getIdSet(List<UserId> users, GroupId group, SecurityToken token)
+        private HashSet<String> getIdSet(HashSet<UserId> users, GroupId group, SecurityToken token)
         {
-            List<String> ids = new List<string>();
+            HashSet<String> ids = new HashSet<string>();
             foreach (UserId user in users)
             {
-                ids.AddRange(getIdSet(user, group, token));
+                ids.UnionWith(getIdSet(user, group, token));
             }
             return ids;
         }
 
-        private Activity convertToActivity(JsonObject inobject, List<String> fields)
+        private Activity convertToActivity(JsonObject inobject, HashSet<String> fields)
         {
             if (fields.Count != 0)
             {
-                inobject = new JsonObject(inobject, fields.ToArray());
+                string[] datafields = new string[fields.Count];
+                fields.CopyTo(datafields);
+                inobject = new JsonObject(inobject, datafields);
             }
             return converter.convertToObject(inobject.ToString(), typeof(Activity)) as Activity;
         }
 
-        private JsonObject convertFromActivity(Activity activity, List<String> fields)
+        private JsonObject convertFromActivity(Activity activity, HashSet<String> fields)
         {
             // TODO Not using fields yet
             return JsonConvert.Import(converter.convertToString(activity)) as JsonObject;
         }
 
-        private Person convertToPerson(JsonObject inobject, List<String> fields)
+        private Person convertToPerson(JsonObject inobject, HashSet<String> fields)
         {
             if (fields.Count != 0)
             {
                 // Create a copy with just the specified fields
-                inobject = new JsonObject(inobject, fields.ToArray());
+                string[] datafields = new string[fields.Count];
+                fields.CopyTo(datafields);
+                inobject = new JsonObject(inobject, datafields);
             }
             return converter.convertToObject(inobject.ToString(), typeof(Person)) as Person;
         }

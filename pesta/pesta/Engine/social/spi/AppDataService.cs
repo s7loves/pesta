@@ -44,8 +44,8 @@ namespace Pesta
        * @param token   The security token
        * @return The data fetched
        */
-        DataCollection getPersonData(List<UserId> userIds, GroupId groupId,
-            String appId, List<String> fields, SecurityToken token);
+        DataCollection getPersonData(HashSet<UserId> userIds, GroupId groupId,
+            String appId, HashSet<String> fields, SecurityToken token);
 
         /**
          * Deletes data for the specified user and group.
@@ -58,7 +58,7 @@ namespace Pesta
          * @return an error if one occurs
          */
         void deletePersonData(UserId userId, GroupId groupId,
-            String appId, List<String> fields, SecurityToken token);
+            String appId, HashSet<String> fields, SecurityToken token);
 
         /**
          * Updates app data for the specified user and group with the new values.
@@ -72,6 +72,6 @@ namespace Pesta
          * @return an error if one occurs
          */
         void updatePersonData(UserId userId, GroupId groupId,
-            String appId, List<String> fields, Dictionary<String, String> values, SecurityToken token);
+            String appId, HashSet<String> fields, Dictionary<String, String> values, SecurityToken token);
     } 
 }

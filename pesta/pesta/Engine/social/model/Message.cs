@@ -36,6 +36,12 @@ public abstract class Message
    */
     public class Field : EnumBaseType<Field>
     {
+        /// <summary>
+        /// Initializes a new instance of the Field class.
+        /// </summary>
+        public Field()
+        {
+        }
         public Field(int key, string value) 
         : base(key,value)
         {

@@ -33,17 +33,23 @@ public abstract class MediaItem
 {
     public class Field : EnumBaseType<Field>
     {
+        /// <summary>
+        /// Initializes a new instance of the Field class.
+        /// </summary>
+        public Field()
+        {
+        }
         public Field(int key, string value)
             : base(key, value)
         {
 
         }
         /** the field name for mimeType. */
-        public static readonly Field MIME_TYPE = new Field("mimeType");
+        public static readonly Field MIME_TYPE = new Field(1, "mimeType");
         /** the field name for type. */
-        public static readonly Field TYPE = new Field("type");
+        public static readonly Field TYPE = new Field(2, "type");
         /** the field name for url. */
-        public static readonly Field URL = new Field("url");
+        public static readonly Field URL = new Field(3, "url");
 
         /**
         * The field name that the instance represents.
@@ -71,17 +77,20 @@ public abstract class MediaItem
     */
     public class Type : EnumBaseType<Type>
     {
+        public Type() { }
+
         public Type(int key, string value)
             : base(key, value)
         {
 
-        }
+        } 
+
         /** the constant for audio types. */
-        public static readonly Field AUDIO = new Field(1,"audio");
+        public static readonly Type AUDIO = new Type(1, "audio");
         /** the constant for image types. */
-        public static readonly Field IMAGE = new Field(2,"image");
+        public static readonly Type IMAGE = new Type(2, "image");
         /** the constant for video types. */
-        public static readonly Field VIDEO = new Field(3,"video");
+        public static readonly Type VIDEO = new Type(3, "video");
 
         /**
         * The field type.
@@ -123,14 +132,14 @@ public abstract class MediaItem
     *
     * @return the Type of this media item
     */
-    public abstract  Type getType();
+    public abstract MediaItem.Type getType();
 
     /**
     * Get the Type of this media item, either audio, image or video.
     *
     * @param the type of this media item
     */
-    public abstract  void setType(Type type);
+    public abstract  void setType(MediaItem.Type type);
 
     /**
     * Get a URL for the media item.

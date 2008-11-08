@@ -79,8 +79,8 @@ namespace Pesta
          * @param fields The profile details to fetch. Empty set implies all
          * @param token The gadget token @return a list of people.
          */
-        abstract public RestfulCollection<Person> getPeople(List<UserId> userIds, GroupId groupId,
-            CollectionOptions collectionOptions, List<String> fields, SecurityToken token);
+        abstract public RestfulCollection<Person> getPeople(HashSet<UserId> userIds, GroupId groupId,
+            CollectionOptions collectionOptions, HashSet<String> fields, SecurityToken token);
 
         /**
          * Returns a person that corresponds to the passed in person id.
@@ -90,6 +90,6 @@ namespace Pesta
          * @param token The gadget token
          * @return a list of people.
          */
-        abstract public Person getPerson(UserId id, List<String> fields, SecurityToken token);
+        abstract public Person getPerson(UserId id, HashSet<String> fields, SecurityToken token);
     } 
 }

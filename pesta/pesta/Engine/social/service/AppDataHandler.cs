@@ -57,12 +57,13 @@ namespace Pesta
         {
             request.applyUrlTemplate(APP_DATA_PATH);
 
-            List<UserId> userIds = request.getUsers();
+            HashSet<UserId> userIds = request.getUsers();
 
             DataRequestHandler.Preconditions<UserId>.requireNotEmpty(userIds, "No userId specified");
             DataRequestHandler.Preconditions<UserId>.requireSingular(userIds, "Multiple userIds not supported");
-
-            service.deletePersonData(userIds[0], request.getGroup(),
+            IEnumerator<UserId> iuserid = userIds.GetEnumerator();
+            iuserid.MoveNext();
+            service.deletePersonData(iuserid.Current, request.getGroup(),
                                         request.getAppId(), request.getFields(), request.getToken());
             return null;
         }
@@ -95,7 +96,7 @@ namespace Pesta
         {
             request.applyUrlTemplate(APP_DATA_PATH);
 
-            List<UserId> userIds = request.getUsers();
+            HashSet<UserId> userIds = request.getUsers();
 
             DataRequestHandler.Preconditions<UserId>.requireNotEmpty(userIds, "No userId specified");
             DataRequestHandler.Preconditions<UserId>.requireSingular(userIds, "Multiple userIds not supported");
@@ -109,7 +110,9 @@ namespace Pesta
                             "One or more of the app data keys are invalid: " + key);
                 }
             }
-            service.updatePersonData(userIds[0], request.getGroup(),
+            IEnumerator<UserId> iuserid = userIds.GetEnumerator();
+            iuserid.MoveNext();
+            service.updatePersonData(iuserid.Current, request.getGroup(),
                             request.getAppId(), request.getFields(), values, request.getToken());
             return null;
         }
@@ -123,7 +126,7 @@ namespace Pesta
         {
             request.applyUrlTemplate(APP_DATA_PATH);
 
-            List<UserId> userIds = request.getUsers();
+            HashSet<UserId> userIds = request.getUsers();
 
             // Preconditions
             DataRequestHandler.Preconditions<UserId>.requireNotEmpty(userIds, "No userId specified");

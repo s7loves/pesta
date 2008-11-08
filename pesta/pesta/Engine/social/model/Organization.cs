@@ -44,6 +44,12 @@ public abstract class Organization
     */
     public class Field : EnumBaseType<Field>
     {
+        /// <summary>
+        /// Initializes a new instance of the Field class.
+        /// </summary>
+        public Field()
+        {
+        }
         public Field(int key, string value) 
             : base(key,value)
         {
@@ -51,32 +57,32 @@ public abstract class Organization
         }
 
     /** the name of the address field. */
-    public static readonly Field ADDRESS = new Field("address");
+        public static readonly Field ADDRESS = new Field(1, "address");
     /** the name of the description field. */
-    public static readonly Field DESCRIPTION = new Field("description");
+        public static readonly Field DESCRIPTION = new Field(2, "description");
     /** the name of the endDate field. */
-    public static readonly Field END_DATE = new Field("endDate");
+        public static readonly Field END_DATE = new Field(3, "endDate");
     /** the name of the field field. */
-    public static readonly Field FIELD = new Field("field");
+        public static readonly Field FIELD = new Field(4, "field");
     /** the name of the name field. */
-    public static readonly Field NAME = new Field("name");
+        public static readonly Field NAME = new Field(5, "name");
     /** the name of the salary field. */
-    public static readonly Field SALARY = new Field("salary");
+        public static readonly Field SALARY = new Field(6, "salary");
     /** the name of the startDate field. */
-    public static readonly Field START_DATE = new Field("startDate");
+        public static readonly Field START_DATE = new Field(7, "startDate");
     /** the name of the subField field. */
-    public static readonly Field SUB_FIELD = new Field("subField");
+        public static readonly Field SUB_FIELD = new Field(8, "subField");
     /** the name of the title field. */
-    public static readonly Field TITLE = new Field("title");
+        public static readonly Field TITLE = new Field(9, "title");
     /** the name of the webpage field. */
-    public static readonly Field WEBPAGE = new Field("webpage");
+        public static readonly Field WEBPAGE = new Field(10, "webpage");
     /**
     * the name of the type field, Should have the value of "job" or "school" to be put in the right
     * js fields.
     */
-    public static readonly Field TYPE = new Field("type");
+        public static readonly Field TYPE = new Field(11, "type");
     /** the name of the primary field. */
-    public static readonly Field PRIMARY = new Field("primary");
+        public static readonly Field PRIMARY = new Field(12, "primary");
 
     /**
     * the name of this field.

@@ -49,11 +49,13 @@ namespace Pesta
         protected override object handleDelete(RequestItem request)
         {
             request.applyUrlTemplate(ACTIVITY_ID_PATH);
-            List<UserId> userIds = request.getUsers();
-            List<String> activityIds = request.getListParameter("activityId");
+            HashSet<UserId> userIds = request.getUsers();
+            HashSet<String> activityIds = new HashSet<string>(request.getListParameter("activityId"));
             DataRequestHandler.Preconditions<UserId>.requireNotEmpty(userIds, "No userId specified");
             DataRequestHandler.Preconditions<UserId>.requireSingular(userIds, "Multiple userIds not supported");
-            service.deleteActivities(userIds[0], request.getGroup(),
+            IEnumerator<UserId> iuserid = userIds.GetEnumerator();
+            iuserid.MoveNext();
+            service.deleteActivities(iuserid.Current, request.getGroup(),
                             request.getAppId(), activityIds, request.getToken());
             return null;
         }
@@ -78,15 +80,16 @@ namespace Pesta
         {
             request.applyUrlTemplate(ACTIVITY_ID_PATH);
 
-            List<UserId> userIds = request.getUsers();
-            List<String> activityIds = request.getListParameter("activityId");
+            HashSet<UserId> userIds = request.getUsers();
+            HashSet<String> activityIds = new HashSet<string>(request.getListParameter("activityId"));
 
             DataRequestHandler.Preconditions<UserId>.requireNotEmpty(userIds, "No userId specified");
             DataRequestHandler.Preconditions<UserId>.requireSingular(userIds, "Multiple userIds not supported");
             // TODO(lryan) This seems reasonable to allow on PUT but we don't have an update verb.
             DataRequestHandler.Preconditions<String>.requireEmpty(activityIds, "Cannot specify activityId in create");
-
-            service.createActivity(userIds[0], request.getGroup(),
+            IEnumerator<UserId> iuserid = userIds.GetEnumerator();
+            iuserid.MoveNext();
+            service.createActivity(iuserid.Current, request.getGroup(),
                             request.getAppId(), request.getFields(),
                             (Activity)request.getTypedParameter("activity", typeof(Activity)),
                             request.getToken());
@@ -104,8 +107,8 @@ namespace Pesta
         {
             request.applyUrlTemplate(ACTIVITY_ID_PATH);
 
-            List<UserId> userIds = request.getUsers();
-            List<String> optionalActivityIds = request.getListParameter("activityId");
+            HashSet<UserId> userIds = request.getUsers();
+            HashSet<String> optionalActivityIds = new HashSet<string>(request.getListParameter("activityId"));
 
             // Preconditions
             DataRequestHandler.Preconditions<UserId>.requireNotEmpty(userIds, "No userId specified");
@@ -118,13 +121,19 @@ namespace Pesta
             {
                 if (optionalActivityIds.Count == 1)
                 {
-                    return service.getActivity(userIds[0], request.getGroup(),
-                                request.getAppId(), request.getFields(), optionalActivityIds[0],
+                    IEnumerator<UserId> iuserid = userIds.GetEnumerator();
+                    iuserid.MoveNext();
+                    IEnumerator<string> iactivity = optionalActivityIds.GetEnumerator();
+                    iactivity.MoveNext();
+                    return service.getActivity(iuserid.Current, request.getGroup(),
+                                request.getAppId(), request.getFields(), iactivity.Current,
                                 request.getToken());
                 }
                 else
                 {
-                    return service.getActivities(userIds[0], request.getGroup(),
+                    IEnumerator<UserId> iuserid = userIds.GetEnumerator();
+                    iuserid.MoveNext();
+                    return service.getActivities(iuserid.Current, request.getGroup(),
                         request.getAppId(), request.getFields(), optionalActivityIds, request.getToken());
                 }
             }
