@@ -37,6 +37,12 @@ public abstract class Person
         /// <summary>
         /// Initializes a new instance of the Person class.
         /// </summary>
+        /// <summary>
+        /// Initializes a new instance of the Field class.
+        /// </summary>
+        public Field()
+        {
+        }
         public Field(int key, string value) 
             : base(key,value)
         {
@@ -160,7 +166,7 @@ public abstract class Person
         /**
          * The set of required fields.
          */
-        public static readonly List<String> DEFAULT_FIELDS = new List<string>(){ID.ToString(),
+        public static readonly HashSet<String> DEFAULT_FIELDS = new HashSet<string>(){ID.ToString(),
             NAME.ToString(),THUMBNAIL_URL.ToString()};
 
         /**

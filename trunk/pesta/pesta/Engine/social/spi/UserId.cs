@@ -58,7 +58,9 @@ namespace Pesta
             /** Return the Type enum value given a specific jsonType **/
             public static Type jsonValueOf(String jsonType)
             {
-                return jsonTypeMap[jsonType];
+                Type retType = null;
+                jsonTypeMap.TryGetValue(jsonType, out retType);
+                return retType;
             }
         }
 

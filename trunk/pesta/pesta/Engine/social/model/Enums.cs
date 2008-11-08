@@ -39,6 +39,12 @@ public abstract class Enums<T> where T : EnumKey
 
     public class Field : EnumBaseType<Field>
     {
+        /// <summary>
+        /// Initializes a new instance of the Field class.
+        /// </summary>
+        public Field()
+        {
+        }
         public Field(int key, string value)
             : base(key, value)
         {
@@ -98,6 +104,12 @@ public class EnumTypes
 {
     public class Drinker : EnumBaseType<Drinker>, EnumKey
     {
+        /// <summary>
+        /// Initializes a new instance of the Drinker class.
+        /// </summary>
+        public Drinker()
+        {
+        }
         public Drinker(int key, string value)
             : base(key, value)
         {
@@ -135,6 +147,12 @@ public class EnumTypes
 
     public class Smoker : EnumBaseType<Smoker>, EnumKey
     {
+        /// <summary>
+        /// Initializes a new instance of the Smoker class.
+        /// </summary>
+        public Smoker()
+        {
+        }
         public Smoker(int key, string value)
             : base(key, value)
         {
@@ -173,6 +191,12 @@ public class EnumTypes
 
     public class NetworkPresence : EnumBaseType<NetworkPresence>, EnumKey
     {
+        /// <summary>
+        /// Initializes a new instance of the NetworkPresence class.
+        /// </summary>
+        public NetworkPresence()
+        {
+        }
         public NetworkPresence(int key, string value)
             : base(key, value)
         {
@@ -208,6 +232,12 @@ public class EnumTypes
 
     public class LookingFor : EnumBaseType<LookingFor>, EnumKey
     {
+        /// <summary>
+        /// Initializes a new instance of the LookingFor class.
+        /// </summary>
+        public LookingFor()
+        {
+        }
         public LookingFor(int key, string value)
             : base(key, value)
         {

@@ -185,8 +185,7 @@ namespace Pesta
         {
             bool getSummaries = Boolean.Parse(getParameter(req, GET_SUMMARIES_PARAM, "false"));
             int numEntries = int.Parse(getParameter(req, NUM_ENTRIES_PARAM, DEFAULT_NUM_ENTRIES));
-            return "Currently not supported";
-            //return new FeedProcessor().process(url, xml, getSummaries, numEntries).toString();
+            return new FeedProcessor().process(url, xml, getSummaries, numEntries).ToString();
         }
 
         /**

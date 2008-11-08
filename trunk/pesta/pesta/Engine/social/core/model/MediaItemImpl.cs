@@ -30,14 +30,14 @@ using System;
 public class MediaItemImpl : MediaItem
 {
     private String mimeType;
-    private Type type;
+    private MediaItem.Type type;
     private String url;
 
     public MediaItemImpl()
     {
     }
 
-    public MediaItemImpl(String mimeType, Type type, String url)
+    public MediaItemImpl(String mimeType, MediaItem.Type type, String url)
     {
         this.mimeType = mimeType;
         this.type = type;
@@ -54,12 +54,12 @@ public class MediaItemImpl : MediaItem
         this.mimeType = mimeType;
     }
 
-    public override Type getType()
+    public override MediaItem.Type getType()
     {
         return type;
     }
 
-    public override void setType(Type type)
+    public override void setType(MediaItem.Type type)
     {
         this.type = type;
     }
