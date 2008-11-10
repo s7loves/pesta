@@ -20,7 +20,6 @@
 using System;
 using System.Text;
 using System.Text.RegularExpressions;
-using URI = java.net.URI;
 using com.google.caja.lexer;
 
 /// <summary>
@@ -35,17 +34,17 @@ public class CssRewriter
 {
     private static readonly Regex urlMatcher = new Regex("(url\\s*\\(\\s*['\"]?)([^\\)'\"]*)(['\"]?\\s*\\))", RegexOptions.IgnoreCase);
 
-    public static String rewrite(String content, URI source, LinkRewriter linkRewriter) 
+    public static String rewrite(String content, Uri source, LinkRewriter linkRewriter) 
     {
         java.io.StringWriter sw = new java.io.StringWriter((content.Length * 110) / 100);
         rewrite(new java.io.StringReader(content), source, linkRewriter, sw);
         return sw.ToString();
     }
 
-    public static void rewrite(java.io.Reader content, URI source, LinkRewriter rewriter, java.io.Writer writer) 
+    public static void rewrite(java.io.Reader content, Uri source, LinkRewriter rewriter, java.io.Writer writer) 
     {
         CharProducer producer = CharProducer.Factory.create(content,
-        new InputSource(source));
+        new InputSource(new java.net.URI(source.ToString())));
         CssLexer lexer = new CssLexer(producer);
         try 
         {
@@ -71,7 +70,7 @@ public class CssRewriter
         }
     }
 
-    private static String rewriteLink(Token token, URI _base, LinkRewriter rewriter) 
+    private static String rewriteLink(Token token, Uri _base, LinkRewriter rewriter) 
     {
         Match matcher = urlMatcher.Match(token.toString());
         if (!matcher.Success) 

@@ -18,7 +18,6 @@
  */
 #endregion
 using System;
-using URI = java.net.URI;
 using System.Text;
 using System.Xml;
 
@@ -65,8 +64,8 @@ namespace Pesta
         /**
         * Locale@messages
         */
-        private readonly URI messages;
-        public URI getMessages()
+        private readonly Uri messages;
+        public Uri getMessages()
         {
             return messages;
         }
@@ -104,7 +103,7 @@ namespace Pesta
          *     to be relative to this path.
          * @throws SpecParserException If language_direction is not valid
          */
-        public LocaleSpec(XmlElement element, URI specUrl)
+        public LocaleSpec(XmlElement element, Uri specUrl)
         {
             language = XmlUtil.getAttribute(element, "lang", "all").ToLower();
             country = XmlUtil.getAttribute(element, "country", "ALL").ToUpper();
@@ -118,13 +117,13 @@ namespace Pesta
             String messages = XmlUtil.getAttribute(element, "messages");
             if (messages == null)
             {
-                this.messages = URI.create("");
+                this.messages = new Uri("");
             }
             else
             {
                 try
                 {
-                    this.messages = new java.net.URL(specUrl.toURL(), messages).toURI();
+                    this.messages = new Uri(specUrl, messages);
                 }
                 catch (Exception e)
                 {

@@ -19,9 +19,8 @@
 #endregion
 using System;
 using System.Web;
-using org.apache.shindig.gadgets;
+using System.Collections.Generic;
 using Locale = java.util.Locale;
-using URI = java.net.URI;
 using System.Collections.Specialized;
 
 namespace Pesta
@@ -40,12 +39,12 @@ namespace Pesta
         private HttpContext context;
         private HttpRequest request;
         private String container;
-        private bool debug;
+        private bool? debug;
         private bool ignoreCache;
         private Locale locale;
         private int moduleId;
         private RenderingContext renderingContext;
-        private URI url;
+        private Uri url;
         private UserPrefs userPrefs;
         private String view;
 
@@ -84,11 +83,11 @@ namespace Pesta
 
         public override bool getDebug()
         {
-            //if (debug == null)
-            //{
-            //    return base.getDebug();
-            //}
-            return debug;
+            if (debug == null)
+            {
+                return base.getDebug();
+            }
+            return debug.Value;
         }
 
 
@@ -136,7 +135,7 @@ namespace Pesta
             return new AuthInfo(context, this.request.RawUrl).getSecurityToken();
         }
 
-        public override URI getUrl()
+        public override Uri getUrl()
         {
             if (url == null)
             {
@@ -271,14 +270,14 @@ namespace Pesta
         /// </param>
         /// <returns> The ignore cache setting, if appropriate params are set, or null.
         /// </returns>
-        private static URI getUrl(HttpRequest request)
+        private static Uri getUrl(HttpRequest request)
         {
             string[] url = request.Params.GetValues("url");
             if (url == null)
             {
                 return null;
             }
-            return new URI(url[0]);
+            return new Uri(url[0]);
         }
 
         /// <param name="req">
@@ -287,7 +286,7 @@ namespace Pesta
         /// </returns>
         private static UserPrefs getUserPrefs(HttpRequest req)
         {
-            java.util.Map prefs = new java.util.HashMap();
+            Dictionary<string,string> prefs = new Dictionary<string,string>();
             NameValueCollection paramNames = req.Params;
             if (paramNames == null)
             {
@@ -298,7 +297,7 @@ namespace Pesta
                 if (paramName.StartsWith(USERPREF_PARAM_PREFIX))
                 {
                     string prefName = paramName.Substring(USERPREF_PARAM_PREFIX.Length);
-                    prefs.put(prefName, req.Params[paramName]);
+                    prefs.Add(prefName, req.Params[paramName]);
                 }
             }
             return new UserPrefs(prefs);

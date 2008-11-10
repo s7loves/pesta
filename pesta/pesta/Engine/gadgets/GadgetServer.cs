@@ -26,7 +26,6 @@ using System.Collections.ObjectModel;
 using System.Web;
 using org.apache.shindig.gadgets.parse;
 using org.apache.shindig.gadgets.parse.caja;
-using org.apache.shindig.gadgets;
 using System.Runtime.Remoting.Messaging;
 
 namespace Pesta
@@ -169,12 +168,12 @@ namespace Pesta
             public sResponse response;
             public void Execute()
             {
-                sRequest request = new sRequest(org.apache.shindig.common.uri.Uri.fromJavaUri(preload.getHref()))
+                sRequest request = new sRequest(preload.getHref())
                     .SetSecurityToken(context.getToken())
                     .SetOAuthArguments(new OAuthArguments(preload))
                     .SetAuthType(preload.getAuthType())
                     .SetContainer(context.getContainer())
-                    .SetGadget(org.apache.shindig.common.uri.Uri.fromJavaUri(context.getUrl()));
+                    .SetGadget(context.getUrl());
 
                 this.response = preloadFetcherFactory.fetch(request);
             }

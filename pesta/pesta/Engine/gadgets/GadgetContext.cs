@@ -18,9 +18,7 @@
  */
 #endregion
 using System;
-using org.apache.shindig.gadgets;
 using Locale = java.util.Locale;
-using URI = java.net.URI;
 
 namespace Pesta
 {
@@ -46,7 +44,7 @@ namespace Pesta
         /**
          * @return The url for this gadget.
          */
-        public virtual URI getUrl()
+        public virtual Uri getUrl()
         {
             return null;
         }
@@ -96,7 +94,7 @@ namespace Pesta
          */
         public virtual bool getDebug()
         {
-            return false;
+            return System.Configuration.ConfigurationManager.AppSettings["gadget.debug"].ToLower().Equals("true");
         }
 
         /**

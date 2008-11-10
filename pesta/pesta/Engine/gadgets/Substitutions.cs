@@ -19,7 +19,6 @@
 #endregion
 using System.Collections.Generic;
 using System.Collections;
-using URI = java.net.URI;
 using System.IO;
 using System.Text;
 using System;
@@ -64,7 +63,7 @@ public class Substitutions
         }
     }
 
-	private Dictionary<Substitutions.Type, java.util.Map> substitutions;
+	private Dictionary<Substitutions.Type, Dictionary<String,String>> substitutions;
 
 	/// <summary>
 	/// Create a basic substitution coordinator.
@@ -72,11 +71,11 @@ public class Substitutions
 	///
 	public Substitutions() 
     {
-        this.substitutions = new Dictionary<Substitutions.Type, java.util.Map>();
+        this.substitutions = new Dictionary<Type,Dictionary<string,string>>();
 		/* foreach */
 		foreach (Substitutions.Type type in Substitutions.Type.GetValues()) 
         {
-			substitutions.Add(type, new java.util.HashMap());
+			substitutions.Add(type, new Dictionary<String,String>());
 		}
 	}
 	/// <summary>
@@ -88,7 +87,7 @@ public class Substitutions
 	/// <param name="value"></param>
 	public void addSubstitution(Substitutions.Type type, String key, String value_ren) 
     {
-        substitutions[type].put(key, value_ren);
+        substitutions[type].Add(key, value_ren);
 	}
 
 	/// <summary>
@@ -101,7 +100,7 @@ public class Substitutions
     {
         foreach (var entry in entries)
         {
-            substitutions[type].put(entry.Key, entry.Value);
+            substitutions[type].Add(entry.Key, entry.Value);
         }
 	}
 
@@ -111,7 +110,7 @@ public class Substitutions
 	/// <returns>The substitution set under the given type / name, or null.</returns>
 	public String getSubstitution(Substitutions.Type type, String name) 
     {
-        return substitutions[type].get(name) as String;
+        return substitutions[type][name];
 	}
 
 	/// <summary>
@@ -140,16 +139,24 @@ public class Substitutions
 			return input;
 		}
 
-        if (substitutions[type].isEmpty() || !input.Contains(type.getPrefix()))
+        if (substitutions[type].Count == 0 || !input.Contains(type.getPrefix()))
         {
             return input;
         }
 
 		StringBuilder output = new StringBuilder();
-        int tlen = input.Length - type.getPrefix().Length - 1;
-        for (int i = 0, j = tlen; i < j; ++i)
+        string compareString;
+        for (int i = 0, j = input.Length - 1; i < j; ++i)
         {
-            if (input.Substring(i,type.getPrefix().Length).CompareTo(type.getPrefix()) == 0)
+            if (i + type.getPrefix().Length > input.Length)
+            {
+                compareString = input.Substring(i);
+            }
+            else
+            {
+                compareString = input.Substring(i, type.getPrefix().Length);
+            }
+            if (compareString.CompareTo(type.getPrefix()) == 0)
             {
                 // Look for a trailing "__". If we don't find it, then this isn't a
                 // properly formed substitution.
@@ -159,7 +166,7 @@ public class Substitutions
                 if (end != -1)
                 {
                     String name = input.Substring(start, length);
-                    String replacement = (string)(substitutions[type].get(name));
+                    String replacement = (string)(substitutions[type][name]);
                     if (replacement != null)
                     {
                         output.Append(replacement);
@@ -194,7 +201,7 @@ public class Substitutions
 	/// <param name="type">The type to substitute, or null for all types.</param>
 	/// <param name="uri"></param>
 	/// <returns>The substituted uri, or a dummy value if the result is invalid.</returns>
-	public URI substituteUri(Substitutions.Type type, URI uri) 
+    public Uri substituteUri(Substitutions.Type type, Uri uri) 
     {
 		if (uri == null) 
         {
@@ -202,11 +209,11 @@ public class Substitutions
 		}
         try 
         {
-			return new URI(substituteString(type, uri.ToString()));
+            return new Uri(substituteString(type, uri.ToString()));
 		} 
         catch
         {
-			return URI.create("");
+            return new Uri("");
 		}
 	}
 }

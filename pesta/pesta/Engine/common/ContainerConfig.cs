@@ -25,6 +25,7 @@ using System.Web;
 using System.Web.Security;
 using Jayrock.Json;
 using Jayrock.Json.Conversion;
+using System.Collections.Generic;
 
 namespace Pesta
 {
@@ -40,19 +41,19 @@ namespace Pesta
     {
         public static string DEFAULT_CONTAINER = "default";
         private static string CONTAINER_KEY = "gadgets.container";
-        private java.util.Map config;
+        private Dictionary<String,JsonObject> config;
 
         public static readonly ContainerConfig Instance =
                 new ContainerConfig(AppDomain.CurrentDomain.BaseDirectory + @"config\container.js");
 
         protected ContainerConfig(string path)
         {
-            config = new java.util.HashMap();
+            config = new Dictionary<string,JsonObject>();
             loadContainers(path);
         }
-        public java.util.Collection getContainers()
+        public ICollection<String> getContainers()
         {
-            return config.keySet();
+            return config.Keys;
         }
         public String get(String container, String parameter)
         {
@@ -61,7 +62,7 @@ namespace Pesta
         }
         public Object getJson(String container, String parameter)
         {
-            JsonObject data = config.get(container) as JsonObject;
+            JsonObject data = config[container];
             if (data == null)
             {
                 return null;
@@ -126,7 +127,7 @@ namespace Pesta
             {
                 // Copy the default object and produce a new one.
                 String container = containers.GetString(i);
-                config.put(container, contents);
+                config.Add(container, contents);
             }
         }
     } 

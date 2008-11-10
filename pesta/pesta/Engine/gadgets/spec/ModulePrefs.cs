@@ -19,7 +19,6 @@
 #endregion
 using System;
 using System.Xml;
-using URI = java.net.URI;
 using System.Collections.Generic;
 using Locale = java.util.Locale;
 
@@ -61,7 +60,7 @@ namespace Pesta
         private static readonly String ATTR_CATEGORY = "category";
         private static readonly String ATTR_CATEGORY2 = "category2";
 
-        private static readonly URI EMPTY_URI = URI.create("");
+        private static readonly Uri EMPTY_URI = null;
 
         private readonly Dictionary<String, String> attributes;
 
@@ -82,7 +81,7 @@ namespace Pesta
          *
          * User Pref + Message Bundle + Bidi
          */
-        public URI getTitleUrl()
+        public Uri getTitleUrl()
         {
             return getUriAttribute(ATTR_TITLE_URL);
         }
@@ -122,7 +121,7 @@ namespace Pesta
          *
          * Message Bundles
          */
-        public URI getScreenshot()
+        public Uri getScreenshot()
         {
             return getUriAttribute(ATTR_SCREENSHOT);
         }
@@ -132,7 +131,7 @@ namespace Pesta
          *
          * Message Bundles
          */
-        public URI getThumbnail()
+        public Uri getThumbnail()
         {
             return getUriAttribute(ATTR_THUMBNAIL);
         }
@@ -297,14 +296,14 @@ namespace Pesta
          * @return the attribute by name converted to an URI, or the empty URI if the
          *    attribute couldn't be converted
          */
-        public URI getUriAttribute(String name)
+        public Uri getUriAttribute(String name)
         {
             String uri = getAttribute(name);
             if (uri != null)
             {
                 try
                 {
-                    return new URI(uri);
+                    return new Uri(uri);
                 }
                 catch (UriFormatException e)
                 {
@@ -512,7 +511,7 @@ namespace Pesta
          * @param element
          * @param specUrl
          */
-        public ModulePrefs(XmlElement element, URI specUrl)
+        public ModulePrefs(XmlElement element, Uri specUrl)
         {
             attributes = new Dictionary<String, String>();
             XmlNamedNodeMap attributeNodes = element.Attributes;
@@ -666,14 +665,14 @@ namespace Pesta
      */
     class LocaleVisitor : ElementVisitor
     {
-        readonly URI bas;
+        readonly Uri bas;
         public readonly Dictionary<Locale, LocaleSpec> locales = new Dictionary<Locale, LocaleSpec>();
         public void visit(XmlElement element)
         {
             LocaleSpec locale = new LocaleSpec(element, bas);
             locales[new Locale(locale.getLanguage(), locale.getCountry())] = locale;
         }
-        public LocaleVisitor(URI bas)
+        public LocaleVisitor(Uri bas)
         {
             this.bas = bas;
         }

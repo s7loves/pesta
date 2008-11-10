@@ -18,7 +18,6 @@
  */
 #endregion
 using System;
-using URI = java.net.URI;
 using System.Collections.Generic;
 using System.Text;
 using org.apache.shindig.gadgets.rewrite;
@@ -34,7 +33,7 @@ using com.google.caja.lexer;
 /// </remarks>
 public class LinkingTagRewriter : HtmlTagTransformer
 {
-    private readonly URI relativeBase;
+    private readonly Uri relativeBase;
     private readonly LinkRewriter linkRewriter;
     private readonly Dictionary<String, HashSet<String>> tagAttributeTargets;
     private readonly StringBuilder builder;
@@ -49,7 +48,7 @@ public class LinkingTagRewriter : HtmlTagTransformer
         return targets;
     }
 
-    public LinkingTagRewriter(LinkRewriter linkRewriter, URI relativeBase) 
+    public LinkingTagRewriter(LinkRewriter linkRewriter, Uri relativeBase) 
     {
         this.linkRewriter = linkRewriter;
         this.relativeBase = relativeBase;
@@ -58,7 +57,7 @@ public class LinkingTagRewriter : HtmlTagTransformer
     }
 
     public LinkingTagRewriter(Dictionary<String, HashSet<String>> tagAttributeTargets,
-                                    LinkRewriter linkRewriter, URI relativeBase) 
+                                    LinkRewriter linkRewriter, Uri relativeBase) 
     {
         this.tagAttributeTargets = tagAttributeTargets;
         this.linkRewriter = linkRewriter;

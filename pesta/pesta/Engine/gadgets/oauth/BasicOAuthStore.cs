@@ -23,8 +23,6 @@ using System.Configuration;
 using System.Web;
 using Jayrock.Json;
 using Jayrock.Json.Conversion;
-using URI = java.net.URI;
-
 
 
 namespace Pesta
@@ -87,7 +85,7 @@ namespace Pesta
                 JsonObject oauthConfigs = JsonConvert.Import(oauthConfigStr) as JsonObject;
                 foreach (String url in oauthConfigs)
                 {
-                    URI gadgetUri = new URI(url);
+                    Uri gadgetUri = new Uri(url);
                     JsonObject oauthConfig = oauthConfigs[url] as JsonObject;
                     storeConsumerInfos(gadgetUri, oauthConfig);
                 }
@@ -102,7 +100,7 @@ namespace Pesta
             }
         }
 
-        private void storeConsumerInfos(java.net.URI gadgetUri, JsonObject oauthConfig)
+        private void storeConsumerInfos(Uri gadgetUri, JsonObject oauthConfig)
         {
             foreach (String serviceName in oauthConfig.Names)
             {
@@ -111,12 +109,12 @@ namespace Pesta
             }
         }
 
-        private void storeConsumerInfo(URI gadgetUri, String serviceName, JsonObject consumerInfo)
+        private void storeConsumerInfo(Uri gadgetUri, String serviceName, JsonObject consumerInfo)
         {
             realStoreConsumerInfo(gadgetUri, serviceName, consumerInfo);
         }
 
-        private void realStoreConsumerInfo(URI gadgetUri, String serviceName, JsonObject consumerInfo)
+        private void realStoreConsumerInfo(Uri gadgetUri, String serviceName, JsonObject consumerInfo)
         {
             String consumerSecret = consumerInfo[CONSUMER_SECRET_KEY] as String;
             String consumerKey = consumerInfo[CONSUMER_KEY_KEY] as String;
@@ -132,7 +130,7 @@ namespace Pesta
             BasicOAuthStoreConsumerKeyAndSecret kas = new BasicOAuthStoreConsumerKeyAndSecret(consumerKey, consumerSecret, keyType, null);
 
             BasicOAuthStoreConsumerIndex index = new BasicOAuthStoreConsumerIndex();
-            index.setGadgetUri(gadgetUri.toASCIIString());
+            index.setGadgetUri(gadgetUri.ToString());
             index.setServiceName(serviceName);
             setConsumerKeyAndSecret(index, kas);
         }

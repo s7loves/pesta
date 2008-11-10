@@ -99,7 +99,7 @@ namespace Pesta
             StringBuilder buf = new StringBuilder();
             GadgetContext context = gadget.Context;
             GadgetSpec spec = gadget.Spec;
-            String url = context.getUrl().toString();
+            String url = context.getUrl().ToString();
             View view = gadget.CurrentView;
             View.ContentType type;
             if (view == null)

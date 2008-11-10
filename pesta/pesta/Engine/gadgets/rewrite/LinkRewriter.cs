@@ -18,7 +18,6 @@
  */
 #endregion
 using System;
-using URI = java.net.URI;
 
 /// <summary>
 /// Summary description for LinkRewriter
@@ -30,5 +29,5 @@ using URI = java.net.URI;
 /// </remarks>
 public interface LinkRewriter
 {
-    String rewrite(String link, URI context);
+    String rewrite(String link, Uri context);
 }

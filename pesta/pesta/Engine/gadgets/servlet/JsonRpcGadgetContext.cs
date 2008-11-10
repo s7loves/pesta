@@ -18,8 +18,7 @@
  */
 #endregion
 using System;
-using org.apache.shindig.gadgets;
-using URI = java.net.URI;
+using System.Collections.Generic;
 using Jayrock.Json;
 using Locale=java.util.Locale;
 
@@ -39,12 +38,12 @@ namespace Pesta
         private JsonObject gadget;
 
         private String container;
-        private bool debug;
-        private bool ignoreCache;
+        private bool? debug;
+        private bool? ignoreCache;
         private Locale locale;
         private int moduleId;
         private RenderingContext renderingContext;
-        private URI url;
+        private Uri url;
         private UserPrefs userPrefs;
         private String view;
 
@@ -63,9 +62,13 @@ namespace Pesta
             userPrefs = getUserPrefs(gadget);
             locale = getLocale(context);
             view = context["view"] as string;
-            bool.TryParse(context["ignoreCache"] as string, out ignoreCache);
+            bool ic;
+            bool.TryParse(context["ignoreCache"] as string, out ic);
+            ignoreCache = ic;
             container = context["container"] as string;
-            bool.TryParse(context["debug"] as string, out debug);
+            bool d;
+            bool.TryParse(context["debug"] as string, out d);
+            debug = d;
             renderingContext = RenderingContext.METADATA;
         }
 
@@ -89,20 +92,20 @@ namespace Pesta
 
         public override bool getDebug()
         {
-            if (debug == false)
+            if (debug == null)
             {
                 return base.getDebug();
             }
-            return debug;
+            return debug.Value;
         }
 
         public override bool getIgnoreCache()
         {
-            if (ignoreCache == false)
+            if (ignoreCache == null)
             {
                 return base.getIgnoreCache();
             }
-            return ignoreCache;
+            return ignoreCache.Value;
         }
 
         public override Locale getLocale()
@@ -132,7 +135,7 @@ namespace Pesta
             return renderingContext;
         }
 
-        public override URI getUrl()
+        public override Uri getUrl()
         {
             if (url == null)
             {
@@ -196,12 +199,12 @@ namespace Pesta
         * @return URL from the request, or null if not present
         * @throws JSONException
         */
-        private static URI getUrl(JsonObject json)
+        private static Uri getUrl(JsonObject json)
         {
             try
             {
                 String url = json["url"] as string;
-                return new URI(url);
+                return new Uri(url);
             }
             catch (UriFormatException e)
             {
@@ -221,10 +224,10 @@ namespace Pesta
             {
                 return null;
             }
-            java.util.Map p = new java.util.HashMap();
+            Dictionary<string,string> p = new Dictionary<string,string>();
             foreach (string key in prefs.Names)
             {
-                p.put(key, prefs[key]);
+                p.Add(key, (String)prefs[key]);
             }
             return new UserPrefs(p);
         }

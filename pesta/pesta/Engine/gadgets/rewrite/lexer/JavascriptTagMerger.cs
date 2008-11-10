@@ -19,7 +19,6 @@
 #endregion
 using System;
 using System.Collections.Generic;
-using URI = java.net.URI;
 using System.Web;
 using System.Net;
 using System.Text;
@@ -40,7 +39,7 @@ namespace Pesta
         private readonly static int MAX_URL_LENGTH = 1500;
         private readonly List<Object> scripts = new List<Object>();
         private readonly String concatBase;
-        private readonly URI relativeUrlBase;
+        private readonly Uri relativeUrlBase;
         private bool isTagOpen = true;
 
         /**
@@ -49,7 +48,7 @@ namespace Pesta
          * @param relativeUrlBase to resolve relative urls
          */
         public JavascriptTagMerger(GadgetSpec spec, ContentRewriterFeature rewriterFeature,
-                                 String concatBase, URI relativeUrlBase)
+                                 String concatBase, Uri relativeUrlBase)
         {
             // Force the mime-type to mimic browser expectation so rewriters
             // can function properly
@@ -57,7 +56,7 @@ namespace Pesta
                 + ProxyBase.REWRITE_MIME_TYPE_PARAM
                 + "=text/javascript&"
                 + "gadget="
-                + HttpUtility.UrlEncode(spec.getUrl().toString())
+                + HttpUtility.UrlEncode(spec.getUrl().ToString())
                 + "&fp="
                 + rewriterFeature.getFingerprint()
                 + '&';
@@ -75,7 +74,7 @@ namespace Pesta
                     lastToken.type == HtmlTokenType.ATTRNAME &&
                     lastToken.toString().ToLower().Equals("src"))
                     {
-                        scripts.Add(new URI(stripQuotes(token.toString())));
+                        scripts.Add(new Uri(stripQuotes(token.toString())));
                     }
                     else if (token.type == HtmlTokenType.UNESCAPED)
                     {
@@ -106,13 +105,13 @@ namespace Pesta
 
         public String close()
         {
-            List<URI> concat = new List<URI>();
+            List<Uri> concat = new List<Uri>();
             StringBuilder builder = new StringBuilder(100);
             foreach (Object o in scripts)
             {
-                if (o is URI)
+                if (o is Uri)
                 {
-                    concat.Add((URI)o);
+                    concat.Add((Uri)o);
                 }
                 else
                 {
@@ -127,7 +126,7 @@ namespace Pesta
             return builder.ToString();
         }
 
-        private void flushConcat(List<URI> concat, StringBuilder builder)
+        private void flushConcat(List<Uri> concat, StringBuilder builder)
         {
             if (concat.Count == 0)
             {
@@ -140,13 +139,13 @@ namespace Pesta
             {
                 for (int i = 0; i < concat.Count; i++)
                 {
-                    URI srcUrl = concat[i];
-                    if (!srcUrl.isAbsolute())
+                    Uri srcUrl = concat[i];
+                    if (!srcUrl.IsAbsoluteUri)
                     {
-                        srcUrl = relativeUrlBase.resolve(srcUrl);
+                        srcUrl = relativeUrlBase.MakeRelativeUri(srcUrl);
                     }
                     builder.Append(paramIndex).Append('=')
-                    .Append(HttpUtility.UrlEncode(srcUrl.toString()));
+                    .Append(HttpUtility.UrlEncode(srcUrl.ToString()));
                     if (i < concat.Count - 1)
                     {
                         if (builder.Length - urlStart > MAX_URL_LENGTH)

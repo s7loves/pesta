@@ -23,7 +23,6 @@ using System.Configuration;
 using System.Net;
 using System.Web;
 using System.IO;
-using Uri = org.apache.shindig.common.uri.Uri;
 
 namespace Pesta
 {
@@ -55,7 +54,7 @@ namespace Pesta
             MessageBundle cached = null;
             lock (sync)
             {
-                cached = HttpRuntime.Cache[locale.getMessages().toString()] as MessageBundle;
+                cached = HttpRuntime.Cache[locale.getMessages().ToString()] as MessageBundle;
             }
 
             if (cached == null)
@@ -75,8 +74,8 @@ namespace Pesta
 
         private MessageBundle fetchAndCacheBundle(LocaleSpec locale, bool ignoreCache)
         {
-            java.net.URI url = locale.getMessages();
-            sRequest request = new sRequest(Uri.fromJavaUri(url)).SetIgnoreCache(ignoreCache);
+            Uri url = locale.getMessages();
+            sRequest request = new sRequest(url).SetIgnoreCache(ignoreCache);
             sResponse response = fetcher.fetch(request);
             if (response == null || response.getHttpStatusCode() != HttpStatusCode.OK)
             {
@@ -86,7 +85,7 @@ namespace Pesta
             }
 
             MessageBundle bundle = new MessageBundle(locale, response.responseString);
-            HttpRuntime.Cache.Insert(url.toString(), bundle, null,
+            HttpRuntime.Cache.Insert(url.ToString(), bundle, null,
                 response.getCacheExpiration() ?? DateTime.Now.AddMinutes(5),
                 System.Web.Caching.Cache.NoSlidingExpiration);
 

@@ -46,8 +46,8 @@ namespace Pesta
             {
                 return parent == null ? MessageBundle.EMPTY : parent;
             }
-            java.net.URI messages = localeSpec.getMessages();
-            if (messages == null || messages.toString().Length == 0)
+            Uri messages = localeSpec.getMessages();
+            if (messages == null || messages.ToString().Length == 0)
             {
                 child = localeSpec.getMessageBundle();
             }

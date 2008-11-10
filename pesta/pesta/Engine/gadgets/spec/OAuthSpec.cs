@@ -76,7 +76,7 @@ namespace Pesta
                 sb.Append(service.getRequestUrl().ToString("Request"));
                 sb.Append(service.getAccessUrl().ToString("Access"));
                 sb.Append("<Authorization url='" +
-                service.getAuthorizationUrl().toString() + "'/>");
+                service.getAuthorizationUrl().ToString() + "'/>");
                 sb.Append("</Service>");
             }
             sb.Append("</OAuth>");

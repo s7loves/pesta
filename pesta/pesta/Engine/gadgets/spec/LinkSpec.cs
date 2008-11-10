@@ -18,7 +18,6 @@
  */
 #endregion
 using System;
-using URI = java.net.URI;
 using System.Xml;
 
 namespace Pesta
@@ -45,8 +44,8 @@ namespace Pesta
         /**
         * Link/@href
         */
-        private readonly URI href;
-        public URI getHref()
+        private readonly Uri href;
+        public Uri getHref()
         {
             return href;
         }
@@ -61,7 +60,7 @@ namespace Pesta
 
         public override String ToString()
         {
-            return "<Link rel='" + rel + "' href='" + href.toString() + "'/>";
+            return "<Link rel='" + rel + "' href='" + href.ToString() + "'/>";
         }
 
         public LinkSpec(XmlElement element)
