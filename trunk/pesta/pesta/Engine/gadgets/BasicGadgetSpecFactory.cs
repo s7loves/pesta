@@ -24,7 +24,7 @@ using System.Web;
 using System.Net;
 using System.IO;
 using System.Collections.Generic;
-using Uri = org.apache.shindig.common.uri.Uri;
+
 
 namespace Pesta
 {
@@ -52,7 +52,7 @@ namespace Pesta
         {
             return getGadgetSpec(context.getUrl(), context.getIgnoreCache());
         }
-        public GadgetSpec getGadgetSpec(java.net.URI gadgetUri, bool ignoreCache)
+        public GadgetSpec getGadgetSpec(Uri gadgetUri, bool ignoreCache)
         {
             if (ignoreCache)
             {
@@ -60,7 +60,7 @@ namespace Pesta
             }
 
             // add item to cache
-            GadgetSpec cached = HttpRuntime.Cache[gadgetUri.toString()] as GadgetSpec;
+            GadgetSpec cached = HttpRuntime.Cache[gadgetUri.ToString()] as GadgetSpec;
             if (cached == null)
             {
                 return fetchObjectAndCache(gadgetUri, ignoreCache);
@@ -69,9 +69,9 @@ namespace Pesta
             return cached;
         }
 
-        private GadgetSpec fetchObjectAndCache(java.net.URI url, bool ignoreCache)
+        private GadgetSpec fetchObjectAndCache(Uri url, bool ignoreCache)
         {
-            sRequest request = new sRequest(Uri.fromJavaUri(url)).SetIgnoreCache(false);
+            sRequest request = new sRequest(url).SetIgnoreCache(false);
             sResponse response = fetcher.fetch(request);
             if (response.getHttpStatusCode() != HttpStatusCode.OK)
             {
@@ -94,12 +94,12 @@ namespace Pesta
             // Retrieve all external view contents simultaneously.
             foreach (View v in hrefViewList)
             {
-                HttpWebRequest req = WebRequest.Create(v.getHref().toString()) as HttpWebRequest;
+                HttpWebRequest req = WebRequest.Create(v.getHref().ToString()) as HttpWebRequest;
                 using (HttpWebResponse response2 = req.GetResponse() as HttpWebResponse)
                 {
                     if (response2.StatusCode != HttpStatusCode.OK)
                     {
-                        throw new Exception("No response from: " + url.toString());
+                        throw new Exception("No response from: " + url.ToString());
                     }
                     using (StreamReader reader = new StreamReader(response2.GetResponseStream()))
                     {
@@ -119,7 +119,7 @@ namespace Pesta
                     }
                 }
             }
-            HttpRuntime.Cache.Insert(url.toString(), spec, null, System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromMinutes(5));
+            HttpRuntime.Cache.Insert(url.ToString(), spec, null, System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromMinutes(5));
             return spec;
         }
     } 

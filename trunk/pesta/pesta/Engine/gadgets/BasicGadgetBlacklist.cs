@@ -22,7 +22,6 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Text;
 using System.IO;
-using Uri = java.net.URI;
 
 namespace Pesta
 {

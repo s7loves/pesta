@@ -122,9 +122,9 @@ namespace Pesta
             accessorBuilder.setParameterLocation(getStoreLocation(service.getRequestUrl().location));
             accessorBuilder.setMethod(getStoreMethod(service.getRequestUrl().method));
             OAuthServiceProvider provider = new OAuthServiceProvider(
-                                                    service.getRequestUrl().url.toASCIIString(),
-                                                    service.getAuthorizationUrl().toASCIIString(),
-                                                    service.getAccessUrl().url.toASCIIString());
+                                                    service.getRequestUrl().url.ToString(),
+                                                    service.getAuthorizationUrl().ToString(),
+                                                    service.getAccessUrl().url.ToString());
             return provider;
         }
 
@@ -217,7 +217,7 @@ namespace Pesta
         {
             try
             {
-                return specFactory.getGadgetSpec(new java.net.URI(securityToken.getAppUrl()),
+                return specFactory.getGadgetSpec(new Uri(securityToken.getAppUrl()),
                                     arguments.BypassSpecCache);
             }
             catch (UriFormatException e)

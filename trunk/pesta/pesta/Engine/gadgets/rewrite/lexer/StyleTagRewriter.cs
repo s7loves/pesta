@@ -19,7 +19,6 @@
 #endregion
 using System;
 using org.apache.shindig.gadgets.rewrite;
-using URI = java.net.URI;
 using System.Text;
 using com.google.caja.lexer;
 
@@ -33,12 +32,12 @@ using com.google.caja.lexer;
 /// </remarks>
 public class StyleTagRewriter : HtmlTagTransformer
 {
-    private URI source;
+    private Uri source;
     private LinkRewriter linkRewriter;
 
     private StringBuilder sb;
 
-    public StyleTagRewriter(URI source, LinkRewriter linkRewriter)
+    public StyleTagRewriter(Uri source, LinkRewriter linkRewriter)
     {
         this.source = source;
         this.linkRewriter = linkRewriter;

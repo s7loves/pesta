@@ -19,7 +19,6 @@
 #endregion
 using System;
 using System.Xml;
-using Uri = java.net.URI;
 
 namespace Pesta
 {
@@ -127,7 +126,7 @@ namespace Pesta
             {
                 return def;
             }
-            if (!"http".Equals(uri.getScheme().ToLower()) && !"https".Equals(uri.getScheme().ToLower()))
+            if (!"http".Equals(uri.Scheme.ToLower()) && !"https".Equals(uri.Scheme.ToLower()))
             {
                 return def;
             }

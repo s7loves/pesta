@@ -18,7 +18,6 @@
  */
 #endregion
 using System;
-using URI = java.net.URI;
 using System.Collections.Generic;
 using System.Xml;
 
@@ -36,7 +35,7 @@ namespace Pesta
     {
         private EndPoint requestUrl;
         private EndPoint accessUrl;
-        private URI authorizationUrl;
+        private Uri authorizationUrl;
         private String name;
 
         /**
@@ -57,7 +56,7 @@ namespace Pesta
         /**
         * Represents /OAuth/Service/Authorization elements.
         */
-        public URI getAuthorizationUrl()
+        public Uri getAuthorizationUrl()
         {
             return authorizationUrl;
         }
@@ -146,11 +145,11 @@ namespace Pesta
         */
         public class EndPoint
         {
-            public readonly URI url;
+            public readonly Uri url;
             public readonly Method method;
             public readonly Location location;
 
-            public EndPoint(URI url, Method method, Location location)
+            public EndPoint(Uri url, Method method, Location location)
             {
                 this.url = url;
                 this.method = method;
@@ -159,7 +158,7 @@ namespace Pesta
 
             public String ToString(String element)
             {
-                return '<' + element + " url='" + url.toString() + "' " +
+                return '<' + element + " url='" + url.ToString() + "' " +
                         "method='" + method + "' param_location='" + location + "'/>";
             }
         }
@@ -238,9 +237,9 @@ namespace Pesta
         {
         }
 
-        URI parseAuthorizationUrl(XmlElement child)
+        Uri parseAuthorizationUrl(XmlElement child)
         {
-            URI url = XmlUtil.getHttpUriAttribute(child, URL_ATTR);
+            Uri url = XmlUtil.getHttpUriAttribute(child, URL_ATTR);
             if (url == null)
             {
                 throw new SpecParserException("OAuth/Service/Authorization @url is not valid: " +
@@ -252,7 +251,7 @@ namespace Pesta
 
         EndPoint parseEndPoint(String where, XmlElement child)
         {
-            URI url = XmlUtil.getHttpUriAttribute(child, URL_ATTR);
+            Uri url = XmlUtil.getHttpUriAttribute(child, URL_ATTR);
             if (url == null)
             {
                 throw new SpecParserException("Not an HTTP url: " + child.Attributes[URL_ATTR]);

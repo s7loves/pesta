@@ -18,7 +18,6 @@
  */
 #endregion
 using System;
-using URI = java.net.URI;
 using System.Web;
 
 namespace Pesta
@@ -37,16 +36,16 @@ namespace Pesta
 
         private readonly ContentRewriterFeature rewriterFeature;
 
-        private readonly URI gadgetUri;
+        private readonly Uri gadgetUri;
 
-        public ProxyingLinkRewriter(URI gadgetUri, ContentRewriterFeature rewriterFeature, String prefix)
+        public ProxyingLinkRewriter(Uri gadgetUri, ContentRewriterFeature rewriterFeature, String prefix)
         {
             this.prefix = prefix;
             this.rewriterFeature = rewriterFeature;
             this.gadgetUri = gadgetUri;
         }
 
-        public String rewrite(String link, URI context)
+        public String rewrite(String link, Uri context)
         {
             link = link.Trim();
             // We shouldnt bother proxying empty URLs
@@ -57,14 +56,14 @@ namespace Pesta
 
             try
             {
-                URI linkUri = new URI(link);
-                URI uri = context.resolve(linkUri);
-                if (rewriterFeature.shouldRewriteURL(uri.toString()))
+                Uri linkUri = new Uri(link);
+                Uri uri = context.MakeRelativeUri(linkUri);
+                if (rewriterFeature.shouldRewriteURL(uri.ToString()))
                 {
                     String result = prefix
-                    + HttpUtility.UrlEncode(uri.toString())
+                    + HttpUtility.UrlEncode(uri.ToString())
                     + "&gadget="
-                    + HttpUtility.UrlEncode(gadgetUri.toString())
+                    + HttpUtility.UrlEncode(gadgetUri.ToString())
                     + "&fp="
                     + rewriterFeature.getFingerprint();
                     if (rewriterFeature.getExpires() != null)
@@ -75,7 +74,7 @@ namespace Pesta
                 }
                 else
                 {
-                    return uri.toString();
+                    return uri.ToString();
                 }
             }
             catch

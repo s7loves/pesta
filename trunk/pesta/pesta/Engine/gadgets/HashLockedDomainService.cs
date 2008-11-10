@@ -62,12 +62,11 @@ namespace Pesta
             this.embedHost = embedHost;
             this.enabled = enabled;
             suffixes = new java.util.HashSet();
-            java.util.Collection containers = config.getContainers();
+            ICollection<String> containers = config.getContainers();
             if (enabled)
             {
-                for (java.util.Iterator iter = containers.iterator(); iter.hasNext(); )
+                foreach (String container in containers)
                 {
-                    String container = iter.next() as String;
                     String suffix = config.get(container, LOCKED_DOMAIN_SUFFIX_KEY);
                     suffixes.add(suffix);
                 }
@@ -150,7 +149,7 @@ namespace Pesta
 
             public String getGadgetUrl(Gadget gadget)
             {
-                return gadget.Context.getUrl().toString();
+                return gadget.Context.getUrl().ToString();
             }
         }
     } 

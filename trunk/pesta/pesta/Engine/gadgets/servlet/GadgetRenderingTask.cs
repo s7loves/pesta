@@ -28,6 +28,7 @@ using System.Text;
 using org.apache.shindig.gadgets;
 using org.apache.shindig.gadgets.servlet;
 using Jayrock.Json;
+using System.Text.RegularExpressions;
 
 namespace Pesta
 {
@@ -46,7 +47,7 @@ namespace Pesta
             = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">";
         protected static int DEFAULT_CACHE_TTL = 300; //secs
         protected static string LIBS_PARAM_NAME = "libs";
-        private java.util.List filters;
+        private List<GadgetContentFilter> filters;
         private GadgetContext _context;
         private GadgetServer _server;
         private HttpRequest request;
@@ -63,7 +64,7 @@ namespace Pesta
             domainLocker = HashLockedDomainService.Instance;
             containerConfig = ContainerConfig.Instance;
             messageBundleFactory = BasicMessageBundleFactory.Instance;
-            filters = new java.util.LinkedList();
+            filters = new List<GadgetContentFilter>();
             urlGenerator = DefaultUrlGenerator.Instance;
             registry = GadgetFeatureRegistry.Instance;
         }
@@ -73,7 +74,7 @@ namespace Pesta
             this.response = context.Response;
 
             _context = new HttpGadgetContext(context);
-            java.net.URI url = _context.getUrl();
+            Uri url = _context.getUrl();
             if (url == null)
             {
                 response.StatusCode = (int)System.Net.HttpStatusCode.BadRequest;
@@ -81,7 +82,7 @@ namespace Pesta
                 return;
             }
 
-            if (!"http".Equals(url.getScheme().ToLower()) && !"https".Equals(url.getScheme().ToLower()))
+            if (!"http".Equals(url.Scheme.ToLower()) && !"https".Equals(url.Scheme.ToLower()))
             {
                 response.StatusCode = (int)System.Net.HttpStatusCode.BadRequest;
                 response.StatusDescription = "Unsupported scheme (must be http or https).";
@@ -98,7 +99,7 @@ namespace Pesta
             bool addedCaja = false;
             if (getUseCaja())
             {
-                filters.add(new CajaContentFilter(url));
+                filters.Add(new CajaContentFilter(new java.net.URI(url.ToString())));
                 addedCaja = true;
             }
 
@@ -106,7 +107,7 @@ namespace Pesta
             if (!addedCaja &&
                 gadget.Spec.getModulePrefs().getFeatures().ContainsKey("caja"))
             {
-                filters.add(new CajaContentFilter(url));
+                filters.Add(new CajaContentFilter(new java.net.URI(url.ToString())));
             }
             outputGadget(gadget);
 
@@ -161,9 +162,7 @@ namespace Pesta
                 // We need to check each possible parent parameter against this regex.
                 for (int i = 0, j = parents.Length; i < j; ++i)
                 {
-                    // TODO: Should patterns be cached? Recompiling every request
-                    // seems wasteful.
-                    if (java.util.regex.Pattern.matches(parents[i].ToString(), parent))
+                    if (Regex.IsMatch(parent, parents[i].ToString()))
                     {
                         return true;
                     }
@@ -355,9 +354,8 @@ namespace Pesta
             // Content to output now comes from the Gadget, which is processed,
             // rather than the Gadget's View, a sub-component of immutable GadgetSpec
             String content = gadget.getContent();
-            for (java.util.Iterator iter = filters.iterator(); iter.hasNext(); )
+            foreach (GadgetContentFilter filter in filters)
             {
-                GadgetContentFilter filter = iter.next() as GadgetContentFilter;
                 content = filter.filter(content);
             }
 
@@ -406,7 +404,7 @@ namespace Pesta
                     {
                         jsonEntry.Put(metadata.Key, metadata.Value);
                     }
-                    resp.Put(preload.getHref().toString(), jsonEntry);
+                    resp.Put(preload.getHref().ToString(), jsonEntry);
                 }
             }
             inlineJs.Append("gadgets.io.preloaded_ = ").Append(resp.ToString()).Append(";\n");
@@ -450,10 +448,10 @@ namespace Pesta
             // TODO: generalize this as injectedArgs on Gadget object
 
             // Preserve existing query string parameters.
-            java.net.URI href = view.getHref();
-            String queryStr = href.getQuery();
+            Uri href = view.getHref();
+            String queryStr = href.Query;
             StringBuilder query = new StringBuilder(queryStr == null ? "" : queryStr);
-            String fragment = href.getFragment();
+            String fragment = href.Fragment;
 
             // TODO: figure out a way to make this work with forced libs.
             ICollection<string> libs
@@ -462,13 +460,9 @@ namespace Pesta
 
             try
             {
-                href = new java.net.URI(href.getScheme(),
-                href.getUserInfo(),
-                href.getHost(),
-                href.getPort(),
-                href.getPath(),
-                null,
-                null);
+                UriBuilder uribuild = new UriBuilder(href.Scheme,href.Host,href.Port,href.AbsolutePath);
+                uribuild.UserName = href.UserInfo;
+                href = uribuild.Uri;
             }
             catch (Exception e)
             {
@@ -477,7 +471,7 @@ namespace Pesta
                 throw e;
             }
             // Necessary to avoid double-URL-encoding of the JavaScript bundle portion of the query.
-            StringBuilder redirectHref = new StringBuilder(href.toString());
+            StringBuilder redirectHref = new StringBuilder(href.ToString());
             if (query.ToString() != null)
             {
                 redirectHref.Append('?');

@@ -26,8 +26,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System;
 
-using Uri = org.apache.shindig.common.uri.Uri;
-
 namespace Pesta
 {
 
@@ -298,8 +296,7 @@ namespace Pesta
             try
             {
                 OAuthAccessor accessor = accessorInfo.getAccessor();
-                sRequest request = new sRequest(
-                org.apache.shindig.common.uri.Uri.parse(accessor.consumer.serviceProvider.requestTokenURL));
+                sRequest request = new sRequest(new Uri(accessor.consumer.serviceProvider.requestTokenURL));
                 request.setMethod(accessorInfo.getHttpMethod().ToString());
                 if (accessorInfo.getHttpMethod().CompareTo(AccessorInfo.HttpMethod.POST) == 0)
                 {
@@ -440,9 +437,9 @@ namespace Pesta
             {
                 parameters = new List<OAuth.Parameter>();
             }
-            org.apache.shindig.common.uri.UriBuilder target = new org.apache.shindig.common.uri.UriBuilder(basereq.Uri);
-            String query = target.getQuery();
-            target.setQuery(null);
+            UriBuilder target = new UriBuilder(basereq.Uri);
+            String query = target.Query;
+            target.Query = null;
             parameters.AddRange(sanitize(OAuth.decodeForm(query)));
             if (OAuth.isFormEncoded(basereq.getHeader("Content-Type")))
             {
@@ -456,7 +453,7 @@ namespace Pesta
             try
             {
                 OAuthMessage signed = accessorInfo.getAccessor().newRequestMessage(
-                                                basereq.getMethod(), target.toString(), parameters);
+                                                basereq.getMethod(), target.ToString(), parameters);
                 sRequest oauthHttpRequest = createHttpRequest(basereq, selectOAuthParams(signed));
                 // Following 302s on OAuth responses is unlikely to be productive.
                 oauthHttpRequest.FollowRedirects = false;
@@ -513,7 +510,7 @@ namespace Pesta
                     break;
 
                 case AccessorInfo.OAuthParamLocation.URI_QUERY:
-                    result.Uri = Uri.parse(OAuth.addParameters(result.Uri.toString(), oauthParams));
+                    result.Uri = new Uri(OAuth.addParameters(result.Uri.ToString(), oauthParams));
                     break;
             }
             return result;
@@ -619,7 +616,7 @@ namespace Pesta
             try
             {
                 OAuthAccessor accessor = accessorInfo.getAccessor();
-                sRequest request = new sRequest(Uri.parse(accessor.consumer.serviceProvider.accessTokenURL));
+                sRequest request = new sRequest( new Uri(accessor.consumer.serviceProvider.accessTokenURL));
                 request.setMethod(accessorInfo.getHttpMethod().ToString());
                 if (accessorInfo.getHttpMethod() == AccessorInfo.HttpMethod.POST)
                 {

@@ -38,17 +38,17 @@ public class HtmlRewriter
     {
     }
 
-    public static String rewrite(String content, java.net.URI source, Dictionary<String, HtmlTagTransformer> transformers)
+    public static String rewrite(String content, Uri source, Dictionary<String, HtmlTagTransformer> transformers)
     {
         java.io.StringWriter sw = new java.io.StringWriter((content.Length * 110) / 100);
         rewrite(new java.io.StringReader(content), source, transformers, sw);
         return sw.toString();
     }
 
-    public static void rewrite(java.io.Reader content, java.net.URI source,
+    public static void rewrite(java.io.Reader content, Uri source,
         Dictionary<String, HtmlTagTransformer> transformers, java.io.Writer writer)
     {
-        CharProducer producer = CharProducer.Factory.create(content, new InputSource(source));
+        CharProducer producer = CharProducer.Factory.create(content, new InputSource(new java.net.URI(source.ToString())));
         HtmlLexer lexer = new HtmlLexer(producer);
         try
         {

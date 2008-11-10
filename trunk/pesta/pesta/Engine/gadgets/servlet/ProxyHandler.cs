@@ -113,14 +113,14 @@ namespace Pesta
 
         private sRequest buildHttpRequest(HttpRequestWrapper request)
         {
-            org.apache.shindig.common.uri.Uri url = validateUrl(request.getParameter(URL_PARAM));
+            Uri url = validateUrl(request.getParameter(URL_PARAM));
 
             sRequest req = new sRequest(url);
 
             req.Container = getContainer(request);
             if (request.getParameter(GADGET_PARAM) != null)
             {
-                req.Gadget = org.apache.shindig.common.uri.Uri.parse(request.getParameter(GADGET_PARAM));
+                req.Gadget = new Uri(request.getParameter(GADGET_PARAM));
             }
 
             // Allow the rewriter to use an externally forced mime type. This is needed

@@ -20,7 +20,6 @@
 using System;
 using System.Collections.Generic;
 using System.Xml;
-using URI = java.net.URI;
 using System.Text;
 
 namespace Pesta
@@ -99,8 +98,8 @@ namespace Pesta
         /**
         * Preload@href
         */
-        private readonly URI href;
-        public URI getHref()
+        private readonly Uri href;
+        public Uri getHref()
         {
             return href;
         }

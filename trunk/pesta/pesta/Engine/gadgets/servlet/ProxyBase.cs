@@ -81,7 +81,7 @@ namespace Pesta
             response.AddHeader("Content-Disposition", "attachment;filename=p.txt");
         }
 
-        protected org.apache.shindig.common.uri.Uri validateUrl(String urlToValidate)
+        protected Uri validateUrl(String urlToValidate)
         {
             if (urlToValidate == null)
             {
@@ -89,17 +89,17 @@ namespace Pesta
             }
             try
             {
-                org.apache.shindig.common.uri.UriBuilder url = org.apache.shindig.common.uri.UriBuilder.parse(urlToValidate);
-                if (!"http".Equals(url.getScheme()) && !"https".Equals(url.getScheme()))
+                UriBuilder url = new UriBuilder(urlToValidate);
+                if (!"http".Equals(url.Scheme) && !"https".Equals(url.Scheme))
                 {
                     throw new Exception("Invalid request url scheme; only " +
                         "\"http\" and \"https\" supported.");
                 }
-                if (url.getPath() == null || url.getPath().Length == 0)
+                if (url.Path == null || url.Path.Length == 0)
                 {
-                    url.setPath("/");
+                    url.Path = "/";
                 }
-                return url.toUri();
+                return url.Uri;
             }
             catch
             {

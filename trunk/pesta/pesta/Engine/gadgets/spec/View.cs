@@ -21,7 +21,6 @@ using System;
 using System.Text;
 using System.Xml;
 using System.Collections.Generic;
-using URI = java.net.URI;
 
 namespace Pesta
 {
@@ -51,7 +50,7 @@ namespace Pesta
             this.name = name;
 
             bool quirks = true;
-            URI href = null;
+            Uri href = null;
             String contentType = null;
             ContentType type = null;
             int preferredHeight = 0;
@@ -171,8 +170,8 @@ namespace Pesta
         *
         * All substitutions
         */
-        private URI href;
-        public URI getHref()
+        private Uri href;
+        public Uri getHref()
         {
             return href;
         }

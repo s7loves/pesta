@@ -18,9 +18,7 @@
  */
 #endregion
 using System;
-using URI = java.net.URI;
 using Locale = java.util.Locale;
-
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
@@ -43,8 +41,8 @@ namespace Pesta
         /**
         * The url for this gadget spec.
         */
-        private readonly URI url;
-        public URI getUrl()
+        private readonly Uri url;
+        public Uri getUrl()
         {
             return url;
         }
@@ -171,7 +169,7 @@ namespace Pesta
         * @param xml
         * @throws SpecParserException
         */
-        public GadgetSpec(URI url, String xml)
+        public GadgetSpec(Uri url, String xml)
         {
             XmlElement doc;
             try
@@ -180,7 +178,7 @@ namespace Pesta
             }
             catch (XmlException e)
             {
-                throw new SpecParserException("Malformed XML in file " + url.toString(), e);
+                throw new SpecParserException("Malformed XML in file " + url.ToString(), e);
             }
             this.url = url;
 

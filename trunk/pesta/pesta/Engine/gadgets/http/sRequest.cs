@@ -26,7 +26,6 @@ using System.Net;
 using System;
 using System.Web;
 using System.Net.Cache;
-using Uri = org.apache.shindig.common.uri.Uri;
 
 
 namespace Pesta
@@ -74,7 +73,7 @@ namespace Pesta
         ///
         public sRequest(Uri uri)
         {
-            this.req = (HttpWebRequest)WebRequest.Create(uri.toString());
+            this.req = (HttpWebRequest)WebRequest.Create(uri.ToString());
             //this.req.Headers.Add(HttpRequestHeader.AcceptEncoding, "gzip,deflate");
             //this.req.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
             this.req.KeepAlive = true;

@@ -50,7 +50,9 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -331,6 +333,7 @@
     <None Include="Resources\features\README" />
     <Compile Include="Engine\gadgets\BasicGadgetBlacklist.cs" />
     <Compile Include="Engine\gadgets\GadgetBlacklist.cs" />
+    <Compile Include="Engine\gadgets\UserPrefs.cs" />
     <Compile Include="Handlers\ConcatProxyServlet.cs" />
     <Compile Include="Handlers\DataServiceServlet.cs" />
     <Compile Include="Handlers\GadgetRenderingServlet.cs" />

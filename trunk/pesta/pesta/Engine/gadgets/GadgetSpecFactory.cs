@@ -38,6 +38,6 @@ namespace Pesta
         GadgetSpec getGadgetSpec(GadgetContext context);
 
         /** Return a gadget spec for a URI */
-        GadgetSpec getGadgetSpec(java.net.URI gadgetUri, bool ignoreCache);
+        GadgetSpec getGadgetSpec(Uri gadgetUri, bool ignoreCache);
     } 
 }

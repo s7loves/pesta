@@ -18,8 +18,6 @@
  */
 #endregion
 using System;
-
-using URI = java.net.URI;
 using System.Collections.Generic;
 
 /// <summary>
@@ -40,7 +38,7 @@ public interface RequestAuthenticationInfo
     /**
      * @return The destination URI for making authenticated requests to.
      */
-    URI getHref();
+    Uri getHref();
 
     /**
      * @return True if owner signing is needed.

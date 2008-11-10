@@ -78,9 +78,9 @@ namespace Pesta
                 GadgetSpec spec = null;
                 if (request.Gadget != null)
                 {
-                    spec = _specFactory.getGadgetSpec(request.Gadget.toJavaUri(), false);
+                    spec = _specFactory.getGadgetSpec(request.Gadget, false);
                 }
-                rewrite(spec, request.Uri.toJavaUri(), new java.io.StringReader(content.getContent()),
+                rewrite(spec, request.Uri, new java.io.StringReader(content.getContent()),
                     mimeType, output);
             }
             //catch {}
@@ -99,7 +99,7 @@ namespace Pesta
             return RewriterResults.cacheableIndefinitely();
         }
 
-        private bool rewrite(GadgetSpec spec, java.net.URI source, java.io.Reader reader, String mimeType, java.io.Writer writer)
+        private bool rewrite(GadgetSpec spec, Uri source, java.io.Reader reader, String mimeType, java.io.Writer writer)
         {
             // Dont rewrite content if the spec is unavailable
             if (spec == null)

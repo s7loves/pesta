@@ -177,10 +177,10 @@ namespace Pesta
                 // ModulePrefs.getAttributes(), but names have to be converted to
                 // camel case.
                 gadgetJson.Put("iframeUrl", JsonRpcHandler.urlGenerator.getIframeUrl(gadget))
-                        .Put("url", gadget.Context.getUrl().toString())
+                        .Put("url", gadget.Context.getUrl().ToString())
                         .Put("moduleId", gadget.Context.getModuleId())
                         .Put("title", prefs.getTitle())
-                        .Put("titleUrl", prefs.getTitleUrl().toString())
+                        .Put("titleUrl", prefs.getTitleUrl().ToString())
                         .Put("views", views)
                         .Put("features", features)
                         .Put("userPrefs", userPrefs)
@@ -188,8 +188,8 @@ namespace Pesta
 
                         // extended meta data
                         .Put("directoryTitle", prefs.getDirectoryTitle())
-                        .Put("thumbnail", prefs.getThumbnail().toString())
-                        .Put("screenshot", prefs.getScreenshot().toString())
+                        .Put("thumbnail", prefs.getThumbnail().ToString())
+                        .Put("screenshot", prefs.getScreenshot().ToString())
                         .Put("author", prefs.getAuthor())
                         .Put("authorEmail", prefs.getAuthorEmail())
                         .Put("authorAffiliation", prefs.getAuthorAffiliation())
@@ -199,7 +199,7 @@ namespace Pesta
                         .Put("authorQuote", prefs.getAuthorQuote())
                         .Put("authorLink", prefs.getAuthorLink())
                         .Put("categories", prefs.getCategories())
-                        .Put("screenshot", prefs.getScreenshot().toString())
+                        .Put("screenshot", prefs.getScreenshot().ToString())
                         .Put("height", prefs.getHeight())
                         .Put("width", prefs.getWidth())
                         .Put("showStats", prefs.getShowStats())

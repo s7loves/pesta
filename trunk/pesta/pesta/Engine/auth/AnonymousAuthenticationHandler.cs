@@ -34,13 +34,13 @@ namespace Pesta
     /// </remarks>
     public class AnonymousAuthenticationHandler : AuthenticationHandler
     {
-        public static readonly String ALLOW_UNAUTHENTICATED = "shindig.allowUnauthenticated";
+        public static readonly String ALLOW_UNAUTHENTICATED = "gadget.allowUnauthenticated";
         public static readonly String AUTH_UNAUTHENTICATED = "Unauthenticated";
         private readonly bool allowUnauthenticated;
 
         public AnonymousAuthenticationHandler()
         {
-            this.allowUnauthenticated = true; // bool.Parse(ConfigurationManager.AppSettings[ALLOW_UNAUTHENTICATED]);
+            this.allowUnauthenticated = ConfigurationManager.AppSettings[ALLOW_UNAUTHENTICATED].ToLower().Equals("true");
         }
 
         public String getName()
