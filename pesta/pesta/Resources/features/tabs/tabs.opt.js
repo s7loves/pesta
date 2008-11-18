@@ -155,9 +155,10 @@ N.href="javascript:void(0)";
 N.innerHTML="&raquo;";
 K.appendChild(N);
 F.appendChild(K);
-G.onclick=function(Q){this.smoothScroll_(B,-120)
+var H=this;
+G.onclick=function(Q){H.smoothScroll_(B,-120)
 };
-N.onclick=function(Q){this.smoothScroll_(B,120)
+N.onclick=function(Q){H.smoothScroll_(B,120)
 };
 if(this.rtl_){var M=G.onclick;
 G.onclick=N.onclick;

@@ -2,19 +2,17 @@ var gadgets=gadgets||{};
 gadgets.views=function(){var D=null;
 var A={};
 var C={};
-function B(I){var E=I.views;
-for(var N in E){if(E.hasOwnProperty(N)){var J=E[N];
-if(!J){continue
-}A[N]=new gadgets.views.View(N,J.isOnlyVisible);
-var H=J.aliases||[];
-for(var K=0,L;
-L=H[K];
-++K){A[L]=new gadgets.views.View(N,J.isOnlyVisible)
+function B(H){var E=H.views;
+for(var K in E){if(E.hasOwnProperty(K)){var L=E[K];
+if(!L){continue
+}A[K]=new gadgets.views.View(K,L.isOnlyVisible);
+var F=L.aliases||[];
+for(var J=0,I;
+I=F[J];
+++J){A[I]=new gadgets.views.View(K,L.isOnlyVisible)
 }}}var G=gadgets.util.getUrlParameters();
-if(G["view-params"]){var M=gadgets.json.parse(decodeURIComponent(G["view-params"]));
-if(M){C=M;
-for(var F in C){if(C.hasOwnProperty(F)){C[F]=gadgets.util.escapeString(C[F])
-}}}}D=A[G.view]||A["default"]
+if(G["view-params"]){C=gadgets.json.parse(G["view-params"])||C
+}D=A[G.view]||A["default"]
 }gadgets.config.register("views",null,B);
 return{bind:function(T,R){if(typeof T!="string"){throw new Error("Invalid urlTemplate")
 }if(typeof R!="object"){throw new Error("Invalid environment")

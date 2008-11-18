@@ -4,7 +4,7 @@ os.compileXMLNode=function(D,G){var A=[];
 for(var F=D.firstChild;
 F;
 F=F.nextSibling){if(F.nodeType==DOM_ELEMENT_NODE){A.push(os.compileNode_(F))
-}else{if(F.nodeType==DOM_TEXT_NODE){if(!F.nodeValue.match(os.regExps_.onlyWhitespace)){var E=os.breakTextNode_(F);
+}else{if(F.nodeType==DOM_TEXT_NODE){if(F!=D.firstChild||!F.nodeValue.match(os.regExps_.onlyWhitespace)){var E=os.breakTextNode_(F);
 for(var B=0;
 B<E.length;
 B++){A.push(E[B])
@@ -97,7 +97,7 @@ var I=(os.attributeMap_[B]||E&&os.globalDisallowedAttributes_[D])?null:os.parseA
 if(I){if(D=="class"){D=".className"
 }else{if(D=="style"){D=".style.cssText"
 }else{if(G.getAttribute(os.ATT_customtag)){D="."+D
-}else{if(os.isIe&&D.substring(0,2).toLowerCase()=="on"){D="."+D;
+}else{if(os.isIe&&!os.customAttributes_[D]&&D.substring(0,2).toLowerCase()=="on"){D="."+D;
 I="new Function("+I+")"
 }}}}if(!A){A=[]
 }A.push(D+":"+I)
@@ -105,7 +105,7 @@ I="new Function("+I+")"
 }H=os.transformExpression_(H,"null")
 }else{if(D=="class"){G.setAttribute("className",H)
 }else{if(D=="style"){G.style.cssText=H
-}}}if(os.isIe&&D.substring(0,2).toLowerCase()=="on"){G.attachEvent(D,new Function(H))
+}}}if(os.isIe&&!os.customAttributes_[D]&&D.substring(0,2).toLowerCase()=="on"){G.attachEvent(D,new Function(H))
 }else{G.setAttribute(D,H)
 }}}}}}}if(A){os.appendJSTAttribute_(G,ATT_values,A.join(";"))
 }};
@@ -114,17 +114,17 @@ return os.breakTextNode_(H)
 }else{if(G.nodeType==DOM_ELEMENT_NODE){var F;
 if(G.tagName.indexOf(":")>0){F=document.createElement("span");
 F.setAttribute(os.ATT_customtag,G.tagName);
-var A;
-if(A=os.checkCustom_(G.tagName)){os.appendJSTAttribute_(F,ATT_eval,'os.doTag(this, "'+A[0]+'", "'+A[1]+'", $this, $context)');
+var A=G.tagName.split(":");
+os.appendJSTAttribute_(F,ATT_eval,'os.doTag(this, "'+A[0]+'", "'+A[1]+'", $this, $context)');
 var C=G.getAttribute("context")||"$this||true";
 F.setAttribute(ATT_select,C);
 if(G.tagName=="os:render"||G.tagName=="os:Render"||G.tagName=="os:renderAll"||G.tagName=="os:RenderAll"){os.appendJSTAttribute_(F,ATT_values,os.VAR_parentnode+":"+os.VAR_node)
-}}os.copyAttributes_(G,F,G.tagName)
+}os.copyAttributes_(G,F,G.tagName)
 }else{F=os.xmlToHtml_(G)
 }if(F&&!os.processTextContent_(G,F)){for(var D=G.firstChild;
 D;
 D=D.nextSibling){var B=os.compileNode_(D);
-if(B){if(typeof (B.length)=="number"){for(var I=0;
+if(B){if(!B.tagName&&typeof (B.length)=="number"){for(var I=0;
 I<B.length;
 I++){F.appendChild(B[I])
 }}else{if(B.tagName=="TR"&&F.tagName=="TABLE"){var E=F.lastChild;
@@ -138,7 +138,7 @@ F.appendChild(E)
 };
 os.ENTITIES='<!ENTITY nbsp "&#160;">';
 os.prepareTemplateXML_=function(A){var B=os.getRequiredNamespaces(A);
-return"<!DOCTYPE root ["+os.ENTITIES+"]><root "+B+">"+A+"</root>"
+return"<!DOCTYPE root ["+os.ENTITIES+']><root xml:space="preserve"'+B+">"+A+"</root>"
 };
 os.xmlToHtml_=function(A){var B=document.createElement(A.tagName);
 os.copyAttributes_(A,B);
@@ -247,25 +247,28 @@ os.canBeInToken=function(A){return os.canBeInIdentifier(A)||A=="("||A==")"||A=="
 os.wrapSingleIdentifier=function(A,B,C){if(os.identifiersNotToWrap_[A]){return A
 }return os.VAR_identifierresolver+"("+(B||VAR_context)+", '"+A+"'"+(C?", "+C:"")+")"
 };
-os.wrapIdentifiersInToken=function(C,A){if(!os.canStartIdentifier(C.charAt(0))){return C
-}var I=os.tokenToIdentifiers(C);
-var E=false;
-var F=[];
-var B=null;
-for(var G=0;
-G<I.length;
-G++){var H=I[G];
-E=os.breakUpParens(H);
-if(!E){B=os.wrapSingleIdentifier(H,B,A)
-}else{F.length=0;
-F.push(os.wrapSingleIdentifier(E[0],B));
-for(var D=1;
-D<E.length;
-D+=3){F.push(E[D]);
-if(E[D+1]){F.push(os.wrapIdentifiersInExpression(E[D+1]))
-}F.push(E[D+2])
-}B=F.join("")
-}}return B
+os.wrapIdentifiersInToken=function(D,A){if(!os.canStartIdentifier(D.charAt(0))){return D
+}if(D.substring(0,os.VAR_msg.length+1)==(os.VAR_msg+".")&&os.gadgetPrefs_){var K=D.split(".")[1];
+var B=os.getPrefMessage(K)||"";
+return os.parseAttribute_(B)||os.transformLiteral_(B)
+}var J=os.tokenToIdentifiers(D);
+var F=false;
+var G=[];
+var C=null;
+for(var I=0;
+I<J.length;
+I++){var H=J[I];
+F=os.breakUpParens(H);
+if(!F){C=os.wrapSingleIdentifier(H,C,A)
+}else{G.length=0;
+G.push(os.wrapSingleIdentifier(F[0],C));
+for(var E=1;
+E<F.length;
+E+=3){G.push(F[E]);
+if(F[E+1]){G.push(os.wrapIdentifiersInExpression(F[E+1]))
+}G.push(F[E+2])
+}C=G.join("")
+}}return C
 };
 os.wrapIdentifiersInExpression=function(D,E){var A=[];
 var C=os.expressionToTokens(D);

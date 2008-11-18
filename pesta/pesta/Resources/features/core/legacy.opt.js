@@ -17,12 +17,27 @@ gadgets.io.makeRequest(B,A,D)
 E.CONTENT_TYPE="FEED";
 E.NUM_ENTRIES=C;
 E.GET_SUMMARIES=A;
-gadgets.io.makeRequest(B,function(G){if(G.errors){G.data=G.data||{};
-if(G.errors&&G.errors.length>0){G.data.ErrorMsg=G.errors[0]
-}}F(G.data)
+gadgets.io.makeRequest(B,function(I){I.data=I.data||{};
+if(I.errors&&I.errors.length>0){I.data.ErrorMsg=I.errors[0]
+}if(I.data.link){I.data.URL=B
+}if(I.data.title){I.data.Title=I.data.title
+}if(I.data.description){I.data.Description=I.data.description
+}if(I.data.link){I.data.Link=I.data.link
+}if(I.data.items&&I.data.items.length>0){I.data.Entry=I.data.items;
+for(var G=0;
+G<I.data.Entry.length;
+++G){var H=I.data.Entry[G];
+H.Title=H.title;
+H.Link=H.link;
+H.Summary=H.summary||H.description;
+H.Date=H.pubDate
+}}F(I.data)
 },E)
 }function _IG_GetCachedUrl(A){return gadgets.io.getProxyUrl(A)
 }function _IG_GetImageUrl(A){return gadgets.io.getProxyUrl(A)
+}function _IG_GetImage(B){var A=document.createElement("img");
+A.src=_IG_GetCachedUrl(B);
+return A
 }function _IG_RegisterOnloadHandler(A){gadgets.util.registerOnLoadHandler(A)
 }function _IG_Callback(B,C){var A=arguments;
 return function(){var D=Array.prototype.slice.call(arguments);

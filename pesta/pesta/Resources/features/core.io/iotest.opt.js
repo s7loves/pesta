@@ -180,13 +180,15 @@ gadgets.io.makeRequest("http://target.example.com/somepage",function(D){C=D
 },B);
 this.assertEquals("some data",C.text)
 };
-IoTest.prototype.testSignedGet=function(){var A=new fakeXhr.Expectation("POST","http://example.com/json");
+IoTest.prototype.testSignedGet=function(){gadgets.io.clearOAuthState();
+var A=new fakeXhr.Expectation("POST","http://example.com/json");
 this.setStandardArgs(A,true);
 A.setBodyArg("url","http://target.example.com/somepage");
 A.setBodyArg("signOwner","true");
 A.setBodyArg("signViewer","true");
 A.setBodyArg("authz","signed");
 A.setBodyArg("st","authtoken");
+A.setBodyArg("oauthState","");
 A.setBodyArg("refresh",null);
 A.setHeader("Content-Type","application/x-www-form-urlencoded");
 var C=this.makeFakeResponse("{ 'http://target.example.com/somepage' : { 'body' : 'some data' }}");
@@ -198,13 +200,15 @@ gadgets.io.makeRequest("http://target.example.com/somepage",function(D){C=D
 },B);
 this.assertEquals("some data",C.text)
 };
-IoTest.prototype.testSignedPost=function(){var A=new fakeXhr.Expectation("POST","http://example.com/json");
+IoTest.prototype.testSignedPost=function(){gadgets.io.clearOAuthState();
+var A=new fakeXhr.Expectation("POST","http://example.com/json");
 this.setStandardArgs(A,true);
 A.setBodyArg("url","http://target.example.com/somepage");
 A.setBodyArg("signOwner","true");
 A.setBodyArg("signViewer","true");
 A.setBodyArg("authz","signed");
 A.setBodyArg("st","authtoken");
+A.setBodyArg("oauthState","");
 A.setBodyArg("refresh",null);
 A.setBodyArg("httpMethod","POST");
 A.setBodyArg("headers","Content-Type=application%2fx-www-form-urlencoded");
@@ -219,13 +223,15 @@ gadgets.io.makeRequest("http://target.example.com/somepage",function(D){C=D
 },B);
 this.assertEquals("some data",C.text)
 };
-IoTest.prototype.testSignedGet_noViewerBoolean=function(){var A=new fakeXhr.Expectation("POST","http://example.com/json");
+IoTest.prototype.testSignedGet_noViewerBoolean=function(){gadgets.io.clearOAuthState();
+var A=new fakeXhr.Expectation("POST","http://example.com/json");
 this.setStandardArgs(A,true);
 A.setBodyArg("url","http://target.example.com/somepage");
 A.setBodyArg("signOwner","true");
 A.setBodyArg("signViewer","false");
 A.setBodyArg("authz","signed");
 A.setBodyArg("st","authtoken");
+A.setBodyArg("oauthState","");
 A.setBodyArg("refresh",null);
 A.setHeader("Content-Type","application/x-www-form-urlencoded");
 var C=this.makeFakeResponse("{ 'http://target.example.com/somepage' : { 'body' : 'some data' }}");
@@ -238,13 +244,15 @@ gadgets.io.makeRequest("http://target.example.com/somepage",function(D){C=D
 },B);
 this.assertEquals("some data",C.text)
 };
-IoTest.prototype.testSignedGet_noViewerString=function(){var A=new fakeXhr.Expectation("POST","http://example.com/json");
+IoTest.prototype.testSignedGet_noViewerString=function(){gadgets.io.clearOAuthState();
+var A=new fakeXhr.Expectation("POST","http://example.com/json");
 this.setStandardArgs(A,true);
 A.setBodyArg("url","http://target.example.com/somepage");
 A.setBodyArg("signOwner","true");
 A.setBodyArg("signViewer","false");
 A.setBodyArg("authz","signed");
 A.setBodyArg("st","authtoken");
+A.setBodyArg("oauthState","");
 A.setBodyArg("refresh",null);
 A.setHeader("Content-Type","application/x-www-form-urlencoded");
 var C=this.makeFakeResponse("{ 'http://target.example.com/somepage' : { 'body' : 'some data' }}");
@@ -257,13 +265,15 @@ gadgets.io.makeRequest("http://target.example.com/somepage",function(D){C=D
 },B);
 this.assertEquals("some data",C.text)
 };
-IoTest.prototype.testSignedGet_withNoOwnerAndViewerString=function(){var A=new fakeXhr.Expectation("POST","http://example.com/json");
+IoTest.prototype.testSignedGet_withNoOwnerAndViewerString=function(){gadgets.io.clearOAuthState();
+var A=new fakeXhr.Expectation("POST","http://example.com/json");
 this.setStandardArgs(A,true);
 A.setBodyArg("url","http://target.example.com/somepage");
 A.setBodyArg("signOwner","false");
 A.setBodyArg("signViewer","true");
 A.setBodyArg("authz","signed");
 A.setBodyArg("st","authtoken");
+A.setBodyArg("oauthState","");
 A.setBodyArg("refresh",null);
 A.setHeader("Content-Type","application/x-www-form-urlencoded");
 var C=this.makeFakeResponse("{ 'http://target.example.com/somepage' : { 'body' : 'some data' }}");
@@ -310,6 +320,26 @@ B.AUTHORIZATION="OAUTH";
 gadgets.io.makeRequest("http://target.example.com/somepage",function(D){C=D
 },B);
 this.assertEquals("personal data",C.text)
+};
+IoTest.prototype.testSignedEquivalentToOAuth=function(){gadgets.io.clearOAuthState();
+var A=new fakeXhr.Expectation("POST","http://example.com/json");
+this.setStandardArgs(A,true);
+A.setBodyArg("url","http://target.example.com/somepage");
+A.setBodyArg("authz","signed");
+A.setBodyArg("st","authtoken");
+A.setBodyArg("refresh",null);
+A.setBodyArg("oauthState","");
+A.setBodyArg("OAUTH_USE_TOKEN","always");
+A.setHeader("Content-Type","application/x-www-form-urlencoded");
+var C=this.makeFakeResponse(gadgets.json.stringify({"http://target.example.com/somepage":{oauthApprovalUrl:"http://sp.example.com/authz?oauth_token=foo",oauthState:"newState"}}));
+this.fakeXhrs.expect(A,C);
+var C=null;
+var B={};
+B.AUTHORIZATION="SIGNED";
+B.OAUTH_USE_TOKEN="always";
+gadgets.io.makeRequest("http://target.example.com/somepage",function(D){C=D
+},B);
+this.assertEquals("http://sp.example.com/authz?oauth_token=foo",C.oauthApprovalUrl)
 };
 IoTest.prototype.testOAuth_error=function(){gadgets.io.clearOAuthState();
 var A=new fakeXhr.Expectation("POST","http://example.com/json");

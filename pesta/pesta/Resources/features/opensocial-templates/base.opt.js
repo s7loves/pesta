@@ -12,6 +12,7 @@ os.ATT_customtag="customtag";
 os.VAR_my="$my";
 os.VAR_cur="$cur";
 os.VAR_node="$node";
+os.VAR_msg="Msg";
 os.VAR_parentnode="$parentnode";
 os.VAR_uniqueId="$uniqueId";
 os.VAR_identifierresolver="$_ir";
@@ -20,10 +21,11 @@ os.regExps_={onlyWhitespace:/^[ \t\n]*$/};
 os.compileTemplate=function(B,D){if(typeof (B)=="string"){return os.compileTemplateString(B,D)
 }D=D||B.id;
 var C=B.value||B.innerHTML;
+C=os.trim(C);
 var A=os.compileTemplateString(C,D);
 return A
 };
-os.compileTemplateString=function(B,C){var B=os.prepareTemplateXML_(B);
+os.compileTemplateString=function(B,C){B=os.prepareTemplateXML_(B);
 var A=os.parseXML_(B);
 return os.compileXMLDoc(A,C)
 };
@@ -44,6 +46,11 @@ return B
 os.createNodeAccessor_=function(A){return function(B){return os.getValueFromNode_(A,B)
 }
 };
+os.gadgetPrefs_=null;
+if(window.gadgets&&window.gadgets["Prefs"]){os.gadgetPrefs_=new window.gadgets["Prefs"]()
+}os.getPrefMessage=function(A){if(!os.gadgetPrefs_){return null
+}return os.gadgetPrefs_.getMsg(A)
+};
 os.globalDisallowedAttributes_={data:1};
 os.customAttributes_={};
 os.registerAttribute=function(B,A){os.customAttributes_[B]=A
@@ -53,7 +60,8 @@ if(!E){return
 }E(C,C.getAttribute(B),D,A)
 };
 os.doTag=function(C,H,J,F,A){var D=os.getCustomTag(H,J);
-if(!D){throw"Custom tag <"+H+":"+J+"> not defined."
+if(!D){os.warn("Custom tag <"+H+":"+J+"> not defined.");
+return 
 }for(var B=C.firstChild;
 B;
 B=B.nextSibling){if(B.nodeType==DOM_ELEMENT_NODE){jstProcess(A,B);

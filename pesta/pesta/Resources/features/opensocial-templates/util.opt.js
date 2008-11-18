@@ -1,3 +1,5 @@
+os.trim=function(A){return A.replace(/^\s+/,"").replace(/\s+$/,"")
+};
 os.isAlphaNum=function(A){return((A>="a"&&A<="z")||(A>="A"&&A<="Z")||(A>="0"&&A<="9")||A=="_")
 };
 os.removeChildren=function(A){while(A.firstChild){A.removeChild(A.firstChild)
