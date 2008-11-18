@@ -22,51 +22,54 @@ using org.apache.shindig.gadgets.rewrite;
 using System.Text;
 using com.google.caja.lexer;
 
-/// <summary>
-/// Summary description for StyleTagRewriter
-/// </summary>
-/// <remarks>
-/// <para>
-///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
-/// </para>
-/// </remarks>
-public class StyleTagRewriter : HtmlTagTransformer
+namespace Pesta
 {
-    private Uri source;
-    private LinkRewriter linkRewriter;
-
-    private StringBuilder sb;
-
-    public StyleTagRewriter(Uri source, LinkRewriter linkRewriter)
+    /// <summary>
+    /// Summary description for StyleTagRewriter
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    /// </para>
+    /// </remarks>
+    public class StyleTagRewriter : HtmlTagTransformer
     {
-        this.source = source;
-        this.linkRewriter = linkRewriter;
-        sb = new StringBuilder(500);
-    }
+        private Uri source;
+        private LinkRewriter linkRewriter;
 
-    public void accept(Token token, Token lastToken)
-    {
-        if (token.type == HtmlTokenType.UNESCAPED)
+        private StringBuilder sb;
+
+        public StyleTagRewriter(Uri source, LinkRewriter linkRewriter)
         {
-            sb.Append(CssRewriter.rewrite(token.toString(), source, linkRewriter));
+            this.source = source;
+            this.linkRewriter = linkRewriter;
+            sb = new StringBuilder(500);
         }
-        else
+
+        public void accept(Token token, Token lastToken)
         {
-            sb.Append(HtmlRewriter.producePreTokenSeparator(token, lastToken));
-            sb.Append(token.toString());
-            sb.Append(HtmlRewriter.producePostTokenSeparator(token, lastToken));
+            if (token.type == HtmlTokenType.UNESCAPED)
+            {
+                sb.Append(CssRewriter.rewrite(token.toString(), source, linkRewriter));
+            }
+            else
+            {
+                sb.Append(HtmlRewriter.producePreTokenSeparator(token, lastToken));
+                sb.Append(token.toString());
+                sb.Append(HtmlRewriter.producePostTokenSeparator(token, lastToken));
+            }
         }
-    }
 
-    public bool acceptNextTag(Token tagStart)
-    {
-        return false;
-    }
+        public bool acceptNextTag(Token tagStart)
+        {
+            return false;
+        }
 
-    public String close()
-    {
-        String result = sb.ToString();
-        sb.Length = 0;
-        return result;
-    }
+        public String close()
+        {
+            String result = sb.ToString();
+            sb.Length = 0;
+            return result;
+        }
+    } 
 }

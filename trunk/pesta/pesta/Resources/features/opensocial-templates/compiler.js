@@ -50,7 +50,8 @@ os.compileXMLNode = function(node, opt_id) {
     if (child.nodeType == DOM_ELEMENT_NODE) {
       nodes.push(os.compileNode_(child));
     } else if (child.nodeType == DOM_TEXT_NODE) {
-      if (!child.nodeValue.match(os.regExps_.onlyWhitespace)) {
+      if (child != node.firstChild || 
+          !child.nodeValue.match(os.regExps_.onlyWhitespace)) {
         var compiled = os.breakTextNode_(child);
         for (var i = 0; i < compiled.length; i++) {
           nodes.push(compiled[i]);
@@ -363,7 +364,8 @@ os.copyAttributes_ = function(from, to, opt_customTag) {
             // where they can be accessed as objects, rather than placing them
             // into attributes where they need to be serialized.
             outName = '.' + outName;
-          } else if (os.isIe && outName.substring(0, 2).toLowerCase() == 'on') {
+          } else if (os.isIe && !os.customAttributes_[outName] &&
+              outName.substring(0, 2).toLowerCase() == 'on') {
             // For event handlers on IE, setAttribute doesn't work, so we need
             // to create a function to set as a property.
             outName = '.' + outName;
@@ -394,7 +396,8 @@ os.copyAttributes_ = function(from, to, opt_customTag) {
             // The cssText property of the style object must be set instead.
             to.style.cssText = value;
           } 
-          if (os.isIe && outName.substring(0, 2).toLowerCase() == 'on') {
+          if (os.isIe && !os.customAttributes_[outName] &&
+              outName.substring(0, 2).toLowerCase() == 'on') {
             // In IE, setAttribute doesn't create event handlers, so we must
             // use attachEvent in order to create handlers that are preserved
             // by calls to cloneNode().
@@ -429,20 +432,19 @@ os.compileNode_ = function(node) {
       output = document.createElement("span");
       output.setAttribute(os.ATT_customtag, node.tagName);
 
-      var custom;
-      if (custom = os.checkCustom_(node.tagName)) {
-        os.appendJSTAttribute_(output, ATT_eval, "os.doTag(this, \"" 
-            + custom[0] + "\", \"" + custom[1] + "\", $this, $context)");
-        var context = node.getAttribute("context") || "$this||true";
-        output.setAttribute(ATT_select, context);
+      var custom = node.tagName.split(":");
+      os.appendJSTAttribute_(output, ATT_eval, "os.doTag(this, \"" 
+          + custom[0] + "\", \"" + custom[1] + "\", $this, $context)");
+      var context = node.getAttribute("context") || "$this||true";
+      output.setAttribute(ATT_select, context);
 
-        // For os:Render, create a parent node reference.
-        if (node.tagName == "os:render" || node.tagName == "os:Render" ||
-            node.tagName == "os:renderAll" || node.tagName == "os:RenderAll") {
-          os.appendJSTAttribute_(output, ATT_values, os.VAR_parentnode + ":" +
-              os.VAR_node);
-        }
+      // For os:Render, create a parent node reference.
+      if (node.tagName == "os:render" || node.tagName == "os:Render" ||
+          node.tagName == "os:renderAll" || node.tagName == "os:RenderAll") {
+        os.appendJSTAttribute_(output, ATT_values, os.VAR_parentnode + ":" +
+            os.VAR_node);
       }
+      
       os.copyAttributes_(node, output, node.tagName);
     } else {
       output = os.xmlToHtml_(node);
@@ -451,12 +453,13 @@ os.compileNode_ = function(node) {
       for (var child = node.firstChild; child; child = child.nextSibling) {
         var compiledChild = os.compileNode_(child);
         if (compiledChild) {
-          if (typeof(compiledChild.length) == 'number') {
+          if (!compiledChild.tagName && 
+              typeof(compiledChild.length) == 'number') {
             for (var i = 0; i < compiledChild.length; i++) {
               output.appendChild(compiledChild[i]);
             }
           } else {
-            // If inserting a TRw into a TABLE, inject a TBODY element. 
+            // If inserting a TR into a TABLE, inject a TBODY element. 
             if (compiledChild.tagName == 'TR' && output.tagName == 'TABLE') {
               var lastEl = output.lastChild;
               while (lastEl && lastEl.nodeType != DOM_ELEMENT_NODE && 
@@ -495,7 +498,7 @@ os.ENTITIES = "<!ENTITY nbsp \"&#160;\">";
  */
 os.prepareTemplateXML_ = function(templateSrc) {
   var namespaces = os.getRequiredNamespaces(templateSrc);
-  return "<!DOCTYPE root [" + os.ENTITIES + "]><root " + 
+  return "<!DOCTYPE root [" + os.ENTITIES + "]><root xml:space=\"preserve\"" + 
       namespaces + ">" + templateSrc + "</root>";;
 };
 
@@ -514,7 +517,6 @@ os.xmlToHtml_ = function(xmlNode) {
  */
 os.createContext = function(data, opt_globals) {
   var context = JsEvalContext.create(data);
-  //context.setVariable(os.VAR_cur, os.getValueFromObject_);
   context.setVariable(os.VAR_callbacks, []);
   context.setVariable(os.VAR_identifierresolver, os.getFromContext);
   if (opt_globals) {
@@ -851,6 +853,18 @@ os.wrapIdentifiersInToken = function(token, opt_default) {
   if (!os.canStartIdentifier(token.charAt(0))) {
     return token;
   }
+
+  // If the identifier is accessing a message 
+  // (and gadget messages are obtainable), inline it here.
+  // TODO: This is inefficient for times when the message contains no markup - 
+  // such cases should be optimized.  
+  if (token.substring(0, os.VAR_msg.length + 1) == (os.VAR_msg + '.') && 
+      os.gadgetPrefs_) {
+    var key = token.split(".")[1];
+    var msg = os.getPrefMessage(key) || '';
+    return os.parseAttribute_(msg) || os.transformLiteral_(msg);
+  }
+  
   var identifiers = os.tokenToIdentifiers(token);
   var parts = false;
   var buffer = [];

@@ -21,6 +21,7 @@ using System;
 using System.Data;
 using System.Configuration;
 using System.Web;
+using URI = System.Uri;
 
 namespace Pesta
 {
@@ -38,6 +39,6 @@ namespace Pesta
         GadgetSpec getGadgetSpec(GadgetContext context);
 
         /** Return a gadget spec for a URI */
-        GadgetSpec getGadgetSpec(Uri gadgetUri, bool ignoreCache);
+        GadgetSpec getGadgetSpec(URI gadgetUri, bool ignoreCache);
     } 
 }

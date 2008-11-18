@@ -79,6 +79,7 @@ os.ATT_customtag = "customtag";
 os.VAR_my = "$my";
 os.VAR_cur = "$cur";
 os.VAR_node = "$node"; 
+os.VAR_msg = "Msg";
 os.VAR_parentnode = "$parentnode";
 os.VAR_uniqueId = "$uniqueId";
 os.VAR_identifierresolver = "$_ir";
@@ -107,6 +108,7 @@ os.compileTemplate = function(node, opt_id) {
   
   opt_id = opt_id || node.id;
   var src = node.value || node.innerHTML;
+  src = os.trim(src);
   var template = os.compileTemplateString(src, opt_id);
   return template;
 };
@@ -118,7 +120,7 @@ os.compileTemplate = function(node, opt_id) {
  * @return {os.Template} A compiled Template object.
  */
 os.compileTemplateString = function(src, opt_id) {
-  var src = os.prepareTemplateXML_(src);
+  src = os.prepareTemplateXML_(src);
   var doc = os.parseXML_(src);
   return os.compileXMLDoc(doc, opt_id);
 };
@@ -172,6 +174,30 @@ os.createNodeAccessor_ = function(node) {
 };
 
 /**
+ * A singleton instance of the current gadget Prefs - only instantiated if
+ * we are in a gadget container. 
+ * @type gadgets.Prefs
+ */
+os.gadgetPrefs_ = null;
+if (window['gadgets'] && window['gadgets']['Prefs']) {
+  os.gadgetPrefs_ = new window['gadgets']['Prefs']();
+};
+
+/**
+ * A convenience function to get a localized message by key from the shared
+ * gadgets.Prefs object.
+ * @param {string} key The message key to get
+ * @return {string|null} The localized message for a given key, or null if not
+ * found, or not in the gadgets environment.
+ */
+os.getPrefMessage = function(key) {
+  if (!os.gadgetPrefs_) {
+    return null;
+  }
+  return os.gadgetPrefs_.getMsg(key);
+};
+
+/**
  * Globally disallowed dynamic attributes. These are the attributes where
  * ${} notation will be ignored reguardless of the tag.
  */
@@ -220,7 +246,8 @@ os.doAttribute = function(node, attrName, data, context) {
 os.doTag = function(node, ns, tag, data, context) {
   var tagFunction = os.getCustomTag(ns, tag);
   if (!tagFunction) {
-    throw "Custom tag <" + ns + ":" + tag + "> not defined.";
+    os.warn("Custom tag <" + ns + ":" + tag + "> not defined.");
+    return;
   }
   
   // Process tag's inner content before processing the tag.

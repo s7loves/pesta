@@ -94,6 +94,18 @@ namespace Pesta
             return enumValues;
         }
 
+
+        /**
+         * UserPref.EnumValue (ordered)
+         * Useful for rendering ordered lists of user prefs with enum type.
+         */
+        private List<EnumValuePair> orderedEnumValues;
+        public List<EnumValuePair> getOrderedEnumValues()
+        {
+            return orderedEnumValues;
+        }
+
+
         /**
         * Performs substitutions on the pref. See field comments for details on what
         * is substituted.
@@ -121,6 +133,21 @@ namespace Pesta
                             substituter.substituteString(type, entry.Value));
                 }
                 pref.enumValues = values;
+            }
+            if (orderedEnumValues.Count == 0)
+            {
+                pref.orderedEnumValues = new List<EnumValuePair>();
+            }
+            else 
+            {
+                List<EnumValuePair> orderedValues
+                            = new List<EnumValuePair>();
+                foreach(EnumValuePair evp in orderedEnumValues) 
+                {
+                    orderedValues.Add(new EnumValuePair(evp.getValue(),
+                                                        substituter.substituteString(type, evp.getDisplayValue())));
+                }
+                pref.orderedEnumValues = orderedValues;
             }
             return pref;
         }
@@ -184,6 +211,8 @@ namespace Pesta
             if (children.Count > 0)
             {
                 Dictionary<String, String> enumValues = new Dictionary<String, String>();
+                List<EnumValuePair> orderedEnumValues = new List<EnumValuePair>();
+
                 for (int i = 0, j = children.Count; i < j; ++i)
                 {
                     XmlElement child = (XmlElement)children.Item(i);
@@ -195,12 +224,16 @@ namespace Pesta
                     String displayValue
                             = XmlUtil.getAttribute(child, "display_value", value);
                     enumValues.Add(value, displayValue);
+                    orderedEnumValues.Add(new EnumValuePair(value, displayValue));
                 }
                 this.enumValues = enumValues;
+                this.orderedEnumValues = orderedEnumValues;
+
             }
             else
             {
                 this.enumValues = new Dictionary<string, string>();
+                this.orderedEnumValues = new List<EnumValuePair>();
             }
         }
 
@@ -250,6 +283,32 @@ namespace Pesta
                     }
                 }
                 return STRING;
+            }
+        }
+
+      /**
+       * Simple data structure representing a value/displayValue pair
+       * for UserPref enums. Value is EnumValue@value, and DisplayValue is EnumValue@displayValue.
+       */
+        public class EnumValuePair 
+        {
+            private readonly String value;
+            private readonly String displayValue;
+
+            public EnumValuePair(String value, String displayValue)
+            {
+                this.value = value;
+                this.displayValue = displayValue;
+            }
+
+            public String getValue() 
+            {
+                return value;
+            }
+
+            public String getDisplayValue()
+            {
+                return displayValue;
             }
         }
     } 

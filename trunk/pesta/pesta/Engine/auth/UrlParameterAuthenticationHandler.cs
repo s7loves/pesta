@@ -52,6 +52,10 @@ namespace Pesta
             try
             {
                 String token = request.Params["st"];
+                if (token == null)
+                {
+                    return null;
+                }
                 Dictionary<String, String> parameters = new Dictionary<string, string>() { { SecurityTokenDecoder.SECURITY_TOKEN_NAME, token } };
                 return securityTokenDecoder.createToken(parameters);
             }

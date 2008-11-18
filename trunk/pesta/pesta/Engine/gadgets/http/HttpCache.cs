@@ -43,8 +43,8 @@ namespace Pesta
         {
             if (key.IsCacheable() && response != null)
             {
-                DateTime? expire = response.getCacheExpiration();
-                HttpRuntime.Cache.Add(key.ToString(), response, null, expire.HasValue ? expire.Value : DateTime.Now.AddMinutes(5), Cache.NoSlidingExpiration, CacheItemPriority.Normal, null);
+                long expire = response.getCacheExpiration();
+                HttpRuntime.Cache.Add(key.ToString(), response, null, expire != -1 ? new DateTime(expire) : DateTime.Now.AddMinutes(5), Cache.NoSlidingExpiration, CacheItemPriority.Normal, null);
             }
             return response;
         }

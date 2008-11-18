@@ -42,18 +42,29 @@ namespace Pesta
                                                           };
         private LockedDomainService lockedDomainService;
         private ContentRewriterRegistry contentRewriterRegistry;
-
+        private readonly HttpFetcher fetcher;
         public static readonly ProxyHandler Instance = new ProxyHandler();
         protected ProxyHandler()
         {
             //
             // TODO: Add constructor logic here
             //
+            fetcher = BasicHttpFetcher.Instance;
             lockedDomainService = HashLockedDomainService.Instance;
             contentRewriterRegistry = DefaultContentRewriterRegistry.Instance;
         }
 
-        public void fetch(HttpRequestWrapper request, HttpResponseWrapper response)
+        private bool getIgnoreCache(HttpRequestWrapper request)
+        {
+            String ignoreCache = request.getParameter(IGNORE_CACHE_PARAM);
+            if (ignoreCache == null)
+            {
+                return false;
+            }
+            return !ignoreCache.Equals("0");
+        }
+
+        public override void fetch(HttpRequestWrapper request, HttpResponseWrapper response)
         {
             if (request.getHeaders("If-Modified-Since") != null)
             {
@@ -63,7 +74,7 @@ namespace Pesta
             }
 
             String host = request.getHeaders("Host");
-            if (!lockedDomainService.embedCanRender(host))
+            if (!lockedDomainService.isSafeForOpenProxy(host))
             {
                 // Force embedded images and the like to their own domain to avoid XSS
                 // in gadget domains.
@@ -71,8 +82,7 @@ namespace Pesta
             }
 
             sRequest rcr = buildHttpRequest(request);
-            HttpWebResponse res = (HttpWebResponse)rcr.req.GetResponse();
-            sResponse results = new sResponse(res);
+            sResponse results = fetcher.fetch(rcr);
             if (contentRewriterRegistry != null)
             {
                 results = contentRewriterRegistry.rewriteHttpResponse(rcr, results);
@@ -99,7 +109,7 @@ namespace Pesta
                 response.setContentType(request.getParameter("rewriteMime"));
             }
 
-            if (results.getHttpStatusCode() != HttpStatusCode.OK)
+            if (results.getHttpStatusCode() != (int)HttpStatusCode.OK)
             {
                 response.setStatus((int)results.getHttpStatusCode());
             }
@@ -120,7 +130,7 @@ namespace Pesta
             req.Container = getContainer(request);
             if (request.getParameter(GADGET_PARAM) != null)
             {
-                req.Gadget = new Uri(request.getParameter(GADGET_PARAM));
+                req.setGadget(Uri.parse(request.getParameter(GADGET_PARAM)));
             }
 
             // Allow the rewriter to use an externally forced mime type. This is needed
@@ -128,6 +138,7 @@ namespace Pesta
             // a content type like text/html which unfortunately happens all too often
             req.RewriteMimeType = request.getParameter(REWRITE_MIME_TYPE_PARAM);
 
+            req.setIgnoreCache(getIgnoreCache(request));
             // If the proxy request specifies a refresh param then we want to force the min TTL for
             // the retrieved entry in the cache regardless of the headers on the content when it
             // is fetched from the original source.

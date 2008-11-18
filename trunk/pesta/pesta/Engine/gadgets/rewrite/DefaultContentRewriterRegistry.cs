@@ -24,10 +24,9 @@ using System.Collections.Generic;
 using System.Web;
 using System.Net;
 using System.IO;
-using org.apache.shindig.gadgets.parse.caja;
 using org.apache.shindig.gadgets.parse;
 using org.apache.shindig.gadgets.rewrite;
-using org.apache.shindig.gadgets;
+using org.apache.shindig.gadgets.parse.nekohtml;
 
 namespace Pesta
 {
@@ -46,50 +45,82 @@ namespace Pesta
         public static readonly DefaultContentRewriterRegistry Instance = new DefaultContentRewriterRegistry();
         protected DefaultContentRewriterRegistry()
         {
-            DefaultContentRewriter rewriter =
-                new DefaultContentRewriter(BasicGadgetSpecFactory.Instance, ".*", "", "86400", "link,script,embed,img,style");
             this.rewriters = new List<ContentRewriter>();
-            this.rewriters.Add(rewriter);
-            this.htmlParser = new CajaHtmlParser();
+            this.rewriters.Add(new DefaultContentRewriter(DefaultGadgetSpecFactory.Instance, ".*", "", "86400", "style, link, img, script, embed"));
+            this.rewriters.Add(new CajaContentRewriter());
+            this.rewriters.Add(new RenderingContentRewriter());
+            this.htmlParser = new NekoSimplifiedHtmlParser(new org.apache.xerces.dom.DOMImplementationImpl());
         }
 
-        public bool rewriteGadget(Gadget gadget)
+        public String rewriteGadget(Gadget gadget, View currentView) 
         {
-            String originalContent = gadget.getContent();
-            if (originalContent == null)
+            if (currentView == null) 
             {
                 // Nothing to rewrite.
-                return false;
+                return null;
             }
-            foreach (ContentRewriter rewriter in rewriters)
+            MutableContent mc = getMutableContent(gadget.getSpec(), currentView);
+
+            foreach(ContentRewriter rewriter in rewriters) 
             {
-                rewriter.rewrite(gadget);
+                rewriter.rewrite(gadget, mc);
+            }
+            return mc.getContent();
+        }
+
+        public String rewriteGadget(Gadget gadget, String content) 
+        {
+            if (content == null) 
+            {
+            // Nothing to rewrite.
+            return null;
             }
 
-            return !originalContent.Equals(gadget.getContent());
+            MutableContent mc = getMutableContent(content);
+
+            foreach(ContentRewriter rewriter in rewriters) 
+            {
+                rewriter.rewrite(gadget, mc);
+            }
+
+            return mc.getContent();
         }
 
         public sResponse rewriteHttpResponse(sRequest req, sResponse resp)
         {
-            MutableContent mc = new MutableContent(htmlParser);
-            string originalContent = "";
-            originalContent = resp.responseString;
-            mc.setContent(originalContent);
-            foreach (ContentRewriter rewriter in rewriters)
+            String originalContent = resp.responseString;
+            MutableContent mc = getMutableContent(originalContent);
+
+            foreach(ContentRewriter rewriter in rewriters)
             {
-                rewriter.rewrite(req, resp, mc);
+              rewriter.rewrite(req, resp, mc);
             }
 
             String rewrittenContent = mc.getContent();
-            if (rewrittenContent.Equals(originalContent))
+            if (rewrittenContent.Equals(originalContent)) 
             {
-                return resp;
+              return resp;
             }
-            using (StreamWriter writer = new StreamWriter(resp.response.GetResponseStream()))
-            {
-                writer.Write(rewrittenContent);
-            }
-            return resp;
+
+            return new HttpResponseBuilder(resp).setResponseString(rewrittenContent).create();
+        }
+
+        protected MutableContent getMutableContent(String content)
+        {
+            MutableContent mc = new MutableContent(htmlParser, content, null);
+            return mc;
+        }
+
+        protected MutableContent getMutableContent(GadgetSpec spec, View v) 
+        {
+            // TODO - Consider using caching here to avoid parse costs
+            MutableContent mc = new MutableContent(htmlParser, v.getContent(), null);
+            return mc;
+        }
+
+        protected List<ContentRewriter> getRewriters()
+        {
+            return rewriters;
         }
     } 
 }

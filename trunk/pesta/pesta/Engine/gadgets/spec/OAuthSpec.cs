@@ -38,7 +38,7 @@ namespace Pesta
         /** Keys are service names, values are service descriptors */
         private readonly Dictionary<String, OAuthService> serviceMap;
 
-        public OAuthSpec(XmlElement element)
+        public OAuthSpec(XmlElement element, Uri _base)
         {
             serviceMap = new Dictionary<String, OAuthService>();
             XmlNodeList services = element.GetElementsByTagName("Service");
@@ -47,14 +47,14 @@ namespace Pesta
                 XmlNode node = services[i];
                 if (node.NodeType == XmlNodeType.Element)
                 {
-                    parseService((XmlElement)node);
+                    parseService((XmlElement)node, _base);
                 }
             }
         }
 
-        private void parseService(XmlElement serviceElement)
+        private void parseService(XmlElement serviceElement, Uri _base)
         {
-            OAuthService service = new OAuthService(serviceElement);
+            OAuthService service = new OAuthService(serviceElement, _base);
             serviceMap.Add(service.getName(), service);
         }
 

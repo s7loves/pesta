@@ -24,113 +24,116 @@ using System.Text;
 using System.Web;
 using com.google.caja.lexer;
 
-/// <summary>
-/// Summary description for HtmlRewriter
-/// </summary>
-/// <remarks>
-/// <para>
-///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
-/// </para>
-/// </remarks>
-public class HtmlRewriter
+namespace Pesta
 {
-    private HtmlRewriter()
+    /// <summary>
+    /// Summary description for HtmlRewriter
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    /// </para>
+    /// </remarks>
+    public class HtmlRewriter
     {
-    }
-
-    public static String rewrite(String content, Uri source, Dictionary<String, HtmlTagTransformer> transformers)
-    {
-        java.io.StringWriter sw = new java.io.StringWriter((content.Length * 110) / 100);
-        rewrite(new java.io.StringReader(content), source, transformers, sw);
-        return sw.toString();
-    }
-
-    public static void rewrite(java.io.Reader content, Uri source,
-        Dictionary<String, HtmlTagTransformer> transformers, java.io.Writer writer)
-    {
-        CharProducer producer = CharProducer.Factory.create(content, new InputSource(new java.net.URI(source.ToString())));
-        HtmlLexer lexer = new HtmlLexer(producer);
-        try
+        private HtmlRewriter()
         {
-            Token lastToken = null;
-            Token currentTag = null;
-            HtmlTagTransformer currentTransformer = null;
-            bool tagChanged;
-            while (lexer.hasNext())
+        }
+
+        public static String rewrite(String content, Uri source, Dictionary<String, HtmlTagTransformer> transformers)
+        {
+            java.io.StringWriter sw = new java.io.StringWriter((content.Length * 110) / 100);
+            rewrite(new java.io.StringReader(content), source, transformers, sw);
+            return sw.toString();
+        }
+
+        public static void rewrite(java.io.Reader content, Uri source,
+            Dictionary<String, HtmlTagTransformer> transformers, java.io.Writer writer)
+        {
+            CharProducer producer = CharProducer.Factory.create(content, new InputSource(new java.net.URI(source.ToString())));
+            HtmlLexer lexer = new HtmlLexer(producer);
+            try
             {
-                tagChanged = false;
-                Token token = lexer.next() as Token;
-                if (token.type == HtmlTokenType.IGNORABLE)
+                Token lastToken = null;
+                Token currentTag = null;
+                HtmlTagTransformer currentTransformer = null;
+                bool tagChanged;
+                while (lexer.hasNext())
                 {
-                    continue;
-                }
-                if (token.type == HtmlTokenType.TAGBEGIN)
-                {
-                    currentTag = token;
-                    tagChanged = true;
-                }
-                if (tagChanged)
-                {
+                    tagChanged = false;
+                    Token token = lexer.next() as Token;
+                    if (token.type == HtmlTokenType.IGNORABLE)
+                    {
+                        continue;
+                    }
+                    if (token.type == HtmlTokenType.TAGBEGIN)
+                    {
+                        currentTag = token;
+                        tagChanged = true;
+                    }
+                    if (tagChanged)
+                    {
+                        if (currentTransformer == null)
+                        {
+                            transformers.TryGetValue(currentTag.toString().Substring(1).ToLower(), out currentTransformer);
+                        }
+                        else
+                        {
+                            if (!currentTransformer.acceptNextTag(currentTag))
+                            {
+                                writer.write(currentTransformer.close());
+                                transformers.TryGetValue(currentTag.toString().Substring(1).ToLower(), out currentTransformer);
+                            }
+                        }
+                    }
                     if (currentTransformer == null)
                     {
-                        transformers.TryGetValue(currentTag.toString().Substring(1).ToLower(), out currentTransformer);
+                        writer.write(producePreTokenSeparator(token, lastToken));
+                        writer.write(token.toString());
+                        writer.write(producePostTokenSeparator(token, lastToken));
                     }
                     else
                     {
-                        if (!currentTransformer.acceptNextTag(currentTag))
-                        {
-                            writer.write(currentTransformer.close());
-                            transformers.TryGetValue(currentTag.toString().Substring(1).ToLower(), out currentTransformer);
-                        }
+                        currentTransformer.accept(token, lastToken);
                     }
+                    if (token.type == HtmlTokenType.TAGEND)
+                    {
+                        currentTag = null;
+                    }
+                    lastToken = token;
                 }
-                if (currentTransformer == null)
+                if (currentTransformer != null)
                 {
-                    writer.write(producePreTokenSeparator(token, lastToken));
-                    writer.write(token.toString());
-                    writer.write(producePostTokenSeparator(token, lastToken));
+                    writer.write(currentTransformer.close());
                 }
-                else
-                {
-                    currentTransformer.accept(token, lastToken);
-                }
-                if (token.type == HtmlTokenType.TAGEND)
-                {
-                    currentTag = null;
-                }
-                lastToken = token;
+                writer.flush();
             }
-            if (currentTransformer != null)
+            catch (Exception pe)
             {
-                writer.write(currentTransformer.close());
+                throw pe;
             }
-            writer.flush();
+
         }
-        catch (Exception pe)
-        {
-            throw pe;
-        }
-        
-    }
 
 
-    public static String producePreTokenSeparator(Token token, Token lastToken)
-    {
-        if (token.type == HtmlTokenType.ATTRNAME)
+        public static String producePreTokenSeparator(Token token, Token lastToken)
         {
-            return " ";
+            if (token.type == HtmlTokenType.ATTRNAME)
+            {
+                return " ";
+            }
+            if (token.type == HtmlTokenType.ATTRVALUE &&
+                lastToken != null &&
+                lastToken.type == HtmlTokenType.ATTRNAME)
+            {
+                return "=";
+            }
+            return "";
         }
-        if (token.type == HtmlTokenType.ATTRVALUE &&
-            lastToken != null &&
-            lastToken.type == HtmlTokenType.ATTRNAME)
-        {
-            return "=";
-        }
-        return "";
-    }
 
-    public static String producePostTokenSeparator(Token token, Token lastToken)
-    {
-        return "";
-    }
+        public static String producePostTokenSeparator(Token token, Token lastToken)
+        {
+            return "";
+        }
+    } 
 }

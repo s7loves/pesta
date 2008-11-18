@@ -37,13 +37,13 @@ namespace Pesta
     /// </remarks>
     public class JsonRpcHandler
     {
-        private static GadgetServer server;
+        private static Processor processor;
         private static DefaultUrlGenerator urlGenerator;
         private delegate JsonObject preloadProcessor(GadgetContext context);
         public readonly static JsonRpcHandler Instance = new JsonRpcHandler();
         protected JsonRpcHandler()
         {
-            JsonRpcHandler.server = GadgetServer.Instance;
+            JsonRpcHandler.processor = Processor.Instance;
             JsonRpcHandler.urlGenerator = DefaultUrlGenerator.Instance;
         }
         /**
@@ -95,22 +95,11 @@ namespace Pesta
                     try
                     {
                         GadgetContext context = e.Context;
-                        if (context == null)
-                        {
-                            throw e;
-                        }
+                        
                         JsonObject errorObj = new JsonObject();
                         errorObj.Put("url", context.getUrl())
                                 .Put("moduleId", context.getModuleId());
-                        if (e.GetBaseException() is GadgetException)
-                        {
-                            GadgetException gpe = (GadgetException)e.GetBaseException();
-                            errorObj.Accumulate("errors", gpe.Message);
-                        }
-                        else
-                        {
-                            errorObj.Accumulate("errors", e.Message);
-                        }
+                        errorObj.Accumulate("errors", e.Message);
                         response.Accumulate("gadgets", errorObj);
                     }
                     catch (JsonException je)
@@ -127,9 +116,9 @@ namespace Pesta
             try
             {
                 JsonObject gadgetJson = new JsonObject();
-                Gadget gadget = server.ProcessGadget(context);
+                Gadget gadget = processor.process(context);
 
-                GadgetSpec spec = gadget.Spec;
+                GadgetSpec spec = gadget.getSpec();
                 ModulePrefs prefs = spec.getModulePrefs();
 
                 // TODO: modularize response fields based on requested items.
@@ -169,7 +158,8 @@ namespace Pesta
                                         .Put("displayName", pref.getDisplayName())
                                         .Put("type", pref.getDataType().ToString().ToLower())
                                         .Put("default", pref.getDefaultValue())
-                                        .Put("enumValues", pref.getEnumValues());
+                                        .Put("enumValues", pref.getEnumValues())
+                                        .Put("orderedEnumValues", getOrderedEnums(pref));
                     userPrefs.Put(pref.getName(), up);
                 }
 
@@ -177,8 +167,8 @@ namespace Pesta
                 // ModulePrefs.getAttributes(), but names have to be converted to
                 // camel case.
                 gadgetJson.Put("iframeUrl", JsonRpcHandler.urlGenerator.getIframeUrl(gadget))
-                        .Put("url", gadget.Context.getUrl().ToString())
-                        .Put("moduleId", gadget.Context.getModuleId())
+                        .Put("url", context.getUrl().ToString())
+                        .Put("moduleId", context.getModuleId())
                         .Put("title", prefs.getTitle())
                         .Put("titleUrl", prefs.getTitleUrl().ToString())
                         .Put("views", views)
@@ -209,7 +199,7 @@ namespace Pesta
                         .Put("scrolling", prefs.getScrolling());
                 return gadgetJson;
             }
-            catch (GadgetException e)
+            catch (ProcessingException e)
             {
                 throw new RpcException(context, e);
                 //throw e;
@@ -219,6 +209,20 @@ namespace Pesta
                 // Shouldn't be possible
                 throw new RpcException(context, e);
             }
+        }
+
+        private List<JsonObject> getOrderedEnums(UserPref pref) 
+        {
+            List<UserPref.EnumValuePair> orderedEnums = pref.getOrderedEnumValues();
+            List<JsonObject> jsonEnums = new List<JsonObject>();
+            foreach(UserPref.EnumValuePair evp in orderedEnums) 
+            {
+                JsonObject curEnum = new JsonObject();
+                curEnum.Put("value", evp.getValue());
+                curEnum.Put("displayValue", evp.getDisplayValue());
+                jsonEnums.Add(curEnum);
+            }
+            return jsonEnums;
         }
     } 
 }

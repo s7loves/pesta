@@ -103,7 +103,9 @@ namespace Pesta
         private readonly Dictionary<String, Object> attributes = new Dictionary<String, Object>();
         public Object getAttribute(String key)
         {
-            return attributes[key];
+            Object value = null;
+            attributes.TryGetValue(key, out value);
+            return value;
         }
 
         public void setAttribute(String key, Object o)
@@ -251,7 +253,7 @@ namespace Pesta
                 Dictionary<String, View> tmpViews = new Dictionary<String, View>();
                 foreach (var view in views)
                 {
-                    View v = new View(view.Key, view.Value);
+                    View v = new View(view.Key, view.Value, url);
                     tmpViews.Add(v.getName(), v);
                 }
                 this.views = tmpViews;

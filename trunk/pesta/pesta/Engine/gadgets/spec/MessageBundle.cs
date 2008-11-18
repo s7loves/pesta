@@ -79,13 +79,15 @@ namespace Pesta
         */
         public MessageBundle(MessageBundle parent, MessageBundle child)
         {
-            Dictionary<String, String> merged = new Dictionary<string, string>();
+            Dictionary<String, String> merged = new Dictionary<string,string>();
+            String dir = null;
             if (parent != null)
             {
                 foreach (var item in parent.messages)
                 {
                     merged[item.Key] = item.Value;
                 }
+                dir = parent.languageDirection;
             }
             if (child != null)
             {
@@ -93,9 +95,10 @@ namespace Pesta
                 {
                     merged[item.Key] = item.Value;
                 }
+                dir = child.languageDirection;
             }
             messages = merged;
-            languageDirection = child.languageDirection;
+            languageDirection = dir;
         }
 
         private MessageBundle()

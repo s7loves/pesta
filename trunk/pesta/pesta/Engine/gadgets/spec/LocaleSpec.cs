@@ -20,7 +20,7 @@
 using System;
 using System.Text;
 using System.Xml;
-
+using URI = System.Uri;
 
 namespace Pesta
 {
@@ -117,13 +117,23 @@ namespace Pesta
             String messages = XmlUtil.getAttribute(element, "messages");
             if (messages == null)
             {
-                this.messages = new Uri("");
+                this.messages = Uri.parse("");
             }
             else
             {
                 try
                 {
-                    this.messages = new Uri(specUrl, messages);
+                    /*URI thisuri = new URI(messages, UriKind.RelativeOrAbsolute);
+                    if (thisuri.IsAbsoluteUri)
+                    {
+                        this.messages = specUrl.resolve(Uri.parse(messages));
+                    }
+                    else
+                    {
+                        this.messages = specUrl.resolve(Uri.parse(specUrl.toJavaUri(),thisuri));
+                    }
+                    */
+                    this.messages = Uri.parse(messages);
                 }
                 catch (Exception e)
                 {

@@ -52,7 +52,7 @@ namespace Pesta
         * 
         * @param gadget Gadget to rewrite.
         */
-        RewriterResults rewrite(Gadget gadget);
+        RewriterResults rewrite(Gadget gadget, MutableContent content);
     } 
 }
 

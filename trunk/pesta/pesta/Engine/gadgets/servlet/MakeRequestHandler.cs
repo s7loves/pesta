@@ -24,6 +24,7 @@ using System.Web;
 using System.Net;
 using org.apache.shindig.gadgets;
 using Jayrock.Json;
+using System.Text;
 
 namespace Pesta
 {
@@ -56,7 +57,7 @@ namespace Pesta
             contentFetcherFactory = ContentFetcherFactory.Instance;
         }
 
-        public void fetch(HttpRequestWrapper request, HttpResponseWrapper response)
+        public override void fetch(HttpRequestWrapper request, HttpResponseWrapper response)
         {
             sRequest rcr = buildHttpRequest(request);
 
@@ -80,7 +81,8 @@ namespace Pesta
             setResponseHeaders(request, response.getResponse(), results);
 
             response.setStatus((int)HttpStatusCode.OK);
-            response.setContentType("application/json; charset=utf-8");
+            response.setContentType("application/json");
+            response.getResponse().ContentEncoding = Encoding.UTF8;
             response.Write(System.Text.Encoding.UTF8.GetBytes(UNPARSEABLE_CRUFT + output));
         }
 
@@ -111,17 +113,17 @@ namespace Pesta
             req.addHeader("Accept-Charset", request.getHeaders("Accept-Charset"));
             req.addHeader("Accept-Language", request.getHeaders("Accept-Language"));
 
-            req.SetIgnoreCache("1".Equals(request.getParameter(NOCACHE_PARAM)));
+            req.setIgnoreCache("1".Equals(request.getParameter(NOCACHE_PARAM)));
 
             if (request.getParameter(GADGET_PARAM) != null)
             {
-                req.Gadget = new Uri(request.getParameter(GADGET_PARAM));
+                req.Gadget = Uri.parse(request.getParameter(GADGET_PARAM));
             }
 
             // Allow the rewriter to use an externally forced mime type. This is needed
             // allows proper rewriting of <script src="x"/> where x is returned with
             // a content type like text/html which unfortunately happens all too often
-            req.SetRewriteMimeType(request.getParameter(REWRITE_MIME_TYPE_PARAM));
+            req.setRewriteMimeType(request.getParameter(REWRITE_MIME_TYPE_PARAM));
 
             // Figure out whether authentication is required
             AuthType auth = AuthType.Parse(getParameter(request, AUTHZ_PARAM, null));
@@ -162,7 +164,7 @@ namespace Pesta
                 {
                     body = processFeed(originalUrl, request, body);
                 }
-                JsonObject resp = getResponseAsJson(results, body);
+                JsonObject resp = FetchResponseUtils.getResponseAsJson(results, body);
 
                 if (authToken != null)
                 {
@@ -188,42 +190,6 @@ namespace Pesta
             return new FeedProcessor().process(url, xml, getSummaries, numEntries).ToString();
         }
 
-        /**
-       * Convert a response to a JSON object.  static so it can be used by HttpPreloaders as well.
-       * 
-       * The returned JSON object contains the following values:
-       * rc: integer response code
-       * body: string response body
-       * headers: object, keys are header names, values are lists of header values
-       * 
-       * @param response the response body
-       * @param body string to use as the body of the response.
-       * @return a JSONObject representation of the response body.
-       */
-        public static JsonObject getResponseAsJson(sResponse response, String body)
-        {
-            JsonObject resp = new JsonObject();
-            resp.Put("rc", response.getHttpStatusCode());
-            resp.Put("body", body);
-            JsonObject headers = new JsonObject();
-            addHeaders(headers, response, "set-cookie");
-            addHeaders(headers, response, "location");
-            resp.Put("headers", headers);
-            // Merge in additional response data
-            foreach (var entry in response.getMetadata())
-            {
-                resp.Put(entry.Key, entry.Value);
-            }
-            return resp;
-        }
-
-        private static void addHeaders(JsonObject headers, sResponse response, String headerName)
-        {
-            string[] values = response.getHeaders(headerName);
-            if (values != null)
-            {
-                headers.Put(headerName.ToLower(), new JsonArray(values));
-            }
-        }
+        
     } 
 }

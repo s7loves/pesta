@@ -38,17 +38,17 @@ namespace Pesta
                 "type", "view", "href", "preferred_height", "preferred_width", "authz", "quirks",
                 "sign_owner", "sign_viwer"
                 };
-
+        private readonly Uri _base;
         /**
         * @param elements List of all views, in order, that make up this view.
         *     An ordered list is required per the spec, since values must
         *     overwrite one another.
         * @throws SpecParserException
         */
-        public View(String name, List<XmlElement> elements)
+        public View(String name, List<XmlElement> elements, Uri _base)
         {
             this.name = name;
-
+            this._base = _base;
             bool quirks = true;
             Uri href = null;
             String contentType = null;
@@ -129,7 +129,8 @@ namespace Pesta
             signViewer = view.signViewer;
 
             content = substituter.substituteString(null, view.content);
-            href = substituter.substituteUri(null, view.href);
+            _base = view._base;
+            href = _base.resolve(substituter.substituteUri(null, view.href));
             Dictionary<String, String> attributes = new Dictionary<string, string>();
             foreach (var entry in view.attributes)
             {

@@ -38,7 +38,7 @@ namespace Pesta
     /// </remarks>
     public class HttpResponseBuilder
     {
-        private HttpStatusCode httpStatusCode = HttpStatusCode.OK;
+        private int httpStatusCode = (int)HttpStatusCode.OK;
         private NameValueCollection headers = new NameValueCollection();
         private byte[] responseBytes;
         private Dictionary<string, string> metadata = new Dictionary<string, string>();
@@ -69,6 +69,14 @@ namespace Pesta
         }
 
         /**
+         * @return A new sResponse.
+         */
+        public sResponse create()
+        {
+            return new sResponse(this);
+        }
+
+        /**
          * @param responseString The response string.  Converted to UTF-8 bytes and copied when set.
          */
         public HttpResponseBuilder setResponseString(String body)
@@ -93,7 +101,7 @@ namespace Pesta
         /**
          * @param httpStatusCode The HTTP response status, defined on HttpResponse.
          */
-        public HttpResponseBuilder setHttpStatusCode(HttpStatusCode httpStatusCode)
+        public HttpResponseBuilder setHttpStatusCode(int httpStatusCode)
         {
             this.httpStatusCode = httpStatusCode;
             return this;
@@ -115,6 +123,15 @@ namespace Pesta
          * Adds an entire map of headers to the response.
          */
         public HttpResponseBuilder addHeaders(NameValueCollection headers)
+        {
+            this.headers.Add(headers);
+            return this;
+        }
+
+        /**
+   * Adds all headers in the provided multimap to the response.
+   */
+        public HttpResponseBuilder addAllHeaders(WebHeaderCollection headers)
         {
             this.headers.Add(headers);
             return this;
@@ -184,7 +201,7 @@ namespace Pesta
             return this;
         }
 
-        private NameValueCollection getHeaders()
+        public NameValueCollection getHeaders()
         {
             return headers;
         }
@@ -194,12 +211,12 @@ namespace Pesta
             return metadata;
         }
 
-        private byte[] getResponse()
+        public byte[] getResponse()
         {
             return responseBytes;
         }
 
-        private HttpStatusCode getHttpStatusCode()
+        public int getHttpStatusCode()
         {
             return httpStatusCode;
         }

@@ -42,33 +42,42 @@ namespace Pesta
     /// </remarks>
     public class HashLockedDomainService : LockedDomainService
     {
-        private ContainerConfig config = ContainerConfig.Instance;
-        private String embedHost;
-        private bool enabled;
-        private java.util.Collection suffixes;
-        public static String LOCKED_DOMAIN_REQUIRED_KEY = "gadgets.lockedDomainRequired";
-        public static String LOCKED_DOMAIN_SUFFIX_KEY = "gadgets.lockedDomainSuffix";
-        private GadgetReader gadgetReader = new GadgetReader();
+        private readonly bool enabled;
+        private readonly Dictionary<String, String> lockedSuffixes;
+        private readonly Dictionary<String, Boolean> required;
 
-        public static readonly HashLockedDomainService Instance = new HashLockedDomainService("127.0.0.1:9090", false);
+        public static readonly String LOCKED_DOMAIN_REQUIRED_KEY = "gadgets.lockedDomainRequired";
+        public static readonly String LOCKED_DOMAIN_SUFFIX_KEY = "gadgets.lockedDomainSuffix";
+
+
+        public static readonly HashLockedDomainService Instance = new HashLockedDomainService(JsonContainerConfig.Instance, false);
         /**
         * Create a LockedDomainService
         * @param config per-container configuration
         * @param embedHost host name to use for embedded content
         * @param enabled whether this service should do anything at all.
         */
-        protected HashLockedDomainService(String embedHost, bool enabled)
+        public HashLockedDomainService(ContainerConfig config, bool enabled)
         {
-            this.embedHost = embedHost;
             this.enabled = enabled;
-            suffixes = new java.util.HashSet();
+            lockedSuffixes = new Dictionary<string,string>();
+            required = new Dictionary<string,bool>();
             ICollection<String> containers = config.getContainers();
-            if (enabled)
+            if (enabled) 
             {
-                foreach (String container in containers)
+                foreach(String container in containers) 
                 {
                     String suffix = config.get(container, LOCKED_DOMAIN_SUFFIX_KEY);
-                    suffixes.add(suffix);
+                    if (suffix == null)
+                    {
+
+                    } 
+                    else 
+                    {
+                        lockedSuffixes.Add(container, suffix);
+                    }
+                    String require = config.get(container, LOCKED_DOMAIN_REQUIRED_KEY);
+                    required.Add(container, "true".Equals(require));
                 }
             }
         }
@@ -78,59 +87,66 @@ namespace Pesta
             return enabled;
         }
 
-        public String getEmbedHost()
+        public bool isSafeForOpenProxy(String host)
         {
-            return embedHost;
+            if (enabled)
+            {
+                return !hostRequiresLockedDomain(host);
+            }
+            return true;
         }
 
-        public bool embedCanRender(String host)
+        public bool gadgetCanRender(String host, GadgetSpec gadget, String container)
         {
-            return (!enabled || host.EndsWith(embedHost));
+            container = normalizeContainer(container);
+            if (enabled)
+            {
+                if (gadgetWantsLockedDomain(gadget) ||
+                    hostRequiresLockedDomain(host) ||
+                    containerRequiresLockedDomain(container))
+                {
+                    String neededHost = getLockedDomain(gadget, container);
+                    return host.Equals(neededHost);
+                }
+            }
+            return true;
         }
 
-        public bool gadgetCanRender(String host, Gadget gadget, String container)
+        public String getLockedDomainForGadget(GadgetSpec gadget, String container)
         {
-            if (!enabled)
+            container = normalizeContainer(container);
+            if (enabled)
             {
-                return true;
+                if (gadgetWantsLockedDomain(gadget) ||
+                    containerRequiresLockedDomain(container))
+                {
+                    return getLockedDomain(gadget, container);
+                }
             }
-            // Gadgets can opt-in to locked domains, or they can be enabled globally
-            // for a particular container
-            if (gadgetReader.gadgetWantsLockedDomain(gadget) || containerWantsLockedDomain(container))
-            {
-                String neededHost = getLockedDomainForGadget(gadgetReader.getGadgetUrl(gadget), container);
-                return (neededHost.Equals(host));
-            }
-            // Make sure gadgets that don't ask for locked domain aren't allowed
-            // to render on one.
-            return !gadgetUsingLockedDomain(host, gadget);
+            return null;
         }
 
-        public String getLockedDomainForGadget(String gadget, String container)
+        private String getLockedDomain(GadgetSpec gadget, String container)
         {
-            String suffix = config.get(container, LOCKED_DOMAIN_SUFFIX_KEY);
-            if (suffix == null)
+            String suffix;
+            if (!lockedSuffixes.TryGetValue(container, out suffix))
             {
-                throw new Exception(
-                    "Cannot redirect to locked domain if it is not configured");
+                return null;
             }
-
-            byte[] sha1 = DigestUtils.sha(gadget);
+            byte[] sha1 = DigestUtils.sha(gadget.getUrl().ToString());
             String hash = Encoding.Unicode.GetString(Base32.encodeBase32(sha1));
             return hash + suffix;
         }
 
-        private bool containerWantsLockedDomain(String container)
+        private bool gadgetWantsLockedDomain(GadgetSpec gadget)
         {
-            String required = config.get(container, LOCKED_DOMAIN_REQUIRED_KEY);
-            return ("true".Equals(required));
+            return gadget.getModulePrefs().getFeatures().ContainsKey("locked-domain");
         }
 
-        private bool gadgetUsingLockedDomain(String host, Gadget gadget)
+        private bool hostRequiresLockedDomain(String host) 
         {
-            for (java.util.Iterator iter = suffixes.iterator(); iter.hasNext(); )
+            foreach(String suffix in lockedSuffixes.Values) 
             {
-                string suffix = iter.next() as string;
                 if (host.EndsWith(suffix))
                 {
                     return true;
@@ -139,18 +155,19 @@ namespace Pesta
             return false;
         }
 
-        class GadgetReader
+        private bool containerRequiresLockedDomain(String container)
         {
-            public bool gadgetWantsLockedDomain(Gadget gadget)
-            {
-                Dictionary<string, Feature> prefs = gadget.Spec.getModulePrefs().getFeatures();
-                return prefs.ContainsKey("locked-domain");
-            }
+            bool dummy;
+            return required.TryGetValue(container, out dummy);
+        }
 
-            public String getGadgetUrl(Gadget gadget)
+        private String normalizeContainer(String container)
+        {
+            if (required.ContainsKey(container))
             {
-                return gadget.Context.getUrl().ToString();
+                return container;
             }
+            return ContainerConfig.DEFAULT_CONTAINER;
         }
     } 
 }

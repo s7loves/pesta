@@ -37,98 +37,51 @@ namespace Pesta
     ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
     /// </para>
     /// </remarks>
-    public class ContainerConfig
+    public abstract class ContainerConfig
     {
         public static string DEFAULT_CONTAINER = "default";
-        private static string CONTAINER_KEY = "gadgets.container";
-        private Dictionary<String,JsonObject> config;
+      /**
+       * @return The set of all containers that are currently registered.
+       */
+        public abstract ICollection<String> getContainers();
 
-        public static readonly ContainerConfig Instance =
-                new ContainerConfig(AppDomain.CurrentDomain.BaseDirectory + @"config\container.js");
+      /**
+       * Fetches a configuration parameter as a JSON object, array, string, or
+       * number, ensuring that it can be safely passed to javascript without any
+       * additional filtering.
+       *
+       * @param parameter The value to fetch. May be specified as an x-path like
+       *     object reference such as "gadgets/features/views".
+       * @return A configuration parameter as a JSON object or null if not set or
+       *     can't be interpreted as JSON.
+       *
+       * TODO: Convert to a more generalized object.
+       */
+        public abstract Object getJson(String container, String parameter);
 
-        protected ContainerConfig(string path)
-        {
-            config = new Dictionary<string,JsonObject>();
-            loadContainers(path);
-        }
-        public ICollection<String> getContainers()
-        {
-            return config.Keys;
-        }
-        public String get(String container, String parameter)
-        {
-            Object data = getJson(container, parameter);
-            return data == null ? null : data.ToString();
-        }
-        public Object getJson(String container, String parameter)
-        {
-            JsonObject data = config[container];
-            if (data == null)
-            {
-                return null;
-            }
-            if (parameter == null)
-            {
-                return data;
-            }
+      /**
+       * Attempts to fetch a parameter for the given container, or the default
+       * container if the specified container is not supported.
+       *
+       * @return A configuration parameter as a string, or null if not set.
+       */
+        public abstract String get(String container, String parameter);
 
-            try
-            {
-                foreach (String param in parameter.Split('/'))
-                {
-                    Object next = data[param];
-                    if (next is JsonObject)
-                    {
-                        data = (JsonObject)next;
-                    }
-                    else
-                    {
-                        return next;
-                    }
-                }
-                return data;
-            }
-            catch (JsonException e)
-            {
-                return null;
-            }
-        }
+      /**
+       * @return A configuration parameter as a JSON object or null if not set or
+       *     can't be interpreted as JSON.
+       */
+        public abstract JsonObject getJsonObject(String container, String parameter);
 
-        public JsonObject getJsonObject(String container, String parameter)
-        {
-            Object data = getJson(container, parameter);
-            if (data is JsonObject)
-            {
-                return (JsonObject)data;
-            }
-            return null;
-        }
+      /**
+       * @return A configuration parameter as a JSON object or null if not set or
+       *     can't be interpreted as JSON.
+       */
+        public abstract JsonArray getJsonArray(String container, String parameter);
 
-        public JsonArray getJsonArray(String container, String parameter)
+        public static string getConfigurationValue(string name)
         {
-            Object data = getJson(container, parameter);
-            if (data is JsonArray)
-            {
-                return (JsonArray)data;
-            }
-            return null;
-        }
-
-        private void loadContainers(string path)
-        {
-            string json;
-            using (StreamReader sr = new StreamReader(path))
-            {
-                json = sr.ReadToEnd();
-            }
-            JsonObject contents = JsonConvert.Import(json) as JsonObject;
-            JsonArray containers = contents[CONTAINER_KEY] as JsonArray;
-            for (int i = 0; i < containers.Length; i++)
-            {
-                // Copy the default object and produce a new one.
-                String container = containers.GetString(i);
-                config.Add(container, contents);
-            }
+            return ConfigurationManager.AppSettings[name];
         }
     } 
 }

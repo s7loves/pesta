@@ -74,13 +74,21 @@ namespace Pesta
                     String domain, String appUrl, String moduleId)
         {
             tokenData = new Dictionary<String, String>();
-            tokenData.Add(OWNER_KEY, owner);
-            tokenData.Add(VIEWER_KEY, viewer);
-            tokenData.Add(APP_KEY, app);
-            tokenData.Add(DOMAIN_KEY, domain);
-            tokenData.Add(APPURL_KEY, appUrl);
-            tokenData.Add(MODULE_KEY, moduleId);
+            putNullSafe(OWNER_KEY, owner);
+            putNullSafe(VIEWER_KEY, viewer);
+            putNullSafe(APP_KEY, app);
+            putNullSafe(DOMAIN_KEY, domain);
+            putNullSafe(APPURL_KEY, appUrl);
+            putNullSafe(MODULE_KEY, moduleId);
             token = crypter.wrap(tokenData);
+        }
+
+        private void putNullSafe(String key, String value)
+        {
+            if (value != null)
+            {
+                tokenData.Add(key, value);
+            }
         }
 
         /**

@@ -35,47 +35,32 @@ namespace Pesta
     public interface LockedDomainService
     {
         /**
-        * Is locked domain enabled
-        * @return true is locked domain is enabled
-        */
-        bool isEnabled();
+ * @return True if the host is safe for use with the open proxy.
+ */
+        bool isSafeForOpenProxy(String host);
 
         /**
-        * Check whether embedded content (img src, for example) can render on
-        * a particular host.
-        * 
-        * @param host host name for rendered content
-        * @return true if the content should be allowed to render
-        */
-        bool embedCanRender(String host);
+         * Check whether a gadget should be allowed to render on a particular
+         * host.
+         *
+         * @param host host name for the content
+         * @param gadget URL of the gadget
+         * @param container container
+         * @return true if the gadget can render
+         */
+        bool gadgetCanRender(String host, GadgetSpec gadget, String container);
 
         /**
-        * Figure out where embedded content should render.
-        * 
-        * @return host name for safe rendering of embedded content.
-        */
-        String getEmbedHost();
+         * Calculate the locked domain for a particular gadget on a particular
+         * container.
+         *
+         * @param gadget URL of the gadget
+         * @param container name of the container page
+         * @return the host name on which the gadget should render, or null if locked domain should not
+         * be used to render this gadget.
+         */
+        String getLockedDomainForGadget(GadgetSpec gadget, String container);
 
-        /**
-        * Calculate the locked domain for a particular gadget on a particular
-        * container.
-        * 
-        * @param gadget URL of the gadget
-        * @param container name of the container page
-        * @return the host name on which the gadget should render
-        */
-        String getLockedDomainForGadget(String gadget, String container);
-
-        /**
-        * Check whether a gadget should be allowed to render on a particular
-        * host.
-        * 
-        * @param host host name for the content
-        * @param gadget URL of the gadget
-        * @param container container
-        * @return true if the gadget can render
-        */
-        bool gadgetCanRender(String host, Gadget gadget, String container);
     } 
 }
 

@@ -70,7 +70,10 @@ namespace Pesta
                                     HashSet<String> defaultTags)
         {
             Feature f = null;
-            spec.getModulePrefs().getFeatures().TryGetValue("content-rewrite", out f);
+            if (spec != null)
+            {
+                spec.getModulePrefs().getFeatures().TryGetValue("content-rewrite", out f);
+            }
             String includeRegex = normalizeParam(defaultInclude, null);
             String excludeRegex = normalizeParam(defaultExclude, null);
 
@@ -225,35 +228,6 @@ namespace Pesta
                 fingerprint = result;
             }
             return fingerprint;
-        }
-
-        public class Factory
-        {
-            private readonly String defaultIncludeUrls;
-            private readonly String defaultExcludeUrls;
-            private readonly String defaultExpires;
-            private readonly HashSet<String> defaultIncludeTags;
-
-            public Factory(String includeUrls, String excludeUrls, String expires, HashSet<String> includeTags)
-            {
-                defaultIncludeUrls = includeUrls;
-                defaultExcludeUrls = excludeUrls;
-                defaultExpires = expires;
-                defaultIncludeTags = includeTags;
-            }
-
-            public ContentRewriterFeature get(GadgetSpec spec)
-            {
-                ContentRewriterFeature rewriterFeature =
-                            (ContentRewriterFeature)spec.getAttribute("content-rewrite");
-                if (rewriterFeature == null)
-                {
-                    rewriterFeature = new ContentRewriterFeature(spec, defaultIncludeUrls,
-                                defaultExcludeUrls, defaultExpires, defaultIncludeTags);
-                    spec.setAttribute("content-rewrite", rewriterFeature);
-                }
-                return rewriterFeature;
-            }
         }
     } 
 }

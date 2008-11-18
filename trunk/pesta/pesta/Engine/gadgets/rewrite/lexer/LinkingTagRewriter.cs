@@ -23,92 +23,95 @@ using System.Text;
 using org.apache.shindig.gadgets.rewrite;
 using com.google.caja.lexer;
 
-/// <summary>
-/// Summary description for LinkingTagRewriter
-/// </summary>
-/// <remarks>
-/// <para>
-///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
-/// </para>
-/// </remarks>
-public class LinkingTagRewriter : HtmlTagTransformer
+namespace Pesta
 {
-    private readonly Uri relativeBase;
-    private readonly LinkRewriter linkRewriter;
-    private readonly Dictionary<String, HashSet<String>> tagAttributeTargets;
-    private readonly StringBuilder builder;
-    private HashSet<String> currentTagAttrs;
-
-    public static Dictionary<String, HashSet<String>> getDefaultTargets() 
+    /// <summary>
+    /// Summary description for LinkingTagRewriter
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    /// </para>
+    /// </remarks>
+    public class LinkingTagRewriter : HtmlTagTransformer
     {
-        Dictionary<String, HashSet<String>> targets  = new Dictionary<string,HashSet<string>>();
-        targets.Add("img", new HashSet<String>(){"src"});
-        targets.Add("embed", new HashSet<String>(){"src"});
-        targets.Add("link", new HashSet<String>(){"href"});
-        return targets;
-    }
+        private readonly Uri relativeBase;
+        private readonly LinkRewriter linkRewriter;
+        private readonly Dictionary<String, HashSet<String>> tagAttributeTargets;
+        private readonly StringBuilder builder;
+        private HashSet<String> currentTagAttrs;
 
-    public LinkingTagRewriter(LinkRewriter linkRewriter, Uri relativeBase) 
-    {
-        this.linkRewriter = linkRewriter;
-        this.relativeBase = relativeBase;
-        this.tagAttributeTargets = getDefaultTargets();
-        builder = new StringBuilder();
-    }
-
-    public LinkingTagRewriter(Dictionary<String, HashSet<String>> tagAttributeTargets,
-                                    LinkRewriter linkRewriter, Uri relativeBase) 
-    {
-        this.tagAttributeTargets = tagAttributeTargets;
-        this.linkRewriter = linkRewriter;
-        this.relativeBase = relativeBase;
-        builder = new StringBuilder();
-    }
-
-    public ICollection<String> getSupportedTags() 
-    {
-        return tagAttributeTargets.Keys;
-    }
-
-    public void accept(Token token,
-      Token lastToken) 
-    {
-        if (token.type == HtmlTokenType.TAGBEGIN)
+        public static Dictionary<String, HashSet<String>> getDefaultTargets()
         {
-            tagAttributeTargets.TryGetValue(token.toString().Substring(1).ToLower(), out currentTagAttrs);
+            Dictionary<String, HashSet<String>> targets = new Dictionary<string, HashSet<string>>();
+            targets.Add("img", new HashSet<String>() { "src" });
+            targets.Add("embed", new HashSet<String>() { "src" });
+            targets.Add("link", new HashSet<String>() { "href" });
+            return targets;
         }
 
-        if (currentTagAttrs != null &&
-            lastToken != null &&
-            lastToken.type == HtmlTokenType.ATTRNAME &&
-            currentTagAttrs.Contains(lastToken.toString().ToLower())) 
+        public LinkingTagRewriter(LinkRewriter linkRewriter, Uri relativeBase)
         {
-          String link = stripQuotes(token.toString());
-          builder.Append("=\"");
-          builder.Append(linkRewriter.rewrite(link, relativeBase));
-          builder.Append('\"');
-          return;
+            this.linkRewriter = linkRewriter;
+            this.relativeBase = relativeBase;
+            this.tagAttributeTargets = getDefaultTargets();
+            builder = new StringBuilder();
         }
-        builder.Append(HtmlRewriter.producePreTokenSeparator(token, lastToken));
-        builder.Append(token.toString());
-        builder.Append(HtmlRewriter.producePostTokenSeparator(token, lastToken));
-    }
 
-    public bool acceptNextTag(Token tagStart) 
-    {
-        return false;
-    }
+        public LinkingTagRewriter(Dictionary<String, HashSet<String>> tagAttributeTargets,
+                                        LinkRewriter linkRewriter, Uri relativeBase)
+        {
+            this.tagAttributeTargets = tagAttributeTargets;
+            this.linkRewriter = linkRewriter;
+            this.relativeBase = relativeBase;
+            builder = new StringBuilder();
+        }
 
-    public String close() 
-    {
-        String result = builder.ToString();
-        currentTagAttrs = null;
-        builder.Length = 0;
-        return result;
-    }
+        public ICollection<String> getSupportedTags()
+        {
+            return tagAttributeTargets.Keys;
+        }
 
-    private String stripQuotes(String s) 
-    {
-        return s.Replace("\"", "").Replace("'", "");
-    }
+        public void accept(Token token,
+          Token lastToken)
+        {
+            if (token.type == HtmlTokenType.TAGBEGIN)
+            {
+                tagAttributeTargets.TryGetValue(token.toString().Substring(1).ToLower(), out currentTagAttrs);
+            }
+
+            if (currentTagAttrs != null &&
+                lastToken != null &&
+                lastToken.type == HtmlTokenType.ATTRNAME &&
+                currentTagAttrs.Contains(lastToken.toString().ToLower()))
+            {
+                String link = stripQuotes(token.toString());
+                builder.Append("=\"");
+                builder.Append(linkRewriter.rewrite(link, relativeBase));
+                builder.Append('\"');
+                return;
+            }
+            builder.Append(HtmlRewriter.producePreTokenSeparator(token, lastToken));
+            builder.Append(token.toString());
+            builder.Append(HtmlRewriter.producePostTokenSeparator(token, lastToken));
+        }
+
+        public bool acceptNextTag(Token tagStart)
+        {
+            return false;
+        }
+
+        public String close()
+        {
+            String result = builder.ToString();
+            currentTagAttrs = null;
+            builder.Length = 0;
+            return result;
+        }
+
+        private String stripQuotes(String s)
+        {
+            return s.Replace("\"", "").Replace("'", "");
+        }
+    } 
 }

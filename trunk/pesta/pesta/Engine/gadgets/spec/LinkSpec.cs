@@ -32,9 +32,33 @@ namespace Pesta
     /// </remarks>
     public class LinkSpec
     {
+        private readonly Uri _base;
+
+        public LinkSpec(XmlElement element, Uri _base)
+        {
+            this._base = _base;
+            rel = XmlUtil.getAttribute(element, "rel");
+            if (rel == null)
+            {
+                throw new SpecParserException("Link/@rel is required!");
+            }
+            href = XmlUtil.getUriAttribute(element, "href");
+            if (href == null)
+            {
+                throw new SpecParserException("Link/@href is required!");
+            }
+        }
+
+        private LinkSpec(LinkSpec rhs, Substitutions substitutions)
+        {
+            rel = substitutions.substituteString(null, rhs.rel);
+            _base = rhs._base;
+            href = _base.resolve(substitutions.substituteUri(null, rhs.href));
+        }
+
         /**
-       * Link/@rel
-       */
+        * Link/@rel
+        */
         private readonly String rel;
         public String getRel()
         {
@@ -58,29 +82,9 @@ namespace Pesta
             return new LinkSpec(this, substitutions);
         }
 
-        public override String ToString()
+        public override String ToString() 
         {
             return "<Link rel='" + rel + "' href='" + href.ToString() + "'/>";
-        }
-
-        public LinkSpec(XmlElement element)
-        {
-            rel = XmlUtil.getAttribute(element, "rel");
-            if (rel == null)
-            {
-                throw new SpecParserException("Link/@rel is required!");
-            }
-            href = XmlUtil.getUriAttribute(element, "href");
-            if (href == null)
-            {
-                throw new SpecParserException("Link/@href is required!");
-            }
-        }
-
-        private LinkSpec(LinkSpec rhs, Substitutions substitutions)
-        {
-            rel = substitutions.substituteString(null, rhs.rel);
-            href = substitutions.substituteUri(null, rhs.href);
         }
     } 
 }

@@ -35,7 +35,7 @@ namespace Pesta
     ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
     /// </para>
     /// </remarks>
-    public sealed class BasicHttpFetcher : HttpFetcher
+    public class BasicHttpFetcher : HttpFetcher
     {
         /**
          * Creates a new fetcher for fetching HTTP objects.  Not really suitable
@@ -46,23 +46,10 @@ namespace Pesta
          * @param maxObjSize Maximum size, in bytes, of object to fetch.  Except this
          * isn't actually implemented.
          */
-        readonly static BasicHttpFetcher instance = new BasicHttpFetcher();
-        static BasicHttpFetcher()
-        {
-
-        }
-        BasicHttpFetcher()
+        public readonly static BasicHttpFetcher Instance = new BasicHttpFetcher();
+        protected BasicHttpFetcher()
         {
         }
-
-        public static BasicHttpFetcher Instance
-        {
-            get
-            {
-                return instance;
-            }
-        }
-
 
         public sResponse fetch(sRequest request)
         {
@@ -90,7 +77,6 @@ namespace Pesta
         private sResponse makeResponse(WebRequest fetcher)
         {
             HttpWebResponse resp = null;
-            sResponse response = null;
             try
             {
                 resp = (HttpWebResponse)fetcher.GetResponse();
@@ -98,17 +84,36 @@ namespace Pesta
             catch (WebException ex)
             {
                 resp = (HttpWebResponse)((WebException)ex).Response;
-                if (resp == null)
+            }
+            int responseCode = (int)HttpStatusCode.GatewayTimeout;
+            MemoryStream memoryStream = new MemoryStream(0x10000);
+            WebHeaderCollection headers;
+            if (resp != null)
+            {
+                headers = resp.Headers;
+                responseCode = (int)resp.StatusCode;
+                byte[] buffer = new byte[0x1000];
+                int bytes;
+                using (Stream responseStream = resp.GetResponseStream())
                 {
-                    throw ex;
+                    while ((bytes = responseStream.Read(buffer, 0, buffer.Length)) > 0)
+                    {
+                        memoryStream.Write(buffer, 0, bytes);
+                    }
+                    memoryStream.Close();
                 }
             }
-            finally
+            else
             {
-                response = new sResponse(resp);
-                resp.Close();
+                headers = new WebHeaderCollection(); 
             }
-            return response;
+            
+            byte[] body = memoryStream.ToArray();
+            return new HttpResponseBuilder()
+                    .setHttpStatusCode(responseCode)
+                    .setResponse(body)
+                    .addAllHeaders(headers)
+                    .create();
         }
     } 
 }

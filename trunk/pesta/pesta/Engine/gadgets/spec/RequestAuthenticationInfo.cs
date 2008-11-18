@@ -20,39 +20,42 @@
 using System;
 using System.Collections.Generic;
 
-/// <summary>
-/// Summary description for RequestAuthenticationInfo
-/// </summary>
-/// <remarks>
-/// <para>
-///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
-/// </para>
-/// </remarks>
-public interface RequestAuthenticationInfo
+namespace Pesta
 {
-    /**
-   * @return The type of authentication to use.
-   */
-    AuthType getAuthType();
+    /// <summary>
+    /// Summary description for RequestAuthenticationInfo
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    /// </para>
+    /// </remarks>
+    public interface RequestAuthenticationInfo
+    {
+        /**
+       * @return The type of authentication to use.
+       */
+        AuthType getAuthType();
 
-    /**
-     * @return The destination URI for making authenticated requests to.
-     */
-    Uri getHref();
+        /**
+         * @return The destination URI for making authenticated requests to.
+         */
+        Uri getHref();
 
-    /**
-     * @return True if owner signing is needed.
-     */
-    bool isSignOwner();
+        /**
+         * @return True if owner signing is needed.
+         */
+        bool isSignOwner();
 
 
-    /**
-     * @return True if viewer signing is needed.
-     */
-    bool isSignViewer();
+        /**
+         * @return True if viewer signing is needed.
+         */
+        bool isSignViewer();
 
-    /**
-     * @return A map of all relevant auth-related attributes.
-     */
-    Dictionary<String, String> getAttributes();
+        /**
+         * @return A map of all relevant auth-related attributes.
+         */
+        Dictionary<String, String> getAttributes();
+    } 
 }
