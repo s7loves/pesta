@@ -75,11 +75,12 @@ if(typeof params.VIEWER_SIGNED!=="undefined"){signViewer=params.VIEWER_SIGNED
 if(httpMethod==="POST"&&!headers["Content-Type"]){headers["Content-Type"]="application/x-www-form-urlencoded"
 }var urlParams=gadgets.util.getUrlParameters();
 var paramData={url:url,httpMethod:httpMethod,headers:gadgets.io.encodeValues(headers,false),postData:params.POST_DATA||"",authz:auth||"",st:st||"",contentType:params.CONTENT_TYPE||"TEXT",numEntries:params.NUM_ENTRIES||"3",getSummaries:!!params.GET_SUMMARIES,signOwner:signOwner,signViewer:signViewer,gadget:urlParams.url,container:urlParams.container||urlParams.synd||"default",bypassSpecCache:gadgets.util.getUrlParameters().nocache||""};
-if(params.AUTHORIZATION==="OAUTH"){paramData.oauthState=oauthState||"";
+if(auth==="oauth"||auth==="signed"){paramData.oauthState=oauthState||"";
 for(opt in params){if(params.hasOwnProperty(opt)){if(opt.indexOf("OAUTH_")===0){paramData[opt]=params[opt]
-}}}}if(!respondWithPreload(paramData,params,callback,processResponse)){if(httpMethod==="GET"&&refreshInterval>0){var extraparams="?refresh="+refreshInterval+"&"+gadgets.io.encodeValues(paramData);
-makeXhrRequest(url,config.jsonProxyUrl+extraparams,callback,null,"GET",params,processResponse)
-}else{makeXhrRequest(url,config.jsonProxyUrl,callback,gadgets.io.encodeValues(paramData),"POST",params,processResponse)
+}}}}var proxyUrl=config.jsonProxyUrl.replace("%host%",document.location.host);
+if(!respondWithPreload(paramData,params,callback,processResponse)){if(httpMethod==="GET"&&refreshInterval>0){var extraparams="?refresh="+refreshInterval+"&"+gadgets.io.encodeValues(paramData);
+makeXhrRequest(url,proxyUrl+extraparams,callback,null,"GET",params,processResponse)
+}else{makeXhrRequest(url,proxyUrl,callback,gadgets.io.encodeValues(paramData),"POST",params,processResponse)
 }}},makeNonProxiedRequest:function(relativeUrl,callback,opt_params,opt_contentType){var params=opt_params||{};
 makeXhrRequest(relativeUrl,relativeUrl,callback,params.POST_DATA,params.METHOD,params,processNonProxiedResponse,opt_contentType)
 },clearOAuthState:function(){oauthState=undefined
@@ -96,7 +97,7 @@ buf.push(escape?encodeURIComponent(fields[i]):fields[i])
 var refresh=params.REFRESH_INTERVAL;
 if(refresh===undefined){refresh="3600"
 }var urlParams=gadgets.util.getUrlParameters();
-return config.proxyUrl.replace("%url%",encodeURIComponent(url)).replace("%rawurl%",url).replace("%refresh%",encodeURIComponent(refresh)).replace("%gadget%",encodeURIComponent(urlParams.url)).replace("%container%",encodeURIComponent(urlParams.container||urlParams.synd))
+return config.proxyUrl.replace("%url%",encodeURIComponent(url)).replace("%host%",document.location.host).replace("%rawurl%",url).replace("%refresh%",encodeURIComponent(refresh)).replace("%gadget%",encodeURIComponent(urlParams.url)).replace("%container%",encodeURIComponent(urlParams.container||urlParams.synd))
 }}
 }();
 gadgets.io.RequestParameters=gadgets.util.makeEnum(["METHOD","CONTENT_TYPE","POST_DATA","HEADERS","AUTHORIZATION","NUM_ENTRIES","GET_SUMMARIES","REFRESH_INTERVAL","OAUTH_SERVICE_NAME","OAUTH_TOKEN_NAME","OAUTH_REQUEST_TOKEN","OAUTH_REQUEST_TOKEN_SECRET"]);

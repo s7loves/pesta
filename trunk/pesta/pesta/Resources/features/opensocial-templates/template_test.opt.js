@@ -34,7 +34,7 @@ return D
 return nodeToNormalizedMarkup(B)
 }function assertTemplateDomEquals(A,B){A=normalizeNodeOrMarkup(A);
 B=normalizeNodeOrMarkup(B);
-assertEquals("DOM nodes not equal: \n_ "+A+"\n_ "+B,A,B)
+assertEquals(A,B)
 }function assertTemplateOutput(G,B,A,E){if(E instanceof Array){for(var D=0;
 D<E.length;
 D++){var I='<Templates xmlns:os="uri:unused">'+E[D]+"</Templates>";
@@ -52,8 +52,7 @@ try{var A=os.createNamespace("custom","http://google.com/#custom_new");
 fail("no exception thrown with new URL for the same namespace")
 }catch(D){if(D.isJsUnitException){throw D
 }}}function testSubstitution_text(){var A={title:"count",value:0};
-var B=compileAndRender_("_T_Substitution_text",A);
-assertEquals(A.title+":"+A.value,domutil.getVisibleText(B))
+assertTemplateOutput("<div>${title}:${value}</div>","<div>"+A.title+":"+A.value+"</div>",A)
 }function testSubstitution_attribute(){var B={id:"varInAttr",color:"red",A1:111,text:"click me"};
 var C=compileAndRender_("_T_Substitution_attribute",B);
 var A=C.firstChild;
@@ -86,12 +85,12 @@ assertEquals(B.user.name,H.innerHTML);
 assertContains(B.user.url,H.href);
 var A=J.firstChild.childNodes[2];
 assertEquals(B.user.id,A.innerHTML)
-}}function testConditional_Number(){var A=compileAndRender_("_T_Conditional_Number");
-assertEquals("TRUE",domutil.getVisibleText(A))
-}function testConditional_String(){var A=compileAndRender_("_T_Conditional_String");
-assertEquals("TRUE",domutil.getVisibleText(A))
-}function testConditional_Mixed(){var A=compileAndRender_("_T_Conditional_Mixed");
-assertEquals("TRUE",domutil.getVisibleText(A))
+}}function testConditional_Number(){var A=os.compileTemplateString('<span if="42==42">TRUE</span><span if="!(42==42)">FALSE</span>').render();
+assertEquals("TRUE",domutil.getVisibleTextTrim(A))
+}function testConditional_String(){var A=os.compileTemplateString("<span if=\"'101'=='101'\">TRUE</span><span if=\"'101'!='101'\">FALSE</span>").render();
+assertEquals("TRUE",domutil.getVisibleTextTrim(A))
+}function testConditional_Mixed(){var A=os.compileTemplateString("<span if=\"'101' gt 42\">TRUE</span><span if=\"'101' lt 42\">FALSE</span>").render();
+assertEquals("TRUE",domutil.getVisibleTextTrim(A))
 }function testRepeat(){var C={entries:[{data:"This"},{data:"is"},{data:"an"},{data:"array"},{data:"of"},{data:"data."}]};
 var D=compileAndRender_("_T_Repeat",C);
 assertEquals(C.entries.length,D.childNodes.length);
@@ -113,15 +112,16 @@ assertEquals(C.value,D.getAttribute("value"))
 }}function testList(){os.Container.registerTag("custom:list");
 var A=compileAndRender_("_T_List");
 assertEquals("helloworld",domutil.getVisibleText(A))
-}function testTag_input(){var C=os.createNamespace("custom","http://google.com/#custom");
-C.input=function(G,E){var F=document.createElement("input");
-F.value=E[G.getAttribute("value")];
-return F
+}function testTag_input(){var E=os.createNamespace("custom","http://google.com/#custom");
+E.input=function(H,F){var G=document.createElement("input");
+G.value=F[H.getAttribute("value")];
+return G
 };
-var B={data:"Some default data"};
-var D=compileAndRender_("_T_Tag_input",B);
-var A=D.firstChild.firstChild;
-assertEquals(A.value,B.data)
+var D={data:"Some default data"};
+var C=os.compileTemplateString('<custom:input value="data"/>');
+var B=C.render(D);
+var A=B.getElementsByTagName("input")[0];
+assertEquals(A.value,D.data)
 }function testTag_blink(){var B=os.createNamespace("custom","http://google.com/#custom");
 B.blink=function(G,F){var E=document.createElement("span");
 E.appendChild(G.firstChild);
@@ -228,4 +228,19 @@ A("[")
 var A=B.render({foo:"Hello <b>world</b>!"});
 var C=A.getElementsByTagName("b");
 assertEquals(1,C.length)
-}function testOnAttachAttribute(){};
+}function testOnAttachAttribute(){var B=os.compileTemplateString("<div onAttach=\"this.title='bar'\"/>");
+var A=document.createElement("div");
+B.renderInto(A);
+assertEquals("bar",A.firstChild.title)
+}function testSpacesAmongTags(){var A=function(C){var B=os.compileTemplateString(C).render();
+assertEquals("Hello world!",domutil.getVisibleTextTrim(B))
+};
+os.Loader.loadContent('<Templates xmlns:os="uri:unused"><Template tag="os:msg">${My.text}</Template></Templates>');
+A('<div><os:msg text="Hello"/>\n <os:msg text="world!"/></div>');
+A('<div><os:msg text="Hello"/>  <os:msg text="world!"/></div>');
+A('<div> <os:msg text="Hello"/>  <os:msg text="world!"/>\n</div>');
+os.Loader.loadContent('<Templates xmlns:os="uri:unused"><Template tag="os:msg"><os:Render/></Template></Templates>');
+A("<div><os:msg>Hello</os:msg>\n <os:msg>world!</os:msg>\n</div>");
+A("<div><os:msg>Hello</os:msg>  <os:msg>world!</os:msg></div>");
+A("<div>\n  <os:msg>Hello</os:msg>  <os:msg>world!</os:msg>\n</div>")
+};

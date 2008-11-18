@@ -22,32 +22,30 @@ os.getRequiredNamespaces=function(A){var C="";
 for(var B in os.nsurls_){if(A.indexOf("<"+B+":")>=0&&A.indexOf("xmlns:"+B+":")<0){C+=" xmlns:"+B+'="'+os.nsurls_[B]+'"'
 }}return C
 };
-os.checkCustom_=function(D){var B;
-if((B=D.indexOf(":"))<0){return null
-}var C=D.substring(0,B);
-var A=D.substring(B+1);
-if(os.getCustomTag(C,A)){return[C,A]
-}return null
-};
 os.defineBuiltinTags=function(){var C=os.getNamespace("os")||os.createNamespace("os","http://opensocial.com/#template");
-C.Render=function(E,I,D){var J=D.getVariable(os.VAR_parentnode);
+C.Render=function(E,I,D){var K=D.getVariable(os.VAR_parentnode);
 var G=E.getAttribute("content")||"*";
-var L=os.getValueFromNode_(J,G);
-if(!L){return""
-}else{if(typeof (L)=="string"){var F=document.createTextNode(L);
-L=[];
-L.push(F)
-}else{if(!isArray(L)){var K=[];
+var M=os.getValueFromNode_(K,G);
+if(!M){return""
+}else{if(typeof (M)=="string"){var F=document.createTextNode(M);
+M=[];
+M.push(F)
+}else{if(!isArray(M)){var L=[];
 for(var H=0;
-H<L.childNodes.length;
-H++){K.push(L.childNodes[H])
-}L=K
-}else{if(G!="*"&&L.length==1&&L[0].nodeType==DOM_ELEMENT_NODE){var K=[];
+H<M.childNodes.length;
+H++){L.push(M.childNodes[H])
+}M=L
+}else{if(G!="*"&&M.length==1&&M[0].nodeType==DOM_ELEMENT_NODE){var L=[];
 for(var H=0;
-H<L[0].childNodes.length;
-H++){K.push(L[0].childNodes[H])
-}L=K
-}}}}return L
+H<M[0].childNodes.length;
+H++){L.push(M[0].childNodes[H])
+}M=L
+}}}}if(os.isIe){for(var H=0;
+H<M.length;
+H++){if(M[H].nodeType==DOM_TEXT_NODE){var J=os.trimWhitespaceForIE_(M[H].nodeValue,(H==0),(H==M.length-1));
+if(J!=M[H].nodeValue){M[H].parentNode.removeChild(M[H]);
+M[H]=document.createTextNode(J)
+}}}}return M
 };
 C.render=C.RenderAll=C.renderAll=C.Render;
 C.Html=function(E){var D=E.code?""+E.code:E.getAttribute("code")||"";

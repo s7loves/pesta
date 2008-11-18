@@ -2,22 +2,24 @@ os.Container={};
 os.Container.inlineTemplates_=[];
 os.Container.domLoadCallbacks_=null;
 os.Container.domLoaded_=false;
-os.Container.registerDomLoadListener_=function(){if(navigator.product=="Gecko"){window.addEventListener("DOMContentLoaded",os.Container.onDomLoad_,false)
-}if(window.addEventListener){window.addEventListener("load",os.Container.onDomLoad_,false)
-}else{if(!window.body){setTimeout(arguments.callee,0);
+os.Container.registerDomLoadListener_=function(){var A=window.gadgets;
+if(A&&A.util){A.util.registerOnLoadHandler(os.Container.onDomLoad_)
+}else{if(navigator.product=="Gecko"){window.addEventListener("DOMContentLoaded",os.Container.onDomLoad_,false)
+}}if(window.addEventListener){window.addEventListener("load",os.Container.onDomLoad_,false)
+}else{if(!document.body){setTimeout(arguments.callee,0);
 return 
-}var A=window.onload||function(){};
-window.onload=function(){A();
+}var B=window.onload||function(){};
+window.onload=function(){B();
 os.Container.onDomLoad_()
 }
-}os.Container.domLoadCallbacks_=[]
-};
+}};
 os.Container.onDomLoad_=function(){if(os.Container.domLoaded_){return 
 }while(os.Container.domLoadCallbacks_.length){os.Container.domLoadCallbacks_.pop()()
 }os.Container.domLoaded_=true
 };
 os.Container.executeOnDomLoad=function(A){if(os.Container.domLoaded_){setTimeout(A,0)
-}else{if(os.Container.domLoadCallbacks_==null){os.Container.registerDomLoadListener_()
+}else{if(os.Container.domLoadCallbacks_==null){os.Container.domLoadCallbacks_=[];
+os.Container.registerDomLoadListener_()
 }os.Container.domLoadCallbacks_.push(A)
 }};
 os.Container.registerDocumentTemplates=function(E){var F=E||document;

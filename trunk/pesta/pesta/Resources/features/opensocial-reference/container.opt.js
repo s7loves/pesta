@@ -5,15 +5,19 @@ opensocial.Container.setContainer=function(A){opensocial.Container.container_=A
 opensocial.Container.get=function(){return opensocial.Container.container_
 };
 opensocial.Container.prototype.getEnvironment=function(){};
-opensocial.Container.prototype.requestSendMessage=function(A,D,B,C){if(B){B(new opensocial.ResponseItem(null,null,opensocial.ResponseItem.Error.NOT_IMPLEMENTED,null))
+opensocial.Container.prototype.requestSendMessage=function(A,D,B,C){if(B){window.setTimeout(function(){B(new opensocial.ResponseItem(null,null,opensocial.ResponseItem.Error.NOT_IMPLEMENTED,null))
+},0)
 }};
-opensocial.Container.prototype.requestShareApp=function(A,D,B,C){if(B){B(new opensocial.ResponseItem(null,null,opensocial.ResponseItem.Error.NOT_IMPLEMENTED,null))
+opensocial.Container.prototype.requestShareApp=function(A,D,B,C){if(B){window.setTimeout(function(){B(new opensocial.ResponseItem(null,null,opensocial.ResponseItem.Error.NOT_IMPLEMENTED,null))
+},0)
 }};
-opensocial.Container.prototype.requestCreateActivity=function(C,B,A){if(A){A(new opensocial.ResponseItem(null,null,opensocial.ResponseItem.Error.NOT_IMPLEMENTED,null))
+opensocial.Container.prototype.requestCreateActivity=function(C,B,A){if(A){window.setTimeout(function(){A(new opensocial.ResponseItem(null,null,opensocial.ResponseItem.Error.NOT_IMPLEMENTED,null))
+},0)
 }};
 opensocial.Container.prototype.hasPermission=function(A){return false
 };
-opensocial.Container.prototype.requestPermission=function(B,C,A){if(A){A(new opensocial.ResponseItem(null,null,opensocial.ResponseItem.Error.NOT_IMPLEMENTED,null))
+opensocial.Container.prototype.requestPermission=function(B,C,A){if(A){window.setTimeout(function(){A(new opensocial.ResponseItem(null,null,opensocial.ResponseItem.Error.NOT_IMPLEMENTED,null))
+},0)
 }};
 opensocial.Container.prototype.requestData=function(A,B){};
 opensocial.Container.prototype.newFetchPersonRequest=function(B,A){};
@@ -52,7 +56,7 @@ return opensocial.Container.escape(D,C,false)
 opensocial.Container.escape=function(C,B,A){if(B&&B.escapeType=="none"){return C
 }else{return gadgets.util.escape(C,A)
 }};
-var caja;
+var cajita;
 var ___;
 var attachDocumentStub;
 var uriCallback={rewrite:function rewrite(B,A){B=String(B);
@@ -61,9 +65,13 @@ if(/^#/.test(B)){return"#"+encodeURIComponent(decodeURIComponent(B.substring(1))
 }}return null
 }};
 opensocial.Container.prototype.enableCaja=function(){___=window.___;
-caja=window.caja;
+cajita=window.cajita;
+valijaMaker=window.valijaMaker;
 attachDocumentStub=window.attachDocumentStub;
-var A=caja.copy(___.sharedImports);
+var A=___.copy(___.sharedImports);
+A.outers=A;
+A.console=console;
+A.$v=___.asSimpleFunc(valijaMaker)(A);
 ___.getNewModuleHandler().setImports(A);
 attachDocumentStub("-g___",uriCallback,A);
 var D=document.createElement("div");

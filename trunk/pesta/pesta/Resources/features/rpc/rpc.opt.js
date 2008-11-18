@@ -1,138 +1,166 @@
 var gadgets=gadgets||{};
-gadgets.rpc=function(){var N="__cb";
-var L="";
-var Y="__g2c_rpc";
-var E="__c2g_rpc";
-var B={};
-var S=[];
+gadgets.rpc=function(){var R="__cb";
+var P="";
+var d="__g2c_rpc";
+var F="__c2g_rpc";
+var H="GRPC____NIXVBS_wrapper";
+var B="GRPC____NIXVBS_get_wrapper";
+var Y="GRPC____NIXVBS_handle_message";
+var O="GRPC____NIXVBS_create_channel";
+var J={};
 var C={};
-var Q={};
-var H={};
-var J=0;
-var Z={};
-var P={};
+var W=[];
 var D={};
-var X={};
-if(gadgets.util){X=gadgets.util.getUrlParameters()
-}H[".."]=X.rpctoken||X.ifpctok||0;
-function U(){return typeof window.postMessage==="function"?"wpm":typeof document.postMessage==="function"?"dpm":navigator.product==="Gecko"?"fe":"ifpc"
-}function W(){if(G==="dpm"||G==="wpm"){window.addEventListener("message",function(a){O(gadgets.json.parse(a.data))
+var U={};
+var K={};
+var M=0;
+var e={};
+var T={};
+var E={};
+var c={};
+if(gadgets.util){c=gadgets.util.getUrlParameters()
+}K[".."]=c.rpctoken||c.ifpctok||0;
+function Z(){return typeof window.postMessage==="function"?"wpm":typeof document.postMessage==="function"?"dpm":window.ActiveXObject?"nix":navigator.product==="Gecko"?"fe":"ifpc"
+}function b(){if(I==="dpm"||I==="wpm"){window.addEventListener("message",function(i){S(gadgets.json.parse(i.data))
 },false)
-}}var G=U();
-W();
-B[L]=function(){throw new Error("Unknown RPC service: "+this.s)
+}if(I==="nix"){if(typeof window[B]!=="unknown"){window[Y]=function(i){S(gadgets.json.parse(i))
 };
-B[N]=function(b,a){var c=Z[b];
-if(c){delete Z[b];
-c(a)
+window[O]=function(i,k,j){if(K[i]==j){J[i]=k
 }};
-function K(a){if(P[a]){return 
-}if(G==="fe"){try{var c=document.getElementById(a);
-c[Y]=function(d){O(gadgets.json.parse(d))
-}
-}catch(b){}}P[a]=true
-}function R(c){var e=gadgets.json.stringify;
-var a=[];
-for(var d=0,b=c.length;
-d<b;
-++d){a.push(encodeURIComponent(e(c[d])))
-}return a.join("&")
-}function O(b){if(b&&typeof b.s==="string"&&typeof b.f==="string"&&b.a instanceof Array){if(H[b.f]){if(H[b.f]!=b.t){throw new Error("Invalid auth token.")
-}}if(b.c){b.callback=function(c){gadgets.rpc.call(b.f,N,null,b.c,c)
-}
-}var a=(B[b.s]||B[L]).apply(b,b.a);
-if(b.c&&typeof a!="undefined"){gadgets.rpc.call(b.f,N,null,b.c,a)
-}}}function A(b,c,i,d,g){try{if(i!=".."){var a=window.frameElement;
-if(typeof a[Y]==="function"){if(typeof a[Y][E]!=="function"){a[Y][E]=function(e){O(gadgets.json.parse(e))
-}
-}a[Y](d);
-return 
-}}else{var h=document.getElementById(b);
-if(typeof h[Y]==="function"&&typeof h[Y][E]==="function"){h[Y][E](d);
-return 
-}}}catch(f){}V(b,c,i,d,g)
-}function V(a,b,g,c,d){var f=gadgets.rpc.getRelayUrl(a);
-if(!f){throw new Error("No relay file assigned for IFPC")
-}var e=null;
-if(Q[a]){e=[f,"#",R([g,J,1,0,R([g,b,"","",g].concat(d))])].join("")
-}else{e=[f,"#",a,"&",g,"@",J,"&1&0&",encodeURIComponent(c)].join("")
-}I(e)
-}function I(d){var b;
-for(var a=S.length-1;
-a>=0;
---a){var f=S[a];
-try{if(f&&(f.recyclable||f.readyState==="complete")){f.parentNode.removeChild(f);
-if(window.ActiveXObject){S[a]=f=null;
-S.splice(a,1)
-}else{f.recyclable=false;
-b=f;
-break
-}}}catch(c){}}if(!b){b=document.createElement("iframe");
-b.style.border=b.style.width=b.style.height="0px";
-b.style.visibility="hidden";
-b.style.position="absolute";
-b.onload=function(){this.recyclable=true
+var g="Class "+H+"\n Private m_Intended\nPrivate m_Auth\nPublic Sub SetIntendedName(name)\n If isEmpty(m_Intended) Then\nm_Intended = name\nEnd If\nEnd Sub\nPublic Sub SetAuth(auth)\n If isEmpty(m_Auth) Then\nm_Auth = auth\nEnd If\nEnd Sub\nPublic Sub SendMessage(data)\n "+Y+"(data)\nEnd Sub\nPublic Function GetAuthToken()\n GetAuthToken = m_Auth\nEnd Function\nPublic Sub CreateChannel(channel, auth)\n Call "+O+"(m_Intended, channel, auth)\nEnd Sub\nEnd Class\nFunction "+B+"(name, auth)\nDim wrap\nSet wrap = New "+H+"\nwrap.SetIntendedName name\nwrap.SetAuth auth\nSet "+B+" = wrap\nEnd Function";
+try{window.execScript(g,"vbscript")
+}catch(h){I="ifpc"
+}}}}var I=Z();
+b();
+C[P]=function(){throw new Error("Unknown RPC service: "+this.s)
 };
-S.push(b)
-}b.src=d;
-setTimeout(function(){document.body.appendChild(b)
+C[R]=function(h,g){var i=e[h];
+if(i){delete e[h];
+i(g)
+}};
+function N(h,g){if(T[h]){return 
+}if(I==="fe"){try{var j=document.getElementById(h);
+j[d]=function(l){S(gadgets.json.parse(l))
+}
+}catch(i){}}if(I==="nix"){try{var j=document.getElementById(h);
+var k=window[B](h,g);
+j.contentWindow.opener=k
+}catch(i){}}T[h]=true
+}function V(k){var m=gadgets.json.stringify;
+var g=[];
+for(var l=0,h=k.length;
+l<h;
+++l){g.push(encodeURIComponent(m(k[l])))
+}return g.join("&")
+}function S(h){if(h&&typeof h.s==="string"&&typeof h.f==="string"&&h.a instanceof Array){if(K[h.f]){if(K[h.f]!=h.t){throw new Error("Invalid auth token.")
+}}if(h.c){h.callback=function(i){gadgets.rpc.call(h.f,R,null,h.c,i)
+}
+}var g=(C[h.s]||C[P]).apply(h,h.a);
+if(h.c&&typeof g!="undefined"){gadgets.rpc.call(h.f,R,null,h.c,g)
+}}}function f(g,j,m,k){try{if(m!=".."){var i=J[".."];
+if(!i&&window.opener&&"GetAuthToken" in window.opener){i=window.opener;
+if(i.GetAuthToken()==K[".."]){var h=K[".."];
+i.CreateChannel(window[B]("..",h),h);
+J[".."]=i;
+window.opener=null
+}}if(i){i.SendMessage(k);
+return 
+}}else{if(J[g]){J[g].SendMessage(k);
+return 
+}}}catch(l){}a(g,j,m,k)
+}function A(h,i,n,j,l){try{if(n!=".."){var g=window.frameElement;
+if(typeof g[d]==="function"){if(typeof g[d][F]!=="function"){g[d][F]=function(o){S(gadgets.json.parse(o))
+}
+}g[d](j);
+return 
+}}else{var m=document.getElementById(h);
+if(typeof m[d]==="function"&&typeof m[d][F]==="function"){m[d][F](j);
+return 
+}}}catch(k){}a(h,i,n,j,l)
+}function a(g,h,m,i,j){var l=gadgets.rpc.getRelayUrl(g);
+if(!l){throw new Error("No relay file assigned for IFPC")
+}var k=null;
+if(U[g]){k=[l,"#",V([m,M,1,0,V([m,h,"","",m].concat(j))])].join("")
+}else{k=[l,"#",g,"&",m,"@",M,"&1&0&",encodeURIComponent(i)].join("")
+}L(k)
+}function L(k){var h;
+for(var g=W.length-1;
+g>=0;
+--g){var l=W[g];
+try{if(l&&(l.recyclable||l.readyState==="complete")){l.parentNode.removeChild(l);
+if(window.ActiveXObject){W[g]=l=null;
+W.splice(g,1)
+}else{l.recyclable=false;
+h=l;
+break
+}}}catch(j){}}if(!h){h=document.createElement("iframe");
+h.style.border=h.style.width=h.style.height="0px";
+h.style.visibility="hidden";
+h.style.position="absolute";
+h.onload=function(){this.recyclable=true
+};
+W.push(h)
+}h.src=k;
+setTimeout(function(){document.body.appendChild(h)
 },0)
-}function F(b,d){if(typeof D[b]==="undefined"){D[b]=false;
-var c=null;
-if(b===".."){c=parent
-}else{c=frames[b]
-}try{D[b]=c.gadgets.rpc.receiveSameDomain
-}catch(a){}}if(typeof D[b]==="function"){D[b](d);
+}function G(h,j){if(typeof E[h]==="undefined"){E[h]=false;
+var i=null;
+if(h===".."){i=parent
+}else{i=frames[h]
+}try{E[h]=i.gadgets.rpc.receiveSameDomain
+}catch(g){}}if(typeof E[h]==="function"){E[h](j);
 return true
 }return false
-}if(gadgets.config){function T(a){if(a.rpc.parentRelayUrl.substring(0,7)==="http://"){C[".."]=a.rpc.parentRelayUrl
-}else{var e=document.location.search.substring(0).split("&");
-var d="";
-for(var b=0,c;
-c=e[b];
-++b){if(c.indexOf("parent=")===0){d=decodeURIComponent(c.substring(7));
+}if(gadgets.config){function X(g){if(g.rpc.parentRelayUrl.substring(0,7)==="http://"){D[".."]=g.rpc.parentRelayUrl
+}else{var l=document.location.search.substring(0).split("&");
+var k="";
+for(var h=0,j;
+j=l[h];
+++h){if(j.indexOf("parent=")===0){k=decodeURIComponent(j.substring(7));
 break
-}}C[".."]=d+a.rpc.parentRelayUrl
-}Q[".."]=!!a.rpc.useLegacyProtocol
-}var M={parentRelayUrl:gadgets.config.NonEmptyStringValidator};
-gadgets.config.register("rpc",M,T)
-}return{register:function(b,a){if(b==N){throw new Error("Cannot overwrite callback service")
-}if(b==L){throw new Error("Cannot overwrite default service: use registerDefault")
-}B[b]=a
-},unregister:function(a){if(a==N){throw new Error("Cannot delete callback service")
-}if(a==L){throw new Error("Cannot delete default service: use unregisterDefault")
-}delete B[a]
-},registerDefault:function(a){B[""]=a
-},unregisterDefault:function(){delete B[""]
-},call:function(h,d,i,g){++J;
-h=h||"..";
-if(i){Z[J]=i
-}var f="..";
-if(h===".."){f=window.name
-}var c={s:d,f:f,c:i?J:0,a:Array.prototype.slice.call(arguments,3),t:H[h]};
-if(F(h,c)){return 
-}var a=gadgets.json.stringify(c);
-var b=G;
-if(Q[h]){b="ifpc"
-}switch(b){case"dpm":var j=h===".."?parent.document:frames[h].document;
-j.postMessage(a);
+}}D[".."]=k+g.rpc.parentRelayUrl
+}U[".."]=!!g.rpc.useLegacyProtocol
+}var Q={parentRelayUrl:gadgets.config.NonEmptyStringValidator};
+gadgets.config.register("rpc",Q,X)
+}return{register:function(h,g){if(h==R){throw new Error("Cannot overwrite callback service")
+}if(h==P){throw new Error("Cannot overwrite default service: use registerDefault")
+}C[h]=g
+},unregister:function(g){if(g==R){throw new Error("Cannot delete callback service")
+}if(g==P){throw new Error("Cannot delete default service: use unregisterDefault")
+}delete C[g]
+},registerDefault:function(g){C[""]=g
+},unregisterDefault:function(){delete C[""]
+},call:function(n,j,o,m){++M;
+n=n||"..";
+if(o){e[M]=o
+}var l="..";
+if(n===".."){l=window.name
+}var i={s:j,f:l,c:o?M:0,a:Array.prototype.slice.call(arguments,3),t:K[n]};
+if(G(n,i)){return 
+}var g=gadgets.json.stringify(i);
+var h=I;
+if(U[n]){h="ifpc"
+}switch(h){case"dpm":var p=n===".."?parent.document:frames[n].document;
+p.postMessage(g);
 break;
-case"wpm":var e=h===".."?parent:frames[h];
-e.postMessage(a,C[h]);
+case"wpm":var k=n===".."?parent:frames[n];
+k.postMessage(g,D[n]);
 break;
-case"fe":A(h,d,f,a,c.a);
+case"nix":f(n,j,l,g);
 break;
-default:V(h,d,f,a,c.a);
+case"fe":A(n,j,l,g,i.a);
+break;
+default:a(n,j,l,g,i.a);
 break
-}},getRelayUrl:function(a){return C[a]
-},setRelayUrl:function(b,a,c){C[b]=a;
-Q[b]=!!c
-},setAuthToken:function(a,b){H[a]=b;
-K(a)
-},getRelayChannel:function(){return G
-},receive:function(a){if(a.length>4){O(gadgets.json.parse(decodeURIComponent(a[a.length-1])))
-}},receiveSameDomain:function(a){a.a=Array.prototype.slice.call(a.a);
-window.setTimeout(function(){O(a)
+}},getRelayUrl:function(g){return D[g]
+},setRelayUrl:function(h,g,i){D[h]=g;
+U[h]=!!i
+},setAuthToken:function(g,h){K[g]=h;
+N(g,h)
+},getRelayChannel:function(){return I
+},receive:function(g){if(g.length>4){S(gadgets.json.parse(decodeURIComponent(g[g.length-1])))
+}},receiveSameDomain:function(g){g.a=Array.prototype.slice.call(g.a);
+window.setTimeout(function(){S(g)
 },0)
 }}
 }();

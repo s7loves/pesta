@@ -30,6 +30,6 @@ C<D.length;
 ++C){var E=D[C].cssRules||D[C].rules;
 if(E){for(var A=0;
 A<E.length;
-++A){if(E[A].selectorText==B){return E[A]
+++A){if(E[A].selectorText==B||E[A].selectorText==B.toLowerCase()){return E[A]
 }}}}return null
 };
