@@ -19,15 +19,19 @@
 #endregion
 using System;
 
-/// <summary>
-/// Summary description for LinkRewriter
-/// </summary>
-/// <remarks>
-/// <para>
-///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
-/// </para>
-/// </remarks>
-public interface LinkRewriter
+namespace Pesta
 {
-    String rewrite(String link, Uri context);
+    /// <summary>
+    /// Summary description for LinkRewriter
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    /// </para>
+    /// </remarks>
+    public interface LinkRewriter
+    {
+        String rewrite(String link, Uri context);
+    }
 }
+

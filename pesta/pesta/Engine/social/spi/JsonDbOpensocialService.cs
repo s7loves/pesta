@@ -38,7 +38,7 @@ namespace Pesta
     /// </remarks>
     public class JsonDbOpensocialService : PersonService, ActivityService, AppDataService
     {
-        public readonly static string dbLocation = AppDomain.CurrentDomain.BaseDirectory + ConfigurationManager.AppSettings["shindig.canonical.json.db"];
+        public readonly static string dbLocation = AppDomain.CurrentDomain.BaseDirectory + ContainerConfig.getConfigurationValue("shindig.canonical.json.db");
         public readonly static JsonDbOpensocialService Instance = new JsonDbOpensocialService();
         protected JsonDbOpensocialService()
         {

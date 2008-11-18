@@ -24,6 +24,7 @@ using Jayrock.Json;
 using System.IO;
 using System.Text;
 using Jayrock.Json.Conversion;
+using System.Text.RegularExpressions;
 
 namespace Pesta
 {
@@ -37,7 +38,10 @@ namespace Pesta
     /// </remarks>
     internal class RpcServlet : IHttpHandler
     {
-        private static int MAX_REQUEST_SIZE = 1024 * 128;
+        private static readonly int POST_REQUEST_MAX_SIZE = 1024 * 128;
+        private static readonly String GET_REQUEST_REQ_PARAM = "req";
+        private static readonly String GET_REQUEST_CALLBACK_PARAM = "callback";
+        private static readonly Regex GET_REQUEST_CALLBACK_PATTERN = new Regex("[A-Za-z_\\.]+", RegexOptions.Compiled);
         private JsonRpcHandler jsonHandler = JsonRpcHandler.Instance;
 
         public void ProcessRequest(HttpContext context)
@@ -45,59 +49,136 @@ namespace Pesta
             HttpRequest request = context.Request;
             HttpResponse response = context.Response;
 
-            int length = request.ContentLength;
-            if (length <= 0)
+            if (request.HttpMethod == "GET")
             {
-                response.StatusCode = (int)HttpStatusCode.LengthRequired;
-                return;
-            }
-            if (length > MAX_REQUEST_SIZE)
-            {
-                response.StatusCode = (int)HttpStatusCode.RequestEntityTooLarge;
-                return;
-            }
+                String reqValue;
+                String callbackValue;
 
-            MemoryStream memoryStream = new MemoryStream(0x10000);
-            byte[] buffer = new byte[0x1000];
-            int bytes;
-            while ((bytes = request.InputStream.Read(buffer, 0, buffer.Length)) > 0)
-            {
-                memoryStream.Write(buffer, 0, bytes);
-            }
-            memoryStream.Close();
-            byte[] body = memoryStream.ToArray();
-            if (body.Length != length)
-            {
-                response.StatusCode = (int)HttpStatusCode.BadRequest;
-                return;
-            }
+                try
+                {
+                    reqValue = validateParameterValue(request, GET_REQUEST_REQ_PARAM);
+                    callbackValue = validateParameterValue(request, GET_REQUEST_CALLBACK_PARAM);
+                    if (!GET_REQUEST_CALLBACK_PATTERN.Match(callbackValue).Success)
+                    {
+                        throw new Exception("Wrong format for parameter '" +
+                            GET_REQUEST_CALLBACK_PARAM + "' specified. Expected: " +
+                            GET_REQUEST_CALLBACK_PATTERN.ToString());
+                    }
 
-            try
-            {
-                Encoding encoding = request.ContentEncoding;
-                JsonObject req = JsonConvert.Import(encoding.GetString(body)) as JsonObject;
+                }
+                catch (Exception e)
+                {
+                    response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    return;
+                }
 
+                Result result = process(request, response, Encoding.UTF8.GetBytes(reqValue));
+                response.Output.Write(result.isSuccess()
+                    ? callbackValue + "(" + result.getOutput() + ")"
+                    : result.getOutput());
+            }
+            else if (request.HttpMethod == "POST")
+            {
+                int length = request.ContentLength;
+                if (length <= 0)
+                {
+                    response.StatusCode = (int)HttpStatusCode.LengthRequired;
+                    return;
+                }
+                if (length > POST_REQUEST_MAX_SIZE)
+                {
+                    response.StatusCode = (int)HttpStatusCode.RequestEntityTooLarge;
+                    return;
+                }
+
+                MemoryStream memoryStream = new MemoryStream(0x10000);
+                byte[] buffer = new byte[0x1000];
+                int bytes;
+                while ((bytes = request.InputStream.Read(buffer, 0, buffer.Length)) > 0)
+                {
+                    memoryStream.Write(buffer, 0, bytes);
+                }
+                memoryStream.Close();
+                byte[] body = memoryStream.ToArray();
+                if (body.Length != length) 
+                {
+                    response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    return;
+                }
+
+                Result result = process(request, response, body);
+                response.Output.Write(result.getOutput());
+            }
+        }
+
+        private String validateParameterValue(HttpRequest request, String parameter)
+        {
+            String result = request.Params[parameter];
+            if (result == null) 
+            {
+                throw new Exception("No parameter '" + parameter + "' specified.");
+            }
+            return result;
+        }
+      
+        private Result process(HttpRequest request, HttpResponse response, byte[] body) 
+        {
+            try 
+            {
+                String encoding = getRequestCharacterEncoding(request);
+                JsonObject req = JsonConvert.Import(Encoding.UTF8.GetString(body)) as JsonObject;
                 JsonObject resp = jsonHandler.process(req);
                 response.StatusCode = (int)HttpStatusCode.OK;
                 response.ContentType = "application/json; charset=utf-8";
                 response.AddHeader("Content-Disposition", "attachment;filename=rpc.txt");
-                response.Output.Write(resp.ToString());
-            }
-            catch (DecoderFallbackException e)
-            {
-                response.StatusCode = (int)HttpStatusCode.BadRequest;
-                response.Output.Write("Unsupported input character set: " + e.Message);
-
+                return new Result(resp.ToString(), true);
             }
             catch (JsonException e)
             {
                 response.StatusCode = (int)HttpStatusCode.BadRequest;
-                response.Output.Write("Malformed JSON request: " + e.Message);
-            }
+                return new Result("Malformed JSON request.", false);
+            } 
             catch (RpcException e)
             {
                 response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                response.Output.Write(e.Message);
+                return new Result(e.Message, false);
+            }
+            catch (Exception e)
+            {
+                response.StatusCode = (int)HttpStatusCode.BadRequest;
+                return new Result("Unsupported input character set", false);
+            }
+        }
+      
+        private String getRequestCharacterEncoding(HttpRequest request) 
+        {
+            String encoding = request.ContentEncoding.WebName;
+            if (encoding == null) 
+            {
+                encoding = "UTF-8";
+            }
+            return encoding;
+        }
+
+        private struct Result
+        {
+            private readonly String output;
+            private readonly bool success;
+
+            public Result(String output, bool success)
+            {
+                this.output = output;
+                this.success = success;
+            }
+
+            public String getOutput() 
+            {
+                return output;
+            }
+
+            public bool isSuccess()
+            {
+                return success;
             }
         }
 

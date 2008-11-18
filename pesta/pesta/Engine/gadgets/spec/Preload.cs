@@ -34,8 +34,10 @@ namespace Pesta
     /// </remarks>
     public class Preload : RequestAuthenticationInfo
     {
-        private static readonly List<String> KNOWN_ATTRIBUTES
-                    = new List<string>() { "views", "href", "authz", "sign_owner", "sign_viewer" };
+        private static readonly HashSet<String> KNOWN_ATTRIBUTES
+                    = new HashSet<string>() { "views", "href", "authz", "sign_owner", "sign_viewer" };
+        
+        private readonly Uri _base;
 
         /**
         * Creates a new Preload from an xml node.
@@ -43,8 +45,9 @@ namespace Pesta
         * @param preload The Preload to create
         * @throws SpecParserException When the href is not specified
         */
-        public Preload(XmlElement preload)
+        public Preload(XmlElement preload, Uri _base)
         {
+            this._base = _base;
             href = XmlUtil.getUriAttribute(preload, "href");
             if (href == null)
             {
@@ -53,7 +56,7 @@ namespace Pesta
 
             // Record all the associated views
             String viewNames = XmlUtil.getAttribute(preload, "views", "");
-            List<String> views = new List<String>();
+            HashSet<String> views = new HashSet<String>();
             foreach (String _s in viewNames.Split(','))
             {
                 String s = _s.Trim();
@@ -82,11 +85,12 @@ namespace Pesta
 
         private Preload(Preload preload, Substitutions substituter)
         {
+            _base = preload._base;
             views = preload.views;
             auth = preload.auth;
             signOwner = preload.signOwner;
             signViewer = preload.signViewer;
-            href = substituter.substituteUri(null, preload.href);
+            href = _base.resolve(substituter.substituteUri(null, preload.href));
             Dictionary<String, String> attributes = new Dictionary<string, string>();
             foreach (var entry in preload.attributes)
             {
@@ -141,10 +145,10 @@ namespace Pesta
         }
 
         /**
-        * Prelaod@views
+        * Preload@views
         */
-        private readonly List<String> views;
-        public List<String> getViews()
+        private readonly HashSet<String> views;
+        public HashSet<String> getViews()
         {
             return views;
         }
@@ -161,9 +165,11 @@ namespace Pesta
         public override String ToString()
         {
             StringBuilder buf = new StringBuilder();
+            string[] _views = new string[views.Count];
+            views.CopyTo(_views);
             buf.Append("<Preload href='").Append(href).Append('\'')
             .Append(" authz='").Append(auth.ToString().ToLower()).Append('\'')
-            .Append(" views='").Append(String.Join(",", views.ToArray())).Append('\'');
+            .Append(" views='").Append(String.Join(",", _views)).Append('\'');
             foreach (String attr in attributes.Keys)
             {
                 buf.Append(' ').Append(attr).Append("='").Append(attributes[attr])

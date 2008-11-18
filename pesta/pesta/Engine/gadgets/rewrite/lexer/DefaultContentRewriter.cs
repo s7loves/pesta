@@ -66,35 +66,43 @@ namespace Pesta
 
         public virtual RewriterResults rewrite(sRequest request, sResponse original, MutableContent content)
         {
-            //try
+            java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream((content.getContent().Length * 110) / 100);
+            java.io.OutputStreamWriter output = new java.io.OutputStreamWriter(baos);
+            String mimeType = original.getHeader("Content-Type");
+            if (request.RewriteMimeType != null)
             {
-                java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream((content.getContent().Length * 110) / 100);
-                java.io.OutputStreamWriter output = new java.io.OutputStreamWriter(baos);
-                String mimeType = original.response.ContentType;
-                if (request.RewriteMimeType != null)
-                {
-                    mimeType = request.RewriteMimeType;
-                }
-                GadgetSpec spec = null;
-                if (request.Gadget != null)
-                {
-                    spec = _specFactory.getGadgetSpec(request.Gadget, false);
-                }
-                rewrite(spec, request.Uri, new java.io.StringReader(content.getContent()),
-                    mimeType, output);
+                mimeType = request.RewriteMimeType;
             }
-            //catch {}
+            GadgetSpec spec = null;
+            if (request.Gadget != null)
+            {
+                spec = _specFactory.getGadgetSpec(request.Gadget.toJavaUri(), false);
+            }
+            if (rewrite(spec, request.Uri,
+              new java.io.StringReader(content.getContent()),
+              mimeType,
+              output))
+            {
+                content.setContent(Encoding.Default.GetString(baos.toByteArray()));
+            }
 
             return RewriterResults.cacheableIndefinitely();
         }
 
-        public virtual RewriterResults rewrite(Gadget gadget)
+        public virtual RewriterResults rewrite(Gadget gadget, MutableContent content)
         {
             java.io.StringWriter sw = new java.io.StringWriter();
-            GadgetSpec spec = gadget.Spec;
-            if (rewrite(spec, spec.getUrl(), new java.io.StringReader(gadget.getContent()), "text/html", sw))
+            GadgetSpec spec = gadget.getSpec();
+            java.io.StringReader reader = new java.io.StringReader(content.getContent());
+            Uri _base = spec.getUrl();
+            View view = gadget.getCurrentView();
+            if (view != null && view.getHref() != null) 
             {
-                gadget.setContent(sw.toString());
+              _base = view.getHref();
+            }
+            if (rewrite(spec, _base, reader, "text/html", sw)) 
+            {
+              content.setContent(sw.toString());
             }
             return RewriterResults.cacheableIndefinitely();
         }
@@ -152,7 +160,7 @@ namespace Pesta
             {
                 if (ProxyUrl != null)
                 {
-                    CssRewriter.rewrite(reader, source, CreateLinkRewriter(spec, rewriterFeature), writer);
+                    CssRewriter.rewrite(reader, source, CreateLinkRewriter(spec, rewriterFeature), writer, false);
                     return true;
                 }
                 else
@@ -165,20 +173,12 @@ namespace Pesta
 
         private bool isHTML(String mime)
         {
-            if (mime == null)
-            {
-                return false;
-            }
-            return (mime.ToLower().Contains("html"));
+            return mime != null && (mime.ToLower().Contains("html"));
         }
 
         private bool isCSS(String mime)
         {
-            if (mime == null)
-            {
-                return false;
-            }
-            return (mime.ToLower().Contains("css"));
+            return mime != null && (mime.ToLower().Contains("css"));
         }
 
         protected String ProxyUrl

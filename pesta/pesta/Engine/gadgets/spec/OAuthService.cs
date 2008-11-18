@@ -39,9 +39,80 @@ namespace Pesta
         private String name;
 
         /**
+        * Constructor for testing only.
+        */
+        OAuthService() { }
+
+        public OAuthService(XmlElement serviceElement, Uri _base)
+        {
+            name = serviceElement.Attributes["name"].Value;
+            XmlNodeList children = serviceElement.ChildNodes;
+            for (int i = 0; i < children.Count; ++i)
+            {
+                XmlNode child = children[i];
+                if (child.NodeType != XmlNodeType.Element)
+                {
+                    continue;
+                }
+                String childName = child.Name;
+                if (childName.Equals("Request"))
+                {
+                    if (requestUrl != null)
+                    {
+                        throw new SpecParserException("Multiple OAuth/Service/Request elements");
+                    }
+                    requestUrl = parseEndPoint("OAuth/Service/Request", (XmlElement)child, _base);
+                }
+                else if (childName.Equals("Authorization"))
+                {
+                    if (authorizationUrl != null)
+                    {
+                        throw new SpecParserException("Multiple OAuth/Service/Authorization elements");
+                    }
+                    authorizationUrl = parseAuthorizationUrl((XmlElement)child, _base);
+                }
+                else if (childName.Equals("Access"))
+                {
+                    if (accessUrl != null)
+                    {
+                        throw new SpecParserException("Multiple OAuth/Service/Access elements");
+                    }
+                    accessUrl = parseEndPoint("OAuth/Service/Access", (XmlElement)child, _base);
+                }
+            }
+            if (requestUrl == null)
+            {
+                throw new SpecParserException("/OAuth/Service/Request is required");
+            }
+            if (accessUrl == null)
+            {
+                throw new SpecParserException("/OAuth/Service/Access is required");
+            }
+            if (authorizationUrl == null)
+            {
+                throw new SpecParserException("/OAuth/Service/Authorization is required");
+            }
+            if (requestUrl.location != accessUrl.location)
+            {
+                throw new SpecParserException(
+                            "Access@location must be identical to Request@location");
+            }
+            if (requestUrl.method != accessUrl.method)
+            {
+                throw new SpecParserException(
+                            "Access@method must be identical to Request@method");
+            }
+            if (requestUrl.location == Location.BODY &&
+                            requestUrl.method == Method.GET)
+            {
+                throw new SpecParserException("Incompatible parameter location, cannot" +
+                                    "use post-body with GET requests");
+            }
+        }
+        /**
         * Represents /OAuth/Service/Request elements.
         */
-        public EndPoint getRequestUrl()
+        public EndPoint getRequestUrl() 
         {
             return requestUrl;
         }
@@ -49,14 +120,14 @@ namespace Pesta
         /**
         * Represents /OAuth/Service/Access elements.
         */
-        public EndPoint getAccessUrl()
+        public EndPoint getAccessUrl() 
         {
             return accessUrl;
         }
         /**
         * Represents /OAuth/Service/Authorization elements.
         */
-        public Uri getAuthorizationUrl()
+        public Uri getAuthorizationUrl() 
         {
             return authorizationUrl;
         }
@@ -64,7 +135,7 @@ namespace Pesta
         /**
         * Represents /OAuth/Service@name
         */
-        public String getName()
+        public String getName() 
         {
             return name;
         }
@@ -143,6 +214,9 @@ namespace Pesta
         /**
         * Description of an OAuth request token or access token URL.
         */
+        /**
+        * Description of an OAuth request token or access token URL.
+        */
         public class EndPoint
         {
             public readonly Uri url;
@@ -163,93 +237,19 @@ namespace Pesta
             }
         }
 
-        public OAuthService(XmlElement serviceElement)
-        {
-            name = serviceElement.Attributes["name"].Value;
-            XmlNodeList children = serviceElement.ChildNodes;
-            for (int i = 0; i < children.Count; ++i)
-            {
-                XmlNode child = children[i];
-                if (child.NodeType != XmlNodeType.Element)
-                {
-                    continue;
-                }
-                String childName = child.Name;
-                if (childName.Equals("Request"))
-                {
-                    if (requestUrl != null)
-                    {
-                        throw new SpecParserException("Multiple OAuth/Service/Request elements");
-                    }
-                    requestUrl = parseEndPoint("OAuth/Service/Request", (XmlElement)child);
-                }
-                else if (childName.Equals("Authorization"))
-                {
-                    if (authorizationUrl != null)
-                    {
-                        throw new SpecParserException("Multiple OAuth/Service/Authorization elements");
-                    }
-                    authorizationUrl = parseAuthorizationUrl((XmlElement)child);
-                }
-                else if (childName.Equals("Access"))
-                {
-                    if (accessUrl != null)
-                    {
-                        throw new SpecParserException("Multiple OAuth/Service/Access elements");
-                    }
-                    accessUrl = parseEndPoint("OAuth/Service/Access", (XmlElement)child);
-                }
-            }
-            if (requestUrl == null)
-            {
-                throw new SpecParserException("/OAuth/Service/Request is required");
-            }
-            if (accessUrl == null)
-            {
-                throw new SpecParserException("/OAuth/Service/Access is required");
-            }
-            if (authorizationUrl == null)
-            {
-                throw new SpecParserException("/OAuth/Service/Authorization is required");
-            }
-            if (requestUrl.location != accessUrl.location)
-            {
-                throw new SpecParserException(
-                            "Access@location must be identical to Request@location");
-            }
-            if (requestUrl.method != accessUrl.method)
-            {
-                throw new SpecParserException(
-                            "Access@method must be identical to Request@method");
-            }
-            if (requestUrl.location == Location.BODY &&
-                            requestUrl.method == Method.GET)
-            {
-                throw new SpecParserException("Incompatible parameter location, cannot" +
-                                    "use post-body with GET requests");
-            }
-        }
-
-        /**
-        * Constructor for testing only.
-        */
-        OAuthService()
-        {
-        }
-
-        Uri parseAuthorizationUrl(XmlElement child)
+        Uri parseAuthorizationUrl(XmlElement child, Uri _base) 
         {
             Uri url = XmlUtil.getHttpUriAttribute(child, URL_ATTR);
             if (url == null)
             {
                 throw new SpecParserException("OAuth/Service/Authorization @url is not valid: " +
-                                    child.Attributes[URL_ATTR]);
+                child.Attributes[URL_ATTR]);
             }
-            return url;
+            return _base.resolve(url);
         }
 
 
-        EndPoint parseEndPoint(String where, XmlElement child)
+        EndPoint parseEndPoint(String where, XmlElement child, Uri _base)
         {
             Uri url = XmlUtil.getHttpUriAttribute(child, URL_ATTR);
             if (url == null)
@@ -258,7 +258,7 @@ namespace Pesta
             }
             Location location = Location.Parse(child.Attributes[PARAM_LOCATION_ATTR].Value);
             Method method = Method.Parse(child.Attributes[METHOD_ATTR].Value);
-            return new EndPoint(url, method, location);
+            return new EndPoint(_base.resolve(url), method, location);
         }
     } 
 }

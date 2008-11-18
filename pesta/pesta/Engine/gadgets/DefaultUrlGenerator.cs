@@ -37,39 +37,66 @@ namespace Pesta
     /// </remarks>
     public class DefaultUrlGenerator : UrlGenerator
     {
+        protected static readonly Regex ALLOWED_FEATURE_NAME = new Regex("[0-9a-zA-Z\\.\\-]+", RegexOptions.Compiled);
+        protected static readonly String IFRAME_URI_PARAM = "gadgets.iframeBaseUri";
+        protected static readonly String JS_URI_PARAM = "gadgets.jsUriTemplate";
+        private readonly String jsChecksum;
+        private readonly Dictionary<String, Uri> iframeBaseUris;
+        private readonly Dictionary<String, String> jsUriTemplates;
+        private readonly LockedDomainService lockedDomainService;
         public readonly static DefaultUrlGenerator Instance = new DefaultUrlGenerator();
-        private String jsPrefix;
-        private String iframePrefix;
-        private String jsChecksum;
-        private static Regex ALLOWED_FEATURE_NAME = new Regex("[0-9a-zA-Z\\.\\-]+", RegexOptions.Compiled);
-
-        /**
-        * @param features The list of features that js is needed for.
-        * @return The url for the bundled javascript that includes all referenced
-        *    feature libraries.
-        */
-        public String getBundledJsUrl(ICollection<string> features, GadgetContext context)
+        protected DefaultUrlGenerator()
         {
-            return jsPrefix + getBundledJsParam(features, context);
+            ContainerConfig containerConfig = JsonContainerConfig.Instance;
+            LockedDomainService lockedDomainService = HashLockedDomainService.Instance;
+            GadgetFeatureRegistry registry = GadgetFeatureRegistry.Instance;
+
+            iframeBaseUris = new Dictionary<string,Uri>();
+            jsUriTemplates = new Dictionary<string,string>();
+            foreach (String container in containerConfig.getContainers())
+            {
+                iframeBaseUris.Add(container, Uri.parse(containerConfig.get(container, IFRAME_URI_PARAM)));
+                jsUriTemplates.Add(container, containerConfig.get(container, JS_URI_PARAM));
+            }
+
+            this.lockedDomainService = lockedDomainService;
+
+            StringBuilder jsBuf = new StringBuilder();
+            foreach (GadgetFeature feature in registry.getAllFeatures())
+            {
+                foreach(JsLibrary library in feature.getJsLibraries(null, null)) 
+                {
+                    jsBuf.Append(library.Content);
+                }
+            }
+            jsChecksum = HashUtil.checksum(jsBuf.ToString());
+
         }
 
-        /**
-        * @param features
-        * @param context
-        * @return The bundled js parameter for type=url gadgets.
-        */
-        public String getBundledJsParam(ICollection<string> features, GadgetContext context)
+        public String getBundledJsUrl(ICollection<String> features, GadgetContext context) 
+        {
+            String jsPrefix = jsUriTemplates[context.getContainer()];
+            if (jsPrefix == null) 
+            {
+                return "";
+            }
+
+            return jsPrefix.Replace("%host%", context.getHost())
+                        .Replace("%js%", getBundledJsParam(features, context));
+        }
+
+        public String getBundledJsParam(ICollection<String> features, GadgetContext context) 
         {
             StringBuilder buf = new StringBuilder();
             bool first = false;
-            foreach (string feature in features)
+            foreach (String feature in features) 
             {
-                if (ALLOWED_FEATURE_NAME.IsMatch(feature))
+                if (ALLOWED_FEATURE_NAME.Match(feature).Success)
                 {
-                    if (!first)
+                    if (!first) 
                     {
                         first = true;
-                    }
+                    } 
                     else
                     {
                         buf.Append("__");
@@ -77,7 +104,7 @@ namespace Pesta
                     buf.Append(feature);
                 }
             }
-            if (!first)
+            if (!first) 
             {
                 buf.Append("core");
             }
@@ -88,102 +115,85 @@ namespace Pesta
         }
 
         /**
-        * Generates iframe urls for meta data service.
-        * Use this rather than generating your own urls by hand.
-        *
-        * @param gadget
-        * @return The generated iframe url.
+        * TODO: This is in need of a rewrite most likely. It doesn't even take locked domain into
+        * consideration!
         */
-        public String getIframeUrl(Gadget gadget)
+        public String getIframeUrl(Gadget gadget) 
         {
-            StringBuilder buf = new StringBuilder();
-            GadgetContext context = gadget.Context;
-            GadgetSpec spec = gadget.Spec;
+            GadgetContext context = gadget.getContext();
+            GadgetSpec spec = gadget.getSpec();
             String url = context.getUrl().ToString();
-            View view = gadget.CurrentView;
+            View view = gadget.getCurrentView();
             View.ContentType type;
-            if (view == null)
+            if (view == null) 
             {
                 type = View.ContentType.HTML;
-            }
+            } 
             else
             {
                 type = view.getType();
             }
-            switch (type.ToString())
+
+            UriBuilder uri;
+            if (type == View.ContentType.URL)
             {
-                case "URL":
-                    // type = url
-                    String href = view.getHref().ToString();
-                    buf.Append(href);
-                    if (href.IndexOf('?') == -1)
-                    {
-                        buf.Append('?');
-                    }
-                    else
-                    {
-                        buf.Append('&');
-                    }
-                    break;
-                case "HTML":
-                default:
-                    buf.Append(iframePrefix);
-                    break;
-            }
-            buf.Append("container=").Append(context.getContainer());
-            if (context.getModuleId() != 0)
-            {
-                buf.Append("&mid=").Append(context.getModuleId());
-            }
-            if (context.getIgnoreCache())
-            {
-                buf.Append("&nocache=1");
+            	uri = new UriBuilder(view.getHref());
             }
             else
             {
-                buf.Append("&v=").Append(spec.getChecksum());
+            	// TODO: Locked domain support.
+                    Uri iframeBaseUri = iframeBaseUris[context.getContainer()];
+                    if (iframeBaseUri != null)
+                    {
+                        uri = new UriBuilder(iframeBaseUri);
+                    } 
+                    else 
+                    {
+                        uri = new UriBuilder();
+                    }
+                    String host = lockedDomainService.getLockedDomainForGadget(spec, context.getContainer());
+                    if (host != null) 
+                    {
+                        uri.setAuthority(host);
+                    }
             }
 
-            buf.Append("&lang=").Append(context.getLocale().getLanguage());
-            buf.Append("&country=").Append(context.getLocale().getCountry());
-            buf.Append("&view=").Append(context.getView());
+            uri.addQueryParameter("container", context.getContainer());
+            if (context.getModuleId() != 0) 
+            {
+                uri.addQueryParameter("mid", context.getModuleId().ToString());
+            }
+            if (context.getIgnoreCache())
+            {
+                uri.addQueryParameter("nocache", "1");
+            } 
+            else
+            {
+                uri.addQueryParameter("v", spec.getChecksum());
+            }
+
+            uri.addQueryParameter("lang", context.getLocale().getLanguage());
+            uri.addQueryParameter("country", context.getLocale().getCountry());
+            uri.addQueryParameter("view", context.getView());
 
             UserPrefs prefs = context.getUserPrefs();
-            foreach (UserPref pref in gadget.Spec.getUserPrefs())
+            foreach(UserPref pref in gadget.getSpec().getUserPrefs()) 
             {
                 String name = pref.getName();
                 String value = prefs.getPref(name);
-                if (value == null)
+                if (value == null) 
                 {
                     value = pref.getDefaultValue();
                 }
-                buf.Append("&up_").Append(HttpUtility.UrlEncode(pref.getName()))
-                    .Append('=').Append(HttpUtility.UrlEncode(value));
+                uri.addQueryParameter("up_" + pref.getName(), value);
             }
             // add url last to work around browser bugs
-            if (!type.Equals(View.ContentType.URL))
+            if(!type.Equals(View.ContentType.URL))
             {
-                buf.Append("&url=")
-                    .Append(HttpUtility.UrlEncode(url));
+                uri.addQueryParameter("url", url);
             }
-            return buf.ToString();
-        }
 
-        protected DefaultUrlGenerator()
-        {
-            this.iframePrefix = HttpRuntime.AppDomainAppVirtualPath.Equals("/") ? "/gadgets/ifr.ashx?" : HttpRuntime.AppDomainAppVirtualPath + "/gadgets/ifr.ashx?";
-            this.jsPrefix = HttpRuntime.AppDomainAppVirtualPath.Equals("/") ? "/gadgets/js/" : HttpRuntime.AppDomainAppVirtualPath + "/gadgets/js/";
-            GadgetFeatureRegistry registry = GadgetFeatureRegistry.Instance;
-
-            StringBuilder jsBuf = new StringBuilder();
-            foreach (GadgetFeature feature in registry.getAllFeatures())
-            {
-                foreach (JsLibrary library in feature.getJsLibraries(null, null))
-                {
-                    jsBuf.Append(library.Content);
-                }
-            }
-            jsChecksum = HashUtil.checksum(UTF8Encoding.UTF8.GetBytes(jsBuf.ToString()));
+            return uri.ToString();
         }
     } 
 }

@@ -22,6 +22,7 @@ using System.Data;
 using System.Configuration;
 using System.Text;
 using System.Web;
+using URI = System.Uri;
 
 namespace Pesta
 {
@@ -217,7 +218,7 @@ namespace Pesta
         {
             try
             {
-                return specFactory.getGadgetSpec(new Uri(securityToken.getAppUrl()),
+                return specFactory.getGadgetSpec(new URI(securityToken.getAppUrl()),
                                     arguments.BypassSpecCache);
             }
             catch (UriFormatException e)

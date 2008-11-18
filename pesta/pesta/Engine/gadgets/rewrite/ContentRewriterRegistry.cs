@@ -35,7 +35,31 @@ namespace Pesta
     /// </remarks>
     public interface ContentRewriterRegistry
     {
-        bool rewriteGadget(Gadget gadget);
+        /**
+        * Rewrites a {@code Gadget} object given the registered rewriters.
+        * @param gadget Gadget object to use as a rewriting context.
+        * @param currentView The gadget view to rewrite
+        * @return The rewritten content.
+        * @throws GadgetException Potentially passed through from rewriters
+        */
+        String rewriteGadget(Gadget gadget, View currentView);
+
+        /**
+        * Rewrites a {@code Gadget} object given the registered rewriters.
+        * @param gadget Gadget object to use as a rewriting context.
+        * @param content The content to be rewritten.
+        * @return The rewritten content.
+        * @throws GadgetException Potentially passed through from rewriters
+        */
+        String rewriteGadget(Gadget gadget, String content);
+
+        /**
+        * Rewrites an {@code HttpResponse} object with the given request as context,
+        * using the registered rewriters.
+        * @param req Request object for context.
+        * @param resp Original response object.
+        * @return Rewritten response object, or resp if not modified.
+        */
         sResponse rewriteHttpResponse(sRequest req, sResponse resp);
     } 
 }

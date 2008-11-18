@@ -119,25 +119,6 @@ os.getRequiredNamespaces = function(templateSrc) {
 };
 
 /**
- * Checks if an XML tag corresponds to a known custom function.
- * If so, the namespace and tag name are returned in an array.
- * @param {string} nodeName Name of XML tag.
- * @return {Array.<string>|null}
- */
-os.checkCustom_ = function(nodeName) {
-  var index;
-  if ((index = nodeName.indexOf(':')) < 0) {
-    return null;
-  }
-  var ns = nodeName.substring(0, index);
-  var tag = nodeName.substring(index + 1);
-  if (os.getCustomTag(ns, tag)) {
-    return [ns, tag]; 
-  }
-  return null;
-};
-
-/**
  * Define 'os:renderAll' and 'os:Html' tags and the @onAttach attribute
  */
 os.defineBuiltinTags = function() {
@@ -173,6 +154,21 @@ os.defineBuiltinTags = function() {
         resultArray.push(result[0].childNodes[i]);
       }
       result = resultArray;      
+    }
+
+    // Trim away leading and trailing spaces on IE, which interprets them 
+    // literally.
+    if (os.isIe) {
+      for (var i = 0; i < result.length; i++) {
+        if (result[i].nodeType == DOM_TEXT_NODE) {
+          var trimmed = os.trimWhitespaceForIE_(
+              result[i].nodeValue, (i == 0), (i == result.length - 1));
+          if (trimmed != result[i].nodeValue) {
+            result[i].parentNode.removeChild(result[i]);
+            result[i] = document.createTextNode(trimmed);
+          }
+        }
+      }
     }
     
     return result;

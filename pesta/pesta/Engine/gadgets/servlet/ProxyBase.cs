@@ -20,9 +20,7 @@
 using System;
 using System.Data;
 using System.Configuration;
-
 using System.Web;
-
 
 namespace Pesta
 {
@@ -36,15 +34,16 @@ namespace Pesta
     /// </remarks>
     public abstract class ProxyBase
     {
-        public static String URL_PARAM = "url";
-        public static String REFRESH_PARAM = "refresh";
-        public static String GADGET_PARAM = "gadget";
-        public static String CONTAINER_PARAM = "container";
+        public static readonly String URL_PARAM = "url";
+        public static readonly String REFRESH_PARAM = "refresh";
+        public static readonly String IGNORE_CACHE_PARAM = "nocache";
+        public static readonly String GADGET_PARAM = "gadget";
+        public static readonly String CONTAINER_PARAM = "container";
         // Old form container name, retained for legacy compatibility.
-        public static String SYND_PARAM = "synd";
+        public static readonly String SYND_PARAM = "synd";
 
         // Public because of rewriter. Rewriter should be cleaned up.
-        public static String REWRITE_MIME_TYPE_PARAM = "rewriteMime";
+        public static readonly String REWRITE_MIME_TYPE_PARAM = "rewriteMime";
         protected String getContainer(HttpRequestWrapper request)
         {
             String container = getParameter(request, CONTAINER_PARAM, null);
@@ -78,7 +77,13 @@ namespace Pesta
                 refreshInterval = Math.Max(60 * 60, (int)(results.getCacheTtl() / 1000L));
             }
             HttpUtil.setCachingHeaders(response, refreshInterval);
-            response.AddHeader("Content-Disposition", "attachment;filename=p.txt");
+            // We're skipping the content disposition header for flash due to an issue with Flash player 10
+            // This does make some sites a higher value phishing target, but this can be mitigated by
+            // additional referer checks.
+            if (!results.getHeader("Content-Type").ToLower().Equals("application/x-shockwave-flash"))
+            {
+                response.AddHeader("Content-Disposition", "attachment;filename=p.txt");
+            }
         }
 
         protected Uri validateUrl(String urlToValidate)
@@ -89,23 +94,29 @@ namespace Pesta
             }
             try
             {
-                UriBuilder url = new UriBuilder(urlToValidate);
-                if (!"http".Equals(url.Scheme) && !"https".Equals(url.Scheme))
+                UriBuilder url = UriBuilder.parse(urlToValidate);
+                if (!"http".Equals(url.getScheme()) && !"https".Equals(url.getScheme()))
                 {
-                    throw new Exception("Invalid request url scheme; only " +
-                        "\"http\" and \"https\" supported.");
+                    throw new GadgetException(GadgetException.Code.INVALID_PARAMETER,
+                                "Invalid request url scheme in url: " + HttpUtility.UrlEncode(urlToValidate) +
+                                "; only \"http\" and \"https\" supported.");
                 }
-                if (url.Path == null || url.Path.Length == 0)
+                if (url.getPath() == null || url.getPath().Length == 0)
                 {
-                    url.Path = "/";
+                    url.setPath("/");
                 }
-                return url.Uri;
+                return url.toUri();
             }
             catch
             {
                 throw new Exception("url parameter is not a valid url.");
             }
         }
+
+        /**
+           * Processes the given request.
+           */
+        abstract public void fetch(HttpRequestWrapper request, HttpResponseWrapper response);
 
     } 
 }

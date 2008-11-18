@@ -44,7 +44,6 @@ namespace Pesta
     /// </remarks>
     public class sResponse
     {
-        public HttpWebResponse response;
         public const int SC_OK = 200;
         public const int SC_MOVED_TEMPORARILY = 301;
         public const int SC_MOVED_PERMANENTLY = 302;
@@ -69,8 +68,8 @@ namespace Pesta
         // the remote host. All
         // other status codes are treated as errors and will use the
         // negativeCacheTtl value.
-        private static readonly List<int> CACHE_CONTROL_OK_STATUS_CODES =
-            new List<int>() { SC_OK, SC_UNAUTHORIZED, SC_FORBIDDEN };
+        private static readonly List<int> NEGATIVE_CACHING_EXEMPT_STATUS =
+            new List<int>() { SC_UNAUTHORIZED, SC_FORBIDDEN };
 
         // TTL to use when an error response is fetched. This should be non-zero to
         // avoid high rates of requests to bad urls in high-traffic situations.
@@ -89,51 +88,40 @@ namespace Pesta
         public readonly byte[] responseBytes;
         public String responseString = "";
         private readonly Dictionary<string, string> metadata = new Dictionary<string, string>();
+        private NameValueCollection headers;
+        private readonly long date;
+        private int httpStatusCode;
+        private readonly String encoding;
 
-        private readonly DateTime date = DateTime.Now;
-
-        public sResponse(HttpWebResponse resp)
+        /**
+       * Construct an HttpResponse from a builder (called by HttpResponseBuilder.create).
+       */
+        public sResponse(HttpResponseBuilder builder)
         {
-            this.response = resp;
-            try
-            {
-                MemoryStream memoryStream = new MemoryStream(0x10000);
-                byte[] buffer = new byte[0x1000];
-                int bytes;
-                using (Stream responseStream = resp.GetResponseStream())
-                {
-                    while ((bytes = responseStream.Read(buffer, 0, buffer.Length)) > 0)
-                    {
-                        memoryStream.Write(buffer, 0, bytes);
-                    }
-                    memoryStream.Close();
-                }
-                responseBytes = memoryStream.ToArray();
-                Encoding encoding = Encoding.GetEncoding(resp.ContentEncoding == "" ? DEFAULT_ENCODING : resp.ContentEncoding);
-                responseString = encoding.GetString(responseBytes);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                resp.Close();
-            }
+            httpStatusCode = builder.getHttpStatusCode() == null?-1:(int)builder.getHttpStatusCode();
+            NameValueCollection headerCopy = new NameValueCollection();
+            headerCopy.Add(builder.getHeaders());
 
-            // Strip BOM if present
-            if (responseString.Length > 0 && Convert.ToInt32(responseString[0]) == 0xFEFF)
-            {
-                responseString = responseString.Substring(1);
-            }
+            // Always safe, HttpResponseBuilder won't modify the body.
+            responseBytes = builder.getResponse();
 
-            //responseBytes = Encoding.UTF8.GetBytes(responseString);
-            // update metadata
+            Dictionary<String, String> metadataCopy = new Dictionary<string,string>();
+            metadata = metadataCopy;
+
+            // We want to modify the headers to ensure that the proper Content-Type and Date headers
+            // have been set. This allows us to avoid these expensive calculations from the cache.
+            date = getAndUpdateDate(headerCopy);
+            headers = headerCopy;
+            encoding = getAndUpdateEncoding(headerCopy, responseBytes);
+            Encoding encoder = Encoding.GetEncoding(encoding);
+            responseString = encoder.GetString(responseBytes);
         }
 
-        public HttpStatusCode getHttpStatusCode()
+        
+
+        public int getHttpStatusCode()
         {
-            return response.StatusCode;
+            return httpStatusCode;
         }
 
         /**
@@ -141,7 +129,7 @@ namespace Pesta
         */
         public long getContentLength()
         {
-            return response.ContentLength;
+            return responseBytes.Length;
         }
 
         /**
@@ -149,7 +137,7 @@ namespace Pesta
         */
         public NameValueCollection getHeaders()
         {
-            return response.Headers;
+            return headers;
         }
 
         /**
@@ -158,7 +146,7 @@ namespace Pesta
         */
         public string[] getHeaders(String name)
         {
-            string[] retv = response.Headers.GetValues(name);
+            string[] retv = headers.GetValues(name);
             if (retv == null)
             {
                 return new string[1] { "" };
@@ -190,29 +178,43 @@ namespace Pesta
         {
             return metadata;
         }
-        private static void getAndUpdateDate(NameValueCollection headers)
+        /**
+   * Tries to find a valid date from the input headers.
+   *
+   * @return The value of the date header, in milliseconds, or -1 if no Date could be determined.
+   */
+        private static long getAndUpdateDate(NameValueCollection headers)
         {
             // Validate the Date header. Must conform to the HTTP date format.
             long timestamp = -1;
-            string[] dates = headers.GetValues("Date");
+            String[] dates = headers["Date"] == null ? null : headers["Date"].Split(';');
             String dateStr = dates == null ? null : dates.Length == 0 ? null : dates[0];
-            if (dateStr == null)
+            if (dateStr != null)
             {
-                DateTime d;
-                if (!DateTime.TryParse(dateStr, out d))
+                DateTime d = DateTime.Now;
+                if (DateTime.TryParse(dateStr, out d))
                 {
-                    timestamp = -1;
+                    timestamp = d.Ticks;
                 }
             }
-            if (timestamp <= 0)
+            if (timestamp == -1)
             {
-                headers.Add("Date", DateTime.Now.ToString());
+                timestamp = DateTime.Now.Ticks;
+                headers.Add("Date", new DateTime(timestamp).ToString());
             }
+            return timestamp;
         }
+
+        /**
+   * Attempts to determine the encoding of the body. If it can't be determined, we use
+   * DEFAULT_ENCODING instead.
+   *
+   * @return The detected encoding or DEFAULT_ENCODING.
+   */
         private static String getAndUpdateEncoding(NameValueCollection headers, byte[] body)
         {
-            string[] values = headers.GetValues("Content-Type");
-            String contentType = values == null ? null : values.Length == 0 ? null : values[0];
+            String values = headers["Content-Type"];
+            String contentType = values == null ? null : values.Length == 0 ? null : values;
             if (contentType != null)
             {
                 String[] parts = contentType.Split(';');
@@ -225,7 +227,14 @@ namespace Pesta
                     int offset = parts[1].IndexOf("charset=");
                     if (offset != -1)
                     {
-                        return parts[1].Substring(offset + 8).ToUpper();
+                        String charset = parts[1].Substring(offset + 8).ToUpper();
+                        // Some servers include quotes around the charset:
+                        //   Content-Type: text/html; charset="UTF-8"
+                        if (charset[0] == '"')
+                        {
+                            charset = charset.Substring(1, charset.Length);
+                        }
+                        return charset;
                     }
                 }
             }
@@ -244,52 +253,62 @@ namespace Pesta
             {
                 // Record the charset in the content-type header so that its value can be cached
                 // and re-used. This is a BIG performance win.
-                headers.Add("Content-Type", contentType + "; charset=" + match.getName().ToUpper());
+                headers.Add("Content-Type",
+                    contentType + "; charset=" + match.getName().ToUpper());
             }
             return match.getName().ToUpper();
         }
-
         /**
-        * @return consolidated cache expiration time or -1
-        */
-        public DateTime? getCacheExpiration()
+   * @return consolidated cache expiration time or -1
+   */
+        public long getCacheExpiration()
         {
             // We intentionally ignore cache-control headers for most HTTP error responses, because if
-            // we don't we end up hammering sites that have gone down with lots of requests.  Proper
-            // support for caching of OAuth responses is more complex, for that we have to respect
-            // cache-control headers for 401s and 403s.
-            if (!CACHE_CONTROL_OK_STATUS_CODES.Contains((int)response.StatusCode))
+            // we don't we end up hammering sites that have gone down with lots of requests. Certain classes
+            // of client errors (authentication) have more severe behavioral implications if we cache them.
+            if (isError() && !NEGATIVE_CACHING_EXEMPT_STATUS.Contains(httpStatusCode))
             {
-                return date.AddMilliseconds(negativeCacheTtl);
+                return date + negativeCacheTtl;
             }
+
+            // We technically shouldn't be caching certain 300 class status codes either, such as 302, but
+            // in practice this is a better option for performance.
             if (isStrictNoCache())
             {
-                return null;
+                return -1;
             }
             long maxAge = getCacheControlMaxAge();
             if (maxAge != -1)
             {
-                return date.AddMilliseconds(maxAge);
+                return date + maxAge;
             }
-            DateTime? expiration = getExpiresTime();
-            if (expiration != null)
+            long expiration = getExpiresTime();
+            if (expiration != -1)
             {
                 return expiration;
             }
-            return date.AddMilliseconds(defaultTtl);
+            return date + defaultTtl;
         }
 
         /**
-        * @return Consolidated ttl or -1.
-        */
+         * @return Consolidated ttl or -1.
+         */
         public long getCacheTtl()
         {
-            DateTime? expiration = getCacheExpiration();
-            if (expiration != null)
+            long expiration = getCacheExpiration();
+            if (expiration != -1)
             {
-                return DateTime.Now.Subtract(expiration.Value).Seconds;
+                return expiration - DateTime.Now.Ticks;
             }
             return -1;
+        }
+
+        /**
+       * @return True if the status code is considered to be an error.
+       */
+        public bool isError()
+        {
+            return httpStatusCode >= 400;
         }
 
         /**
@@ -326,18 +345,18 @@ namespace Pesta
         /**
         * @return the expiration time from the Expires header or -1 if not set
         */
-        private DateTime? getExpiresTime()
+        private long getExpiresTime()
         {
             String expires = getHeader("Expires");
-            if (!string.IsNullOrEmpty(expires))
+            if (!String.IsNullOrEmpty(expires))
             {
-                DateTime expiresDate = DateTime.Parse(expires);
-                if (expiresDate != null)
+                DateTime expiresDate;
+                if (DateTime.TryParse(expires,out expiresDate))
                 {
-                    return expiresDate;
+                    return expiresDate.Ticks;
                 }
             }
-            return null;
+            return -1;
         }
 
         /**
@@ -379,20 +398,17 @@ namespace Pesta
         */
         public override String ToString()
         {
-            StringBuilder buf = new StringBuilder("HTTP/1.1 ").Append(response.StatusCode).Append("\r\n\r\n");
-            for (int i = 0; i < response.Headers.Count; i++)
+            StringBuilder buf = new StringBuilder("HTTP/1.1 ").Append(httpStatusCode).Append("\r\n\r\n");
+            for (int i = 0; i < headers.Count; i++)
             {
-                string name = response.Headers.GetKey(i);
-                foreach (string value in response.Headers.GetValues(i))
+                string name = headers.GetKey(i);
+                foreach (string value in headers.GetValues(i))
                 {
                     buf.Append(name).Append(": ").Append(value).Append('\n');
                 }
             }
             buf.Append("\r\n");
-            using (StreamReader sr = new StreamReader(response.GetResponseStream()))
-            {
-                buf.Append(sr.ReadToEnd());
-            }
+            buf.Append(responseString);
             buf.Append("\r\n");
             return buf.ToString();
         }

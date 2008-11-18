@@ -99,8 +99,10 @@ opensocial.Container.prototype.getEnvironment = function() {};
 opensocial.Container.prototype.requestSendMessage = function(recipients,
     message, opt_callback, opt_params) {
   if (opt_callback) {
-    opt_callback(new opensocial.ResponseItem(
-        null, null, opensocial.ResponseItem.Error.NOT_IMPLEMENTED, null));
+    window.setTimeout(function() {
+      opt_callback(new opensocial.ResponseItem(
+          null, null, opensocial.ResponseItem.Error.NOT_IMPLEMENTED, null));
+    }, 0);
   }
 };
 
@@ -132,8 +134,10 @@ opensocial.Container.prototype.requestSendMessage = function(recipients,
 opensocial.Container.prototype.requestShareApp = function(recipients, reason,
     opt_callback, opt_params) {
   if (opt_callback) {
-    opt_callback(new opensocial.ResponseItem(
-        null, null, opensocial.ResponseItem.Error.NOT_IMPLEMENTED, null));
+    window.setTimeout(function() {
+      opt_callback(new opensocial.ResponseItem(
+          null, null, opensocial.ResponseItem.Error.NOT_IMPLEMENTED, null));
+    }, 0);
   }
 };
 
@@ -155,8 +159,10 @@ opensocial.Container.prototype.requestShareApp = function(recipients, reason,
 opensocial.Container.prototype.requestCreateActivity = function(activity,
     priority, opt_callback) {
   if (opt_callback) {
-    opt_callback(new opensocial.ResponseItem(
-        null, null, opensocial.ResponseItem.Error.NOT_IMPLEMENTED, null));
+    window.setTimeout(function() {
+      opt_callback(new opensocial.ResponseItem(
+          null, null, opensocial.ResponseItem.Error.NOT_IMPLEMENTED, null));
+    }, 0);
   }
 };
 
@@ -191,8 +197,10 @@ opensocial.Container.prototype.hasPermission = function(permission) {
 opensocial.Container.prototype.requestPermission = function(permissions, reason,
     opt_callback) {
   if (opt_callback) {
-    opt_callback(new opensocial.ResponseItem(
-        null, null, opensocial.ResponseItem.Error.NOT_IMPLEMENTED, null));
+    window.setTimeout(function () {
+      opt_callback(new opensocial.ResponseItem(
+          null, null, opensocial.ResponseItem.Error.NOT_IMPLEMENTED, null));
+    }, 0);
   }
 };
 
@@ -504,7 +512,7 @@ opensocial.Container.escape = function(value, opt_params, opt_escapeObjects) {
 /**
  * Caja Support.  See features/caja/*.js
  */
-var caja;
+var cajita;
 var ___;
 var attachDocumentStub;
 // See features/caja/domita.js for uriCallback's contract.
@@ -535,12 +543,17 @@ var uriCallback = {
 opensocial.Container.prototype.enableCaja = function() {
 
   ___ = window["___"];
-  caja = window["caja"];
+  cajita = window["cajita"];
+  valijaMaker = window["valijaMaker"];
   attachDocumentStub = window["attachDocumentStub"];
 
-  var imports = caja.copy(___.sharedImports);
+  var imports = ___.copy(___.sharedImports);
+  imports.outers = imports;
+  imports.console = console;
+  imports.$v = ___.asSimpleFunc(valijaMaker)(imports);
   ___.getNewModuleHandler().setImports(imports);
 
+  
   attachDocumentStub('-g___', uriCallback, imports);
   var gadgetRoot = document.createElement('div');
   gadgetRoot.className = 'g___';

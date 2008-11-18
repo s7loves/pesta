@@ -56,13 +56,13 @@ namespace Pesta
 
             try
             {
-                Uri linkUri = new Uri(link);
-                Uri uri = context.MakeRelativeUri(linkUri);
+                Uri linkUri = Uri.parse(link);
+                Uri uri = context.resolve(linkUri);
                 if (rewriterFeature.shouldRewriteURL(uri.ToString()))
                 {
                     String result = prefix
                     + HttpUtility.UrlEncode(uri.ToString())
-                    + "&gadget="
+                    + ((gadgetUri == null) ? "" : "&gadget=" + HttpUtility.UrlEncode(gadgetUri.ToString()))
                     + HttpUtility.UrlEncode(gadgetUri.ToString())
                     + "&fp="
                     + rewriterFeature.getFingerprint();

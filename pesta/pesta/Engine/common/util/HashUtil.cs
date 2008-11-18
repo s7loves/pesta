@@ -55,5 +55,17 @@ namespace Pesta
 
             return BitConverter.ToString(md5.ComputeHash(data)).Replace("-", String.Empty);
         }
+
+        /**
+           * Produces a raw checksum for the given input data.
+           *
+           * @param data
+           * @return The checksum.
+           */
+        public static String rawChecksum(byte[] data)
+        {
+            MD5 md5 = new MD5CryptoServiceProvider();
+            return Encoding.Default.GetString(md5.ComputeHash(data));
+        }
     } 
 }

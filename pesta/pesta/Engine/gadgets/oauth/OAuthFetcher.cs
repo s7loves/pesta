@@ -296,7 +296,7 @@ namespace Pesta
             try
             {
                 OAuthAccessor accessor = accessorInfo.getAccessor();
-                sRequest request = new sRequest(new Uri(accessor.consumer.serviceProvider.requestTokenURL));
+                sRequest request = new sRequest(Uri.parse(accessor.consumer.serviceProvider.requestTokenURL));
                 request.setMethod(accessorInfo.getHttpMethod().ToString());
                 if (accessorInfo.getHttpMethod().CompareTo(AccessorInfo.HttpMethod.POST) == 0)
                 {
@@ -438,8 +438,8 @@ namespace Pesta
                 parameters = new List<OAuth.Parameter>();
             }
             UriBuilder target = new UriBuilder(basereq.Uri);
-            String query = target.Query;
-            target.Query = null;
+            String query = target.getQuery();
+            target.setQuery(null);
             parameters.AddRange(sanitize(OAuth.decodeForm(query)));
             if (OAuth.isFormEncoded(basereq.getHeader("Content-Type")))
             {
@@ -510,7 +510,7 @@ namespace Pesta
                     break;
 
                 case AccessorInfo.OAuthParamLocation.URI_QUERY:
-                    result.Uri = new Uri(OAuth.addParameters(result.Uri.ToString(), oauthParams));
+                    result.Uri = Uri.parse(OAuth.addParameters(result.Uri.ToString(), oauthParams));
                     break;
             }
             return result;
@@ -616,7 +616,7 @@ namespace Pesta
             try
             {
                 OAuthAccessor accessor = accessorInfo.getAccessor();
-                sRequest request = new sRequest( new Uri(accessor.consumer.serviceProvider.accessTokenURL));
+                sRequest request = new sRequest( Uri.parse(accessor.consumer.serviceProvider.accessTokenURL));
                 request.setMethod(accessorInfo.getHttpMethod().ToString());
                 if (accessorInfo.getHttpMethod() == AccessorInfo.HttpMethod.POST)
                 {

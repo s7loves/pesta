@@ -22,7 +22,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Web;
 using Jayrock.Json;
-using org.apache.shindig.gadgets;
+using org.apache.shindig.gadgets.rewrite;
 using org.apache.shindig.gadgets.parse;
 using System.Runtime.Remoting.Messaging;
 
@@ -36,123 +36,80 @@ namespace Pesta
     ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
     /// </para>
     /// </remarks>
-    public class Gadget : MutableContent
+    public class Gadget
     {
         private GadgetContext context;
-        public GadgetContext Context
-        {
-            get
-            {
-                return context;
-            }
-        }
-
         private GadgetSpec spec;
-        public GadgetSpec Spec
+        private Preloads preloads;
+        private View currentView;
+        /**
+         * @param context The request that the gadget is being processed for.
+         */
+        public Gadget setContext(GadgetContext context)
         {
-            get
-            {
-                return spec;
-            }
+            this.context = context;
+            return this;
         }
 
-        private ICollection<JsLibrary> jsLibraries;
-        public ICollection<JsLibrary> JsLibraries
+        public GadgetContext getContext()
         {
-            get
-            {
-                return jsLibraries;
-            }
-        }
-
-        private Dictionary<Preload, IAsyncResult> preloads = new Dictionary<Preload, IAsyncResult>();
-        public Dictionary<Preload, IAsyncResult> Preloads
-        {
-            get
-            {
-                return preloads;
-            }
+            return context;
         }
 
         /**
-        * Convenience function for getting the locale spec for the current context.
-        *
-        * Identical to:
-        * Locale locale = gadget.getContext().getLocale();
-        * gadget.getSpec().getModulePrefs().getLocale(locale);
-        */
+         * @param spec The spec for the gadget that is being processed.
+         */
+        public Gadget setSpec(GadgetSpec spec)
+        {
+            this.spec = spec;
+            return this;
+        }
+
+        public GadgetSpec getSpec()
+        {
+            return spec;
+        }
+
+        /**
+         * @param preloads The preloads for the gadget that is being processed.
+         */
+        public Gadget setPreloads(Preloads preloads)
+        {
+            this.preloads = preloads;
+            return this;
+        }
+
+        public Preloads getPreloads()
+        {
+            return preloads;
+        }
+
+        public Gadget setCurrentView(View currentView)
+        {
+            this.currentView = currentView;
+            return this;
+        }
+
+        /**
+         * @return The View applicable for the current request.
+         */
+        public View getCurrentView()
+        {
+            return currentView;
+        }
+
+        /**
+         * Convenience function for getting the locale spec for the current context.
+         *
+         * Identical to:
+         * Locale locale = gadget.getContext().getLocale();
+         * gadget.getSpec().getModulePrefs().getLocale(locale);
+         */
         public LocaleSpec getLocale()
         {
             return spec.getModulePrefs().getLocale(context.getLocale());
         }
 
-        private View currentView;
-        public View CurrentView
-        {
-            get
-            {
-                return currentView;
-            }
-        }
-        /**
-        * Attempts to extract the "current" view for this gadget.
-        *
-        * @param config The container configuration; used to look for any view name
-        *        aliases for the container specified in the context.
-        */
-        View getView(ContainerConfig config)
-        {
-            String viewName = context.getView();
-            View view = spec.getView(viewName);
-            if (view == null)
-            {
-                JsonArray aliases = config.getJsonArray(context.getContainer(),
-                        "gadgets.features/views/" + viewName + "/aliases");
-                if (aliases != null)
-                {
-                    try
-                    {
-                        for (int i = 0; i < aliases.Length; i++)
-                        {
-                            viewName = aliases.GetString(i);
-                            view = spec.getView(viewName);
-                            if (view != null)
-                            {
-                                break;
-                            }
-                        }
-                    }
-                    catch (JsonException e)
-                    {
-                        view = null;
-                    }
-                }
-
-                if (view == null)
-                {
-                    view = spec.getView(GadgetSpec.DEFAULT_VIEW);
-                }
-            }
-            return view;
-        }
-        public Gadget(GadgetContext context, GadgetSpec spec,
-            ICollection<JsLibrary> jsLibraries, ContainerConfig containerConfig, GadgetHtmlParser contentParser)
-            : base(contentParser)
-        {
-            this.context = context;
-            this.spec = spec;
-            this.jsLibraries = jsLibraries;
-            this.currentView = getView(containerConfig);
-            if (this.currentView != null)
-            {
-                // View might be invalid or associated with no content (type=URL)
-                setContent(this.currentView.getContent());
-            }
-            else
-            {
-                setContent(null);
-            }
-        }
     } 
 }
 

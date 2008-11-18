@@ -196,8 +196,8 @@ namespace Pesta
             try
             {
                 // set up the request and response objects
-                Uri uri = new Uri(url);
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
+                Uri uri = Uri.parse(url);
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri.ToString());
                 request.Credentials = CredentialCache.DefaultNetworkCredentials;
                 using (StreamReader reader = new StreamReader(request.GetResponse().GetResponseStream()))
                 {

@@ -38,7 +38,8 @@ namespace Jayrock.Json
     /// <remarks>
     /// <para>
     /// Public Domain 2002 JSON.org, ported to C# by Are Bjolseth (teleplan.no)
-    /// and re-adapted by Atif Aziz (www.raboof.com)</para>
+    /// and re-adapted by Atif Aziz (www.raboof.com)
+    /// modified for Pesta 2008 by Sean Lin M.T (my6solutions.com)</para>
     /// </remarks>
 
     [ Serializable ]

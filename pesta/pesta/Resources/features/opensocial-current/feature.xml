@@ -19,16 +19,12 @@
 -->
 <feature>
   <name>opensocial-0.8</name>
-  <dependency>opensocial-reference</dependency>
+  <dependency>opensocial-jsonrpc</dependency>
+  <dependency>opensocial-rest</dependency>
   <!-- <dependency>caja</dependency> -->
   <!-- Must include the "caja" feature to display samplecontainer -->
   <!-- gadgets when "use caja" is checked -->
-  <gadget>
-    <script src="fieldtranslations.js"></script>
-    <script src="jsonactivity.js"></script>
-    <script src="jsonperson.js"></script>
-    <script src="restfulcontainer.js"></script>
-    <script src="jsonrpccontainer.js"></script>
+  <gadget>    
     <script>
       var requiredConfig = {
         "impl": gadgets.config.NonEmptyStringValidator,
@@ -41,16 +37,18 @@
       gadgets.config.register("opensocial-0.8", requiredConfig,
         function(config) {
           var configParams = config["opensocial-0.8"];
+          var path = configParams.path;
+          path = path.replace("%host%", document.location.host);
 
           if (configParams.impl == "rpc") {
             ShindigContainer = function() {
-              JsonRpcContainer.call(this, configParams.path,
+              JsonRpcContainer.call(this, path,
               configParams.domain, configParams.supportedFields);
             };
             ShindigContainer.inherits(JsonRpcContainer);
           } else {
             ShindigContainer = function() {
-              RestfulContainer.call(this, configParams.path,
+              RestfulContainer.call(this, path,
               configParams.domain, configParams.supportedFields);
             };
             ShindigContainer.inherits(RestfulContainer);
@@ -58,11 +56,10 @@
 
           opensocial.Container.setContainer(new ShindigContainer());
 
-          if (window['caja']) {
+          if (configParams.enableCaja) {
             opensocial.Container.get().enableCaja();
           }
       });
-
     </script>
   </gadget>
 </feature>

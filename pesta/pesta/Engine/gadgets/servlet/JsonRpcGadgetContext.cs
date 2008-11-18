@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using Jayrock.Json;
 using Locale=java.util.Locale;
+using URI = System.Uri;
 
 namespace Pesta
 {
@@ -43,7 +44,7 @@ namespace Pesta
         private Locale locale;
         private int moduleId;
         private RenderingContext renderingContext;
-        private Uri url;
+        private URI url;
         private UserPrefs userPrefs;
         private String view;
 
@@ -135,7 +136,7 @@ namespace Pesta
             return renderingContext;
         }
 
-        public override Uri getUrl()
+        public override URI getUrl()
         {
             if (url == null)
             {
@@ -199,12 +200,12 @@ namespace Pesta
         * @return URL from the request, or null if not present
         * @throws JSONException
         */
-        private static Uri getUrl(JsonObject json)
+        private static URI getUrl(JsonObject json)
         {
             try
             {
                 String url = json["url"] as string;
-                return new Uri(url);
+                return new URI(url);
             }
             catch (UriFormatException e)
             {

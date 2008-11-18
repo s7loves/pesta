@@ -46,7 +46,7 @@ namespace Pesta
             byte[] masterKey = Crypto.GetRandomBytes(BasicBlobCrypter.MASTER_KEY_MIN_LEN);
             this.fetcherConfig = new OAuthFetcherConfig(
                         new BasicBlobCrypter(masterKey),
-                        new GadgetOAuthTokenStore(new BasicOAuthStore(), BasicGadgetSpecFactory.Instance));
+                        new GadgetOAuthTokenStore(new BasicOAuthStore(), DefaultGadgetSpecFactory.Instance));
         }
 
         /**

@@ -85,7 +85,7 @@ namespace Pesta
             {
                 try
                 {
-                    return new Uri(uri);
+                    return Uri.parse(uri);
                 }
                 catch
                 {
@@ -126,7 +126,7 @@ namespace Pesta
             {
                 return def;
             }
-            if (!"http".Equals(uri.Scheme.ToLower()) && !"https".Equals(uri.Scheme.ToLower()))
+            if (!"http".Equals(uri.getScheme().ToLower()) && !"https".Equals(uri.getScheme().ToLower()))
             {
                 return def;
             }

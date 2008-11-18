@@ -19,6 +19,7 @@
 #endregion
 using System;
 using Locale = java.util.Locale;
+using URI = System.Uri;
 
 namespace Pesta
 {
@@ -44,7 +45,7 @@ namespace Pesta
         /**
          * @return The url for this gadget.
          */
-        public virtual Uri getUrl()
+        public virtual URI getUrl()
         {
             return null;
         }
@@ -90,11 +91,28 @@ namespace Pesta
         }
 
         /**
+         * @return The host for which the current request is being made.
+         */
+        public virtual String getHost()
+        {
+            return null;
+        }
+
+        /**
+         * @return The IP Address for the current user.
+         */
+        public virtual String getUserIp()
+        {
+            return null;
+        }
+
+
+        /**
          * @return Whether or not to show debug output.
          */
         public virtual bool getDebug()
         {
-            return System.Configuration.ConfigurationManager.AppSettings["gadget.debug"].ToLower().Equals("true");
+            return ContainerConfig.getConfigurationValue("gadget.debug").ToLower().Equals("true");
         }
 
         /**

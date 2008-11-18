@@ -22,6 +22,7 @@ using System.Web;
 using System.Collections.Generic;
 using Locale = java.util.Locale;
 using System.Collections.Specialized;
+using URI = System.Uri;
 
 namespace Pesta
 {
@@ -44,7 +45,7 @@ namespace Pesta
         private Locale locale;
         private int moduleId;
         private RenderingContext renderingContext;
-        private Uri url;
+        private URI url;
         private UserPrefs userPrefs;
         private String view;
 
@@ -91,6 +92,27 @@ namespace Pesta
         }
 
 
+        public override String getHost() 
+        {
+            String host = request.Headers["Host"];
+            if (host == null) 
+            {
+                return base.getHost();
+            }
+            return host;
+        }
+
+        
+        public override String getUserIp() 
+        {
+            String ip = request.ServerVariables["REMOTE_ADDR"];
+            if (ip == null)
+            {
+                return base.getUserIp();
+            }
+            return ip;
+        }
+
         public override bool getIgnoreCache()
         {
             //if (ignoreCache == null)
@@ -135,7 +157,7 @@ namespace Pesta
             return new AuthInfo(context, this.request.RawUrl).getSecurityToken();
         }
 
-        public override Uri getUrl()
+        public override URI getUrl()
         {
             if (url == null)
             {
@@ -270,14 +292,14 @@ namespace Pesta
         /// </param>
         /// <returns> The ignore cache setting, if appropriate params are set, or null.
         /// </returns>
-        private static Uri getUrl(HttpRequest request)
+        private static URI getUrl(HttpRequest request)
         {
             string[] url = request.Params.GetValues("url");
             if (url == null)
             {
                 return null;
             }
-            return new Uri(url[0]);
+            return new URI(url[0]);
         }
 
         /// <param name="req">

@@ -40,6 +40,7 @@ namespace Pesta
     /// </remarks>
     public class sRequest
     {
+        public static readonly String DOS_PREVENTION_HEADER = "X-shindig-dos";
         internal const String DEFAULT_CONTENT_TYPE = "application/x-www-form-urlencoded; charset=utf-8";
         internal const int CONNECT_TIMEOUT_MS = 10000;
         public HttpWebRequest req;
@@ -84,6 +85,7 @@ namespace Pesta
             this.cacheTtl = -1;
             this.uri = uri;
             authType = AuthType.NONE;
+            addHeader(DOS_PREVENTION_HEADER, "on");
         }
 
         /// <summary>
@@ -110,7 +112,7 @@ namespace Pesta
         }
 
         /// <param name="ignoreCache_0">Whether to ignore all caching for this request.</param>
-        public sRequest SetIgnoreCache(bool ignoreCache)
+        public sRequest setIgnoreCache(bool ignoreCache)
         {
             this.ignoreCache = ignoreCache;
             if (ignoreCache)
@@ -139,17 +141,17 @@ namespace Pesta
 
 
         /// <param name="cacheTtl_0">The amount of time to cache the result object for, in</param>
-        public sRequest SetCacheTtl(int cacheTtl_0)
+        public sRequest setCacheTtl(int cacheTtl)
         {
-            this.cacheTtl = cacheTtl_0;
+            this.cacheTtl = cacheTtl;
             return this;
         }
 
 
         /// <param name="gadget_0">The gadget that caused this HTTP request to be necessary. May</param>
-        public sRequest SetGadget(Uri gadget_0)
+        public sRequest setGadget(Uri gadget)
         {
-            this.gadget = gadget_0;
+            this.gadget = gadget;
             return this;
         }
 
@@ -159,9 +161,9 @@ namespace Pesta
         }
 
         /// <param name="container_0">The container that this request originated from.</param>
-        public sRequest SetContainer(String container_0)
+        public sRequest setContainer(String container)
         {
-            this.container = container_0;
+            this.container = container;
             return this;
         }
 
@@ -170,39 +172,39 @@ namespace Pesta
         /// request.
         /// </summary>
         ///
-        public sRequest SetSecurityToken(SecurityToken securityToken_0)
+        public sRequest setSecurityToken(SecurityToken securityToken)
         {
-            this.securityToken = securityToken_0;
+            this.securityToken = securityToken;
             return this;
         }
 
 
         /// <param name="oauthArguments_0">arguments for OAuth/signed fetched</param>
-        public sRequest SetOAuthArguments(OAuthArguments oauthArguments_0)
+        public sRequest setOAuthArguments(OAuthArguments oauthArguments)
         {
-            this.oauthArguments = oauthArguments_0;
+            this.oauthArguments = oauthArguments;
             return this;
         }
 
 
         /// <param name="followRedirects_0">whether this request should automatically follow redirects.</param>
-        public sRequest SetFollowRedirects(bool followRedirects_0)
+        public sRequest setFollowRedirects(bool followRedirects)
         {
-            this.followRedirects = followRedirects_0;
+            this.followRedirects = followRedirects;
             return this;
         }
 
 
         /// <param name="authType_0">The type of authentication being used for this request.</param>
-        public sRequest SetAuthType(AuthType authType_0)
+        public sRequest setAuthType(AuthType authType)
         {
-            this.authType = authType_0;
+            this.authType = authType;
             return this;
         }
 
 
         /// <param name="rewriteMimeType_0">The assumed content type of the response to be rewritten.</param>
-        public sRequest SetRewriteMimeType(String rewriteMimeType)
+        public sRequest setRewriteMimeType(String rewriteMimeType)
         {
             this.rewriteMimeType = rewriteMimeType;
             return this;

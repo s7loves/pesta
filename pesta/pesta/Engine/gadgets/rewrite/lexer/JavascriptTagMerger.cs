@@ -74,7 +74,7 @@ namespace Pesta
                     lastToken.type == HtmlTokenType.ATTRNAME &&
                     lastToken.toString().ToLower().Equals("src"))
                     {
-                        scripts.Add(new Uri(stripQuotes(token.toString())));
+                        scripts.Add(Uri.parse(stripQuotes(token.toString())));
                     }
                     else if (token.type == HtmlTokenType.UNESCAPED)
                     {
@@ -140,9 +140,9 @@ namespace Pesta
                 for (int i = 0; i < concat.Count; i++)
                 {
                     Uri srcUrl = concat[i];
-                    if (!srcUrl.IsAbsoluteUri)
+                    if (!srcUrl.isAbsolute())
                     {
-                        srcUrl = relativeUrlBase.MakeRelativeUri(srcUrl);
+                        srcUrl = relativeUrlBase.resolve(srcUrl);
                     }
                     builder.Append(paramIndex).Append('=')
                     .Append(HttpUtility.UrlEncode(srcUrl.ToString()));

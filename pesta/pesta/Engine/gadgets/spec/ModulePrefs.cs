@@ -60,9 +60,11 @@ namespace Pesta
         private static readonly String ATTR_CATEGORY = "category";
         private static readonly String ATTR_CATEGORY2 = "category2";
 
-        private static readonly Uri EMPTY_URI = null;
+        private static readonly Uri EMPTY_URI = Uri.parse("");
 
         private readonly Dictionary<String, String> attributes;
+
+        private readonly Uri _base;
 
         // Canonical spec items first.
 
@@ -173,9 +175,9 @@ namespace Pesta
          *
          * Message Bundles
          */
-        public String getAuthorPhoto()
+        public Uri getAuthorPhoto()
         {
-            return getAttribute(ATTR_AUTHOR_PHOTO);
+            return getUriAttribute(ATTR_AUTHOR_PHOTO);
         }
 
         /**
@@ -203,9 +205,9 @@ namespace Pesta
          *
          * Message Bundles
          */
-        public String getAuthorLink()
+        public Uri getAuthorLink()
         {
-            return getAttribute(ATTR_AUTHOR_LINK);
+            return getUriAttribute(ATTR_AUTHOR_LINK);
         }
 
         /**
@@ -298,14 +300,15 @@ namespace Pesta
          */
         public Uri getUriAttribute(String name)
         {
-            String uri = getAttribute(name);
-            if (uri != null)
+            String uriAttribute = getAttribute(name);
+            if (uriAttribute != null)
             {
                 try
                 {
-                    return new Uri(uri);
+                    Uri uri = Uri.parse(uriAttribute);
+                    return _base.resolve(uri);
                 }
-                catch (UriFormatException e)
+                catch 
                 {
                     return EMPTY_URI;
                 }
@@ -330,15 +333,12 @@ namespace Pesta
         public int getIntAttribute(String name)
         {
             String value = getAttribute(name);
-            if (value == null)
+            int valInt = 0;
+            if (value != null)
             {
-                return 0;
+               int.TryParse(value, out valInt);
             }
-            else
-            {
-                // TODO might want to handle parse exception here
-                return int.Parse(value);
-            }
+            return valInt;
         }
 
         /**
@@ -511,8 +511,9 @@ namespace Pesta
          * @param element
          * @param specUrl
          */
-        public ModulePrefs(XmlElement element, Uri specUrl)
+        public ModulePrefs(XmlElement element, Uri inbase)
         {
+            this._base = inbase;
             attributes = new Dictionary<String, String>();
             XmlNamedNodeMap attributeNodes = element.Attributes;
             for (int i = 0; i < attributeNodes.Count; i++)
@@ -529,12 +530,12 @@ namespace Pesta
             categories = new List<string>() { getAttribute(ATTR_CATEGORY, ""), getAttribute(ATTR_CATEGORY2, "") };
 
             // Child elements
-            PreloadVisitor preloadVisitor = new PreloadVisitor();
-            FeatureVisitor featureVisitor = new FeatureVisitor();
-            OAuthVisitor oauthVisitor = new OAuthVisitor();
-            IconVisitor iconVisitor = new IconVisitor();
-            LocaleVisitor localeVisitor = new LocaleVisitor(specUrl);
-            LinkVisitor linkVisitor = new LinkVisitor();
+            PreloadVisitor preloadVisitor = new PreloadVisitor(_base);
+            FeatureVisitor featureVisitor = new FeatureVisitor(_base);
+            OAuthVisitor oauthVisitor = new OAuthVisitor(_base);
+            IconVisitor iconVisitor = new IconVisitor(_base);
+            LocaleVisitor localeVisitor = new LocaleVisitor(_base);
+            LinkVisitor linkVisitor = new LinkVisitor(_base);
 
             Dictionary<String, ElementVisitor> visitors = new Dictionary<String, ElementVisitor>();
             visitors.Add("Preload", preloadVisitor);
@@ -547,12 +548,12 @@ namespace Pesta
 
             walk(element, visitors);
 
-            preloads = preloadVisitor.preloads;
+            preloads = preloadVisitor.preloaded;
             features = featureVisitor.features;
             icons = iconVisitor.icons;
-            locales = localeVisitor.locales;
-            links = linkVisitor.links;
-            oauth = oauthVisitor.oauth;
+            locales = localeVisitor.localeMap;
+            links = linkVisitor.linkMap;
+            oauth = oauthVisitor.oauthSpec;
         }
 
         /**
@@ -560,15 +561,19 @@ namespace Pesta
          */
         private ModulePrefs(ModulePrefs prefs, Substitutions substituter)
         {
+            _base = prefs._base;
             categories = prefs.getCategories();
             features = prefs.getFeatures();
             locales = prefs.getLocales();
             oauth = prefs.oauth;
 
-            List<Preload> preloads = new List<Preload>(prefs.preloads.Count);
-            foreach (Preload preload in prefs.preloads)
+            List<Preload> preloads = new List<Preload>();
+            if (prefs.preloads != null)
             {
-                preloads.Add(preload.substitute(substituter));
+                foreach (Preload preload in prefs.preloads)
+                {
+                    preloads.Add(preload.substitute(substituter));
+                }
             }
             this.preloads = preloads;
 
@@ -607,11 +612,23 @@ namespace Pesta
      */
     class PreloadVisitor : ElementVisitor
     {
-        public readonly List<Preload> preloads = new List<Preload>();
+        public List<Preload> preloaded;
+        Uri _base = null;
         public void visit(XmlElement element)
         {
-            Preload preload = new Preload(element);
-            preloads.Add(preload);
+            Preload preload = new Preload(element, _base);
+            if (preloaded == null)
+            {
+                preloaded = new List<Preload>();
+            }
+            preloaded.Add(preload);
+        }
+        /// <summary>
+        /// Initializes a new instance of the PreloadVisitor structure.
+        /// </summary>
+        public PreloadVisitor(Uri url)
+        {
+            _base = url;
         }
     }
 
@@ -620,18 +637,23 @@ namespace Pesta
      */
     class OAuthVisitor : ElementVisitor
     {
-        public OAuthSpec oauth;
+        Uri _base = null;
+        public OAuthSpec oauthSpec;
         public void visit(XmlElement element)
         {
-            if (oauth != null)
+            if (oauthSpec != null)
             {
                 throw new SpecParserException("ModulePrefs/OAuth may only occur once.");
             }
-            oauth = new OAuthSpec(element);
+            oauthSpec = new OAuthSpec(element, _base);
         }
-        public OAuthVisitor()
+        /// <summary>
+        /// Initializes a new instance of the OAuthVisitor structure.
+        /// </summary>
+        public OAuthVisitor(Uri url)
         {
-            this.oauth = null;
+            _base = url;
+            this.oauthSpec = null;
         }
     }
 
@@ -640,11 +662,19 @@ namespace Pesta
      */
     class FeatureVisitor : ElementVisitor
     {
+        Uri _base = null;
         public readonly Dictionary<String, Feature> features = new Dictionary<String, Feature>();
         public void visit(XmlElement element)
         {
             Feature feature = new Feature(element);
             features.Add(feature.getName(), feature);
+        }
+        /// <summary>
+        /// Initializes a new instance of the FeatureVisitor structure.
+        /// </summary>
+        public FeatureVisitor(Uri url)
+        {
+            _base = url;
         }
     }
 
@@ -653,10 +683,18 @@ namespace Pesta
      */
     class IconVisitor : ElementVisitor
     {
+        Uri _base = null;
         public readonly List<Icon> icons = new List<Icon>();
         public void visit(XmlElement element)
         {
             icons.Add(new Icon(element));
+        }
+        /// <summary>
+        /// Initializes a new instance of the IconVisitor structure.
+        /// </summary>
+        public IconVisitor(Uri url)
+        {
+            _base = url;
         }
     }
 
@@ -665,16 +703,19 @@ namespace Pesta
      */
     class LocaleVisitor : ElementVisitor
     {
-        readonly Uri bas;
-        public readonly Dictionary<Locale, LocaleSpec> locales = new Dictionary<Locale, LocaleSpec>();
+        Uri _base = null;
+        public readonly Dictionary<Locale, LocaleSpec> localeMap = new Dictionary<Locale, LocaleSpec>();
         public void visit(XmlElement element)
         {
-            LocaleSpec locale = new LocaleSpec(element, bas);
-            locales[new Locale(locale.getLanguage(), locale.getCountry())] = locale;
+            LocaleSpec locale = new LocaleSpec(element, _base);
+            localeMap[new Locale(locale.getLanguage(), locale.getCountry())] = locale;
         }
-        public LocaleVisitor(Uri bas)
+        /// <summary>
+        /// Initializes a new instance of the LocaleVisitor structure.
+        /// </summary>
+        public LocaleVisitor(Uri url)
         {
-            this.bas = bas;
+            _base = url;
         }
     }
 
@@ -683,12 +724,20 @@ namespace Pesta
      */
     class LinkVisitor : ElementVisitor
     {
-        public readonly Dictionary<String, LinkSpec> links = new Dictionary<String, LinkSpec>();
+        Uri _base = null;
+        public readonly Dictionary<String, LinkSpec> linkMap = new Dictionary<String, LinkSpec>();
 
         public void visit(XmlElement element)
         {
-            LinkSpec link = new LinkSpec(element);
-            links.Add(link.getRel(), link);
+            LinkSpec link = new LinkSpec(element, _base);
+            linkMap.Add(link.getRel(), link);
+        }
+        /// <summary>
+        /// Initializes a new instance of the LinkVisitor structure.
+        /// </summary>
+        public LinkVisitor(Uri url)
+        {
+            _base = url;
         }
     } 
 }

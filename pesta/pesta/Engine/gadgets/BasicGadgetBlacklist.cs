@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Text;
 using System.IO;
+using URI = System.Uri;
 
 namespace Pesta
 {
@@ -90,7 +91,7 @@ namespace Pesta
         }
 
         /** {@inheritDoc} */
-        public bool isBlacklisted(Uri gadgetUri) 
+        public bool isBlacklisted(URI gadgetUri) 
         {
             String uriString = gadgetUri.ToString().ToLower();
             if (exactMatches.Contains(uriString)) 

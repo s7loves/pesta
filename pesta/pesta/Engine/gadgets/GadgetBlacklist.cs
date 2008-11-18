@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using URI = System.Uri;
 
 namespace Pesta
 {
@@ -32,12 +33,12 @@ namespace Pesta
     ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
     /// </para>
     /// </remarks>
-    interface GadgetBlacklist
+    public interface GadgetBlacklist
     {
         /**
         * @return true if {@code gadgetUri} was found in this blacklist, false
         * otherwise.
         */
-        bool isBlacklisted(Uri gadgetUri);
+        bool isBlacklisted(URI gadgetUri);
     }
 }

@@ -104,8 +104,6 @@ namespace Pesta
                     response.Cache.SetCacheability(HttpCacheability.Public);
                 }
                 response.Cache.SetMaxAge(new TimeSpan(ttl, 0, 0, 0));
-                // Firefox requires this for certain cases.
-                response.Cache.SetLastModified(DateTime.Now);
             }
         }
 
