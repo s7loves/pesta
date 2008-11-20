@@ -63,7 +63,6 @@ namespace Pesta
                     String result = prefix
                     + HttpUtility.UrlEncode(uri.ToString())
                     + ((gadgetUri == null) ? "" : "&gadget=" + HttpUtility.UrlEncode(gadgetUri.ToString()))
-                    + HttpUtility.UrlEncode(gadgetUri.ToString())
                     + "&fp="
                     + rewriterFeature.getFingerprint();
                     if (rewriterFeature.getExpires() != null)
