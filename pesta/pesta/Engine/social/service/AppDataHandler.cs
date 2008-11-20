@@ -38,9 +38,9 @@ namespace Pesta
 
         private static readonly String APP_DATA_PATH = "/appdata/{userId}+/{groupId}/{appId}";
 
-        public AppDataHandler(AppDataService service)
+        public AppDataHandler()
         {
-            this.service = service;
+            this.service = JsonDbOpensocialService.Instance;
         }
 
         /**

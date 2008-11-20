@@ -53,6 +53,7 @@ namespace Pesta
                 }
 
                 setCharacterEncodings(request, response);
+                response.ContentType = "application/json";
 
                 try
                 {

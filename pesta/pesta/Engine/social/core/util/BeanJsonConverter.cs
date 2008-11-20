@@ -37,11 +37,19 @@ using System.Reflection;
 public class BeanJsonConverter : BeanConverter
 {
     private static readonly Object[] EMPTY_OBJECT = {};
-    private static readonly HashSet<String> EXCLUDED_FIELDS = new HashSet<string>()
+    private static readonly HashSet<String> EXCLUDED_FIELDS = new HashSet<String>()
                     {"class", "declaringclass"};
-    private static readonly Regex GETTER = new Regex("^get([a-zA-Z]+)$", RegexOptions.Compiled);
-    private static readonly Regex SETTER = new Regex("^set([a-zA-Z]+)$", RegexOptions.Compiled);
+    private static readonly String GETTER_PREFIX  = "get";
+    private static readonly String SETTER_PREFIX = "set";
 
+    // Only compute the filtered getters/setters once per-class
+    private static readonly Dictionary<Type,List<MethodPair>> GETTER_METHODS = new Dictionary<Type,List<MethodPair>>();
+    private static readonly Dictionary<Type, List<MethodPair>> SETTER_METHODS = new Dictionary<Type,List<MethodPair>>();
+
+    public String getContentType()
+    {
+        return "application/json";
+    }
 
   /**
    * Convert the passed in object to a string.
@@ -131,7 +139,16 @@ public class BeanJsonConverter : BeanConverter
    */
     private JsonObject convertMethodsToJson(object pojo) 
     {
-        List<MethodPair> availableGetters = getMatchingMethods(pojo.GetType(), GETTER);
+        List<MethodPair> availableGetters = null;
+        if (!GETTER_METHODS.TryGetValue(pojo.GetType(), out availableGetters))
+        {
+            availableGetters = getMatchingMethods(pojo.GetType(), GETTER_PREFIX);
+            if (!GETTER_METHODS.ContainsKey(pojo.GetType()))
+            {
+                GETTER_METHODS.Add(pojo.GetType(), availableGetters);
+            }
+            
+        }
 
         JsonObject toReturn = new JsonObject();
         foreach(MethodPair getter in availableGetters) 
@@ -170,21 +187,23 @@ public class BeanJsonConverter : BeanConverter
         }
     }
 
-    private List<MethodPair> getMatchingMethods(Type pojo, Regex pattern) 
+    private List<MethodPair> getMatchingMethods(Type pojo, String prefix) 
     {
         List<MethodPair> availableGetters = new List<MethodPair>();
 
         MethodInfo[] methods = pojo.GetMethods();
         foreach (MethodInfo method in methods) 
         {
-            Match matcher = pattern.Match(method.Name);
-            if (!matcher.Success) 
+            String name = method.Name;
+            if (!method.Name.StartsWith(prefix))
             {
                 continue;
             }
+            int prefixlen = prefix.Length;
 
-            String name = matcher.Groups[0].Value;
-            String fieldName = name.Substring(3, 1).ToLower() + name.Substring(4);
+            String fieldName = name.Substring(prefixlen, 1).ToLower() +
+                name.Substring(prefixlen + 1);
+
             if (EXCLUDED_FIELDS.Contains(fieldName.ToLower())) 
             {
                 continue;
@@ -254,15 +273,26 @@ public class BeanJsonConverter : BeanConverter
         }
         else if (pojo.GetType().GetInterface("IList") != null) 
         {
-            // TODO: process as a JsonArray
-            throw new Exception("We don't support lists as a "
-                    + "base json type yet. You can put it inside a pojo for now.");
+            JsonArray array = new JsonArray(json);
+            for (int i = 0; i < array.Count; i++)
+            {
+                ((List<Object>)pojo).Add(array[i]);
+            }
 
         } 
         else 
         {
             JsonObject JsonObject = JsonConvert.Import(json) as JsonObject;
-            List<MethodPair> methods = getMatchingMethods(pojo.GetType(), SETTER);
+            List<MethodPair> methods = null;
+            if (!SETTER_METHODS.TryGetValue(pojo.GetType(), out methods))
+            {
+                methods = getMatchingMethods(pojo.GetType(), SETTER_PREFIX);
+                if (!SETTER_METHODS.ContainsKey(pojo.GetType()))
+                {
+                    SETTER_METHODS.Add(pojo.GetType(), methods);
+                }
+            }
+
             foreach(MethodPair setter in methods) 
             {
                 if (JsonObject.Contains(setter.fieldName)) 

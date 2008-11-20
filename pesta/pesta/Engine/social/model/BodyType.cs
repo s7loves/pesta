@@ -137,7 +137,7 @@ public abstract class BodyType
     *
     * @return the height of the person in meters
     */
-    public abstract  String getHeight();
+    public abstract  float getHeight();
 
     /**
     * The height of the person in meters, specified as a number. Container support for this field is
@@ -145,7 +145,7 @@ public abstract class BodyType
     *
     * @param height the height of the person in meters
     */
-    public abstract  void setHeight(String height);
+    public abstract void setHeight(float height);
 
     /**
     * The weight of the person in kilograms, specified as a number. Container support for this field
@@ -153,7 +153,7 @@ public abstract class BodyType
     *
     * @return the weight of the person in kilograms
     */
-    public abstract  String getWeight();
+    public abstract float getWeight();
 
     /**
     * The weight of the person in kilograms, specified as a number. Container support for this field
@@ -161,5 +161,5 @@ public abstract class BodyType
     *
     * @param weight weight of the person in kilograms
     */
-    public abstract  void setWeight(String weight);
+    public abstract void setWeight(float weight);
 }

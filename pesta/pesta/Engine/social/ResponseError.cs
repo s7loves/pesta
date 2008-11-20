@@ -47,7 +47,7 @@ public class ResponseError : EnumBaseType<ResponseError>
     /**
    * The json value of the error.
    */
-    private String jsonValue;
+    private readonly String jsonValue;
   /**
    * The http error code associated with the error.
    */

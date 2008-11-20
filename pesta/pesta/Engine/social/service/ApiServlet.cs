@@ -37,22 +37,19 @@ namespace Pesta
     public abstract class ApiServlet
     {
         protected static String DEFAULT_ENCODING = "UTF-8";
-        private Dictionary<String, Type> handlers;
+        private HandlerDispatcher dispatcher;
         protected BeanJsonConverter jsonConverter;
         protected BeanConverter xmlConverter;
+        protected BeanConverter atomConverter;
 
         /// <summary>
         /// Initializes a new instance of the ApiServlet class.
         public ApiServlet()
         {
-            jsonConverter = new BeanJsonConverter();
-            xmlConverter = new BeanXmlConverter();
-            handlers = new Dictionary<String, Type>();
-            handlers.Add("appdata", typeof(AppDataHandler));
-            handlers.Add("samplecontainer", typeof(SampleContainerHandler));
-            handlers.Add("activities", typeof(ActivityHandler));
-            handlers.Add("people", typeof(PersonHandler));
-
+            this.jsonConverter = new BeanJsonConverter();
+            this.xmlConverter = null;
+            this.atomConverter = null;
+            this.dispatcher = new StandardHandlerDispatcher(new PersonHandler(), new ActivityHandler(), new AppDataHandler());
         }
         protected abstract void sendError(HttpResponse response, ResponseItem responseItem);
 
@@ -73,14 +70,14 @@ namespace Pesta
        */
         protected IAsyncResult handleRequestItem(RequestItem requestItem, HttpRequest servletRequest)
         {
-            Type handlerType = null;
-
-            if (!handlers.TryGetValue(requestItem.getService(), out handlerType))
+            DataRequestHandler handler = dispatcher.getHandler(requestItem.getService());
+            //DataRequestHandler handler = (DataRequestHandler)Activator.CreateInstance(handlerType, JsonDbOpensocialService.Instance);
+            if (handler == null)
             {
                 throw new SocialSpiException(ResponseError.NOT_IMPLEMENTED,
                         "The service " + requestItem.getService() + " is not implemented");
             }
-            DataRequestHandler handler = (DataRequestHandler)Activator.CreateInstance(handlerType, JsonDbOpensocialService.Instance);
+            
             return handler.handleItem(requestItem);
         }
 

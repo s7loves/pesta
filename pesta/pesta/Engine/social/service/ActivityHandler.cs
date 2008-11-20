@@ -36,9 +36,9 @@ namespace Pesta
 
         private static readonly String ACTIVITY_ID_PATH = "/activities/{userId}+/{groupId}/{appId}/{activityId}+";
 
-        public ActivityHandler(ActivityService service)
+        public ActivityHandler()
         {
-            this.service = service;
+            this.service = JsonDbOpensocialService.Instance;
         }
 
         /**

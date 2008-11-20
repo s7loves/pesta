@@ -66,7 +66,7 @@ namespace Pesta
             {
                 if (data.Contains(paramName))
                 {
-                    return data[paramName] as string;
+                    return data[paramName].ToString();
                 }
                 else
                 {
@@ -85,7 +85,7 @@ namespace Pesta
             {
                 if (data.Contains(paramName))
                 {
-                    return data[paramName] as string;
+                    return data[paramName].ToString();
                 }
                 else
                 {
@@ -117,7 +117,7 @@ namespace Pesta
                     else
                     {
                         // Allow up-conversion of non-array to array params.
-                        return new List<string>() { data[paramName] as string };
+                        return new List<string>() { data[paramName].ToString() };
                     }
                 }
                 else
@@ -143,6 +143,12 @@ namespace Pesta
             }
         }
 
+        public override object getTypedParameters(Type dataTypeClass)
+        {
+            return converter.convertToObject(data.ToString(), dataTypeClass);
+        }
+
+
         public override void applyUrlTemplate(String urlTemplate)
         {
             // No params in the URL
@@ -151,6 +157,20 @@ namespace Pesta
         /** Method used only by tests */
         void setParameter(String paramName, String param)
         {
+            try
+            {
+                data.Put(paramName, param);
+            }
+            catch (JsonException je)
+            {
+                throw je;
+            }
+        }
+
+        /** Method used only by tests */
+        void setJsonParameter(String paramName, JsonObject param)
+        {
+
             try
             {
                 data.Put(paramName, param);
