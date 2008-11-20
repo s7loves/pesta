@@ -33,6 +33,11 @@ using System.Xml;
 /// </remarks>
 public class BeanXmlConverter : BeanConverter
 {
+    public String getContentType()
+    {
+        return "application/xml";
+    }
+
     public String convertToString(Object pojo) 
     {
         return convertToXml(pojo);

@@ -77,7 +77,7 @@ namespace Pesta
                     {
                         memoryStream.Write(buffer, 0, bytes);
                     }
-                    postData = Encoding.UTF8.GetString(memoryStream.ToArray());
+                    postData = request.ContentEncoding.GetString(memoryStream.ToArray());
                 }
             }
             catch (IOException e)
@@ -201,12 +201,18 @@ namespace Pesta
         }
 
 
-        public override object getTypedParameter(String parameterName, Type postDataClass)
+        public override object getTypedParameter(String parameterName, Type dataTypeClass)
         {
             // We assume the the only typed parameter in a restful request is the post-content
             // and so we simply ignore the parameter name
-            return converter.convertToObject(postData, postDataClass);
+                return getTypedParameters(dataTypeClass);
         }
+
+        public override object getTypedParameters(Type dataTypeClass)
+        {
+            return converter.convertToObject(postData, dataTypeClass);
+        }
+
 
 
         Dictionary<String, List<String>> getParameters()

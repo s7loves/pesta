@@ -42,9 +42,9 @@ namespace Pesta
 
         private static readonly String POST_PATH = "/samplecontainer/{type}/{doevil}";
 
-        public SampleContainerHandler(JsonDbOpensocialService dbService)
+        public SampleContainerHandler()
         {
-            this.service = dbService;
+            this.service = JsonDbOpensocialService.Instance;
         }
 
         /**

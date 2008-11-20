@@ -63,10 +63,6 @@ namespace Pesta
 
             // Serialize the response
             sResponse results = contentFetcherFactory.fetch(rcr);
-            if (results == null)
-            {
-                throw new Exception("no results");
-            }
 
             // Rewrite the response
             if (contentRewriterRegistry != null)

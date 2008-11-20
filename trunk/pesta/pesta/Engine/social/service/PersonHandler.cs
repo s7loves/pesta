@@ -38,9 +38,9 @@ namespace Pesta
 
         private static readonly String PEOPLE_PATH = "/people/{userId}+/{groupId}/{personId}+";
 
-        public PersonHandler(PersonService personService)
+        public PersonHandler()
         {
-            this.personService = personService;
+            this.personService = JsonDbOpensocialService.Instance;
         }
 
         protected override object handleDelete(RequestItem request)

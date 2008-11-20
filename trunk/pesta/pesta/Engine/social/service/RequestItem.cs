@@ -124,7 +124,7 @@ namespace Pesta
             {
                 return startIndex == null ? DEFAULT_START_INDEX : int.Parse(startIndex);
             }
-            catch (FormatException nfe)
+            catch (Exception nfe)
             {
                 throw new SocialSpiException(ResponseError.BAD_REQUEST,
                     "Parameter " + START_INDEX + " (" + startIndex + ") is not a number.");
@@ -225,7 +225,9 @@ namespace Pesta
             return token;
         }
 
-        public abstract object getTypedParameter(String parameterName, Type postDataClass);
+        public abstract object getTypedParameter(String parameterName, Type dataTypeClass);
+
+        public abstract object getTypedParameters(Type dataTypeClass);
 
         public abstract void applyUrlTemplate(String urlTemplate);
 

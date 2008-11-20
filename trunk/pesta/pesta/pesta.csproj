@@ -391,11 +391,11 @@
     <EmbeddedResource Include="Resources\features\opensocial-templates\loader.opt.js" />
     <EmbeddedResource Include="Resources\features\opensocial-templates\loader_test.opt.js" />
     <EmbeddedResource Include="Resources\features\opensocial-templates\namespaces.opt.js" />
-    <Content Include="Resources\features\opensocial-templates\os.opt.js" />
+    <EmbeddedResource Include="Resources\features\opensocial-templates\os.opt.js" />
     <EmbeddedResource Include="Resources\features\opensocial-templates\os_test.opt.js" />
     <EmbeddedResource Include="Resources\features\opensocial-templates\template.opt.js" />
     <EmbeddedResource Include="Resources\features\opensocial-templates\template_test.opt.js" />
-    <Content Include="Resources\features\opensocial-templates\util.opt.js" />
+    <EmbeddedResource Include="Resources\features\opensocial-templates\util.opt.js" />
     <EmbeddedResource Include="Resources\features\opensocial-templates\util_test.opt.js" />
     <EmbeddedResource Include="Resources\features\pubsub\pubsub-router.opt.js" />
     <EmbeddedResource Include="Resources\features\pubsub\pubsub.opt.js" />
@@ -445,6 +445,8 @@
     <Compile Include="Engine\gadgets\UserPrefs.cs" />
     <Compile Include="Engine\gadgets\variables\Substitutions.cs" />
     <Compile Include="Engine\gadgets\variables\VariableSubstituter.cs" />
+    <Compile Include="Engine\social\service\HandlerDispatcher.cs" />
+    <Compile Include="Engine\social\service\StandardHandlerDispatcher.cs" />
     <Compile Include="Handlers\ConcatProxyServlet.cs" />
     <Compile Include="Handlers\DataServiceServlet.cs" />
     <Compile Include="Handlers\GadgetRenderingServlet.cs" />
@@ -550,6 +552,9 @@
     <EmbeddedResource Include="Resources\features\views\feature.xml" />
     <EmbeddedResource Include="Resources\features\views\urltemplatetest.js" />
     <EmbeddedResource Include="Resources\features\views\views.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Engine\social\core\util\xstream\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

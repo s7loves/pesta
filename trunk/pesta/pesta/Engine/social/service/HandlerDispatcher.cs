@@ -18,21 +18,28 @@
  */
 #endregion
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
-/// <summary>
-/// 
-/// </summary>
-/// <remarks>
-/// <para>
-///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
-/// </para>
-/// </remarks>
-public interface BeanConverter 
+namespace Pesta
 {
-    Object convertToObject(String str, Type className);
-
-    String convertToString(Object pojo);
-
-    String getContentType();
-
+    /// <summary>
+    /// Dispatcher for DataRequestHandler requests.  The default implementation
+    /// registers the three standard Shindig handlers.
+    /// Add a custom binding of this interface to customize request handling.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    /// </para>
+    /// </remarks>
+    public interface HandlerDispatcher
+    {
+        /**
+        * @param service a service name
+        * @return the handler, or null if no handler is registered for that service
+        */
+        DataRequestHandler getHandler(String service);
+    }
 }

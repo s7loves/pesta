@@ -33,12 +33,14 @@ namespace Pesta
     /// </remarks>
     internal class DataServiceServlet : ApiServlet, IHttpHandler
     {
-        protected static String FORMAT_PARAM = "format";
-        protected static String ATOM_FORMAT = "atom";
+        protected static readonly String FORMAT_PARAM = "format";
+        protected static readonly String ATOM_FORMAT = "atom";
+        protected static readonly String XML_FORMAT = "xml";
 
-        public static String PEOPLE_ROUTE = "people";
-        public static String ACTIVITY_ROUTE = "activities";
-        public static String APPDATA_ROUTE = "appdata";
+        public static readonly String PEOPLE_ROUTE = "people";
+        public static readonly String ACTIVITY_ROUTE = "activities";
+        public static readonly String APPDATA_ROUTE = "appdata";
+        public static readonly String CONTENT_TYPE = "CONTENT_TYPE";
 
         public void ProcessRequest(HttpContext context)
         {
@@ -60,6 +62,7 @@ namespace Pesta
             RestfulRequestItem requestItem = new RestfulRequestItem(servletRequest, token, converter);
             ResponseItem responseItem = getResponseItem(handleRequestItem(requestItem, servletRequest));
 
+            response.ContentType = converter.getContentType();
             if (responseItem != null && responseItem.getError() == null)
             {
                 Object resp = responseItem.getResponse();
@@ -78,12 +81,67 @@ namespace Pesta
 
         BeanConverter getConverterForRequest(HttpRequest servletRequest)
         {
-            String formatString = servletRequest.Params[FORMAT_PARAM];
-            if (ATOM_FORMAT.Equals(formatString))
+            String formatString = null;
+            BeanConverter converter = null;
+            String contentType = null;
+
+            try
             {
-                return xmlConverter;
+                formatString = servletRequest.Params[FORMAT_PARAM];
             }
-            return jsonConverter;
+            catch (Exception t)
+            {
+                // this happens while testing
+            }
+            try
+            {
+                contentType = servletRequest.Headers[CONTENT_TYPE];
+            }
+            catch (Exception t)
+            {
+                //this happens while testing
+            }
+
+            if (contentType != null)
+            {
+                if (contentType.Equals("application/json"))
+                {
+                    converter = jsonConverter;
+                }
+                else if (contentType.Equals("application/atom+xml"))
+                {
+                    converter = atomConverter;
+                }
+                else if (contentType.Equals("application/xml"))
+                {
+                    converter = xmlConverter;
+                }
+                else if (formatString == null)
+                {
+                    // takes care of cases where content!= null but is ""
+                    converter = jsonConverter;
+                }
+            }
+            else if (formatString != null)
+            {
+                if (formatString.Equals(ATOM_FORMAT))
+                {
+                    converter = atomConverter;
+                }
+                else if (formatString.Equals(XML_FORMAT))
+                {
+                    converter = xmlConverter;
+                }
+                else
+                {
+                    converter = jsonConverter;
+                }
+            }
+            else
+            {
+                converter = jsonConverter;
+            }
+            return converter;
         }
 
         protected override void sendError(HttpResponse response, ResponseItem responseItem)
