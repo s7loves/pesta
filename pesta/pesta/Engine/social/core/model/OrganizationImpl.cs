@@ -40,7 +40,7 @@ public class OrganizationImpl : Organization
     private String title;
     private String webpage;
     private String type;
-    private Boolean primary;
+    private bool? primary;
 
     public override Address getAddress()
     {
@@ -174,12 +174,12 @@ public class OrganizationImpl : Organization
         this.type = type;
     }
 
-    public override Boolean getPrimary()
+    public override bool? getPrimary()
     {
         return primary;
     }
 
-    public override void setPrimary(Boolean primary)
+    public override void setPrimary(bool? primary)
     {
         this.primary = primary;
     }

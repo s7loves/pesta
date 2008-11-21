@@ -37,8 +37,8 @@ public class ActivityImpl : Activity
     private String id;
     private DateTime? updated;
     private List<MediaItem> mediaItems;
-    private long postedTime;
-    private float priority;
+    private long? postedTime;
+    private float? priority;
     private String streamFaviconUrl;
     private String streamSourceUrl;
     private String streamTitle;
@@ -140,22 +140,22 @@ public class ActivityImpl : Activity
         this.mediaItems = mediaItems;
     }
 
-    public override long getPostedTime()
+    public override long? getPostedTime()
     {
         return postedTime;
     }
 
-    public override void setPostedTime(long postedTime)
+    public override void setPostedTime(long? postedTime)
     {
         this.postedTime = postedTime;
     }
 
-    public override float getPriority()
+    public override float? getPriority()
     {
         return priority;
     }
 
-    public override void setPriority(float priority)
+    public override void setPriority(float? priority)
     {
         this.priority = priority;
     }

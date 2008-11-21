@@ -306,14 +306,14 @@ public abstract class Person
      *
      * @return the persons age
      */
-    public abstract int getAge();
+    public abstract int? getAge();
 
     /**
      * Set the person's age, specified as a number. Container support for this field is OPTIONAL.
      *
      * @param age the persons age
      */
-    public abstract void setAge(int age);
+    public abstract void setAge(int? age);
 
     /**
      * Get the person's body characteristics, specified as an BodyType. Container support for this
@@ -496,14 +496,14 @@ public abstract class Person
      *
      * @return the person's gender
      */
-    public abstract Gender getGender();
+    public abstract Gender? getGender();
 
     /**
      * Set a person's gender, specified as an {@link Gender}.
      *
      * @param newGender the person's gender
      */
-    public abstract void setGender(Gender newGender);
+    public abstract void setGender(Gender? newGender);
 
     /**
      * Get a description of when the person is happiest, specified as a string. Container support for
@@ -527,14 +527,14 @@ public abstract class Person
      * query on this person object.
      * @return true the current app has been used
      */
-    public abstract bool getHasApp();
+    public abstract bool? getHasApp();
 
     /**
      * Set if the person has used the current app. Container support for this field is OPTIONAL.
      *
      * @param hasApp set true the current app has been used
      */
-    public abstract void setHasApp(bool hasApp);
+    public abstract void setHasApp(bool? hasApp);
 
     /**
      * Get a person's favorite heroes, specified as an Array of strings. Container support for this
@@ -1031,7 +1031,7 @@ public abstract class Person
      *
      * @return the Person's time zone
      */
-    public abstract long getUtcOffset();
+    public abstract long? getUtcOffset();
 
     /**
      * Set the Person's time zone, specified as the difference in minutes between Greenwich Mean Time
@@ -1039,7 +1039,7 @@ public abstract class Person
      *
      * @param utcOffset the Person's time zone
      */
-    public abstract void setUtcOffset(long utcOffset);
+    public abstract void setUtcOffset(long? utcOffset);
 
     /**
      * Get the person's turn offs. Container support for this field is OPTIONAL.
@@ -1102,25 +1102,25 @@ public abstract class Person
     /**
      * @return true if this person object represents the owner of the current page.
      */
-    public abstract bool getIsOwner();
+    public abstract bool? getIsOwner();
 
     /**
      * Set the owner flag.
      * @param isOwner the isOwnerflag
      */
-    public abstract void setIsOwner(bool isOwner);
+    public abstract void setIsOwner(bool? isOwner);
 
     /**
      * Returns true if this person object represents the currently logged in user.
      * @return true if the person accessing this object is a viewer.
      */
-    public abstract bool getIsViewer();
+    public abstract bool? getIsViewer();
 
     /**
      * Returns true if this person object represents the currently logged in user.
      * @param isViewer the isViewer Flag
      */
-    public abstract void setIsViewer(bool isViewer);
+    public abstract void setIsViewer(bool? isViewer);
 
 
     // Proxied fields
