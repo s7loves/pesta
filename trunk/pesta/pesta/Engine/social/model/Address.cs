@@ -111,14 +111,14 @@ public abstract class Address
     *
     * @return latitude
     */
-    public abstract  float getLatitude();
+    public abstract float? getLatitude();
 
     /**
     * Set the latitude.
     *
     * @param latitude latitude
     */
-    public abstract  void setLatitude(float latitude);
+    public abstract void setLatitude(float? latitude);
 
     /**
     * Get the locality.
@@ -139,14 +139,14 @@ public abstract class Address
     *
     * @return the longitude of the address in degrees
     */
-    public abstract  float getLongitude();
+    public abstract float? getLongitude();
 
     /**
     * Set the longitude of the address in degrees.
     *
     * @param longitude the longitude of the address in degrees.
     */
-    public abstract  void setLongitude(float longitude);
+    public abstract void setLongitude(float? longitude);
 
     /**
     * Get the Postal code for the address.
@@ -234,11 +234,11 @@ public abstract class Address
     * <p>
     * @return true if the instance if the primary instance.
     */
-    public abstract  bool getPrimary();
+    public abstract bool? getPrimary();
 
     /**
     * @see Address.getPrimary()
     * @param primary set the Primary status of this Address.
     */
-    public abstract  void setPrimary(bool primary);
+    public abstract void setPrimary(bool? primary);
 }

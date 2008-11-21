@@ -158,7 +158,7 @@ public class BeanJsonConverter : BeanConverter
             try 
             {
                 Object val = getter.method.Invoke(pojo, EMPTY_OBJECT);
-                if (val != null && val.ToString() != "0" && val.ToString() != "False") 
+                if (val != null) 
                 {
                     toReturn.Put(getter.fieldName, translateObjectToJson(val));
                 }
@@ -306,8 +306,12 @@ public class BeanJsonConverter : BeanConverter
 
     private void callSetterWithValue(object pojo, MethodInfo method, JsonObject JsonObject, String fieldName)
     {
-        Type expectedType = method.GetParameters()[0].ParameterType;
         Object value = null;
+        Type expectedType = method.GetParameters()[0].ParameterType;
+        if (expectedType.IsGenericType && expectedType.GetGenericTypeDefinition() == typeof(Nullable<>))
+        {
+            expectedType = expectedType.GetGenericArguments()[0];
+        }
 
         if (!JsonObject.Contains(fieldName)) 
         {
@@ -357,7 +361,6 @@ public class BeanJsonConverter : BeanConverter
         } 
         else if (typeof(Enums<>).IsAssignableFrom(expectedType)) 
         {
-            // TODO Need to stop using Enum as a class name :(
             value = convertEnum(method.GetGenericArguments()[0], JsonObject[fieldName] as JsonObject);
         } 
         else if (expectedType.IsEnum) 
@@ -368,7 +371,7 @@ public class BeanJsonConverter : BeanConverter
                 {
                     if (v.Name.ToString().Equals(JsonObject[fieldName])) 
                     {
-                        value = v.GetRawConstantValue();
+                        value = Enum.Parse(expectedType, v.GetRawConstantValue().ToString());
                         break;
                     }
                 }
@@ -381,29 +384,28 @@ public class BeanJsonConverter : BeanConverter
         } 
         else if (expectedType.Equals(typeof(String))) 
         {
-            value = JsonObject[fieldName];
+            value = JsonObject[fieldName].ToString();
         } 
         else if (expectedType.Equals(typeof(DateTime))) 
         {
             // Use JODA ISO parsing for the conversion
-            value = DateTime.Parse(JsonObject[fieldName] as string);
+            value = DateTime.Parse(JsonObject[fieldName].ToString());
         } 
         else if (expectedType.Equals(typeof(long))) 
         {
-            value = JsonObject[fieldName];
+            value = long.Parse(JsonObject[fieldName].ToString());
         } 
         else if (expectedType.Equals(typeof(int))) 
         {
-            value = JsonObject[fieldName];
+            value = int.Parse(JsonObject[fieldName].ToString());
         } 
         else if (expectedType.Equals(typeof(bool))) 
         {
-            value = JsonObject[fieldName];
+            value = bool.Parse(JsonObject[fieldName].ToString());
         } 
         else if (expectedType.Equals(typeof(float))) 
         {
-            String stringFloat = JsonObject[fieldName] as String;
-            value = float.Parse(stringFloat);
+            value = float.Parse(JsonObject[fieldName].ToString());
         } 
         else 
         {

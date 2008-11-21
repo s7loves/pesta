@@ -238,7 +238,7 @@ public abstract class Activity
     *
     * @return The time at which this activity took place in milliseconds since the epoch
     */
-    public abstract long getPostedTime();
+    public abstract long? getPostedTime();
 
     /**
     * Set the time at which this activity took place in milliseconds since the epoch Container
@@ -248,7 +248,7 @@ public abstract class Activity
     *
     * @param postedTime the time at which this activity took place in milliseconds since the epoch
     */
-    public abstract void setPostedTime(long postedTime);
+    public abstract void setPostedTime(long? postedTime);
 
     /**
     * Get the priority, a number between 0 and 1 representing the relative priority of this activity
@@ -258,7 +258,7 @@ public abstract class Activity
     * @return a number between 0 and 1 representing the relative priority of this activity in
     *         relation to other activities from the same source
     */
-    public abstract float getPriority();
+    public abstract float? getPriority();
 
     /**
     * Set the priority, a number between 0 and 1 representing the relative priority of this activity
@@ -268,7 +268,7 @@ public abstract class Activity
     * @param priority a number between 0 and 1 representing the relative priority of this activity in
     *                relation to other activities from the same source.
     */
-    public abstract void setPriority(float priority);
+    public abstract void setPriority(float? priority);
 
     /**
     * Get a string specifying the URL for the stream's favicon. Container support for this field is

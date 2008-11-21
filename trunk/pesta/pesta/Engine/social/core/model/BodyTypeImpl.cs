@@ -32,8 +32,8 @@ public class BodyTypeImpl
     private String build;
     private String eyeColor;
     private String hairColor;
-    private float height;
-    private float weight;
+    private float? height;
+    private float? weight;
 
 
     public String getBuild()
@@ -66,22 +66,22 @@ public class BodyTypeImpl
         this.hairColor = hairColor;
     }
 
-    public float getHeight()
+    public float? getHeight()
     {
         return height;
     }
 
-    public void setHeight(float height)
+    public void setHeight(float? height)
     {
         this.height = height;
     }
 
-    public float getWeight()
+    public float? getWeight()
     {
         return weight;
     }
 
-    public void setWeight(float weight)
+    public void setWeight(float? weight)
     {
         this.weight = weight;
     }

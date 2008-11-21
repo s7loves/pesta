@@ -34,7 +34,7 @@ public class PersonImpl : Person
     private List<Account> accounts;
     private List<String> activities;
     private List<Address> addresses;
-    private int age;
+    private int? age;
     private BodyType bodyType;
     private List<String> books;
     private List<String> cars;
@@ -47,9 +47,9 @@ public class PersonImpl : Person
     private String ethnicity;
     private String fashion;
     private List<String> food;
-    private Gender gender;
+    private Gender? gender;
     private String happiestWhen;
-    private bool hasApp;
+    private bool? hasApp;
     private List<String> heroes;
     private String humor;
     private String id;
@@ -82,15 +82,15 @@ public class PersonImpl : Person
     private List<String> sports;
     private String status;
     private List<String> tags;
-    private long utcOffset;
+    private long? utcOffset;
     private List<String> turnOffs;
     private List<String> turnOns;
     private List<String> tvShows;
     private List<ListField> urls;
 
     // Note: Not in the opensocial js person object directly
-    private bool isOwner = false;
-    private bool isViewer = false;
+    private bool? isOwner = false;
+    private bool? isViewer = false;
 
     public PersonImpl() {
     }
@@ -148,12 +148,12 @@ public class PersonImpl : Person
         this.addresses = addresses;
     }
 
-    override public int getAge() 
+    override public int? getAge() 
     {
         return age;
     }
 
-    override public void setAge(int age) 
+    override public void setAge(int? age) 
     {
         this.age = age;
     }
@@ -289,12 +289,12 @@ public class PersonImpl : Person
         this.food = food;
     }
 
-    override public Gender getGender() 
+    override public Gender? getGender() 
     {
         return gender;
     }
 
-    override public void setGender(Gender newGender) 
+    override public void setGender(Gender? newGender) 
     {
         this.gender = newGender;
     }
@@ -309,12 +309,12 @@ public class PersonImpl : Person
         this.happiestWhen = happiestWhen;
     }
 
-    override public bool getHasApp() 
+    override public bool? getHasApp() 
     {
         return hasApp;
     }
 
-    override public void setHasApp(bool hasApp) 
+    override public void setHasApp(bool? hasApp) 
     {
         this.hasApp = hasApp;
     }
@@ -650,12 +650,12 @@ public class PersonImpl : Person
         this.tags = tags;
     }
 
-    override public long getUtcOffset() 
+    override public long? getUtcOffset() 
     {
         return utcOffset;
     }
 
-    override public void setUtcOffset(long utcOffset)
+    override public void setUtcOffset(long? utcOffset)
     {
         this.utcOffset = utcOffset;
     }
@@ -700,22 +700,22 @@ public class PersonImpl : Person
         this.urls = urls;
     }
 
-    override public bool getIsOwner()
+    override public bool? getIsOwner()
     {
         return isOwner;
     }
 
-    override public void setIsOwner(bool isOwner) 
+    override public void setIsOwner(bool? isOwner) 
     {
         this.isOwner = isOwner;
     }
 
-    override public bool getIsViewer()
+    override public bool? getIsViewer()
     {
         return isViewer;
     }
 
-    override public void setIsViewer(bool isViewer)
+    override public void setIsViewer(bool? isViewer)
     {
         this.isViewer = isViewer;
     }

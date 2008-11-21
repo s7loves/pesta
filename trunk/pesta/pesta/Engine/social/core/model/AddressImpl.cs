@@ -31,15 +31,15 @@ using System;
 public class AddressImpl : Address
 {
     private String country;
-    private float latitude;
-    private float longitude;
+    private float? latitude;
+    private float? longitude;
     private String locality;
     private String postalCode;
     private String region;
     private String streetAddress;
     private String type;
     private String formatted;
-    private bool primary;
+    private bool? primary;
 
     public AddressImpl() { }
 
@@ -58,12 +58,12 @@ public class AddressImpl : Address
         this.country = country;
     }
 
-    public override float getLatitude()
+    public override float? getLatitude()
     {
         return latitude;
     }
 
-    public override void setLatitude(float latitude)
+    public override void setLatitude(float? latitude)
     {
         this.latitude = latitude;
     }
@@ -78,12 +78,12 @@ public class AddressImpl : Address
         this.locality = locality;
     }
 
-    public override float getLongitude()
+    public override float? getLongitude()
     {
         return longitude;
     }
 
-    public override void setLongitude(float longitude)
+    public override void setLongitude(float? longitude)
     {
         this.longitude = longitude;
     }
@@ -138,12 +138,12 @@ public class AddressImpl : Address
         this.formatted = formatted;
     }
 
-    public override Boolean getPrimary()
+    public override bool? getPrimary()
     {
         return primary;
     }
 
-    public override void setPrimary(bool primary)
+    public override void setPrimary(bool? primary)
     {
         this.primary = primary;
     }

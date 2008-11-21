@@ -293,7 +293,7 @@ public abstract class Organization
     *
     * @return true if this is a primary or preferred value
     */
-    public abstract bool getPrimary();
+    public abstract bool? getPrimary();
 
     /**
     * Set Boolean value indicating whether this instance of the Plural Field is the primary or
@@ -301,5 +301,5 @@ public abstract class Organization
     *
     * @param primary true if this is a primary or preferred value
     */
-    public abstract void setPrimary(bool primary);
+    public abstract void setPrimary(bool? primary);
 }

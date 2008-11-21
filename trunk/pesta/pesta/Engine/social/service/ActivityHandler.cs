@@ -138,11 +138,10 @@ namespace Pesta
                 }
             }
 
-            service.getActivities(userIds, request.getGroup(), request.getAppId(),
+            return service.getActivities(userIds, request.getGroup(), request.getAppId(),
                 // TODO: add pagination and sorting support
                 // getSortBy(params), getFilterBy(params), getStartIndex(params), getCount(params),
                                     request.getFields(), request.getToken());
-            return null;
         }
     } 
 }
