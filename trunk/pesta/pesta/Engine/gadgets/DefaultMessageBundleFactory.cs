@@ -48,7 +48,7 @@ namespace Pesta
             this.fetcher = BasicHttpFetcher.Instance;
             //Cache<Uri, MessageBundle> baseCache = cacheProvider.createCache(CACHE_NAME);
             //this.cache = new SoftExpiringCache<Uri, MessageBundle>(baseCache);
-            this.refresh = long.Parse(ContainerConfig.getConfigurationValue("gadget.cache.xml.refreshInterval"));
+            this.refresh = long.Parse(PestaConfiguration.GadgetCacheXmlRefreshInterval);
         }
 
         protected override MessageBundle fetchBundle(LocaleSpec locale, bool ignoreCache)

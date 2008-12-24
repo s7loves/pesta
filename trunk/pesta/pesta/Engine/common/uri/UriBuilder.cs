@@ -184,8 +184,12 @@ namespace Pesta
         */
         public String getQueryParameter(String name)
         {
-            ICollection<String> values = queryParameters[name];
-            if (values == null || values.Count == 0) 
+            List<String> values = null;
+            if (!queryParameters.TryGetValue(name, out values)) 
+            {
+                return null;
+            }
+            if (values.Count == 0)
             {
                 return null;
             }

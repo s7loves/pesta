@@ -18,14 +18,9 @@
  */
 #endregion
 using System.Collections.Generic;
-using System.Collections;
-using System.Net;
-using System.IO;
 using System;
 using System.Text;
 using System.Web;
-using org.apache.shindig.gadgets;
-
 using org.apache.shindig.gadgets.rewrite;
 
 namespace Pesta

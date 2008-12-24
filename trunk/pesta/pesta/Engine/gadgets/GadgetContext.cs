@@ -112,7 +112,7 @@ namespace Pesta
          */
         public virtual bool getDebug()
         {
-            return ContainerConfig.getConfigurationValue("gadget.debug").ToLower().Equals("true");
+            return PestaConfiguration.GadgetDebug.ToLower().Equals("true");
         }
 
         /**

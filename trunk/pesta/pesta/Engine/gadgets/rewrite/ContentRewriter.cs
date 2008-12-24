@@ -17,12 +17,7 @@
  * specific language governing permissions and limitations under the License.
  */
 #endregion
-using System;
-using System.Web;
-using System.Collections.Generic;
-using System.Net;
-using System.Text;
-using org.apache.shindig.gadgets;
+
 using org.apache.shindig.gadgets.rewrite;
 
 namespace Pesta

@@ -20,6 +20,7 @@
 using System.Collections.Generic;
 using System.Collections;
 using System;
+using Pesta.Interop;
 
 namespace Pesta
 {
@@ -39,8 +40,8 @@ namespace Pesta
         public readonly DateTime used;
         public readonly DateTime maxDate;
 
-        public BlobExpiredException(long minTime, long now, long maxTime)
-            : this(new DateTime(minTime * 1000), new DateTime(now * 1000), new DateTime(maxTime * 1000))
+        public BlobExpiredException(long minTime, double now, long maxTime)
+            : this(UnixTime.ConvertFromUnixTimestamp(minTime), UnixTime.ConvertFromUnixTimestamp(now), UnixTime.ConvertFromUnixTimestamp(maxTime))
         {
         }
 

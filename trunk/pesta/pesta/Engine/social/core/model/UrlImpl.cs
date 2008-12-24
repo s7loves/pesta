@@ -33,7 +33,7 @@ public class UrlImpl : ListFieldImpl, Url
 * An enumeration of the field names used in Url objects.
 */
 
-    public class Field : EnumBaseType<Field>
+    public new class Field : EnumBaseType<Field>
     {
         public Field(int key, string value)
             : base(key, value)

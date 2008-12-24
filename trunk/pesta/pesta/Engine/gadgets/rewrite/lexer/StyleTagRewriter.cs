@@ -18,7 +18,6 @@
  */
 #endregion
 using System;
-using org.apache.shindig.gadgets.rewrite;
 using System.Text;
 using com.google.caja.lexer;
 

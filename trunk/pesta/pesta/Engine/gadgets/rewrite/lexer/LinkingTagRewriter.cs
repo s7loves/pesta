@@ -20,7 +20,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using org.apache.shindig.gadgets.rewrite;
 using com.google.caja.lexer;
 
 namespace Pesta

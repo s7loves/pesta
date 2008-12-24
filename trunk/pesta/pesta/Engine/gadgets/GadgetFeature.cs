@@ -104,11 +104,10 @@ namespace Pesta
                 Dictionary<String, List<JsLibrary>> contextLibs = null;
                 if (libraries.TryGetValue(context, out contextLibs))
                 {
-                    libs = contextLibs[container];
-                    if (libs == null)
+                    if (!contextLibs.TryGetValue(container, out libs))
                     {
                         // Try default.
-                        libs = contextLibs[ContainerConfig.DEFAULT_CONTAINER];
+                        contextLibs.TryGetValue(ContainerConfig.DEFAULT_CONTAINER, out libs);
                     }
                 }
             }

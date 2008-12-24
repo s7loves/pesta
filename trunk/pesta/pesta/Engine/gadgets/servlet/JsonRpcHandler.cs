@@ -55,17 +55,16 @@ namespace Pesta
         public JsonObject process(JsonObject request)
         {
             JsonObject response = new JsonObject();
-            List<IAsyncResult> gadgets;
 
-            JsonObject requestContext = request["context"] as JsonObject;
+            JsonObject requestContext = request.getJSONObject("context");
             JsonArray requestedGadgets = request["gadgets"] as JsonArray;
 
             // Process all JSON first so that we don't wind up with hanging threads if
             // a JsonException is thrown.
-            gadgets = new List<IAsyncResult>(requestedGadgets.Length);
+            List<IAsyncResult> gadgets = new List<IAsyncResult>(requestedGadgets.Length);
             for (int i = 0, j = requestedGadgets.Length; i < j; ++i)
             {
-                GadgetContext context = new JsonRpcGadgetContext(requestContext, requestedGadgets[i] as JsonObject);
+                var context = new JsonRpcGadgetContext(requestContext, (JsonObject)requestedGadgets[i]);
                 preloadProcessor processor = new preloadProcessor(callJob);
                 IAsyncResult result = processor.BeginInvoke(context, null, null);
                 gadgets.Add(result);

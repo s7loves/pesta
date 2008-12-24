@@ -137,7 +137,7 @@ public abstract class BodyType
     *
     * @return the height of the person in meters
     */
-    public abstract  float getHeight();
+    public abstract float? getHeight();
 
     /**
     * The height of the person in meters, specified as a number. Container support for this field is
@@ -153,7 +153,7 @@ public abstract class BodyType
     *
     * @return the weight of the person in kilograms
     */
-    public abstract float getWeight();
+    public abstract float? getWeight();
 
     /**
     * The weight of the person in kilograms, specified as a number. Container support for this field

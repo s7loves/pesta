@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Web;
+using System.Text;
 
 namespace Pesta
 {
@@ -56,7 +57,12 @@ namespace Pesta
                 {
                     return null;
                 }
-                Dictionary<String, String> parameters = new Dictionary<string, string>() { { SecurityTokenDecoder.SECURITY_TOKEN_NAME, token } };
+                if (token.Split(':').Length != 6)
+                {
+                    token = Encoding.UTF8.GetString(Convert.FromBase64String(HttpUtility.UrlDecode(token)));
+                }
+
+                Dictionary<String, String> parameters = new Dictionary<string, string> { { SecurityTokenDecoder.SECURITY_TOKEN_NAME, token } };
                 return securityTokenDecoder.createToken(parameters);
             }
             catch (SecurityTokenException e)

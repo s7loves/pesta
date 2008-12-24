@@ -19,6 +19,7 @@
 #endregion
 using System;
 using System.Collections.Generic;
+using Pesta.DataAccess;
 
 namespace Pesta
 {
@@ -38,7 +39,8 @@ namespace Pesta
 
         public ActivityHandler()
         {
-            this.service = JsonDbOpensocialService.Instance;
+            //this.service = JsonDbOpensocialService.Instance;
+            this.service = PartuzaService.Instance;
         }
 
         /**

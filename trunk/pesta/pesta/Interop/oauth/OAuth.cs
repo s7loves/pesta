@@ -271,7 +271,7 @@ public class OAuth
             List<Parameter> parameters)
     {
         String form = formEncode(parameters);
-        if (form == null || form.Length <= 0) 
+        if (string.IsNullOrEmpty(form)) 
         {
             return url;
         } 

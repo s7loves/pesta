@@ -417,7 +417,7 @@ public abstract class Person
      *
      * @return the persons drinking status
      */
-    public abstract Enums<EnumTypes.Drinker> getDrinker();
+    public abstract EnumTypes.Drinker getDrinker();
 
     /**
      * Get the person's drinking status, specified as an {@link Enum} with the enum's key referencing
@@ -425,7 +425,7 @@ public abstract class Person
      *
      * @param newDrinker the persons drinking status
      */
-    public abstract void setDrinker(Enums<EnumTypes.Drinker> newDrinker);
+    public abstract void setDrinker(EnumTypes.Drinker newDrinker);
 
     /**
      * Get the person's Emails associated with the person.
@@ -693,7 +693,7 @@ public abstract class Person
      *
      * @return person's statement about who or what they are looking for
      */
-    public abstract List<Enums<EnumTypes.LookingFor>> getLookingFor();
+    public abstract List<EnumTypes.LookingFor> getLookingFor();
 
     /**
      * Get a person's statement about who or what they are looking for, or what they are interested in
@@ -702,7 +702,7 @@ public abstract class Person
      *
      * @param lookingFor person's statement about who or what they are looking for
      */
-    public abstract void setLookingFor(List<Enums<EnumTypes.LookingFor>> lookingFor);
+    public abstract void setLookingFor(List<EnumTypes.LookingFor> lookingFor);
 
     /**
      * Get the Person's favorite movies, specified as an List of strings. Container support for this
@@ -756,7 +756,7 @@ public abstract class Person
      *
      * @return the person's current network status
      */
-    public abstract Enums<EnumTypes.NetworkPresence> getNetworkPresence();
+    public abstract EnumTypes.NetworkPresence getNetworkPresence();
 
     /**
      * Set the person's current network status. Specified as an {@link Enum} with the enum's key
@@ -764,7 +764,7 @@ public abstract class Person
      *
      * @param networkPresence the person's current network status
      */
-    public abstract void setNetworkPresence(Enums<EnumTypes.NetworkPresence> networkPresence);
+    public abstract void setNetworkPresence(EnumTypes.NetworkPresence networkPresence);
 
     /**
      * Get the person's nickname. Container support for this field is REQUIRED.
@@ -974,14 +974,14 @@ public abstract class Person
      *
      * @return the person's smoking status
      */
-    public abstract Enums<EnumTypes.Smoker> getSmoker();
+    public abstract EnumTypes.Smoker getSmoker();
 
     /**
      * Set the person's smoking status. Container support for this field is OPTIONAL.
      *
      * @param newSmoker the person's smoking status
      */
-    public abstract void setSmoker(Enums<EnumTypes.Smoker> newSmoker);
+    public abstract void setSmoker(EnumTypes.Smoker newSmoker);
 
     /**
      * Get the person's favorite sports. Container support for this field is OPTIONAL.

@@ -53,7 +53,7 @@ namespace Pesta
         protected DefaultGadgetSpecFactory()
         {
             fetcher = BasicHttpFetcher.Instance;
-            this.refresh = long.Parse(ContainerConfig.getConfigurationValue("gadget.cache.xml.refreshInterval"));
+            this.refresh = long.Parse(PestaConfiguration.GadgetCacheXmlRefreshInterval);
 
         }
 

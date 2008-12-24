@@ -17,14 +17,6 @@
  * specific language governing permissions and limitations under the License.
  */
 #endregion
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Web;
-using Jayrock.Json;
-using org.apache.shindig.gadgets.rewrite;
-using org.apache.shindig.gadgets.parse;
-using System.Runtime.Remoting.Messaging;
 
 namespace Pesta
 {

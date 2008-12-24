@@ -237,12 +237,12 @@ public class OAuthMessage
         }
         if (!pMap.ContainsKey("oauth_timestamp")) 
         {
-            addParameter("oauth_timestamp", DateTime.Now.Ticks / 1000
+            addParameter("oauth_timestamp", DateTime.UtcNow.Ticks / 1000
                     + "");
         }
         if (!pMap.ContainsKey("oauth_nonce")) 
         {
-            addParameter("oauth_nonce", DateTime.Now.Ticks + "");
+            addParameter("oauth_nonce", DateTime.UtcNow.Ticks + "");
         }
         this.sign(accessor);
     }

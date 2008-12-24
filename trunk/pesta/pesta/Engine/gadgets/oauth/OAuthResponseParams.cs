@@ -54,7 +54,7 @@ namespace Pesta
         /**
         * Error code for the client.
         */
-        private OAuthError error;
+        private OAuthError? error;
 
         /**
         * Error text for the client.
@@ -109,7 +109,7 @@ namespace Pesta
             this.aznUrl = aznUrl;
         }
 
-        public OAuthError getError()
+        public OAuthError? getError()
         {
             return error;
         }
