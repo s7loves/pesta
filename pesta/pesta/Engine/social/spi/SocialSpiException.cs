@@ -22,32 +22,35 @@ using System.Data;
 using System.Configuration;
 
 
-/// <summary>
-/// Summary description for SocialSpiException
-/// </summary>
-/// <remarks>
-/// <para>
-///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
-/// </para>
-/// </remarks>
-public class SocialSpiException : Exception
+namespace Pesta
 {
-    private ResponseError error;
+    /// <summary>
+    /// Summary description for SocialSpiException
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    /// </para>
+    /// </remarks>
+    public class SocialSpiException : Exception
+    {
+        private ResponseError error;
 
-  public SocialSpiException(ResponseError error, String errorMessage, Exception cause)
-        : base(errorMessage, cause)
-  {
-    this.error = error;
-  }
+        public SocialSpiException(ResponseError error, String errorMessage, Exception cause)
+            : base(errorMessage, cause)
+        {
+            this.error = error;
+        }
 
-  public SocialSpiException(ResponseError error, String errorMessage) 
-      : base(errorMessage)
-  {
-    this.error = error;
-  }
+        public SocialSpiException(ResponseError error, String errorMessage)
+            : base(errorMessage)
+        {
+            this.error = error;
+        }
 
-  public ResponseError getError() 
-  {
-    return error;
-  }
+        public ResponseError getError()
+        {
+            return error;
+        }
+    } 
 }

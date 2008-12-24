@@ -15,7 +15,7 @@ namespace Pesta
     {
         private class UriCallback2 : UriCallback
         {
-            Uri retrievedUri;
+            readonly Uri retrievedUri;
             /// <summary>
             /// Initializes a new instance of the UriCallback2 class.
             /// </summary>

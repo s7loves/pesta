@@ -223,6 +223,7 @@ namespace Pesta
             try
             {
                 // try to use MapPath to get the file, this throws an error if the file doesn't exist
+                // use HttpContext.Current.Server.MapPath(HttpContext.Current.Request.ApplicationPath)??
                 string path2 = AppDomain.CurrentDomain.BaseDirectory + fileName;
                 html = File.ReadAllText(path2);
             }

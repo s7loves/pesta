@@ -18,14 +18,9 @@
  */
 #endregion
 using System.Collections.Generic;
-using System.Collections;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System;
 using System.Text;
 using System.Security.Cryptography;
-using org.apache.commons.codec.digest;
-using org.apache.shindig.common.util;
 
 namespace Pesta
 {
@@ -133,8 +128,7 @@ namespace Pesta
             {
                 return null;
             }
-            byte[] sha1 = DigestUtils.sha(gadget.getUrl().ToString());
-            String hash = Encoding.Unicode.GetString(Base32.encodeBase32(sha1));
+            String hash = SHA1.Create().ComputeHash(Encoding.Default.GetBytes(gadget.getUrl().ToString())).ToString();
             return hash + suffix;
         }
 

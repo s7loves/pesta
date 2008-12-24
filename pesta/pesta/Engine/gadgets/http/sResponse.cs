@@ -298,7 +298,7 @@ namespace Pesta
             long expiration = getCacheExpiration();
             if (expiration != -1)
             {
-                return expiration - DateTime.Now.Ticks;
+                return expiration - DateTime.UtcNow.Ticks;
             }
             return -1;
         }

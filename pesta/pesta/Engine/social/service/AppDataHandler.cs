@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Web;
+using Pesta.DataAccess;
 
 
 namespace Pesta
@@ -40,7 +41,8 @@ namespace Pesta
 
         public AppDataHandler()
         {
-            this.service = JsonDbOpensocialService.Instance;
+            //this.service = JsonDbOpensocialService.Instance;
+            this.service = PartuzaService.Instance;
         }
 
         /**

@@ -35,18 +35,18 @@ namespace Pesta
     /// </remarks>
     public class JsonRpcGadgetContext : GadgetContext
     {
-        private JsonObject context;
-        private JsonObject gadget;
+        private readonly JsonObject context;
+        private readonly JsonObject gadget;
 
-        private String container;
+        private readonly String container;
         private bool? debug;
         private bool? ignoreCache;
-        private Locale locale;
-        private int moduleId;
-        private RenderingContext renderingContext;
-        private URI url;
-        private UserPrefs userPrefs;
-        private String view;
+        private readonly Locale locale;
+        private readonly int moduleId;
+        private readonly RenderingContext renderingContext;
+        private readonly URI url;
+        private readonly UserPrefs userPrefs;
+        private readonly String view;
 
         /**
         * @param context Request global parameters.

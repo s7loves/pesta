@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Text;
-using org.apache.shindig.gadgets.rewrite;
 using Jayrock.Json;
-using com.google.caja.lexer;
+using org.apache.shindig.gadgets.rewrite;
 
 namespace Pesta
 {

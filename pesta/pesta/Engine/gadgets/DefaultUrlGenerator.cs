@@ -20,9 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Web;
 using System.Text.RegularExpressions;
-using org.apache.shindig.gadgets;
 
 
 namespace Pesta
@@ -75,8 +73,8 @@ namespace Pesta
 
         public String getBundledJsUrl(ICollection<String> features, GadgetContext context) 
         {
-            String jsPrefix = jsUriTemplates[context.getContainer()];
-            if (jsPrefix == null) 
+            String jsPrefix;
+            if (!jsUriTemplates.TryGetValue(context.getContainer(), out jsPrefix)) 
             {
                 return "";
             }
@@ -142,15 +140,8 @@ namespace Pesta
             else
             {
             	// TODO: Locked domain support.
-                    Uri iframeBaseUri = iframeBaseUris[context.getContainer()];
-                    if (iframeBaseUri != null)
-                    {
-                        uri = new UriBuilder(iframeBaseUri);
-                    } 
-                    else 
-                    {
-                        uri = new UriBuilder();
-                    }
+                    Uri iframeBaseUri;
+                    uri = !iframeBaseUris.TryGetValue(context.getContainer(), out iframeBaseUri) ? new UriBuilder(iframeBaseUri) : new UriBuilder();
                     String host = lockedDomainService.getLockedDomainForGadget(spec, context.getContainer());
                     if (host != null) 
                     {

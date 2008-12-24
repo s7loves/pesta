@@ -24,6 +24,7 @@ using System.IO;
 using System.Text;
 using System;
 using System.Web;
+using Pesta.Interop;
 
 namespace Pesta
 {
@@ -61,7 +62,6 @@ namespace Pesta
 
         private const String UTF8 = "UTF-8";
 
-        public DateTime timeSource;
         private byte[] cipherKey;
         private byte[] hmacKey;
 
@@ -75,7 +75,6 @@ namespace Pesta
         /// @throws IOExceptionif the file can't be read.
         public BasicBlobCrypter(string keyfile)
         {
-            this.timeSource = DateTime.Now;
             using (StreamReader reader = new StreamReader(keyfile))
             {
                 String line = reader.ReadLine();
@@ -92,7 +91,6 @@ namespace Pesta
         /// <param name="masterKey"></param>
         public BasicBlobCrypter(byte[] masterKey)
         {
-            this.timeSource = DateTime.Now;
             Init(masterKey);
         }
 
@@ -117,7 +115,7 @@ namespace Pesta
         /// <returns>a derived key of the specified length</returns>
         private byte[] DeriveKey(byte label, byte[] masterKey, int len)
         {
-            byte[] bs = Crypto.Concat(new byte[] { label }, masterKey);
+            byte[] bs = Crypto.Concat(new[] { label }, masterKey);
             SHA1 shash = SHA1.Create();
             byte[] hash = shash.ComputeHash(bs);
             if (len == 0)
@@ -125,7 +123,7 @@ namespace Pesta
                 return hash;
             }
             byte[] xout = new byte[len];
-            System.Array.Copy(hash, 0, xout, 0, xout.Length);
+            Array.Copy(hash, 0, xout, 0, xout.Length);
             return xout;
         }
 
@@ -171,7 +169,7 @@ namespace Pesta
             }
             sb.Append(TIMESTAMP_KEY);
             sb.Append('=');
-            sb.Append(timeSource.ToString());
+            sb.Append(UnixTime.ConvertToUnixTimestamp(DateTime.UtcNow));
             return Encoding.UTF8.GetBytes(sb.ToString());
         }
 
@@ -212,12 +210,12 @@ namespace Pesta
         private Dictionary<string, string> Deserialize(byte[] plain)
         {
             String bs = Encoding.UTF8.GetString(plain);
-            String[] items = bs.Split("[&=]".ToCharArray());
+            String[] items = bs.Split("[&=]".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
             Dictionary<string, string> map = new Dictionary<string, string>();
             for (int i = 0; i < items.Length; )
             {
-                String key = HttpUtility.UrlDecode(items[i++], Encoding.UTF8);
-                String val = HttpUtility.UrlDecode(items[i++], Encoding.UTF8);
+                String key = HttpUtility.UrlDecode(items[i++]);
+                String val = HttpUtility.UrlDecode(items[i++]);
                 map.Add(key, val);
             }
             return map;
@@ -228,12 +226,12 @@ namespace Pesta
         /// for clock skew.
         /// </summary>
         ///
-        private void checkTimestamp(Dictionary<string, string> xout, int maxAge)
+        private void checkTimestamp(IDictionary<string, string> xout, int maxAge)
         {
-            DateTime origin = DateTime.Parse(xout[TIMESTAMP_KEY]);
-            DateTime minTime = origin.Subtract(new TimeSpan(0, 0, CLOCK_SKEW_ALLOWANCE));
-            DateTime maxTime = origin.Add(new TimeSpan(0, 0, maxAge + CLOCK_SKEW_ALLOWANCE));
-            DateTime now = timeSource;
+            long origin = long.Parse(xout[TIMESTAMP_KEY]);
+            long minTime = origin - CLOCK_SKEW_ALLOWANCE;
+            long maxTime = origin + maxAge + CLOCK_SKEW_ALLOWANCE;
+            double now = UnixTime.ConvertToUnixTimestamp(DateTime.UtcNow);
             if (!(minTime < now && now < maxTime))
             {
                 throw new BlobExpiredException(minTime, now, maxTime);

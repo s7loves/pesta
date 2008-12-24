@@ -18,7 +18,6 @@
  */
 #endregion
 using System;
-using org.apache.shindig.gadgets;
 using System.Web;
 
 namespace Pesta

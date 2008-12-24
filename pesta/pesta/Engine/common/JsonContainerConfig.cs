@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Web;
 using Jayrock.Json;
 using Jayrock.Json.Conversion;
 
@@ -23,7 +24,7 @@ namespace Pesta
        * @throws ContainerConfigException
        */
           public static readonly JsonContainerConfig Instance =
-                  new JsonContainerConfig(AppDomain.CurrentDomain.BaseDirectory + @"config\container.js");
+                  new JsonContainerConfig(HttpContext.Current.Server.MapPath(HttpContext.Current.Request.ApplicationPath) + @"\config\container.js");
 
         protected JsonContainerConfig(String containers)
         {

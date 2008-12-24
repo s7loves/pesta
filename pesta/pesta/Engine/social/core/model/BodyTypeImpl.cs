@@ -27,7 +27,7 @@ using System;
 ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
 /// </para>
 /// </remarks>
-public class BodyTypeImpl
+public class BodyTypeImpl : BodyType
 {
     private String build;
     private String eyeColor;
@@ -36,53 +36,53 @@ public class BodyTypeImpl
     private float? weight;
 
 
-    public String getBuild()
+    public override String getBuild()
     {
         return build;
     }
 
-    public void setBuild(String build)
+    public override void setBuild(String build)
     {
         this.build = build;
     }
 
-    public String getEyeColor()
+    public override String getEyeColor()
     {
         return eyeColor;
     }
 
-    public void setEyeColor(String eyeColor)
+    public override void setEyeColor(String eyeColor)
     {
         this.eyeColor = eyeColor;
     }
 
-    public String getHairColor()
+    public override String getHairColor()
     {
         return hairColor;
     }
 
-    public void setHairColor(String hairColor)
+    public override void setHairColor(String _hairColor)
     {
-        this.hairColor = hairColor;
+        this.hairColor = _hairColor;
     }
 
-    public float? getHeight()
+    public override float? getHeight()
     {
         return height;
     }
 
-    public void setHeight(float? height)
+    public override void setHeight(float _height)
     {
-        this.height = height;
+        this.height = _height;
     }
 
-    public float? getWeight()
+    public override float? getWeight()
     {
         return weight;
     }
 
-    public void setWeight(float? weight)
+    public override void setWeight(float _weight)
     {
-        this.weight = weight;
+        this.weight = _weight;
     }
 }

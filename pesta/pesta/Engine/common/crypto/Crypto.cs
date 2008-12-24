@@ -20,6 +20,7 @@
 using System.Collections.Generic;
 using System.Collections;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
 using System;
 using System.Text;
@@ -125,7 +126,7 @@ namespace Pesta
         /// </summary>
         ///
         /// <param name="key"></param>
-        /// <param name="in"></param>
+        /// <param name="ins0"></param>
         /// <param name="expected"></param>
         /// @throws GeneralSecurityException
         public static void HmacSha1Verify(byte[] key, byte[] ins0, byte[] expected)
@@ -137,7 +138,7 @@ namespace Pesta
             {
                 throw new Exception("HMAC verification failure");
             }
-            if (!Array.Equals(actual, expected))
+            if (!actual.SequenceEqual(expected))
             {
                 throw new Exception("HMAC verification failure");
             }
@@ -183,7 +184,7 @@ namespace Pesta
         public static byte[] Aes128cbcDecrypt(byte[] key, byte[] cipherText)
         {
             byte[] iv = new byte[CIPHER_BLOCK_SIZE];
-            System.Array.Copy(cipherText, 0, iv, 0, iv.Length);
+            Array.Copy(cipherText, 0, iv, 0, iv.Length);
             return Aes128cbcDecryptWithIv(key, iv, cipherText, iv.Length);
         }
 
@@ -199,15 +200,15 @@ namespace Pesta
         /// @throws GeneralSecurityException
         public static byte[] Aes128cbcDecryptWithIv(byte[] key, byte[] iv, byte[] cipherText, int offset)
         {
-            AesCryptoServiceProvider cipher = new AesCryptoServiceProvider();
             RijndaelManaged symmetricKey = new RijndaelManaged();
             symmetricKey.Mode = CipherMode.CBC;
+            int cipherLength = cipherText.Length - offset;
             ICryptoTransform decryptor = symmetricKey.CreateDecryptor(key, iv);
-            MemoryStream memoryStream = new MemoryStream();
+            MemoryStream memoryStream = new MemoryStream(cipherText, offset, cipherLength);
             CryptoStream cryptoStream = new CryptoStream(memoryStream,
                                                          decryptor,
                                                          CryptoStreamMode.Read);
-            byte[] plain = new byte[cipherText.Length];
+            byte[] plain = new byte[cipherLength];
             int decryptedLength = cryptoStream.Read(plain, 0, plain.Length);
             memoryStream.Close();
             cryptoStream.Close();

@@ -38,7 +38,7 @@ namespace Pesta
     /// </remarks>
     public class JsonDbOpensocialService : PersonService, ActivityService, AppDataService
     {
-        public readonly static string dbLocation = AppDomain.CurrentDomain.BaseDirectory + ContainerConfig.getConfigurationValue("shindig.canonical.json.db");
+        public readonly static string dbLocation = HttpContext.Current.Server.MapPath(HttpContext.Current.Request.ApplicationPath) + PestaConfiguration.JsonDb;
         public readonly static JsonDbOpensocialService Instance = new JsonDbOpensocialService();
         protected JsonDbOpensocialService()
         {
@@ -67,7 +67,7 @@ namespace Pesta
         /**
         * The JSON<->Bean converter
         */
-        private BeanConverter converter;
+        private readonly BeanConverter converter;
 
         /**
         * db["activities"] -> Array<Person>
@@ -232,7 +232,7 @@ namespace Pesta
                 JsonObject jsonObject = convertFromActivity(activity, fields);
                 if (!jsonObject.Contains(Activity.Field.ID.Value))
                 {
-                    jsonObject.Put(Activity.Field.ID.Value, DateTime.Now.Ticks);
+                    jsonObject.Put(Activity.Field.ID.Value, DateTime.UtcNow.Ticks);
                 }
                 JsonArray jsonArray = db.getJSONObject(ACTIVITIES_TABLE)[userId.getUserId(token)] as JsonArray;
                 if (jsonArray == null)

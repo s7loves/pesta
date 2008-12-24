@@ -21,6 +21,7 @@ using System;
 using System.Data;
 using System.Configuration;
 using System.Collections.Generic;
+using Pesta.DataAccess;
 
 namespace Pesta
 {
@@ -40,7 +41,8 @@ namespace Pesta
 
         public PersonHandler()
         {
-            this.personService = JsonDbOpensocialService.Instance;
+            //this.personService = JsonDbOpensocialService.Instance;
+            this.personService = PartuzaService.Instance;
         }
 
         protected override object handleDelete(RequestItem request)

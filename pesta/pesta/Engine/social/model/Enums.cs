@@ -129,6 +129,7 @@ public class EnumTypes
         private readonly String displayValue;
 
         private Drinker(String jsonString, String displayValue)
+            : base(jsonString, displayValue)
         {
             this.jsonString = jsonString;
             this.displayValue = displayValue;
@@ -172,6 +173,7 @@ public class EnumTypes
         private readonly String displayValue;
 
         private Smoker(String jsonString, String displayValue)
+            : base(jsonString, displayValue)
         {
             this.jsonString = jsonString;
             this.displayValue = displayValue;
@@ -214,6 +216,7 @@ public class EnumTypes
         private readonly String displayValue;
 
         private NetworkPresence(String jsonString, String displayValue)
+            : base(jsonString, displayValue)
         {
             this.jsonString = jsonString;
             this.displayValue = displayValue;
@@ -255,6 +258,7 @@ public class EnumTypes
         private readonly String displayValue;
 
         private LookingFor(String jsonString, String displayValue)
+            : base(jsonString, displayValue)
         {
             this.jsonString = jsonString;
             this.displayValue = displayValue;

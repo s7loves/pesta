@@ -39,16 +39,16 @@ namespace Pesta
         private readonly Dictionary<String, String> tokenData;
 
         /** tool to use for signing and encrypting the token */
-        private BlobCrypter crypter = new BasicBlobCrypter(INSECURE_KEY);
+        private readonly BlobCrypter crypter = new BasicBlobCrypter(INSECURE_KEY);
 
         private static readonly byte[] INSECURE_KEY = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
-        private static readonly String OWNER_KEY = "o";
-        private static readonly String APP_KEY = "a";
-        private static readonly String VIEWER_KEY = "v";
-        private static readonly String DOMAIN_KEY = "d";
-        private static readonly String APPURL_KEY = "u";
-        private static readonly String MODULE_KEY = "m";
+        private const string OWNER_KEY = "o";
+        private const string APP_KEY = "a";
+        private const string VIEWER_KEY = "v";
+        private const string DOMAIN_KEY = "d";
+        private const string APPURL_KEY = "u";
+        private const string MODULE_KEY = "m";
 
         /**
         * {@inheritDoc}
@@ -67,7 +67,7 @@ namespace Pesta
         public BasicSecurityToken(String token, int maxAge)
         {
             this.token = token;
-            this.tokenData = crypter.unwrap(token, maxAge);
+            tokenData = crypter.unwrap(token, maxAge);
         }
 
         public BasicSecurityToken(String owner, String viewer, String app,
@@ -81,6 +81,26 @@ namespace Pesta
             putNullSafe(APPURL_KEY, appUrl);
             putNullSafe(MODULE_KEY, moduleId);
             token = crypter.wrap(tokenData);
+        }
+
+        static public BasicSecurityToken createFromToken(string token, int maxAge) 
+        {
+            return new BasicSecurityToken(token, maxAge);
+        }
+
+        /**
+        * Generates a token from an input array of values
+        * @param owner owner of this gadget
+        * @param viewer viewer of this gadget
+        * @param app application id
+        * @param domain domain of the container
+        * @param appUrl url where the application lives
+        * @param moduleId module id of this gadget 
+        * @throws BlobCrypterException 
+        */
+        static public BasicSecurityToken createFromValues(string _owner, string _viewer, string _app, string _domain, string _appUrl, string _moduleId) 
+        {
+            return new BasicSecurityToken(_owner, _viewer, _app, _domain, _appUrl, _moduleId);
         }
 
         private void putNullSafe(String key, String value)

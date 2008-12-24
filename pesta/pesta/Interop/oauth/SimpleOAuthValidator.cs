@@ -108,6 +108,6 @@ public class SimpleOAuthValidator : OAuthValidator
 
     protected long currentTimeMsec() 
     {
-        return DateTime.Now.Ticks / 10000;
+        return DateTime.UtcNow.Ticks / 10000;
     }
 }

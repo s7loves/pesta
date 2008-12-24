@@ -18,12 +18,7 @@
  */
 #endregion
 using System;
-using System.Data;
-using System.Configuration;
 using System.Collections.Generic;
-using System.Web;
-using System.Net;
-using System.IO;
 using org.apache.shindig.gadgets.parse;
 using org.apache.shindig.gadgets.rewrite;
 using org.apache.shindig.gadgets.parse.nekohtml;
@@ -45,10 +40,13 @@ namespace Pesta
         public static readonly DefaultContentRewriterRegistry Instance = new DefaultContentRewriterRegistry();
         protected DefaultContentRewriterRegistry()
         {
-            this.rewriters = new List<ContentRewriter>();
-            this.rewriters.Add(new DefaultContentRewriter(DefaultGadgetSpecFactory.Instance, ".*", "", "86400", "style, link, img, script, embed"));
-            this.rewriters.Add(new CajaContentRewriter());
-            this.rewriters.Add(new RenderingContentRewriter());
+            this.rewriters = new List<ContentRewriter>
+                                 {
+                                     new DefaultContentRewriter(DefaultGadgetSpecFactory.Instance, ".*", "", "86400",
+                                                                "style, link, img, script, embed"),
+                                     new CajaContentRewriter(),
+                                     new RenderingContentRewriter()
+                                 };
             this.htmlParser = new NekoSimplifiedHtmlParser(new org.apache.xerces.dom.DOMImplementationImpl());
         }
 

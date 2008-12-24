@@ -82,7 +82,7 @@ namespace Pesta
         */
         public override SecurityToken createToken(Dictionary<String, String> parameters)
         {
-            String token = parameters[SecurityTokenDecoder.SECURITY_TOKEN_NAME];
+            String token = parameters[SECURITY_TOKEN_NAME];
             if (token == null || token.Trim().Length == 0)
             {
                 // No token is present, assume anonymous access
@@ -92,18 +92,21 @@ namespace Pesta
             try
             {
                 String[] tokens = token.Split(':');
-                if (tokens.Length != TOKEN_COUNT)
+                if (tokens.Length != TOKEN_COUNT && PestaConfiguration.AllowPlaintextToken.ToLower().Equals("true"))
                 {
-                    throw new SecurityTokenException("Malformed security token");
+                    //throw new SecurityTokenException("Malformed security token");
+                    return BasicSecurityToken.createFromToken(token, int.Parse(PestaConfiguration.TokenMaxAge));
                 }
-
-                return new BasicSecurityToken(
-                    HttpUtility.UrlDecode(tokens[OWNER_INDEX], Encoding.UTF8),
-                    HttpUtility.UrlDecode(tokens[VIEWER_INDEX], Encoding.UTF8),
-                    HttpUtility.UrlDecode(tokens[APP_ID_INDEX], Encoding.UTF8),
-                    HttpUtility.UrlDecode(tokens[CONTAINER_INDEX], Encoding.UTF8),
-                    HttpUtility.UrlDecode(tokens[APP_URL_INDEX], Encoding.UTF8),
-                    HttpUtility.UrlDecode(tokens[MODULE_ID_INDEX], Encoding.UTF8));
+                else
+                {
+                    return new BasicSecurityToken(
+                        HttpUtility.UrlDecode(tokens[OWNER_INDEX], Encoding.UTF8),
+                        HttpUtility.UrlDecode(tokens[VIEWER_INDEX], Encoding.UTF8),
+                        HttpUtility.UrlDecode(tokens[APP_ID_INDEX], Encoding.UTF8),
+                        HttpUtility.UrlDecode(tokens[CONTAINER_INDEX], Encoding.UTF8),
+                        HttpUtility.UrlDecode(tokens[APP_URL_INDEX], Encoding.UTF8),
+                        HttpUtility.UrlDecode(tokens[MODULE_ID_INDEX], Encoding.UTF8));
+                }
             }
             catch (BlobCrypterException e)
             {

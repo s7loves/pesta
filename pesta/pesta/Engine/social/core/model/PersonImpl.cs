@@ -41,7 +41,7 @@ public class PersonImpl : Person
     private String children;
     private Address currentLocation;
     private DateTime? birthday;
-    private Enums<EnumTypes.Drinker> drinker;
+    private EnumTypes.Drinker drinker;
     private String displayName;
     private List<ListField> emails;
     private String ethnicity;
@@ -59,11 +59,11 @@ public class PersonImpl : Person
     private List<String> languagesSpoken;
     private DateTime? updated;
     private String livingArrangement;
-    private List<Enums<EnumTypes.LookingFor>> lookingFor;
+    private List<EnumTypes.LookingFor> lookingFor;
     private List<String> movies;
     private List<String> music;
     private Name name;
-    private Enums<EnumTypes.NetworkPresence> networkPresence;
+    private EnumTypes.NetworkPresence networkPresence;
     private String nickname;
     private List<Organization> organizations;
     private String pets;
@@ -78,7 +78,7 @@ public class PersonImpl : Person
     private String romance;
     private String scaredOf;
     private String sexualOrientation;
-    private Enums<EnumTypes.Smoker> smoker;
+    private EnumTypes.Smoker smoker;
     private List<String> sports;
     private String status;
     private List<String> tags;
@@ -239,12 +239,12 @@ public class PersonImpl : Person
         this.displayName = displayName;
     }
 
-    override public Enums<EnumTypes.Drinker> getDrinker() 
+    override public EnumTypes.Drinker getDrinker() 
     {
         return this.drinker;
     }
 
-    override public void setDrinker(Enums<EnumTypes.Drinker> newDrinker) 
+    override public void setDrinker(EnumTypes.Drinker newDrinker) 
     {
         this.drinker = newDrinker;
     }
@@ -420,12 +420,12 @@ public class PersonImpl : Person
         this.livingArrangement = livingArrangement;
     }
 
-    override public List<Enums<EnumTypes.LookingFor>> getLookingFor() 
+    override public List<EnumTypes.LookingFor> getLookingFor() 
     {
         return lookingFor;
     }
 
-    override public void setLookingFor(List<Enums<EnumTypes.LookingFor>> lookingFor)
+    override public void setLookingFor(List<EnumTypes.LookingFor> lookingFor)
     {
         this.lookingFor = lookingFor;
     }
@@ -460,12 +460,12 @@ public class PersonImpl : Person
         this.name = name;
     }
 
-    override public Enums<EnumTypes.NetworkPresence> getNetworkPresence() 
+    override public EnumTypes.NetworkPresence getNetworkPresence() 
     {
         return networkPresence;
     }
 
-    override public void setNetworkPresence(Enums<EnumTypes.NetworkPresence> networkPresence)
+    override public void setNetworkPresence(EnumTypes.NetworkPresence networkPresence)
     {
         this.networkPresence = networkPresence;
     }
@@ -610,12 +610,12 @@ public class PersonImpl : Person
         this.sexualOrientation = sexualOrientation;
     }
 
-    override public Enums<EnumTypes.Smoker> getSmoker() 
+    override public EnumTypes.Smoker getSmoker() 
     {
         return this.smoker;
     }
 
-    override public void setSmoker(Enums<EnumTypes.Smoker> newSmoker)
+    override public void setSmoker(EnumTypes.Smoker newSmoker)
     {
         this.smoker = newSmoker;
     }

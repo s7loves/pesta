@@ -38,11 +38,11 @@ namespace Pesta
     /// </remarks>
     internal class RpcServlet : IHttpHandler
     {
-        private static readonly int POST_REQUEST_MAX_SIZE = 1024 * 128;
-        private static readonly String GET_REQUEST_REQ_PARAM = "req";
-        private static readonly String GET_REQUEST_CALLBACK_PARAM = "callback";
+        private const int POST_REQUEST_MAX_SIZE = 1024 * 128;
+        private const string GET_REQUEST_REQ_PARAM = "req";
+        private const string GET_REQUEST_CALLBACK_PARAM = "callback";
         private static readonly Regex GET_REQUEST_CALLBACK_PATTERN = new Regex("[A-Za-z_\\.]+", RegexOptions.Compiled);
-        private JsonRpcHandler jsonHandler = JsonRpcHandler.Instance;
+        private readonly JsonRpcHandler jsonHandler = JsonRpcHandler.Instance;
 
         public void ProcessRequest(HttpContext context)
         {
@@ -66,7 +66,7 @@ namespace Pesta
                     }
 
                 }
-                catch (Exception e)
+                catch
                 {
                     response.StatusCode = (int)HttpStatusCode.BadRequest;
                     return;
@@ -125,10 +125,11 @@ namespace Pesta
         {
             try 
             {
-                String encoding = getRequestCharacterEncoding(request);
-                JsonObject req = JsonConvert.Import(Encoding.UTF8.GetString(body)) as JsonObject;
+                Encoding encoding = getRequestCharacterEncoding(request);
+                JsonObject req = JsonConvert.Import(HttpUtility.UrlDecode(encoding.GetString(body))) as JsonObject;
                 JsonObject resp = jsonHandler.process(req);
                 response.StatusCode = (int)HttpStatusCode.OK;
+                // charset should match encoding?
                 response.ContentType = "application/json; charset=utf-8";
                 response.AddHeader("Content-Disposition", "attachment;filename=rpc.txt");
                 return new Result(resp.ToString(), true);
@@ -136,7 +137,7 @@ namespace Pesta
             catch (JsonException e)
             {
                 response.StatusCode = (int)HttpStatusCode.BadRequest;
-                return new Result("Malformed JSON request.", false);
+                return new Result("Malformed JSON request: " + e.Message, false);
             } 
             catch (RpcException e)
             {
@@ -146,18 +147,15 @@ namespace Pesta
             catch (Exception e)
             {
                 response.StatusCode = (int)HttpStatusCode.BadRequest;
-                return new Result("Unsupported input character set", false);
+                return new Result("Bad request: " + e.Message, false);
             }
         }
-      
-        private String getRequestCharacterEncoding(HttpRequest request) 
+
+        private Encoding getRequestCharacterEncoding(HttpRequest request) 
         {
-            String encoding = request.ContentEncoding.WebName;
-            if (encoding == null) 
-            {
-                encoding = "UTF-8";
-            }
-            return encoding;
+            String encoding = request.ContentEncoding.WebName ?? "UTF-8";
+
+            return Encoding.GetEncoding(encoding);
         }
 
         private struct Result

@@ -34,13 +34,12 @@ namespace Pesta
     /// </remarks>
     public class AnonymousAuthenticationHandler : AuthenticationHandler
     {
-        public static readonly String ALLOW_UNAUTHENTICATED = "gadget.allowUnauthenticated";
         public static readonly String AUTH_UNAUTHENTICATED = "Unauthenticated";
         private readonly bool allowUnauthenticated;
 
         public AnonymousAuthenticationHandler()
         {
-            this.allowUnauthenticated = ContainerConfig.getConfigurationValue(ALLOW_UNAUTHENTICATED).ToLower().Equals("true");
+            this.allowUnauthenticated = PestaConfiguration.AllowUnauthenticated.ToLower().Equals("true");
         }
 
         public String getName()

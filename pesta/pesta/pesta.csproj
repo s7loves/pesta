@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{6CD14C34-807B-4C7B-B110-79AFCF65E49B}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -55,7 +55,11 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Web" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
@@ -318,7 +322,6 @@
     <Compile Include="Engine\social\spi\CollectionOptions.cs" />
     <Compile Include="Engine\social\spi\DataCollection.cs" />
     <Compile Include="Engine\social\spi\GroupId.cs" />
-    <Compile Include="Engine\social\spi\JsonDbOpensocialService.cs" />
     <Compile Include="Engine\social\spi\PersonService.cs" />
     <Compile Include="Engine\social\spi\RestfulCollection.cs" />
     <Compile Include="Engine\social\spi\SocialSpiException.cs" />
@@ -418,6 +421,10 @@
     <EmbeddedResource Include="Resources\features\opensocial-rest\feature.xml" />
     <EmbeddedResource Include="Resources\features\opensocial-rest\restfulcontainer.js" />
     <None Include="Resources\features\README" />
+    <Compile Include="DataAccess\JsonDbOpensocialService.cs" />
+    <Compile Include="DataAccess\LinqRaya.designer.cs" />
+    <Compile Include="DataAccess\PartuzaDbFetcher.cs" />
+    <Compile Include="DataAccess\PartuzaService.cs" />
     <Compile Include="Engine\common\JsonContainerConfig.cs" />
     <Compile Include="Engine\common\uri\Uri.cs" />
     <Compile Include="Engine\common\uri\UriBuilder.cs" />
@@ -447,6 +454,7 @@
     <Compile Include="Engine\gadgets\variables\VariableSubstituter.cs" />
     <Compile Include="Engine\social\service\HandlerDispatcher.cs" />
     <Compile Include="Engine\social\service\StandardHandlerDispatcher.cs" />
+    <Compile Include="Engine\social\spi\MessagesService.cs" />
     <Compile Include="Handlers\ConcatProxyServlet.cs" />
     <Compile Include="Handlers\DataServiceServlet.cs" />
     <Compile Include="Handlers\GadgetRenderingServlet.cs" />
@@ -456,10 +464,18 @@
     <Compile Include="Handlers\OAuthCallbackServlet.cs" />
     <Compile Include="Handlers\ProxyServlet.cs" />
     <Compile Include="Handlers\RpcServlet.cs" />
-    <Compile Include="Utilities\PestaConfigSectionHandler.cs" />
-    <Compile Include="Utilities\PestaSettings.cs" />
+    <Compile Include="Utilities\UnixTime.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Utilities\PestaConfiguration.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="DataAccess\LinqRaya.dbml.layout">
+      <DependentUpon>LinqRaya.dbml</DependentUpon>
+    </None>
     <EmbeddedResource Include="Resources\features\analytics\feature.xml" />
     <EmbeddedResource Include="Resources\features\caja\feature.xml" />
     <EmbeddedResource Include="Resources\features\core.io\feature.xml" />
@@ -552,8 +568,22 @@
     <EmbeddedResource Include="Resources\features\views\feature.xml" />
     <EmbeddedResource Include="Resources\features\views\urltemplatetest.js" />
     <EmbeddedResource Include="Resources\features\views\views.js" />
+    <None Include="app.config" />
+    <None Include="DataAccess\LinqRaya.dbml">
+      <Generator>MSLinqToSQLGenerator</Generator>
+      <LastGenOutput>LinqRaya1.designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
+    <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Engine\gadgets\parse\" />
     <Folder Include="Engine\social\core\util\xstream\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

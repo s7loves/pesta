@@ -37,7 +37,7 @@ namespace Pesta
     public class HttpUtil
     {
         // 1 year.
-        public static int DEFAULT_TTL = 365;
+        public static int DEFAULT_TTL = 365 * 24 * 60 * 60;
 
         /**
         * Sets HTTP headers that instruct the browser to cache content. Implementations should take care
@@ -86,7 +86,7 @@ namespace Pesta
         */
         public static void setCachingHeaders(HttpResponse response, int ttl, bool noProxy)
         {
-            response.Cache.SetExpires(DateTime.Now.AddDays(ttl));
+            response.Cache.SetExpires(DateTime.Now.AddSeconds(ttl));
 
             if (ttl == 0)
             {
@@ -103,7 +103,7 @@ namespace Pesta
                 {
                     response.Cache.SetCacheability(HttpCacheability.Public);
                 }
-                response.Cache.SetMaxAge(new TimeSpan(ttl, 0, 0, 0));
+                response.Cache.SetMaxAge(new TimeSpan(ttl / 86400, 0, 0, 0));
             }
         }
 
