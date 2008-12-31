@@ -18,9 +18,7 @@
  */
 #endregion
 using System;
-using System.Data;
-using System.Configuration;
-using System.Web;
+using System.Collections.Generic;
 using Jayrock.Json;
 using Jayrock.Json.Conversion;
 using URI = System.Uri;
@@ -46,14 +44,14 @@ namespace Pesta
          * nickname of a service provider and the gadget that uses that nickname) to
          * {@link BasicOAuthStoreConsumerKeyAndSecret}s.
          */
-        private java.util.Map consumerInfos;
+        private Dictionary<BasicOAuthStoreConsumerIndex, BasicOAuthStoreConsumerKeyAndSecret> consumerInfos;
 
         /**
         * HashMap of token information. Maps BasicOAuthStoreTokenIndexs (i.e. gadget id, token
         * nickname, module id, etc.) to TokenInfos (i.e. access token and token
         * secrets).
         */
-        private java.util.Map tokens;
+        private Dictionary<BasicOAuthStoreTokenIndex, TokenInfo> tokens;
 
         /**
         * Key to use when no other key is found.
@@ -61,21 +59,21 @@ namespace Pesta
         private BasicOAuthStoreConsumerKeyAndSecret defaultKey;
 
         /** Number of times we looked up a consumer key */
-        private int consumerKeyLookupCount = 0;
+        private int consumerKeyLookupCount;
 
         /** Number of times we looked up an access token */
-        private int accessTokenLookupCount = 0;
+        private int accessTokenLookupCount;
 
         /** Number of times we added an access token */
-        private int accessTokenAddCount = 0;
+        private int accessTokenAddCount;
 
         /** Number of times we removed an access token */
-        private int accessTokenRemoveCount = 0;
-
-        public BasicOAuthStore()
+        private int accessTokenRemoveCount;
+        public readonly static BasicOAuthStore Instance = new BasicOAuthStore();
+        protected BasicOAuthStore()
         {
-            consumerInfos = new java.util.HashMap();
-            tokens = new java.util.HashMap();
+            consumerInfos = new Dictionary<BasicOAuthStoreConsumerIndex, BasicOAuthStoreConsumerKeyAndSecret>();
+            tokens = new Dictionary<BasicOAuthStoreTokenIndex, TokenInfo>();
         }
 
         public void initFromConfigString(String oauthConfigStr)
@@ -148,20 +146,16 @@ namespace Pesta
 
         public void setConsumerKeyAndSecret(BasicOAuthStoreConsumerIndex providerKey, BasicOAuthStoreConsumerKeyAndSecret keyAndSecret)
         {
-            consumerInfos.put(providerKey, keyAndSecret);
+            consumerInfos.Add(providerKey, keyAndSecret);
         }
 
-        public override OAuthStore.ConsumerInfo getConsumerKeyAndSecret(SecurityToken securityToken, String serviceName, OAuthServiceProvider provider)
+        public override ConsumerInfo getConsumerKeyAndSecret(SecurityToken securityToken, String serviceName, OAuthServiceProvider provider)
         {
             ++consumerKeyLookupCount;
             BasicOAuthStoreConsumerIndex pk = new BasicOAuthStoreConsumerIndex();
             pk.setGadgetUri(securityToken.getAppUrl());
             pk.setServiceName(serviceName);
-            BasicOAuthStoreConsumerKeyAndSecret cks = consumerInfos.get(pk) as BasicOAuthStoreConsumerKeyAndSecret;
-            if (cks == null)
-            {
-                cks = defaultKey;
-            }
+            BasicOAuthStoreConsumerKeyAndSecret cks = consumerInfos.ContainsKey(pk) ? consumerInfos[pk] : defaultKey;
             if (cks == null)
             {
                 throw new GadgetException(GadgetException.Code.INTERNAL_SERVER_ERROR,
@@ -182,7 +176,7 @@ namespace Pesta
                 consumer = new OAuthConsumer(null, cks.ConsumerKey, cks.ConsumerSecret, provider);
                 consumer.setProperty(OAuth.OAUTH_SIGNATURE_METHOD, OAuth.HMAC_SHA1);
             }
-            return new OAuthStore.ConsumerInfo(consumer, cks.KeyName);
+            return new ConsumerInfo(consumer, cks.KeyName);
         }
 
         private BasicOAuthStoreTokenIndex makeBasicOAuthStoreTokenIndex(SecurityToken securityToken, String serviceName, String tokenName)
@@ -196,27 +190,27 @@ namespace Pesta
             return tokenKey;
         }
 
-        public override OAuthStore.TokenInfo getTokenInfo(SecurityToken securityToken, OAuthStore.ConsumerInfo consumerInfo,
+        public override TokenInfo getTokenInfo(SecurityToken securityToken, ConsumerInfo consumerInfo,
                                             String serviceName, String tokenName)
         {
             ++accessTokenLookupCount;
             BasicOAuthStoreTokenIndex tokenKey = makeBasicOAuthStoreTokenIndex(securityToken, serviceName, tokenName);
-            return tokens.get(tokenKey) as OAuthStore.TokenInfo;
+            return tokens[tokenKey];
         }
 
-        public override void setTokenInfo(SecurityToken securityToken, OAuthStore.ConsumerInfo consumerInfo,
-                                    String serviceName, String tokenName, OAuthStore.TokenInfo tokenInfo)
+        public override void setTokenInfo(SecurityToken securityToken, ConsumerInfo consumerInfo,
+                                    String serviceName, String tokenName, TokenInfo tokenInfo)
         {
             ++accessTokenAddCount;
             BasicOAuthStoreTokenIndex tokenKey = makeBasicOAuthStoreTokenIndex(securityToken, serviceName, tokenName);
-            tokens.put(tokenKey, tokenInfo);
+            tokens.Add(tokenKey, tokenInfo);
         }
 
-        public override void removeToken(SecurityToken securityToken, OAuthStore.ConsumerInfo consumerInfo, String serviceName, String tokenName)
+        public override void removeToken(SecurityToken securityToken, ConsumerInfo consumerInfo, String serviceName, String tokenName)
         {
             ++accessTokenRemoveCount;
             BasicOAuthStoreTokenIndex tokenKey = makeBasicOAuthStoreTokenIndex(securityToken, serviceName, tokenName);
-            tokens.remove(tokenKey);
+            tokens.Remove(tokenKey);
         }
 
         public int getConsumerKeyLookupCount()

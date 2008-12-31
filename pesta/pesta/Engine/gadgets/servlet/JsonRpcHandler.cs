@@ -19,10 +19,7 @@
 #endregion
 using System;
 using System.Collections.Generic;
-using System.Web;
 using Jayrock.Json;
-using Jayrock.Json.Conversion;
-using System.Net;
 using System.Runtime.Remoting.Messaging;
 
 namespace Pesta
@@ -43,8 +40,8 @@ namespace Pesta
         public readonly static JsonRpcHandler Instance = new JsonRpcHandler();
         protected JsonRpcHandler()
         {
-            JsonRpcHandler.processor = Processor.Instance;
-            JsonRpcHandler.urlGenerator = DefaultUrlGenerator.Instance;
+            processor = Processor.Instance;
+            urlGenerator = DefaultUrlGenerator.Instance;
         }
         /**
          * Processes a JSON request.
@@ -65,8 +62,8 @@ namespace Pesta
             for (int i = 0, j = requestedGadgets.Length; i < j; ++i)
             {
                 var context = new JsonRpcGadgetContext(requestContext, (JsonObject)requestedGadgets[i]);
-                preloadProcessor processor = new preloadProcessor(callJob);
-                IAsyncResult result = processor.BeginInvoke(context, null, null);
+                preloadProcessor proc = new preloadProcessor(callJob);
+                IAsyncResult result = proc.BeginInvoke(context, null, null);
                 gadgets.Add(result);
             }
 
@@ -75,8 +72,8 @@ namespace Pesta
                 try
                 {
                     AsyncResult result = (AsyncResult)entry;
-                    preloadProcessor processor = (preloadProcessor)result.AsyncDelegate;
-                    JsonObject gadget = processor.EndInvoke(result);
+                    preloadProcessor proc = (preloadProcessor)result.AsyncDelegate;
+                    JsonObject gadget = proc.EndInvoke(result);
                     response.Accumulate("gadgets", gadget);
                 }
                 catch (JsonException e)
@@ -165,7 +162,7 @@ namespace Pesta
                 // TODO: This should probably just copy all data from
                 // ModulePrefs.getAttributes(), but names have to be converted to
                 // camel case.
-                gadgetJson.Put("iframeUrl", JsonRpcHandler.urlGenerator.getIframeUrl(gadget))
+                gadgetJson.Put("iframeUrl", urlGenerator.getIframeUrl(gadget))
                         .Put("url", context.getUrl().ToString())
                         .Put("moduleId", context.getModuleId())
                         .Put("title", prefs.getTitle())
@@ -177,6 +174,7 @@ namespace Pesta
 
                         // extended meta data
                         .Put("directoryTitle", prefs.getDirectoryTitle())
+                        .Put("description", prefs.getDescription())
                         .Put("thumbnail", prefs.getThumbnail().ToString())
                         .Put("screenshot", prefs.getScreenshot().ToString())
                         .Put("author", prefs.getAuthor())

@@ -256,8 +256,8 @@ namespace Pesta
             {
                 throw new SpecParserException("Not an HTTP url: " + child.Attributes[URL_ATTR]);
             }
-            Location location = Location.Parse(child.Attributes[PARAM_LOCATION_ATTR].Value);
-            Method method = Method.Parse(child.Attributes[METHOD_ATTR].Value);
+            Location location = Location.Parse(child.GetAttribute(PARAM_LOCATION_ATTR));
+            Method method = Method.Parse(child.GetAttribute(METHOD_ATTR));
             return new EndPoint(_base.resolve(url), method, location);
         }
     } 

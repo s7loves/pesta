@@ -84,9 +84,9 @@ namespace Pesta
         /// </summary>
         ///
         /// <param name="numBytes">number of bytes of randomness.</param>
-        public static String GetRandomString(int numBytes)
+        public static String getRandomString(int numBytes)
         {
-            return String.Format("0:X", GetRandomBytes(numBytes));
+            return String.Format("0:X", getRandomBytes(numBytes));
         }
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace Pesta
         /// </summary>
         ///
         /// <param name="numBytes">number of bytes of randomness</param>
-        public static byte[] GetRandomBytes(int numBytes)
+        public static byte[] getRandomBytes(int numBytes)
         {
             byte[] xout = new byte[numBytes];
             rand.NextBytes(xout);
@@ -106,7 +106,7 @@ namespace Pesta
         /// </summary>
         ///
         /// <param name="key">the key must be at least 8 bytes in length.</param>
-        /// <param name="in">byte array to HMAC.</param>
+        /// <param name="ins0">byte array to HMAC.</param>
         /// <returns>the hash</returns>
         /// @throws GeneralSecurityException
         public static byte[] HmacSha1(byte[] key, byte[] ins0)

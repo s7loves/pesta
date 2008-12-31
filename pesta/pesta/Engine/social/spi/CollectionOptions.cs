@@ -34,13 +34,13 @@ namespace Pesta
 /// </remarks>
     public class CollectionOptions
     {
-        private String sortBy;
+        private String sortBy = "";
         private PersonService.SortOrder sortOrder;
-        private String filter;
+        private String filter = "";
         private PersonService.FilterOperation filterOperation;
-        private String filterValue;
+        private String filterValue = "";
         private int first;
-        private int max;
+        private int max = 1;
 
         /**
         * This sortBy can be any field of the object being sorted or the special js sort of topFriends.
@@ -51,9 +51,9 @@ namespace Pesta
             return sortBy;
         }
 
-        public void setSortBy(String sortBy)
+        public void setSortBy(String _sortBy)
         {
-            this.sortBy = sortBy;
+            this.sortBy = _sortBy;
         }
 
         public PersonService.SortOrder getSortOrder()

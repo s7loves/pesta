@@ -92,6 +92,10 @@ namespace Pesta
         */
         public View getView(String name)
         {
+            if (!views.ContainsKey(name))
+            {
+                return null;
+            }
             return views[name];
         }
 
@@ -103,9 +107,11 @@ namespace Pesta
         private readonly Dictionary<String, Object> attributes = new Dictionary<String, Object>();
         public Object getAttribute(String key)
         {
-            Object value = null;
-            attributes.TryGetValue(key, out value);
-            return value;
+            if (!attributes.ContainsKey(key))
+            {
+                return null;
+            }
+            return attributes[key];
         }
 
         public void setAttribute(String key, Object o)
@@ -239,25 +245,22 @@ namespace Pesta
             {
                 throw new SpecParserException("At least 1 ModulePrefs is required.");
             }
-            else
-            {
-                this.modulePrefs = modulePrefs;
-            }
+            
+            this.modulePrefs = modulePrefs;
 
             if (views.Count == 0)
             {
                 throw new SpecParserException("At least 1 Content is required.");
             }
-            else
+            
+            Dictionary<String, View> tmpViews = new Dictionary<String, View>();
+            foreach (var view in views)
             {
-                Dictionary<String, View> tmpViews = new Dictionary<String, View>();
-                foreach (var view in views)
-                {
-                    View v = new View(view.Key, view.Value, url);
-                    tmpViews.Add(v.getName(), v);
-                }
-                this.views = tmpViews;
+                View v = new View(view.Key, view.Value, url);
+                tmpViews.Add(v.getName(), v);
             }
+            this.views = tmpViews;
+            
 
             if (userPrefs.Count != 0)
             {

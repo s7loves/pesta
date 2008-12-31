@@ -39,7 +39,7 @@ namespace Pesta
 
         public AnonymousAuthenticationHandler()
         {
-            this.allowUnauthenticated = PestaConfiguration.AllowUnauthenticated.ToLower().Equals("true");
+            this.allowUnauthenticated = PestaSettings.AllowUnauthenticated.ToLower().Equals("true");
         }
 
         public String getName()

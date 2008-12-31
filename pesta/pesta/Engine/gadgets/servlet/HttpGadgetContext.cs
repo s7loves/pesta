@@ -186,7 +186,7 @@ namespace Pesta
             return view;
         }
 
-        /// <param name="req">
+        /// <param name="request">
         /// </param>
         /// <returns> The container, if set, or null.
         /// </returns>
@@ -201,7 +201,7 @@ namespace Pesta
             return container;
         }
 
-        /// <param name="req">
+        /// <param name="request">
         /// </param>
         /// <returns> Debug setting, if set, or null.
         /// </returns>
@@ -219,7 +219,7 @@ namespace Pesta
             return true;
         }
 
-        /// <param name="req">
+        /// <param name="request">
         /// </param>
         /// <returns> The ignore cache setting, if appropriate params are set, or null.
         /// </returns>
@@ -237,7 +237,7 @@ namespace Pesta
             return true;
         }
 
-        /// <param name="req">
+        /// <param name="request">
         /// </param>
         /// <returns> The locale, if appropriate parameters are set, or null.
         /// </returns>
@@ -260,7 +260,7 @@ namespace Pesta
             return new Locale(language, country);
         }
 
-        /// <param name="req">
+        /// <param name="request">
         /// </param>
         /// <returns> module id, if specified
         /// </returns>
@@ -274,7 +274,7 @@ namespace Pesta
             return int.Parse(mid);
         }
 
-        /// <param name="req">
+        /// <param name="request">
         /// </param>
         /// <returns> The rendering context, if appropriate params are set, or null.
         /// </returns>
@@ -288,7 +288,7 @@ namespace Pesta
             return c.Equals("1") ? RenderingContext.CONTAINER : RenderingContext.GADGET;
         }
 
-        /// <param name="req">
+        /// <param name="request">
         /// </param>
         /// <returns> The ignore cache setting, if appropriate params are set, or null.
         /// </returns>
@@ -325,7 +325,7 @@ namespace Pesta
             return new UserPrefs(prefs);
         }
 
-        /// <param name="req">
+        /// <param name="request">
         /// </param>
         /// <returns> The view, if specified, or null.
         /// </returns>
