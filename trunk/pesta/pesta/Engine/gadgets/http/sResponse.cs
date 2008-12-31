@@ -88,9 +88,9 @@ namespace Pesta
         public readonly byte[] responseBytes;
         public String responseString = "";
         private readonly Dictionary<string, string> metadata = new Dictionary<string, string>();
-        private NameValueCollection headers;
+        private readonly NameValueCollection headers;
         private readonly long date;
-        private int httpStatusCode;
+        private readonly int httpStatusCode;
         private readonly String encoding;
 
         /**
@@ -98,7 +98,7 @@ namespace Pesta
        */
         public sResponse(HttpResponseBuilder builder)
         {
-            httpStatusCode = builder.getHttpStatusCode() == null?-1:(int)builder.getHttpStatusCode();
+            httpStatusCode = builder.getHttpStatusCode();
             NameValueCollection headerCopy = new NameValueCollection();
             headerCopy.Add(builder.getHeaders());
 
@@ -115,6 +115,12 @@ namespace Pesta
             encoding = getAndUpdateEncoding(headerCopy, responseBytes);
             Encoding encoder = Encoding.GetEncoding(encoding);
             responseString = encoder.GetString(responseBytes);
+
+            // Strip BOM if present
+            if (responseString.Length > 0 && responseString[0] == 0xFEFF)
+            {
+                responseString = responseString.Substring(1);
+            }
         }
 
         

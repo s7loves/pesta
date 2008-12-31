@@ -43,7 +43,7 @@ namespace Pesta.DataAccess
 
             if (group == null)
             {
-                return new HashSet<string>() { userId };
+                return new HashSet<string> { userId };
             }
 
             HashSet<string> returnVal = new HashSet<string>();
@@ -109,20 +109,28 @@ namespace Pesta.DataAccess
             {
                 result.Reverse();
             }
-            int last = _options.getFirst() + _options.getMax();
-            result = result.GetRange(_options.getFirst(), Math.Min(last, _totalSize) - _options.getFirst());
+
+            result = result.GetRange(_options.getFirst(), Math.Min(_options.getMax(), _totalSize - _options.getFirst() > 0 ? _totalSize - _options.getFirst() : 0));
             return new RestfulCollection<Person>(result, _options.getFirst(), _totalSize);
         }
 
 
         override public Person getPerson(UserId _userId, HashSet<String> _fields, SecurityToken _token)
         {
-            var _groupId = new GroupId(GroupId.Type.self, "all");
-            var _person = this.getPeople(new HashSet<UserId>{_userId}, _groupId, new CollectionOptions(), _fields, _token);
-            if (_person.getEntry().Count == 1)
-                return _person.getEntry()[0];
-        
-            throw new SocialSpiException(ResponseError.BAD_REQUEST, "Person not found");
+            try
+            {
+                var _groupId = new GroupId(GroupId.Type.self, "all");
+                var _person = this.getPeople(new HashSet<UserId> {_userId}, _groupId, new CollectionOptions(), _fields,
+                                             _token);
+                if (_person.getEntry().Count == 1)
+                    return _person.getEntry()[0];
+
+                throw new SocialSpiException(ResponseError.BAD_REQUEST, "Person not found");
+            }
+            catch (Exception je)
+            {
+                throw new SocialSpiException(ResponseError.INTERNAL_ERROR, je.Message, je);
+            }
         }
 
         public DataCollection getPersonData(HashSet<UserId> _userId, GroupId _groupId,
@@ -250,10 +258,6 @@ namespace Pesta.DataAccess
                     throw new SocialSpiException(ResponseError.UNAUTHORIZED, "unauthorized: Create activity permission denied.");
                 }
                 PartuzaDbFetcher.get().createActivity(_userId.getUserId(_token), _activity, _token.getAppId());
-            } 
-            catch (SocialSpiException _e) 
-            {
-                throw _e;
             } 
             catch (Exception _e) 
             {

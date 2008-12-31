@@ -38,7 +38,7 @@ namespace Pesta
     /// </remarks>
     public class JsonDbOpensocialService : PersonService, ActivityService, AppDataService
     {
-        public readonly static string dbLocation = HttpContext.Current.Server.MapPath(HttpContext.Current.Request.ApplicationPath) + PestaConfiguration.JsonDb;
+        public readonly static string dbLocation = HttpContext.Current.Server.MapPath(HttpContext.Current.Request.ApplicationPath) + PestaSettings.JsonDb;
         public readonly static JsonDbOpensocialService Instance = new JsonDbOpensocialService();
         protected JsonDbOpensocialService()
         {

@@ -81,7 +81,7 @@ namespace Pesta
         {
             this.crypter = crypter;
             Dictionary<string, string> state = null;
-            if (stateBlob != null)
+            if (!String.IsNullOrEmpty(stateBlob))
             {
                 try
                 {
@@ -92,14 +92,7 @@ namespace Pesta
                     // Probably too old, pretend we never saw it at all.
                 }
             }
-            if (state != null)
-            {
-                this.state = state;
-            }
-            else
-            {
-                this.state = new Dictionary<string, string>();
-            }
+            this.state = state ?? new Dictionary<string, string>();
         }
 
         /**
