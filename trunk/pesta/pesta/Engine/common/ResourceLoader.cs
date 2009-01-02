@@ -22,12 +22,12 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 
-namespace Pesta
+namespace Pesta.Engine.common
 {
     /// <summary> Handles loading contents from resource and file system files.</summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class ResourceLoader
@@ -120,5 +120,5 @@ namespace Pesta
         {
             return file.OpenText().ReadToEnd();
         }
-    }   
+    }
 }

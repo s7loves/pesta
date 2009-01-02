@@ -17,18 +17,16 @@
  * specific language governing permissions and limitations under the License.
  */
 #endregion
-using System.Collections.Generic;
-using System.Collections;
 using System;
 
-namespace Pesta
+namespace Pesta.Engine.common.crypto
 {
     /// <summary>
     /// For all exceptions thrown by BlobCrypter
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     [Serializable]
@@ -48,5 +46,5 @@ namespace Pesta
             : base(msg)
         {
         }
-    } 
+    }
 }

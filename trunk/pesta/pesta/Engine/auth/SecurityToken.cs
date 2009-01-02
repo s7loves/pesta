@@ -19,14 +19,14 @@
 #endregion
 using System;
 
-namespace Pesta
+namespace Pesta.Engine.auth
 {
     /// <summary>
     /// Summary description for SecurityToken
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public interface SecurityToken
@@ -78,5 +78,5 @@ namespace Pesta
          * @return true if the token is for an anonymous viewer/owner
          */
         bool isAnonymous();
-    } 
+    }
 }

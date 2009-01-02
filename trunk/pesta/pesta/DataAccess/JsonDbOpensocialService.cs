@@ -20,20 +20,25 @@
 using System;
 using System.Web;
 using System.Collections.Generic;
-using System.Collections;
 using Jayrock.Json;
 using Jayrock.Json.Conversion;
 using System.IO;
-using System.Configuration;
+using Pesta.Engine.auth;
+using Pesta.Engine.social;
+using Pesta.Engine.social.core.util;
+using Pesta.Engine.social.model;
+using Pesta.Engine.social.service;
+using Pesta.Engine.social.spi;
+using Pesta.Utilities;
 
-namespace Pesta
+namespace Pesta.DataAccess
 {
     /// <summary>
     /// Summary description for JsonDbOpensocialService
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class JsonDbOpensocialService : PersonService, ActivityService, AppDataService
@@ -100,7 +105,7 @@ namespace Pesta
         }
 
         public RestfulCollection<Activity> getActivities(HashSet<UserId> userIds, GroupId groupId,
-            String appId, HashSet<String> fields, SecurityToken token)
+                                                         String appId, HashSet<String> fields, SecurityToken token)
         {
             List<Activity> result = new List<Activity>();
             try
@@ -134,7 +139,7 @@ namespace Pesta
         }
 
         public RestfulCollection<Activity> getActivities(UserId userId, GroupId groupId, String appId,
-                    HashSet<String> fields, HashSet<String> activityIds, SecurityToken token)
+                                                         HashSet<String> fields, HashSet<String> activityIds, SecurityToken token)
         {
             List<Activity> result = new List<Activity>();
             try
@@ -147,7 +152,7 @@ namespace Pesta
                     {
                         JsonObject activity = activities[i] as JsonObject;
                         if (activity[Activity.Field.USER_ID.Value].Equals(user)
-                                && activityIds.Contains(activity[Activity.Field.ID.Value] as string))
+                            && activityIds.Contains(activity[Activity.Field.ID.Value] as string))
                         {
                             result.Add(convertToActivity(activity, fields));
                         }
@@ -162,7 +167,7 @@ namespace Pesta
         }
 
         public Activity getActivity(UserId userId,
-            GroupId groupId, String appId, HashSet<String> fields, String activityId, SecurityToken token)
+                                    GroupId groupId, String appId, HashSet<String> fields, String activityId, SecurityToken token)
         {
             try
             {
@@ -174,7 +179,7 @@ namespace Pesta
                     {
                         JsonObject activity = activities[i] as JsonObject;
                         if (activity[Activity.Field.USER_ID.Value] as string == user
-                                    && activity[Activity.Field.ID.Value] as string == activityId)
+                            && activity[Activity.Field.ID.Value] as string == activityId)
                         {
                             return convertToActivity(activity, fields);
                         }
@@ -189,7 +194,7 @@ namespace Pesta
         }
 
         public void deleteActivities(UserId userId, GroupId groupId, String appId,
-                        HashSet<String> activityIds, SecurityToken token)
+                                     HashSet<String> activityIds, SecurityToken token)
         {
             try
             {
@@ -224,7 +229,7 @@ namespace Pesta
         }
 
         public void createActivity(UserId userId, GroupId groupId, String appId,
-                            HashSet<String> fields, Activity activity, SecurityToken token)
+                                   HashSet<String> fields, Activity activity, SecurityToken token)
         {
             // Are fields really needed here?
             try
@@ -249,7 +254,7 @@ namespace Pesta
         }
 
         public override RestfulCollection<Person> getPeople(HashSet<UserId> userIds, GroupId groupId,
-            CollectionOptions options, HashSet<String> fields, SecurityToken token)
+                                                            CollectionOptions options, HashSet<String> fields, SecurityToken token)
         {
             List<Person> result = new List<Person>();
             try
@@ -318,7 +323,7 @@ namespace Pesta
         }
 
         public DataCollection getPersonData(HashSet<UserId> userIds, GroupId groupId,
-                                        String appId, HashSet<String> fields, SecurityToken token)
+                                            String appId, HashSet<String> fields, SecurityToken token)
         {
             try
             {
@@ -389,7 +394,7 @@ namespace Pesta
         }
 
         public void updatePersonData(UserId userId, GroupId groupId, String appId,
-                        HashSet<String> fields, Dictionary<String, String> values, SecurityToken token)
+                                     HashSet<String> fields, Dictionary<String, String> values, SecurityToken token)
         {
             // TODO: this seems redundant. No need to pass both fields and a map of field->value
             // TODO: According to rest, yes there is. If a field is in the param list but not in the map
@@ -490,5 +495,5 @@ namespace Pesta
             }
             return converter.convertToObject(inobject.ToString(), typeof(Person)) as Person;
         }
-    } 
+    }
 }

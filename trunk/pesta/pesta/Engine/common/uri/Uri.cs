@@ -1,17 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using URI = System.Uri;
 
-namespace Pesta
+namespace Pesta.Engine.common.uri
 {
-    /**
-    * Represents a Uniform Resource Identifier (URI) reference as defined by <a
-    * href="http://tools.ietf.org/html/rfc3986">RFC 3986</a>.
-    *
-    * Assumes that all url components are UTF-8 encoded.
-    */
     public class Uri 
     {
         private readonly String text;
@@ -124,21 +117,21 @@ namespace Pesta
             
         }
 
-          /**
+        /**
            * @return a java.net.URI equal to this Uri.
            */
-            public URI toJavaUri()
+        public URI toJavaUri()
+        {
+            try 
             {
-                try 
-                {
-                    return new URI(ToString());
-                } 
-                catch (UriFormatException e) 
-                {
-                    // Shouldn't ever happen.
-                    throw new Exception(e.Message);
-                }
+                return new URI(ToString());
+            } 
+            catch (UriFormatException e) 
+            {
+                // Shouldn't ever happen.
+                throw new Exception(e.Message);
             }
+        }
 
         /**
         * Resolves a given url relative to this url. Resolution rules are the same as for
@@ -200,7 +193,7 @@ namespace Pesta
             return query;
         }
 
-      /**
+        /**
        * @return The query part of the uri, separated into component parts.
        */
         public Dictionary<String, List<String>> getQueryParameters()
@@ -218,7 +211,7 @@ namespace Pesta
             return values;
         }
 
-      /**
+        /**
        * @return The first query parameter value with the given name.
        */
         public String getQueryParameter(String name) 
@@ -233,7 +226,7 @@ namespace Pesta
             return ivalues.Current;
         }
 
-      /**
+        /**
        * @return The uri fragment.
        */
         public String getFragment()
