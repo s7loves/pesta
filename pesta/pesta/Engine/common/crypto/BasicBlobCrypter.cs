@@ -18,22 +18,21 @@
  */
 #endregion
 using System.Collections.Generic;
-using System.Collections;
 using System.Security.Cryptography;
 using System.IO;
 using System.Text;
 using System;
 using System.Web;
-using Pesta.Interop;
+using Pesta.Utilities;
 
-namespace Pesta
+namespace Pesta.Engine.common.crypto
 {
     /// <summary>
     /// Simple implementation of BlobCrypter.
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class BasicBlobCrypter : BlobCrypter
@@ -99,7 +98,7 @@ namespace Pesta
             if (masterKey.Length < MASTER_KEY_MIN_LEN)
             {
                 throw new Exception("Master key needs at least "
-                        + MASTER_KEY_MIN_LEN + " bytes");
+                                    + MASTER_KEY_MIN_LEN + " bytes");
             }
             cipherKey = DeriveKey(CIPHER_KEY_LABEL, masterKey, Crypto.CIPHER_KEY_LEN);
             hmacKey = DeriveKey(HMAC_KEY_LABEL, masterKey, 0);
@@ -137,7 +136,7 @@ namespace Pesta
             if (ins0.ContainsKey(TIMESTAMP_KEY))
             {
                 throw new ArgumentException(
-                        "No 't' keys allowed for BlobCrypter");
+                    "No 't' keys allowed for BlobCrypter");
             }
             try
             {
@@ -238,5 +237,5 @@ namespace Pesta
             }
         }
 
-    } 
+    }
 }

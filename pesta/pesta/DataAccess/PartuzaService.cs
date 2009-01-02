@@ -1,8 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Jayrock.Json;
+using Pesta.Engine.auth;
+using Pesta.Engine.social;
+using Pesta.Engine.social.core.util;
+using Pesta.Engine.social.model;
+using Pesta.Engine.social.service;
+using Pesta.Engine.social.spi;
 
 namespace Pesta.DataAccess
 {
@@ -109,8 +114,14 @@ namespace Pesta.DataAccess
             {
                 result.Reverse();
             }
-
-            result = result.GetRange(_options.getFirst(), Math.Min(_options.getMax(), _totalSize - _options.getFirst() > 0 ? _totalSize - _options.getFirst() : 0));
+            if (result.Count > 1)
+            {
+                result = result.GetRange(_options.getFirst(),
+                                         Math.Min(_options.getMax(),
+                                                  _totalSize - _options.getFirst() > 0
+                                                      ? _totalSize - _options.getFirst()
+                                                      : 1));
+            }
             return new RestfulCollection<Person>(result, _options.getFirst(), _totalSize);
         }
 
@@ -138,11 +149,7 @@ namespace Pesta.DataAccess
         {
             var _ids = this.getIdSet(_userId, _groupId, _token);
             var _data = PartuzaDbFetcher.get().getAppData(_ids, _fields, _appId);
-            if (_data.getEntry().Count == 0) 
-            {
-                // if the data array is empty, the key was not found, raise a not found error
-                throw new SocialSpiException(ResponseError.NOT_IMPLEMENTED, "Unknown person app data key(s): " + string.Join(",",_fields.ToArray()));
-            }
+            
             return _data;
         }
 

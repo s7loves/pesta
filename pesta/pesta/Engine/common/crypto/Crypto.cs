@@ -17,13 +17,9 @@
  * specific language governing permissions and limitations under the License.
  */
 #endregion
-using System.Collections.Generic;
-using System.Collections;
-using System.IO;
+using System;using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
-using System;
-using System.Text;
 
 namespace Pesta
 {
@@ -32,7 +28,7 @@ namespace Pesta
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class Crypto
@@ -64,7 +60,7 @@ namespace Pesta
         ///
         public const int CIPHER_KEY_LEN = 16;
 
-        private static int CIPHER_BLOCK_SIZE = 16;
+        private const int CIPHER_BLOCK_SIZE = 16;
 
         /// <summary>
         /// Length of HMAC SHA1 output
@@ -155,9 +151,7 @@ namespace Pesta
         /// @throws GeneralSecurityException
         public static byte[] Aes128cbcEncrypt(byte[] key, byte[] plain)
         {
-            RijndaelManaged symmetricKey = new RijndaelManaged();
-            symmetricKey.Mode = CipherMode.CBC;
-            symmetricKey.KeySize = 128;
+            RijndaelManaged symmetricKey = new RijndaelManaged {Mode = CipherMode.CBC, KeySize = 128};
             byte[] iv = symmetricKey.IV;
             ICryptoTransform encryptor = symmetricKey.CreateEncryptor(key, iv);
             MemoryStream memoryStream = new MemoryStream();
@@ -200,8 +194,7 @@ namespace Pesta
         /// @throws GeneralSecurityException
         public static byte[] Aes128cbcDecryptWithIv(byte[] key, byte[] iv, byte[] cipherText, int offset)
         {
-            RijndaelManaged symmetricKey = new RijndaelManaged();
-            symmetricKey.Mode = CipherMode.CBC;
+            RijndaelManaged symmetricKey = new RijndaelManaged {Mode = CipherMode.CBC};
             int cipherLength = cipherText.Length - offset;
             ICryptoTransform decryptor = symmetricKey.CreateDecryptor(key, iv);
             MemoryStream memoryStream = new MemoryStream(cipherText, offset, cipherLength);

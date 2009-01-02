@@ -20,7 +20,7 @@
 using System.Collections.Generic;
 using System;
 
-namespace Pesta
+namespace Pesta.Engine.common.crypto
 {
     /// <summary>
     /// Utility interface for managing signed, encrypted, and time stamped blobs.
@@ -30,7 +30,7 @@ namespace Pesta
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public interface BlobCrypter
@@ -57,5 +57,4 @@ namespace Pesta
         Dictionary<string, string> unwrap(String ins0, int maxAgeSec);
 
     }
-    
 }

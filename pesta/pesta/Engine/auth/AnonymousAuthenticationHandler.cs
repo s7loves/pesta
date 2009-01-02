@@ -19,17 +19,17 @@
 #endregion
 
 using System;
-using System.Configuration;
 using System.Web;
+using Pesta.Utilities;
 
-namespace Pesta
+namespace Pesta.Engine.auth
 {
     /// <summary>
     /// Summary description for AnonymousAuthenticationHandler
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    /// Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class AnonymousAuthenticationHandler : AuthenticationHandler
@@ -55,5 +55,5 @@ namespace Pesta
             }
             return null;
         }
-    } 
+    }
 }

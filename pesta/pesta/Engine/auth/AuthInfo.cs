@@ -20,7 +20,7 @@
 using System;
 using System.Web;
 
-namespace Pesta
+namespace Pesta.Engine.auth
 {
     /// <summary> Class to get authorization information on a servlet request.
     /// 
@@ -30,7 +30,7 @@ namespace Pesta
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class AuthInfo
@@ -104,5 +104,5 @@ namespace Pesta
             return this;
         }
 
-    }  
+    }
 }

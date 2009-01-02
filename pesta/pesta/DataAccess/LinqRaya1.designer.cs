@@ -77,6 +77,12 @@ namespace Pesta.DataAccess
     partial void Deleteapplication_setting(application_setting instance);
     #endregion
 		
+		public LinqRayaDataContext() : 
+				base(global::Pesta.Properties.Settings.Default.rayaConnectionString, mappingSource)
+		{
+			OnCreated();
+		}
+		
 		public LinqRayaDataContext(string connection) : 
 				base(connection, mappingSource)
 		{
@@ -5417,7 +5423,7 @@ namespace Pesta.DataAccess
 			}
 		}
 		
-		[Column(Storage="_value", DbType="VarChar(255) NOT NULL", CanBeNull=false)]
+		[Column(Storage="_value", DbType="NVarChar(255) NOT NULL", CanBeNull=false)]
 		public string value
 		{
 			get

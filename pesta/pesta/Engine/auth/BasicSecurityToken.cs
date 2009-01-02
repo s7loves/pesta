@@ -19,15 +19,16 @@
 #endregion
 using System;
 using System.Collections.Generic;
+using Pesta.Engine.common.crypto;
 
-namespace Pesta
+namespace Pesta.Engine.auth
 {
     /// <summary>
     /// Summary description for BasicSecurityToken
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class BasicSecurityToken : SecurityToken
@@ -71,7 +72,7 @@ namespace Pesta
         }
 
         public BasicSecurityToken(String owner, String viewer, String app,
-                    String domain, String appUrl, String moduleId)
+                                  String domain, String appUrl, String moduleId)
         {
             tokenData = new Dictionary<String, String>();
             putNullSafe(OWNER_KEY, owner);
@@ -182,5 +183,5 @@ namespace Pesta
         {
             return false;
         }
-    } 
+    }
 }

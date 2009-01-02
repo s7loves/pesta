@@ -20,14 +20,14 @@
 using System;
 using System.Collections.Generic;
 
-namespace Pesta
+namespace Pesta.Engine.auth
 {
     /// <summary>
     /// Summary description for SecurityTokenDecoder
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public abstract class SecurityTokenDecoder
@@ -46,5 +46,5 @@ namespace Pesta
          * @throws SecurityTokenException If tokenString is not a valid token
          */
         public abstract SecurityToken createToken(Dictionary<String, String> tokenParameters);
-    } 
+    }
 }

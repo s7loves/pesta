@@ -16,20 +16,17 @@
  * KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-#endregion
-using System.Collections.Generic;
-using System.Collections;
-using System;
-using Pesta.Interop;
+#endregionusing System;
+using Pesta.Utilities;
 
-namespace Pesta
+namespace Pesta.Engine.common.crypto
 {
     /// <summary>
     /// Thrown when a blob has expired.
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     [Serializable]
@@ -53,6 +50,5 @@ namespace Pesta
             this.maxDate = maxTime;
         }
 
-    } 
+    }
 }
-

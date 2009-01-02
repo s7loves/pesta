@@ -22,14 +22,14 @@ using System.Collections.Generic;
 using System.Web;
 using System.Text;
 
-namespace Pesta
+namespace Pesta.Engine.auth
 {
     /// <summary>
     /// Summary description for UrlParameterAuthenticationHandler
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class UrlParameterAuthenticationHandler : AuthenticationHandler
@@ -70,5 +70,5 @@ namespace Pesta
                 return null;
             }
         }
-    } 
+    }
 }

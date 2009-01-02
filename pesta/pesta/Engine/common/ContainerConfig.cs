@@ -18,34 +18,29 @@
  */
 #endregion
 using System;
-using System.IO;
-using System.Data;
 using System.Configuration;
-using System.Web;
-using System.Web.Security;
 using Jayrock.Json;
-using Jayrock.Json.Conversion;
 using System.Collections.Generic;
 
-namespace Pesta
+namespace Pesta.Engine.common
 {
     /// <summary>
     /// Summary description for ContainerConfig
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public abstract class ContainerConfig
     {
         public static string DEFAULT_CONTAINER = "default";
-      /**
+        /**
        * @return The set of all containers that are currently registered.
        */
         public abstract ICollection<String> getContainers();
 
-      /**
+        /**
        * Fetches a configuration parameter as a JSON object, array, string, or
        * number, ensuring that it can be safely passed to javascript without any
        * additional filtering.
@@ -59,7 +54,7 @@ namespace Pesta
        */
         public abstract Object getJson(String container, String parameter);
 
-      /**
+        /**
        * Attempts to fetch a parameter for the given container, or the default
        * container if the specified container is not supported.
        *
@@ -67,13 +62,13 @@ namespace Pesta
        */
         public abstract String get(String container, String parameter);
 
-      /**
+        /**
        * @return A configuration parameter as a JSON object or null if not set or
        *     can't be interpreted as JSON.
        */
         public abstract JsonObject getJsonObject(String container, String parameter);
 
-      /**
+        /**
        * @return A configuration parameter as a JSON object or null if not set or
        *     can't be interpreted as JSON.
        */
@@ -83,5 +78,5 @@ namespace Pesta
         {
             return ConfigurationManager.AppSettings[name];
         }
-    } 
+    }
 }
