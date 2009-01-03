@@ -15,55 +15,57 @@
  */
 using System;
 
-
-/// <summary>
-/// Summary description for PLAINTEXT
-/// </summary>
-/// <remarks>
-/// <para>
-///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
-/// </para>
-/// </remarks>
-public class PLAINTEXT : OAuthSignatureMethod
+namespace Pesta.Interop.oauth.signature
 {
-
-    protected override String getSignature(String baseString) 
+    /// <summary>
+    /// Summary description for PLAINTEXT
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    ///  Apache Software License 2.0 2008 Shindig
+    /// </para>
+    /// </remarks>
+    public class PLAINTEXT : OAuthSignatureMethod
     {
-        return getSignature();
-    }
 
-    protected override bool isValid(String signature, String baseString)
-    {
-        return signature.Equals(getSignature());
-    }
-
-    private String getSignature() 
-    {
-        if (signature == null) 
+        protected override String getSignature(String baseString)
         {
-            signature = OAuth.percentEncode(getConsumerSecret()) + '&'
-                    + OAuth.percentEncode(getTokenSecret());
+            return getSignature();
         }
-        return signature;
-    }
 
-    private String signature = null;
-
-    public override void setConsumerSecret(String consumerSecret) 
-    {
-        lock (this) 
+        protected override bool isValid(String signature, String baseString)
         {
-            signature = null;
+            return signature.Equals(getSignature());
         }
-        base.setConsumerSecret(consumerSecret);
-    }
 
-    public override void setTokenSecret(String tokenSecret) 
-    {
-        lock (this) 
+        private String getSignature()
         {
-            signature = null;
+            if (signature == null)
+            {
+                signature = OAuth.percentEncode(getConsumerSecret()) + '&'
+                            + OAuth.percentEncode(getTokenSecret());
+            }
+            return signature;
         }
-        base.setTokenSecret(tokenSecret);
+
+        private String signature = null;
+
+        public override void setConsumerSecret(String consumerSecret)
+        {
+            lock (this)
+            {
+                signature = null;
+            }
+            base.setConsumerSecret(consumerSecret);
+        }
+
+        public override void setTokenSecret(String tokenSecret)
+        {
+            lock (this)
+            {
+                signature = null;
+            }
+            base.setTokenSecret(tokenSecret);
+        }
     }
 }
