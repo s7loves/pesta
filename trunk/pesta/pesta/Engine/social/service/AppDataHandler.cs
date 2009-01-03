@@ -19,18 +19,18 @@
 #endregion
 using System;
 using System.Collections.Generic;
-using System.Web;
 using Pesta.DataAccess;
+using Pesta.Engine.social.spi;
 
 
-namespace Pesta
+namespace Pesta.Engine.social.service
 {
     /// <summary>
     /// Summary description for AppDataHandler
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class AppDataHandler : DataRequestHandler
@@ -66,7 +66,7 @@ namespace Pesta
             IEnumerator<UserId> iuserid = userIds.GetEnumerator();
             iuserid.MoveNext();
             service.deletePersonData(iuserid.Current, request.getGroup(),
-                                        request.getAppId(), request.getFields(), request.getToken());
+                                     request.getAppId(), request.getFields(), request.getToken());
             return null;
         }
 
@@ -109,13 +109,13 @@ namespace Pesta
                 if (!isValidKey(key))
                 {
                     throw new SocialSpiException(ResponseError.BAD_REQUEST,
-                            "One or more of the app data keys are invalid: " + key);
+                                                 "One or more of the app data keys are invalid: " + key);
                 }
             }
             IEnumerator<UserId> iuserid = userIds.GetEnumerator();
             iuserid.MoveNext();
             service.updatePersonData(iuserid.Current, request.getGroup(),
-                            request.getAppId(), request.getFields(), values, request.getToken());
+                                     request.getAppId(), request.getFields(), values, request.getToken());
             return null;
         }
 
@@ -134,7 +134,7 @@ namespace Pesta
             DataRequestHandler.Preconditions<UserId>.requireNotEmpty(userIds, "No userId specified");
 
             return service.getPersonData(userIds, request.getGroup(),
-                        request.getAppId(), request.getFields(), request.getToken());
+                                         request.getAppId(), request.getFields(), request.getToken());
         }
 
         /**
@@ -166,5 +166,5 @@ namespace Pesta
             }
             return true;
         }
-    } 
+    }
 }

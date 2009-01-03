@@ -19,15 +19,17 @@
 #endregion
 using System;
 using System.Collections.Generic;
+using Pesta.Engine.auth;
+using Pesta.Engine.social.spi;
 
-namespace Pesta
+namespace Pesta.Engine.social.service
 {
     /// <summary>
     /// Summary description for RequestItem
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public abstract class RequestItem
@@ -127,7 +129,7 @@ namespace Pesta
             catch (Exception nfe)
             {
                 throw new SocialSpiException(ResponseError.BAD_REQUEST,
-                    "Parameter " + START_INDEX + " (" + startIndex + ") is not a number.");
+                                             "Parameter " + START_INDEX + " (" + startIndex + ") is not a number.");
             }
         }
 
@@ -141,7 +143,7 @@ namespace Pesta
             catch (FormatException nfe)
             {
                 throw new SocialSpiException(ResponseError.BAD_REQUEST,
-                    "Parameter " + COUNT + " (" + count + ") is not a number.");
+                                             "Parameter " + COUNT + " (" + count + ") is not a number.");
             }
         }
 
@@ -157,13 +159,13 @@ namespace Pesta
             try
             {
                 return sortOrder == null
-                            ? PersonService.SortOrder.ascending
-                            : (PersonService.SortOrder)Enum.Parse(typeof(PersonService.SortOrder), sortOrder, true);
+                           ? PersonService.SortOrder.ascending
+                           : (PersonService.SortOrder)Enum.Parse(typeof(PersonService.SortOrder), sortOrder, true);
             }
             catch
             {
                 throw new SocialSpiException(ResponseError.BAD_REQUEST,
-                    "Parameter " + SORT_ORDER + " (" + sortOrder + ") is not valid.");
+                                             "Parameter " + SORT_ORDER + " (" + sortOrder + ") is not valid.");
             }
         }
 
@@ -178,13 +180,13 @@ namespace Pesta
             try
             {
                 return filterOp == null
-                            ? PersonService.FilterOperation.contains
-                            : (PersonService.FilterOperation)Enum.Parse(typeof(PersonService.FilterOperation), filterOp, true);
+                           ? PersonService.FilterOperation.contains
+                           : (PersonService.FilterOperation)Enum.Parse(typeof(PersonService.FilterOperation), filterOp, true);
             }
             catch
             {
                 throw new SocialSpiException(ResponseError.BAD_REQUEST,
-                    "Parameter " + FILTER_OPERATION + " (" + filterOp + ") is not valid.");
+                                             "Parameter " + FILTER_OPERATION + " (" + filterOp + ") is not valid.");
             }
         }
 
@@ -236,5 +238,5 @@ namespace Pesta
         public abstract String getParameter(String paramName, String defaultValue);
 
         public abstract List<String> getListParameter(String paramName);
-    } 
+    }
 }

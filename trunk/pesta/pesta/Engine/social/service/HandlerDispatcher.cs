@@ -18,11 +18,8 @@
  */
 #endregion
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace Pesta
+namespace Pesta.Engine.social.service
 {
     /// <summary>
     /// Dispatcher for DataRequestHandler requests.  The default implementation
@@ -31,7 +28,7 @@ namespace Pesta
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public interface HandlerDispatcher

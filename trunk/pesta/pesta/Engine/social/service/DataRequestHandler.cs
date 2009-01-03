@@ -19,16 +19,17 @@
 #endregion
 using System;
 using System.Collections.Generic;
+using Pesta.Engine.social.spi;
 
 
-namespace Pesta
+namespace Pesta.Engine.social.service
 {
     /// <summary>
     /// Summary description for DataRequestHandler
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public abstract class DataRequestHandler
@@ -50,7 +51,7 @@ namespace Pesta
             if (request.getOperation() == null)
             {
                 throw new SocialSpiException(ResponseError.NOT_IMPLEMENTED,
-                            "Unserviced operation");
+                                             "Unserviced operation");
             }
             String operation = request.getOperation().ToLower();
             handleItemDelegate handler;
@@ -73,7 +74,7 @@ namespace Pesta
             else
             {
                 throw new SocialSpiException(ResponseError.NOT_IMPLEMENTED,
-                    "Unserviced operation " + operation);
+                                             "Unserviced operation " + operation);
             }
             return handler.BeginInvoke(request, null, null);
         }
@@ -115,5 +116,5 @@ namespace Pesta
                 }
             }
         }
-    } 
+    }
 }

@@ -20,45 +20,47 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Pesta.Engine.auth;
+using Pesta.Engine.social.core.oauth;
+using Pesta.Interop.oauth;
 
-
-namespace Pesta
+namespace Pesta.Engine.social.oauth
 {
     /// <summary>
     /// Summary description for SampleContainerOAuthLookupService
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class SampleContainerOAuthLookupService : OAuthLookupService
     {
         // If we were a real social network this would probably be a function
         private static Dictionary<String, String> sampleContainerUrlToAppIdMap = new Dictionary<string, string>()
-    {
-        {"http://localhost/gadgets/files/samplecontainer/examples/SocialHelloWorld.xml","7810"},
-        {"http://localhost/gadgets/files/samplecontainer/examples/SocialActivitiesWorld.xml","8355"}
-    };
+                                                                                     {
+                                                                                         {"http://localhost/gadgets/files/samplecontainer/examples/SocialHelloWorld.xml","7810"},
+                                                                                         {"http://localhost/gadgets/files/samplecontainer/examples/SocialActivitiesWorld.xml","8355"}
+                                                                                     };
 
         // If we were a real social network we would probably be keeping track of this in a db somewhere
         private static Dictionary<String, List<String>> sampleContainerAppInstalls = new Dictionary<string, List<string>>()
-    {
-        {"john.doe", new List<String>(){"7810", "8355"}}
-    };
+                                                                                         {
+                                                                                             {"john.doe", new List<String>(){"7810", "8355"}}
+                                                                                         };
 
         // If we were a real social network we would establish shared secrets with each of our gadgets
         private static Dictionary<String, String> sampleContainerSharedSecrets = new Dictionary<string, string>()
-    {
-        {"7810", "SocialHelloWorldSharedSecret"},
-        {"8355", "SocialActivitiesWorldSharedSecret"}
-    };
+                                                                                     {
+                                                                                         {"7810", "SocialHelloWorldSharedSecret"},
+                                                                                         {"8355", "SocialActivitiesWorldSharedSecret"}
+                                                                                     };
 
         public bool thirdPartyHasAccessToUser(OAuthMessage message, String appUrl, String userId)
         {
             String appId = getAppId(appUrl);
             return hasValidSignature(message, appUrl, appId)
-                && userHasAppInstalled(userId, appId);
+                   && userHasAppInstalled(userId, appId);
         }
 
         private bool hasValidSignature(OAuthMessage message, String appUrl, String appId)
@@ -119,5 +121,5 @@ namespace Pesta
         {
             return sampleContainerUrlToAppIdMap[appUrl];
         }
-    } 
+    }
 }

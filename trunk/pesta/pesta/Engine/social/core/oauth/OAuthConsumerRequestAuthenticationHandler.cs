@@ -18,18 +18,20 @@
  */
 #endregion
 using System;
-
-
 using System.Web;
-namespace Pesta
-{
+using Pesta.Engine.auth;
+using Pesta.Engine.social.oauth;
+using Pesta.Interop.oauth;
+using Pesta.Interop.oauth.server;
 
+namespace Pesta.Engine.social.core.oauth
+{
     /// <summary>
     /// Summary description for OAuthConsumerRequestAuthenticationHandler
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class OAuthConsumerRequestAuthenticationHandler : AuthenticationHandler
@@ -83,5 +85,5 @@ namespace Pesta
                 return null;
             }
         }
-    } 
+    }
 }

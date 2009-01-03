@@ -20,15 +20,17 @@
 using System;
 using System.Collections.Generic;
 using Pesta.DataAccess;
+using Pesta.Engine.social.model;
+using Pesta.Engine.social.spi;
 
-namespace Pesta
+namespace Pesta.Engine.social.service
 {
     /// <summary>
     /// Summary description for ActivityHandler
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class ActivityHandler : DataRequestHandler
@@ -58,7 +60,7 @@ namespace Pesta
             IEnumerator<UserId> iuserid = userIds.GetEnumerator();
             iuserid.MoveNext();
             service.deleteActivities(iuserid.Current, request.getGroup(),
-                            request.getAppId(), activityIds, request.getToken());
+                                     request.getAppId(), activityIds, request.getToken());
             return null;
         }
 
@@ -92,9 +94,9 @@ namespace Pesta
             IEnumerator<UserId> iuserid = userIds.GetEnumerator();
             iuserid.MoveNext();
             service.createActivity(iuserid.Current, request.getGroup(),
-                            request.getAppId(), request.getFields(),
-                            (Activity)request.getTypedParameter("activity", typeof(Activity)),
-                            request.getToken());
+                                   request.getAppId(), request.getFields(),
+                                   (Activity)request.getTypedParameter("activity", typeof(Activity)),
+                                   request.getToken());
             return null;
         }
 
@@ -128,22 +130,22 @@ namespace Pesta
                     IEnumerator<string> iactivity = optionalActivityIds.GetEnumerator();
                     iactivity.MoveNext();
                     return service.getActivity(iuserid.Current, request.getGroup(),
-                                request.getAppId(), request.getFields(), iactivity.Current,
-                                request.getToken());
+                                               request.getAppId(), request.getFields(), iactivity.Current,
+                                               request.getToken());
                 }
                 else
                 {
                     IEnumerator<UserId> iuserid = userIds.GetEnumerator();
                     iuserid.MoveNext();
                     return service.getActivities(iuserid.Current, request.getGroup(),
-                        request.getAppId(), request.getFields(), optionalActivityIds, request.getToken());
+                                                 request.getAppId(), request.getFields(), optionalActivityIds, request.getToken());
                 }
             }
 
             return service.getActivities(userIds, request.getGroup(), request.getAppId(),
-                // TODO: add pagination and sorting support
-                // getSortBy(params), getFilterBy(params), getStartIndex(params), getCount(params),
-                                    request.getFields(), request.getToken());
+                                         // TODO: add pagination and sorting support
+                                         // getSortBy(params), getFilterBy(params), getStartIndex(params), getCount(params),
+                                         request.getFields(), request.getToken());
         }
-    } 
+    }
 }

@@ -18,27 +18,32 @@
  */
 #endregion  
 using System;
+using Pesta.Engine.social.core.model;
+using Pesta.Interop;
 
-/// <summary>
-/// Summary description for Url
-/// </summary>
-/// <remarks>
-/// <para>
-///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
-/// </para>
-/// </remarks>
-[ImplementedBy(typeof(UrlImpl))]
-public interface Url : ListField
+namespace Pesta.Engine.social.model
 {
-    /**
-    * Get the text associated with the link.
-    * @return the link text
-    */
-     String getLinkText();
+    /// <summary>
+    /// Summary description for Url
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    ///  Apache Software License 2.0 2008 Shindig
+    /// </para>
+    /// </remarks>
+    [ImplementedBy(typeof(UrlImpl))]
+    public interface Url : ListField
+    {
+        /**
+        * Get the text associated with the link.
+        * @return the link text
+        */
+        String getLinkText();
 
-    /**
-    * Set the Link text associated with the link.
-    * @param linkText the link text
-    */
-     void setLinkText(String linkText);
+        /**
+        * Set the Link text associated with the link.
+        * @param linkText the link text
+        */
+        void setLinkText(String linkText);
+    } 
 }

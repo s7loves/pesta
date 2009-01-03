@@ -18,19 +18,19 @@
  */
 #endregion
 using System;
-using System.Data;
-using System.Configuration;
 using System.Collections.Generic;
 using Pesta.DataAccess;
+using Pesta.Engine.social.model;
+using Pesta.Engine.social.spi;
 
-namespace Pesta
+namespace Pesta.Engine.social.service
 {
     /// <summary>
     /// Summary description for PersonHandler
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class PersonHandler : DataRequestHandler
@@ -110,7 +110,7 @@ namespace Pesta
                     IEnumerator<string> ipersonid = optionalPersonId.GetEnumerator();
                     ipersonid.MoveNext();
                     return personService.getPerson(new UserId(UserId.Type.userId,
-                        ipersonid.Current), fields, request.getToken());
+                                                              ipersonid.Current), fields, request.getToken());
                 }
                 else
                 {
@@ -121,12 +121,12 @@ namespace Pesta
                     }
                     // Every other case is a collection response of optional person ids
                     return personService.getPeople(personIds, new GroupId(GroupId.Type.self, null),
-                                            options, fields, request.getToken());
+                                                   options, fields, request.getToken());
                 }
             }
 
             // Every other case is a collection response.
             return personService.getPeople(userIds, groupId, options, fields, request.getToken());
         }
-    } 
+    }
 }

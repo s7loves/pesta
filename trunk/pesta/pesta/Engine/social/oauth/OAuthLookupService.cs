@@ -18,22 +18,22 @@
  */
 #endregion
 using System;
+using Pesta.Engine.auth;
+using Pesta.Interop.oauth;
 
-
-
-namespace Pesta
+namespace Pesta.Engine.social.oauth
 {
     /// <summary>
     /// Summary description for OAuthLookupService
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public interface OAuthLookupService
     {
         bool thirdPartyHasAccessToUser(OAuthMessage message, String appUrl, String userId);
         SecurityToken getSecurityToken(String appUrl, String userId);
-    } 
+    }
 }

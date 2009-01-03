@@ -18,15 +18,16 @@
  */
 #endregion
 using System;
+using Pesta.Engine.auth;
 
-namespace Pesta
+namespace Pesta.Engine.social.core.oauth
 {
     /// <summary>
     /// Summary description for OAuthSecurityToken
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class OAuthSecurityToken : SecurityToken
@@ -95,5 +96,5 @@ namespace Pesta
         {
             return false;
         }
-    } 
+    }
 }
