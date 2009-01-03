@@ -21,23 +21,27 @@ using System;
 using System.Text;
 using System.Xml;
 using System.Collections.Generic;
+using Pesta.Engine.common.xml;
+using Pesta.Engine.gadgets.variables;
+using Pesta.Interop;
+using Uri=Pesta.Engine.common.uri.Uri;
 
-namespace Pesta
+namespace Pesta.Engine.gadgets.spec
 {
     /// <summary> Represents a Content section, but normalized into an individual
     /// view value after views are split on commas.
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class View : RequestAuthenticationInfo
     {
         private static readonly List<String> KNOWN_ATTRIBUTES = new List<string>(){
-                "type", "view", "href", "preferred_height", "preferred_width", "authz", "quirks",
-                "sign_owner", "sign_viwer"
-                };
+                                                                                      "type", "view", "href", "preferred_height", "preferred_width", "authz", "quirks",
+                                                                                      "sign_owner", "sign_viwer"
+                                                                                  };
         private readonly Uri _base;
         /**
         * @param elements List of all views, in order, that make up this view.
@@ -302,8 +306,8 @@ namespace Pesta
                 buf.Append(entry.Key).Append("='").Append(entry.Value).Append('\'');
             }
             buf.Append("'>")
-                    .Append(content)
-                    .Append("</Content>");
+                .Append(content)
+                .Append("</Content>");
             return buf.ToString();
         }
 
@@ -332,5 +336,5 @@ namespace Pesta
                 return "url".Equals(value.ToLower()) ? ContentType.URL : ContentType.HTML;
             }
         }
-    }  
+    }
 }

@@ -18,169 +18,173 @@
  */
 #endregion
 using System;
+using Pesta.Engine.social.model;
 
-/// <summary>
-/// Summary description for OrganizationImpl
-/// </summary>
-/// <remarks>
-/// <para>
-///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
-/// </para>
-/// </remarks>
-public class OrganizationImpl : Organization
+namespace Pesta.Engine.social.core.model
 {
-    private Address address;
-    private String description;
-    private DateTime? endDate;
-    private String field;
-    private String name;
-    private String salary;
-    private DateTime? startDate;
-    private String subField;
-    private String title;
-    private String webpage;
-    private String type;
-    private bool? primary;
-
-    public override Address getAddress()
+    /// <summary>
+    /// Summary description for OrganizationImpl
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    ///  Apache Software License 2.0 2008 Shindig
+    /// </para>
+    /// </remarks>
+    public class OrganizationImpl : Organization
     {
-        return address;
-    }
+        private Address address;
+        private String description;
+        private DateTime? endDate;
+        private String field;
+        private String name;
+        private String salary;
+        private DateTime? startDate;
+        private String subField;
+        private String title;
+        private String webpage;
+        private String type;
+        private bool? primary;
 
-    public override void setAddress(Address address)
-    {
-        this.address = address;
-    }
-
-    public override String getDescription()
-    {
-        return description;
-    }
-
-    public override void setDescription(String description)
-    {
-        this.description = description;
-    }
-
-    public override DateTime? getEndDate()
-    {
-        if (endDate == null)
+        public override Address getAddress()
         {
-            return null;
+            return address;
         }
-        return endDate;
-    }
 
-    public override void setEndDate(DateTime? endDate)
-    {
-        if (endDate == null)
+        public override void setAddress(Address address)
         {
-            this.endDate = null;
+            this.address = address;
         }
-        else
+
+        public override String getDescription()
         {
-            this.endDate = endDate;
+            return description;
         }
-    }
 
-    public override String getField()
-    {
-        return field;
-    }
-
-    public override void setField(String field)
-    {
-        this.field = field;
-    }
-
-    public override String getName()
-    {
-        return name;
-    }
-
-    public override void setName(String name)
-    {
-        this.name = name;
-    }
-
-    public override String getSalary()
-    {
-        return salary;
-    }
-
-    public override void setSalary(String salary)
-    {
-        this.salary = salary;
-    }
-
-    public override DateTime? getStartDate()
-    {
-        if (startDate == null)
+        public override void setDescription(String description)
         {
-            return null;
+            this.description = description;
         }
-        return startDate;
-    }
 
-    public override void setStartDate(DateTime? startDate)
-    {
-        if (startDate == null)
+        public override DateTime? getEndDate()
         {
-            this.startDate = null;
+            if (endDate == null)
+            {
+                return null;
+            }
+            return endDate;
         }
-        else
+
+        public override void setEndDate(DateTime? endDate)
         {
-            this.startDate = startDate;
+            if (endDate == null)
+            {
+                this.endDate = null;
+            }
+            else
+            {
+                this.endDate = endDate;
+            }
         }
-    }
 
-    public override String getSubField()
-    {
-        return subField;
-    }
+        public override String getField()
+        {
+            return field;
+        }
 
-    public override void setSubField(String subField)
-    {
-        this.subField = subField;
-    }
+        public override void setField(String field)
+        {
+            this.field = field;
+        }
 
-    public override String getTitle()
-    {
-        return title;
-    }
+        public override String getName()
+        {
+            return name;
+        }
 
-    public override void setTitle(String title)
-    {
-        this.title = title;
-    }
+        public override void setName(String name)
+        {
+            this.name = name;
+        }
 
-    public override String getWebpage()
-    {
-        return webpage;
-    }
+        public override String getSalary()
+        {
+            return salary;
+        }
 
-    public override void setWebpage(String webpage)
-    {
-        this.webpage = webpage;
-    }
+        public override void setSalary(String salary)
+        {
+            this.salary = salary;
+        }
 
-    public override String getType()
-    {
-        return type;
-    }
+        public override DateTime? getStartDate()
+        {
+            if (startDate == null)
+            {
+                return null;
+            }
+            return startDate;
+        }
 
-    public override void setType(String type)
-    {
-        this.type = type;
-    }
+        public override void setStartDate(DateTime? startDate)
+        {
+            if (startDate == null)
+            {
+                this.startDate = null;
+            }
+            else
+            {
+                this.startDate = startDate;
+            }
+        }
 
-    public override bool? getPrimary()
-    {
-        return primary;
-    }
+        public override String getSubField()
+        {
+            return subField;
+        }
 
-    public override void setPrimary(bool? primary)
-    {
-        this.primary = primary;
+        public override void setSubField(String subField)
+        {
+            this.subField = subField;
+        }
+
+        public override String getTitle()
+        {
+            return title;
+        }
+
+        public override void setTitle(String title)
+        {
+            this.title = title;
+        }
+
+        public override String getWebpage()
+        {
+            return webpage;
+        }
+
+        public override void setWebpage(String webpage)
+        {
+            this.webpage = webpage;
+        }
+
+        public override String getType()
+        {
+            return type;
+        }
+
+        public override void setType(String type)
+        {
+            this.type = type;
+        }
+
+        public override bool? getPrimary()
+        {
+            return primary;
+        }
+
+        public override void setPrimary(bool? primary)
+        {
+            this.primary = primary;
+        }
     }
 }

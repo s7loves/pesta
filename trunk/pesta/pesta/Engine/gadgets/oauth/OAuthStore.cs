@@ -18,16 +18,18 @@
  */
 #endregion
 using System;
+using Pesta.Engine.auth;
+using Pesta.Interop.oauth;
 
 
-namespace Pesta
+namespace Pesta.Engine.gadgets.oauth
 {
     /// <summary>
     /// Summary description for OAuthStore
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public abstract class OAuthStore
@@ -95,7 +97,7 @@ namespace Pesta
         * @throws GadgetException if no OAuth consumer can be found (e.g. no consumer key can be used.)
         */
         public abstract ConsumerInfo getConsumerKeyAndSecret(SecurityToken securityToken, String serviceName,
-        OAuthServiceProvider provider);
+                                                             OAuthServiceProvider provider);
 
         /**
         * Retrieve OAuth access token to use for the request.
@@ -107,18 +109,18 @@ namespace Pesta
         * @throws GadgetException if an error occurs during lookup
         */
         public abstract TokenInfo getTokenInfo(SecurityToken securityToken, ConsumerInfo consumerInfo,
-                            String serviceName, String tokenName);
+                                               String serviceName, String tokenName);
 
         /**
         * Set the access token for the given user/gadget/service/token
         */
         public abstract void setTokenInfo(SecurityToken securityToken, ConsumerInfo consumerInfo, String serviceName,
-                            String tokenName, TokenInfo tokenInfo);
+                                          String tokenName, TokenInfo tokenInfo);
 
         /**
         * Remove the access token for the given user/gadget/service/token
         */
         public abstract void removeToken(SecurityToken securityToken, ConsumerInfo consumerInfo,
-                            String serviceName, String tokenName);
-    } 
+                                         String serviceName, String tokenName);
+    }
 }

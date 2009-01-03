@@ -20,10 +20,11 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Text;
+using Pesta.Interop;
+using Uri=Pesta.Engine.common.uri.Uri;
 
-namespace Pesta
+namespace Pesta.Engine.gadgets.variables
 {
     /// <summary>
     /// Performs string substitutions for message bundles, user prefs, and bidi
@@ -31,7 +32,7 @@ namespace Pesta
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class Substitutions

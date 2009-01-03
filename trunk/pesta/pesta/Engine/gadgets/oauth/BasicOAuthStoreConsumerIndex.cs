@@ -17,74 +17,75 @@
  * specific language governing permissions and limitations under the License.
  */
 #endregion
-using System.Collections.Generic;
-using System.Collections;
+
 using System;
 
-/// <summary>
-/// Index into the token store by
-/// </summary>
-/// <remarks>
-/// <para>
-///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
-/// </para>
-/// </remarks>
-public class BasicOAuthStoreConsumerIndex 
+namespace Pesta.Engine.gadgets.oauth
 {
-	private String gadgetUri;
-	private String serviceName;
+    /// <summary>
+    /// Index into the token store by
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    ///  Apache Software License 2.0 2008 Shindig
+    /// </para>
+    /// </remarks>
+    public class BasicOAuthStoreConsumerIndex
+    {
+        private String gadgetUri;
+        private String serviceName;
 
-    public String getGadgetUri()
-    {
-        return gadgetUri;
-    }
-    public void setGadgetUri(String gadgetUri)
-    {
-        this.gadgetUri = gadgetUri;
-    }
-    public String getServiceName()
-    {
-        return serviceName;
-    }
-    public void setServiceName(String serviceName)
-    {
-        this.serviceName = serviceName;
-    }
-
-    public int hashCode() 
-    {
-        int prime = 31;
-        int result = 1;
-        result =
-        prime * result + ((gadgetUri == null) ? 0 : gadgetUri.GetHashCode());
-        result = prime * result + ((serviceName == null) ? 0 : serviceName.GetHashCode());
-        return result;
-    }
-
-
-    public bool equals(Object obj) 
-    {
-        if (this == obj) return true;
-        if (obj == null) return false;
-        if (this.GetType() != obj.GetType()) 
-            return false;
-        BasicOAuthStoreConsumerIndex other = (BasicOAuthStoreConsumerIndex) obj;
-        if (gadgetUri == null) 
+        public String getGadgetUri()
         {
-            if (other.gadgetUri != null) 
-                return false;
-        } 
-        else if (!gadgetUri.Equals(other.gadgetUri)) 
-            return false;
-        
-        if (serviceName == null) 
+            return gadgetUri;
+        }
+        public void setGadgetUri(String gadgetUri)
         {
-            if (other.serviceName != null) 
+            this.gadgetUri = gadgetUri;
+        }
+        public String getServiceName()
+        {
+            return serviceName;
+        }
+        public void setServiceName(String serviceName)
+        {
+            this.serviceName = serviceName;
+        }
+
+        public int hashCode()
+        {
+            int prime = 31;
+            int result = 1;
+            result =
+                prime * result + ((gadgetUri == null) ? 0 : gadgetUri.GetHashCode());
+            result = prime * result + ((serviceName == null) ? 0 : serviceName.GetHashCode());
+            return result;
+        }
+
+
+        public bool equals(Object obj)
+        {
+            if (this == obj) return true;
+            if (obj == null) return false;
+            if (this.GetType() != obj.GetType())
                 return false;
-        } 
-        else if (!serviceName.Equals(other.serviceName)) 
-            return false;
-        return true;
+            BasicOAuthStoreConsumerIndex other = (BasicOAuthStoreConsumerIndex)obj;
+            if (gadgetUri == null)
+            {
+                if (other.gadgetUri != null)
+                    return false;
+            }
+            else if (!gadgetUri.Equals(other.gadgetUri))
+                return false;
+
+            if (serviceName == null)
+            {
+                if (other.serviceName != null)
+                    return false;
+            }
+            else if (!serviceName.Equals(other.serviceName))
+                return false;
+            return true;
+        }
     }
 }
-

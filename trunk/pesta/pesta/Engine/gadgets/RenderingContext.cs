@@ -17,41 +17,45 @@
  * specific language governing permissions and limitations under the License.
  */
 #endregion
-using System;
-using System.Collections.ObjectModel;
 
-/// <summary>
-/// Summary description for RenderingContext
-/// </summary>
-/// <remarks>
-/// <para>
-///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
-/// </para>
-/// </remarks>
-public class RenderingContext : EnumBaseType<RenderingContext>
+using System.Collections.ObjectModel;
+using Pesta.Interop;
+
+namespace Pesta.Engine.gadgets
 {
     /// <summary>
-    /// Initializes a new instance of the RenderingContext class.
+    /// Summary description for RenderingContext
     /// </summary>
-    public RenderingContext(int key, string value)
-        : base(key,value)
+    /// <remarks>
+    /// <para>
+    ///  Apache Software License 2.0 2008 Shindig
+    /// </para>
+    /// </remarks>
+    public class RenderingContext : EnumBaseType<RenderingContext>
     {
+        /// <summary>
+        /// Initializes a new instance of the RenderingContext class.
+        /// </summary>
+        public RenderingContext(int key, string value)
+            : base(key, value)
+        {
+        }
+        // Used when rendering gadgets (iframes or inline).
+        // TODO: rename this to "RENDER_GADGET"?
+        public readonly static RenderingContext GADGET = new RenderingContext(1, "GADGET");
+
+        // Used when rendering container data (not a gadget render)
+        public readonly static RenderingContext CONTAINER = new RenderingContext(2, "CONTAINER");
+
+        // Used when retrieving metadata about a gadget. Processing is generally
+        // identical to processing under GADGET, but some operations may be safely
+        // skipped, such as preload processing.
+        public readonly static RenderingContext METADATA = new RenderingContext(3, "METADATA");
+
+        public static ReadOnlyCollection<RenderingContext> GetValues()
+        {
+            return GetBaseValues();
+        }
+
     }
-    // Used when rendering gadgets (iframes or inline).
-    // TODO: rename this to "RENDER_GADGET"?
-    public readonly static RenderingContext GADGET = new RenderingContext(1,"GADGET");
-
-    // Used when rendering container data (not a gadget render)
-    public readonly static RenderingContext CONTAINER = new RenderingContext(2,"CONTAINER");
-
-    // Used when retrieving metadata about a gadget. Processing is generally
-    // identical to processing under GADGET, but some operations may be safely
-    // skipped, such as preload processing.
-    public readonly static RenderingContext METADATA = new RenderingContext(3, "METADATA");
-
-    public static ReadOnlyCollection<RenderingContext> GetValues()
-    {
-        return GetBaseValues();
-    }
-
 }

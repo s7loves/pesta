@@ -18,24 +18,18 @@
  */
 #endregion
 using System;
-using System.Data;
-using System.Configuration;
-using System.Web;
 using System.Collections.Generic;
-using System.Web.UI;
-using System.Web.UI.HtmlControls;
-using System.Web.UI.WebControls;
-using System.Web.UI.WebControls.WebParts;
+using Pesta.Engine.common.crypto;
 
 
-namespace Pesta
+namespace Pesta.Engine.gadgets.oauth
 {
     /// <summary>
     /// Summary description for OAuthClientState
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class OAuthClientState
@@ -177,5 +171,5 @@ namespace Pesta
         {
             state.Add(OWNER_KEY, owner);
         }
-    } 
+    }
 }

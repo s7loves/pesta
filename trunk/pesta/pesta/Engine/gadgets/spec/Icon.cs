@@ -20,15 +20,17 @@
 using System;
 using System.Text;
 using System.Xml;
+using Pesta.Engine.common.xml;
+using Pesta.Engine.gadgets.variables;
 
-namespace Pesta
+namespace Pesta.Engine.gadgets.spec
 {
     /// <summary>
     /// Summary description for Icon
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class Icon
@@ -119,5 +121,5 @@ namespace Pesta
             mode = icon.mode;
             type = icon.type;
         }
-    } 
+    }
 }

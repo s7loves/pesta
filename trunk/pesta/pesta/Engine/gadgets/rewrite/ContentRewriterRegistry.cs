@@ -18,19 +18,17 @@
  */
 #endregion
 using System;
-using System.Data;
-using System.Configuration;
-using System.Web;
-using System.Net;
+using Pesta.Engine.gadgets.http;
+using Pesta.Engine.gadgets.spec;
 
-namespace Pesta
+namespace Pesta.Engine.gadgets.rewrite
 {
     /// <summary>
     /// Summary description for ContentRewriterRegistry
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public interface ContentRewriterRegistry
@@ -61,5 +59,5 @@ namespace Pesta
         * @return Rewritten response object, or resp if not modified.
         */
         sResponse rewriteHttpResponse(sRequest req, sResponse resp);
-    } 
+    }
 }

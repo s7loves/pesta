@@ -21,15 +21,17 @@ using System;
 using System.Collections.Generic;
 using Jayrock.Json;
 using System.Runtime.Remoting.Messaging;
+using Pesta.Engine.gadgets.process;
+using Pesta.Engine.gadgets.spec;
 
-namespace Pesta
+namespace Pesta.Engine.gadgets.servlet
 {
     /// <summary>
     /// Summary description for JsonRpcHandler
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class JsonRpcHandler
@@ -94,7 +96,7 @@ namespace Pesta
                         
                         JsonObject errorObj = new JsonObject();
                         errorObj.Put("url", context.getUrl())
-                                .Put("moduleId", context.getModuleId());
+                            .Put("moduleId", context.getModuleId());
                         errorObj.Accumulate("errors", e.Message);
                         response.Accumulate("gadgets", errorObj);
                     }
@@ -122,11 +124,11 @@ namespace Pesta
                 foreach (View view in spec.getViews().Values)
                 {
                     views.Put(view.getName(), new JsonObject()
-                        // .Put("content", view.getContent())
-                        .Put("type", view.getType().ToString().ToLower())
-                        .Put("quirks", view.getQuirks())
-                        .Put("preferredHeight", view.getPreferredHeight())
-                        .Put("preferredWidth", view.getPreferredWidth()));
+                                                  // .Put("content", view.getContent())
+                                                  .Put("type", view.getType().ToString().ToLower())
+                                                  .Put("quirks", view.getQuirks())
+                                                  .Put("preferredHeight", view.getPreferredHeight())
+                                                  .Put("preferredWidth", view.getPreferredWidth()));
                 }
 
                 // Features.
@@ -151,11 +153,11 @@ namespace Pesta
                 foreach (UserPref pref in spec.getUserPrefs())
                 {
                     JsonObject up = new JsonObject()
-                                        .Put("displayName", pref.getDisplayName())
-                                        .Put("type", pref.getDataType().ToString().ToLower())
-                                        .Put("default", pref.getDefaultValue())
-                                        .Put("enumValues", pref.getEnumValues())
-                                        .Put("orderedEnumValues", getOrderedEnums(pref));
+                        .Put("displayName", pref.getDisplayName())
+                        .Put("type", pref.getDataType().ToString().ToLower())
+                        .Put("default", pref.getDefaultValue())
+                        .Put("enumValues", pref.getEnumValues())
+                        .Put("orderedEnumValues", getOrderedEnums(pref));
                     userPrefs.Put(pref.getName(), up);
                 }
 
@@ -163,37 +165,37 @@ namespace Pesta
                 // ModulePrefs.getAttributes(), but names have to be converted to
                 // camel case.
                 gadgetJson.Put("iframeUrl", urlGenerator.getIframeUrl(gadget))
-                        .Put("url", context.getUrl().ToString())
-                        .Put("moduleId", context.getModuleId())
-                        .Put("title", prefs.getTitle())
-                        .Put("titleUrl", prefs.getTitleUrl().ToString())
-                        .Put("views", views)
-                        .Put("features", features)
-                        .Put("userPrefs", userPrefs)
-                        .Put("links", links)
+                    .Put("url", context.getUrl().ToString())
+                    .Put("moduleId", context.getModuleId())
+                    .Put("title", prefs.getTitle())
+                    .Put("titleUrl", prefs.getTitleUrl().ToString())
+                    .Put("views", views)
+                    .Put("features", features)
+                    .Put("userPrefs", userPrefs)
+                    .Put("links", links)
 
-                        // extended meta data
-                        .Put("directoryTitle", prefs.getDirectoryTitle())
-                        .Put("description", prefs.getDescription())
-                        .Put("thumbnail", prefs.getThumbnail().ToString())
-                        .Put("screenshot", prefs.getScreenshot().ToString())
-                        .Put("author", prefs.getAuthor())
-                        .Put("authorEmail", prefs.getAuthorEmail())
-                        .Put("authorAffiliation", prefs.getAuthorAffiliation())
-                        .Put("authorLocation", prefs.getAuthorLocation())
-                        .Put("authorPhoto", prefs.getAuthorPhoto())
-                        .Put("authorAboutme", prefs.getAuthorAboutme())
-                        .Put("authorQuote", prefs.getAuthorQuote())
-                        .Put("authorLink", prefs.getAuthorLink())
-                        .Put("categories", prefs.getCategories())
-                        .Put("screenshot", prefs.getScreenshot().ToString())
-                        .Put("height", prefs.getHeight())
-                        .Put("width", prefs.getWidth())
-                        .Put("showStats", prefs.getShowStats())
-                        .Put("showInDirectory", prefs.getShowInDirectory())
-                        .Put("singleton", prefs.getSingleton())
-                        .Put("scaling", prefs.getScaling())
-                        .Put("scrolling", prefs.getScrolling());
+                    // extended meta data
+                    .Put("directoryTitle", prefs.getDirectoryTitle())
+                    .Put("description", prefs.getDescription())
+                    .Put("thumbnail", prefs.getThumbnail().ToString())
+                    .Put("screenshot", prefs.getScreenshot().ToString())
+                    .Put("author", prefs.getAuthor())
+                    .Put("authorEmail", prefs.getAuthorEmail())
+                    .Put("authorAffiliation", prefs.getAuthorAffiliation())
+                    .Put("authorLocation", prefs.getAuthorLocation())
+                    .Put("authorPhoto", prefs.getAuthorPhoto())
+                    .Put("authorAboutme", prefs.getAuthorAboutme())
+                    .Put("authorQuote", prefs.getAuthorQuote())
+                    .Put("authorLink", prefs.getAuthorLink())
+                    .Put("categories", prefs.getCategories())
+                    .Put("screenshot", prefs.getScreenshot().ToString())
+                    .Put("height", prefs.getHeight())
+                    .Put("width", prefs.getWidth())
+                    .Put("showStats", prefs.getShowStats())
+                    .Put("showInDirectory", prefs.getShowInDirectory())
+                    .Put("singleton", prefs.getSingleton())
+                    .Put("scaling", prefs.getScaling())
+                    .Put("scrolling", prefs.getScrolling());
                 return gadgetJson;
             }
             catch (ProcessingException e)
@@ -221,5 +223,5 @@ namespace Pesta
             }
             return jsonEnums;
         }
-    } 
+    }
 }

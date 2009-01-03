@@ -18,18 +18,12 @@
  */
 #endregion
 using System.Collections.Generic;
-using System.Collections;
-using System.ComponentModel;
-using System.IO;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System;
-using System.Net;
-using System.Web;
 using System.Collections.Specialized;
 using com.ibm.icu.text;
 
-namespace Pesta
+namespace Pesta.Engine.gadgets.http
 {
     /// <summary>
     /// Represents the results of an HTTP content retrieval operation.
@@ -39,7 +33,7 @@ namespace Pesta
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class sResponse
@@ -55,14 +49,14 @@ namespace Pesta
 
         // These content types can always skip encoding detection.
         private static readonly List<string> BINARY_CONTENT_TYPES = new List<string>()
-                {"image/jpeg", "image/png",
-					"image/gif", "image/jpg", "application/x-shockwave-flash",
-					"application/octet-stream", "application/ogg",
-					"application/zip", "audio/mpeg", "audio/x-ms-wma",
-					"audio/vnd.rn-realaudio", "audio/x-wav", "video/mpeg",
-					"video/mp4", "video/quicktime", "video/x-ms-wmv",
-					"video/x-flv", "video/flv", "video/x-ms-asf",
-					"application/pdf"};
+                                                                        {"image/jpeg", "image/png",
+                                                                         "image/gif", "image/jpg", "application/x-shockwave-flash",
+                                                                         "application/octet-stream", "application/ogg",
+                                                                         "application/zip", "audio/mpeg", "audio/x-ms-wma",
+                                                                         "audio/vnd.rn-realaudio", "audio/x-wav", "video/mpeg",
+                                                                         "video/mp4", "video/quicktime", "video/x-ms-wmv",
+                                                                         "video/x-flv", "video/flv", "video/x-ms-asf",
+                                                                         "application/pdf"};
 
         // These HTTP status codes should always honor the HTTP status returned by
         // the remote host. All
@@ -260,7 +254,7 @@ namespace Pesta
                 // Record the charset in the content-type header so that its value can be cached
                 // and re-used. This is a BIG performance win.
                 headers.Add("Content-Type",
-                    contentType + "; charset=" + match.getName().ToUpper());
+                            contentType + "; charset=" + match.getName().ToUpper());
             }
             return match.getName().ToUpper();
         }
@@ -419,6 +413,5 @@ namespace Pesta
             return buf.ToString();
         }
 
-    } 
+    }
 }
-

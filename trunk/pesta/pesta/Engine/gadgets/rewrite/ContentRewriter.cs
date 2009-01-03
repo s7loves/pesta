@@ -19,15 +19,16 @@
 #endregion
 
 using org.apache.shindig.gadgets.rewrite;
+using Pesta.Engine.gadgets.http;
 
-namespace Pesta
+namespace Pesta.Engine.gadgets.rewrite
 {
     /// <summary>
     /// 
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public interface ContentRewriter
@@ -48,6 +49,5 @@ namespace Pesta
         * @param gadget Gadget to rewrite.
         */
         RewriterResults rewrite(Gadget gadget, MutableContent content);
-    } 
+    }
 }
-

@@ -17,21 +17,20 @@
  * specific language governing permissions and limitations under the License.
  */
 #endregion
-using System;
-using System.Data;
-using System.Configuration;
-using Locale = java.util.Locale;
-using System.Web;
+
+using Pesta.Engine.gadgets.spec;
+using Pesta.Interop;
+using Uri=Pesta.Engine.common.uri.Uri;
 
 
-namespace Pesta
+namespace Pesta.Engine.gadgets
 {
     /// <summary>
     /// Summary description for AbstractMessageBundleFactory
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public abstract class AbstractMessageBundleFactory : MessageBundleFactory
@@ -80,5 +79,5 @@ namespace Pesta
         protected abstract MessageBundle fetchBundle(LocaleSpec locale, bool ignoreCache);
 
 
-    } 
+    }
 }

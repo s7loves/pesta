@@ -21,15 +21,18 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
+using Pesta.Engine.common.xml;
+using Pesta.Engine.gadgets.variables;
+using Pesta.Interop;
 
-namespace Pesta
+namespace Pesta.Engine.gadgets.spec
 {
     /// <summary>
     /// Summary description for UserPref
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class UserPref
@@ -126,11 +129,11 @@ namespace Pesta
             else
             {
                 Dictionary<String, String> values
-                                = new Dictionary<String, String>(enumValues.Count);
+                    = new Dictionary<String, String>(enumValues.Count);
                 foreach (var entry in enumValues)
                 {
                     values.Add(entry.Key,
-                            substituter.substituteString(type, entry.Value));
+                               substituter.substituteString(type, entry.Value));
                 }
                 pref.enumValues = values;
             }
@@ -141,7 +144,7 @@ namespace Pesta
             else 
             {
                 List<EnumValuePair> orderedValues
-                            = new List<EnumValuePair>();
+                    = new List<EnumValuePair>();
                 foreach(EnumValuePair evp in orderedEnumValues) 
                 {
                     orderedValues.Add(new EnumValuePair(evp.getValue(),
@@ -222,7 +225,7 @@ namespace Pesta
                         throw new SpecParserException("EnumValue@value is required.");
                     }
                     String displayValue
-                            = XmlUtil.getAttribute(child, "display_value", value);
+                        = XmlUtil.getAttribute(child, "display_value", value);
                     enumValues.Add(value, displayValue);
                     orderedEnumValues.Add(new EnumValuePair(value, displayValue));
                 }
@@ -286,7 +289,7 @@ namespace Pesta
             }
         }
 
-      /**
+        /**
        * Simple data structure representing a value/displayValue pair
        * for UserPref enums. Value is EnumValue@value, and DisplayValue is EnumValue@displayValue.
        */
@@ -311,5 +314,5 @@ namespace Pesta
                 return displayValue;
             }
         }
-    } 
+    }
 }

@@ -17,24 +17,21 @@
  * specific language governing permissions and limitations under the License.
  */
 #endregion
-using System;
-using System.Data;
-using System.Configuration;
-using Locale = java.util.Locale;
-using System.Web;
+using Pesta.Engine.gadgets.spec;
+using Pesta.Interop;
 
-namespace Pesta
+namespace Pesta.Engine.gadgets
 {
     /// <summary>
     /// Summary description for MessageBundleFactory
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public interface MessageBundleFactory
     {
         MessageBundle getBundle(GadgetSpec spec, Locale locale, bool ignoreCache);
-    } 
+    }
 }

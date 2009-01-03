@@ -19,15 +19,16 @@
 #endregion
 using System;
 using System.Xml;
+using Uri=Pesta.Engine.common.uri.Uri;
 
-namespace Pesta
+namespace Pesta.Engine.common.xml
 {
     /// <summary>
     /// 
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class XmlUtil
@@ -227,6 +228,5 @@ namespace Pesta
                 throw new XmlException(e.Message);
             }
         }
-    } 
+    }
 }
-    

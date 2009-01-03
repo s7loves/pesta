@@ -18,18 +18,16 @@
  */
 #endregion
 using System;
-using System.Collections.Generic;
+using Pesta.Engine.gadgets.spec;
 
-using System.Text;
-
-namespace Pesta
+namespace Pesta.Engine.gadgets
 {
     /// <summary>
     /// 
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public interface LockedDomainService
@@ -61,6 +59,5 @@ namespace Pesta
          */
         String getLockedDomainForGadget(GadgetSpec gadget, String container);
 
-    } 
+    }
 }
-

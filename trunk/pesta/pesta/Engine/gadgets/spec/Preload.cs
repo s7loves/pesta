@@ -21,21 +21,24 @@ using System;
 using System.Collections.Generic;
 using System.Xml;
 using System.Text;
+using Pesta.Engine.common.xml;
+using Pesta.Engine.gadgets.variables;
+using Uri=Pesta.Engine.common.uri.Uri;
 
-namespace Pesta
+namespace Pesta.Engine.gadgets.spec
 {
     /// <summary>
     /// Summary description for Preload
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class Preload : RequestAuthenticationInfo
     {
         private static readonly HashSet<String> KNOWN_ATTRIBUTES
-                    = new HashSet<string>() { "views", "href", "authz", "sign_owner", "sign_viewer" };
+            = new HashSet<string>() { "views", "href", "authz", "sign_owner", "sign_viewer" };
         
         private readonly Uri _base;
 
@@ -168,15 +171,15 @@ namespace Pesta
             string[] _views = new string[views.Count];
             views.CopyTo(_views);
             buf.Append("<Preload href='").Append(href).Append('\'')
-            .Append(" authz='").Append(auth.ToString().ToLower()).Append('\'')
-            .Append(" views='").Append(String.Join(",", _views)).Append('\'');
+                .Append(" authz='").Append(auth.ToString().ToLower()).Append('\'')
+                .Append(" views='").Append(String.Join(",", _views)).Append('\'');
             foreach (String attr in attributes.Keys)
             {
                 buf.Append(' ').Append(attr).Append("='").Append(attributes[attr])
-                            .Append('\'');
+                    .Append('\'');
             }
             buf.Append("/>");
             return buf.ToString();
         }
-    } 
+    }
 }

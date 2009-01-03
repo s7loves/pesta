@@ -21,12 +21,12 @@ using System;
 using System.Text;
 using System.Security.Cryptography;
 
-namespace Pesta
+namespace Pesta.Engine.common.util
 {
     /// <summary> Routines for producing hashes.</summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class HashUtil
@@ -67,5 +67,5 @@ namespace Pesta
             MD5 md5 = new MD5CryptoServiceProvider();
             return Encoding.Default.GetString(md5.ComputeHash(data));
         }
-    } 
+    }
 }

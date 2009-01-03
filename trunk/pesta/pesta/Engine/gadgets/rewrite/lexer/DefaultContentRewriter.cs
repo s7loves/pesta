@@ -22,15 +22,18 @@ using System;
 using System.Text;
 using System.Web;
 using org.apache.shindig.gadgets.rewrite;
+using Pesta.Engine.gadgets.http;
+using Pesta.Engine.gadgets.spec;
+using Uri=Pesta.Engine.common.uri.Uri;
 
-namespace Pesta
+namespace Pesta.Engine.gadgets.rewrite.lexer
 {
     /// <summary>
     /// Default implementation of content rewriting.
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class DefaultContentRewriter : ContentRewriter
@@ -42,7 +45,7 @@ namespace Pesta
         private readonly HashSet<String> includeTags;
 
         public DefaultContentRewriter(GadgetSpecFactory specFactory, String includeUrls,
-                String excludeUrls, String expires, String includeTags)
+                                      String excludeUrls, String expires, String includeTags)
         {
             this._specFactory = specFactory;
             this.includeUrls = includeUrls;
@@ -74,9 +77,9 @@ namespace Pesta
                 spec = _specFactory.getGadgetSpec(request.Gadget.toJavaUri(), false);
             }
             if (rewrite(spec, request.Uri,
-              new java.io.StringReader(content.getContent()),
-              mimeType,
-              output))
+                        new java.io.StringReader(content.getContent()),
+                        mimeType,
+                        output))
             {
                 content.setContent(Encoding.Default.GetString(baos.toByteArray()));
             }
@@ -93,11 +96,11 @@ namespace Pesta
             View view = gadget.getCurrentView();
             if (view != null && view.getHref() != null) 
             {
-              _base = view.getHref();
+                _base = view.getHref();
             }
             if (rewrite(spec, _base, reader, "text/html", sw)) 
             {
-              content.setContent(sw.toString());
+                content.setContent(sw.toString());
             }
             return RewriterResults.cacheableIndefinitely();
         }
@@ -214,6 +217,5 @@ namespace Pesta
         {
             return new ProxyingLinkRewriter(spec.getUrl(), rewriterFeature, ProxyUrl);
         }
-    } 
+    }
 }
-

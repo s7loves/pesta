@@ -18,99 +18,95 @@
  */
 #endregion
 using System;
-using System.Data;
-using System.Configuration;
-using System.Web;
-using System.Web.Security;
-using System.Web.UI;
-using System.Web.UI.HtmlControls;
-using System.Web.UI.WebControls;
-using System.Web.UI.WebControls.WebParts;
+using Pesta.Engine.social.model;
 
 
-/// <summary>
-/// Summary description for NameImpl
-/// </summary>
-/// <remarks>
-/// <para>
-///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
-/// </para>
-/// </remarks>
-public class NameImpl : Name
+namespace Pesta.Engine.social.core.model
 {
-    private String additionalName;
-    private String familyName;
-    private String givenName;
-    private String honorificPrefix;
-    private String honorificSuffix;
-    private String formatted;
-
-    public NameImpl()
+    /// <summary>
+    /// Summary description for NameImpl
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    ///  Apache Software License 2.0 2008 Shindig
+    /// </para>
+    /// </remarks>
+    public class NameImpl : Name
     {
-    }
+        private String additionalName;
+        private String familyName;
+        private String givenName;
+        private String honorificPrefix;
+        private String honorificSuffix;
+        private String formatted;
 
-    public NameImpl(String formatted)
-    {
-        this.formatted = formatted;
-    }
+        public NameImpl()
+        {
+        }
 
-    override public String getFormatted()
-    {
-        return formatted;
-    }
+        public NameImpl(String formatted)
+        {
+            this.formatted = formatted;
+        }
 
-    override public void setFormatted(String formatted)
-    {
-        this.formatted = formatted;
-    }
+        override public String getFormatted()
+        {
+            return formatted;
+        }
 
-    override public String getAdditionalName()
-    {
-        return additionalName;
-    }
+        override public void setFormatted(String formatted)
+        {
+            this.formatted = formatted;
+        }
 
-    override public void setAdditionalName(String additionalName)
-    {
-        this.additionalName = additionalName;
-    }
+        override public String getAdditionalName()
+        {
+            return additionalName;
+        }
 
-    override public String getFamilyName()
-    {
-        return familyName;
-    }
+        override public void setAdditionalName(String additionalName)
+        {
+            this.additionalName = additionalName;
+        }
 
-    override public void setFamilyName(String familyName)
-    {
-        this.familyName = familyName;
-    }
+        override public String getFamilyName()
+        {
+            return familyName;
+        }
 
-    override public String getGivenName()
-    {
-        return givenName;
-    }
+        override public void setFamilyName(String familyName)
+        {
+            this.familyName = familyName;
+        }
 
-    override public void setGivenName(String givenName)
-    {
-        this.givenName = givenName;
-    }
+        override public String getGivenName()
+        {
+            return givenName;
+        }
 
-    override public String getHonorificPrefix()
-    {
-        return honorificPrefix;
-    }
+        override public void setGivenName(String givenName)
+        {
+            this.givenName = givenName;
+        }
 
-    override public void setHonorificPrefix(String honorificPrefix)
-    {
-        this.honorificPrefix = honorificPrefix;
-    }
+        override public String getHonorificPrefix()
+        {
+            return honorificPrefix;
+        }
 
-    override public String getHonorificSuffix()
-    {
-        return honorificSuffix;
-    }
+        override public void setHonorificPrefix(String honorificPrefix)
+        {
+            this.honorificPrefix = honorificPrefix;
+        }
 
-    override public void setHonorificSuffix(String honorificSuffix)
-    {
-        this.honorificSuffix = honorificSuffix;
+        override public String getHonorificSuffix()
+        {
+            return honorificSuffix;
+        }
+
+        override public void setHonorificSuffix(String honorificSuffix)
+        {
+            this.honorificSuffix = honorificSuffix;
+        }
     }
 }

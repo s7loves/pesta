@@ -18,68 +18,64 @@
  */
 #endregion
 using System;
-using System.Data;
-using System.Configuration;
-using System.Web;
-using System.Web.Security;
-using System.Web.UI;
-using System.Web.UI.HtmlControls;
-using System.Web.UI.WebControls;
-using System.Web.UI.WebControls.WebParts;
+using Pesta.Interop;
 
 
-/// <summary>
-/// Summary description for AuthType
-/// </summary>
-/// <remarks>
-/// <para>
-///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
-/// </para>
-/// </remarks>
-public class AuthType : EnumBaseType<AuthType>
+namespace Pesta.Engine.gadgets
 {
-    public AuthType(int key, string value)
-        : base(key,value)
+    /// <summary>
+    /// Summary description for AuthType
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    ///  Apache Software License 2.0 2008 Shindig
+    /// </para>
+    /// </remarks>
+    public class AuthType : EnumBaseType<AuthType>
     {
-    }
-    public readonly static AuthType NONE = new AuthType(1, "NONE");
-    public readonly static AuthType SIGNED = new AuthType(2, "SIGNED");
-    public readonly static AuthType OAUTH = new AuthType(3, "OAUTH");
-
-    /**
-   * @return The parsed value (defaults to NONE)
-   */
-    public static AuthType Parse(String value)
-    {
-        if (value != null) 
+        public AuthType(int key, string value)
+            : base(key, value)
         {
-            value = value.Trim();
-            if (value.Length == 0)
-            {
-                return NONE;
-            }
-            try 
-            {
-                return GetBaseByValue(value);
-            } 
-            catch (ArgumentException iae) 
-            {
-                return NONE;
-            }
-        } 
-        else 
-        {
-            return NONE;
         }
-    }
+        public readonly static AuthType NONE = new AuthType(1, "NONE");
+        public readonly static AuthType SIGNED = new AuthType(2, "SIGNED");
+        public readonly static AuthType OAUTH = new AuthType(3, "OAUTH");
 
-  /**
-   * Use lowercase as toString form
-   * @return string value of Auth type
-   */
+        /**
+       * @return The parsed value (defaults to NONE)
+       */
+        public static AuthType Parse(String value)
+        {
+            if (value != null)
+            {
+                value = value.Trim();
+                if (value.Length == 0)
+                {
+                    return NONE;
+                }
+                try
+                {
+                    return GetBaseByValue(value);
+                }
+                catch (ArgumentException iae)
+                {
+                    return NONE;
+                }
+            }
+            else
+            {
+                return NONE;
+            }
+        }
 
-    public override String ToString() 
-    {
-        return base.ToString().ToLower();
+        /**
+         * Use lowercase as toString form
+         * @return string value of Auth type
+         */
+
+        public override String ToString()
+        {
+            return base.ToString().ToLower();
+        }
     }
 }

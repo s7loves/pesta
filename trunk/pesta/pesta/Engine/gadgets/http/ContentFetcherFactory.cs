@@ -1,9 +1,7 @@
-﻿using System;
-using System.Configuration;
-using System.Web;
+﻿using Pesta.Engine.gadgets.oauth;
 
 
-namespace Pesta
+namespace Pesta.Engine.gadgets.http
 {
     /// <summary>
     /// Summary description for ContentFetcherFactory
@@ -34,5 +32,5 @@ namespace Pesta
                 return null;
             }
         }
-    } 
+    }
 }

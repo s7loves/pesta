@@ -17,20 +17,18 @@
  * specific language governing permissions and limitations under the License.
  */
 #endregion
-using System;
-using System.Data;
-using System.Configuration;
-using System.Web;
+
+using Pesta.Engine.gadgets.spec;
 using URI = System.Uri;
 
-namespace Pesta
+namespace Pesta.Engine.gadgets
 {
     /// <summary>
     /// Summary description for GadgetSpecFactory
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public interface GadgetSpecFactory
@@ -40,5 +38,5 @@ namespace Pesta
 
         /** Return a gadget spec for a URI */
         GadgetSpec getGadgetSpec(URI gadgetUri, bool ignoreCache);
-    } 
+    }
 }

@@ -19,15 +19,18 @@
 #endregion
 using System;
 using System.Xml;
+using Pesta.Engine.common.xml;
+using Pesta.Engine.gadgets.variables;
+using Uri=Pesta.Engine.common.uri.Uri;
 
-namespace Pesta
+namespace Pesta.Engine.gadgets.spec
 {
     /// <summary>
     /// Summary description for LinkSpec
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class LinkSpec
@@ -86,5 +89,5 @@ namespace Pesta
         {
             return "<Link rel='" + rel + "' href='" + href.ToString() + "'/>";
         }
-    } 
+    }
 }

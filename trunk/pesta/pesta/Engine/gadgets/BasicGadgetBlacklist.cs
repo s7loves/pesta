@@ -20,18 +20,17 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using System.Text;
 using System.IO;
 using URI = System.Uri;
 
-namespace Pesta
+namespace Pesta.Engine.gadgets
 {
     /// <summary>
     /// 
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     class BasicGadgetBlacklist : GadgetBlacklist

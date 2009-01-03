@@ -1,11 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Web;
+﻿#region License, Terms and Conditions
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
+#endregion
+using System;
 using System.Net;
+using Pesta.Engine.gadgets.http;
+using Pesta.Engine.gadgets.oauth;
+using Pesta.Engine.gadgets.preload;
+using Pesta.Engine.gadgets.rewrite;
+using Pesta.Engine.gadgets.spec;
+using UriBuilder=Pesta.Engine.common.uri.UriBuilder;
 
-namespace Pesta
+namespace Pesta.Engine.gadgets.render
 {
     public class HtmlRenderer
     {
@@ -56,17 +77,17 @@ namespace Pesta
                     uri.addQueryParameter("country", context.getLocale().getCountry());
 
                     sRequest request = new sRequest(uri.toUri())
-                                            .setIgnoreCache(context.getIgnoreCache())
-                                            .setOAuthArguments(new OAuthArguments(view))
-                                            .setAuthType(view.getAuthType())
-                                            .setSecurityToken(context.getToken())
-                                            .setContainer(context.getContainer())
-                                            .setGadget(spec.getUrl());
+                        .setIgnoreCache(context.getIgnoreCache())
+                        .setOAuthArguments(new OAuthArguments(view))
+                        .setAuthType(view.getAuthType())
+                        .setSecurityToken(context.getToken())
+                        .setContainer(context.getContainer())
+                        .setGadget(spec.getUrl());
                     sResponse response = fetcher.fetch(request);
                     if (response.getHttpStatusCode() != (int)HttpStatusCode.OK)
                     {
                         throw new RenderingException("Unable to reach remote host. HTTP status " +
-                        response.getHttpStatusCode());
+                                                     response.getHttpStatusCode());
                     }
                     return rewriter.rewriteGadget(gadget, response.responseString);
                 }   

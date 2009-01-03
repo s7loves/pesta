@@ -18,23 +18,23 @@
  */
 #endregion
 using System;
-using System.Data;
-using System.Configuration;
 using System.Web;
 using System.Net;
-using System.IO;
-using System.Collections.Generic;
 using System.Diagnostics;
+using Pesta.Engine.gadgets.http;
+using Pesta.Engine.gadgets.spec;
+using Pesta.Utilities;
+using Uri=Pesta.Engine.common.uri.Uri;
 using URI = System.Uri;
 
-namespace Pesta
+namespace Pesta.Engine.gadgets
 {
     /// <summary>
     /// Summary description for DefaultGadgetSpecFactory
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class DefaultGadgetSpecFactory : GadgetSpecFactory
@@ -135,5 +135,5 @@ namespace Pesta
             HttpRuntime.Cache.Insert(url.ToString(), spec, null, System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromTicks(refresh));
             return spec;
         }
-    } 
+    }
 }

@@ -16,21 +16,18 @@
  * KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-#endregion
-using System.Collections.Generic;
-using System.Collections;
+#endregionusing System;
 using System.Web;
-using System;
 using System.Web.Caching;
 
-namespace Pesta
+namespace Pesta.Engine.gadgets.http
 {
     /// <summary>
     /// 
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class HttpCache
@@ -52,5 +49,5 @@ namespace Pesta
         {
             return HttpRuntime.Cache.Remove(key.ToString()) as sResponse;
         }
-    } 
+    }
 }

@@ -17,27 +17,29 @@
  * specific language governing permissions and limitations under the License.
  */
 #endregion
-using System;
 
-/// <remarks>
-/// <para>
-///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
-/// </para>
-/// </remarks>
-
-/**
- * Error strings to be returned to gadgets as "oauthError" data.
- */
-public enum OAuthError
+namespace Pesta.Engine.gadgets.oauth
 {
-    /**
-     * The request cannot be completed because the OAuth configuration for
-     * the gadget is incorrect.
-     */
-    BAD_OAUTH_CONFIGURATION,
+    /// <remarks>
+    /// <para>
+    ///  Apache Software License 2.0 2008 Shindig
+    /// </para>
+    /// </remarks>
 
     /**
-     * The request cannot be completed for an unspecified reason.
+     * Error strings to be returned to gadgets as "oauthError" data.
      */
-    UNKNOWN_PROBLEM,
+    public enum OAuthError
+    {
+        /**
+         * The request cannot be completed because the OAuth configuration for
+         * the gadget is incorrect.
+         */
+        BAD_OAUTH_CONFIGURATION,
+
+        /**
+         * The request cannot be completed for an unspecified reason.
+         */
+        UNKNOWN_PROBLEM,
+    }
 }

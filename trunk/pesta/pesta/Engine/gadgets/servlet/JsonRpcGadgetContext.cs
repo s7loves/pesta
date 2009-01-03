@@ -20,17 +20,17 @@
 using System;
 using System.Collections.Generic;
 using Jayrock.Json;
-using Locale=java.util.Locale;
+using Pesta.Interop;
 using URI = System.Uri;
 
-namespace Pesta
+namespace Pesta.Engine.gadgets.servlet
 {
     /// <summary>
     /// Summary description for JsonRpcGadgetContext
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class JsonRpcGadgetContext : GadgetContext
@@ -232,5 +232,5 @@ namespace Pesta
             }
             return new UserPrefs(p);
         }
-    } 
+    }
 }

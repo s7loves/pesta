@@ -19,19 +19,17 @@
 #endregion
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using System.Web;
 using com.google.caja.lexer;
+using Uri=Pesta.Engine.common.uri.Uri;
 
-namespace Pesta
+namespace Pesta.Engine.gadgets.rewrite.lexer
 {
     /// <summary>
     /// Summary description for HtmlRewriter
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class HtmlRewriter
@@ -48,7 +46,7 @@ namespace Pesta
         }
 
         public static void rewrite(java.io.Reader content, Uri source,
-            Dictionary<String, HtmlTagTransformer> transformers, java.io.Writer writer)
+                                   Dictionary<String, HtmlTagTransformer> transformers, java.io.Writer writer)
         {
             CharProducer producer = CharProducer.Factory.create(content, new InputSource(new java.net.URI(source.ToString())));
             HtmlLexer lexer = new HtmlLexer(producer);
@@ -135,5 +133,5 @@ namespace Pesta
         {
             return "";
         }
-    } 
+    }
 }

@@ -18,18 +18,20 @@
  */
 #endregion
 using System;
-using System.Data;
-using System.Configuration;
 using System.Web;
+using Pesta.Engine.common;
+using Pesta.Engine.gadgets.http;
+using Uri=Pesta.Engine.common.uri.Uri;
+using UriBuilder=Pesta.Engine.common.uri.UriBuilder;
 
-namespace Pesta
+namespace Pesta.Engine.gadgets.servlet
 {
     /// <summary>
     /// Summary description for ProxyBase
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public abstract class ProxyBase
@@ -98,8 +100,8 @@ namespace Pesta
                 if (!"http".Equals(url.getScheme()) && !"https".Equals(url.getScheme()))
                 {
                     throw new GadgetException(GadgetException.Code.INVALID_PARAMETER,
-                                "Invalid request url scheme in url: " + HttpUtility.UrlEncode(urlToValidate) +
-                                "; only \"http\" and \"https\" supported.");
+                                              "Invalid request url scheme in url: " + HttpUtility.UrlEncode(urlToValidate) +
+                                              "; only \"http\" and \"https\" supported.");
                 }
                 if (url.getPath() == null || url.getPath().Length == 0)
                 {
@@ -118,5 +120,5 @@ namespace Pesta
            */
         abstract public void fetch(HttpRequestWrapper request, HttpResponseWrapper response);
 
-    } 
+    }
 }

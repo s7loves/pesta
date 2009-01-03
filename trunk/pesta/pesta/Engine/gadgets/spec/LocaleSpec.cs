@@ -20,16 +20,17 @@
 using System;
 using System.Text;
 using System.Xml;
-using URI = System.Uri;
+using Pesta.Engine.common.xml;
+using Uri=Pesta.Engine.common.uri.Uri;
 
-namespace Pesta
+namespace Pesta.Engine.gadgets.spec
 {
     /// <summary>
     /// Summary description for LocaleSpec
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class LocaleSpec
@@ -83,15 +84,15 @@ namespace Pesta
         {
             StringBuilder buf = new StringBuilder();
             buf.Append("<Locale")
-               .Append(" lang='").Append(language).Append('\'')
-               .Append(" country='").Append(country).Append('\'')
-               .Append(" language_direction='").Append(languageDirection).Append('\'')
-               .Append(" messages='").Append(messages).Append("'>\n");
+                .Append(" lang='").Append(language).Append('\'')
+                .Append(" country='").Append(country).Append('\'')
+                .Append(" language_direction='").Append(languageDirection).Append('\'')
+                .Append(" messages='").Append(messages).Append("'>\n");
             foreach (var entry in messageBundle.getMessages())
             {
                 buf.Append("<msg name='").Append(entry.Key).Append("'>")
-                     .Append(entry.Value)
-                     .Append("</msg>\n");
+                    .Append(entry.Value)
+                    .Append("</msg>\n");
             }
             buf.Append("</Locale>");
             return buf.ToString();
@@ -109,7 +110,7 @@ namespace Pesta
             country = XmlUtil.getAttribute(element, "country", "ALL").ToUpper();
             languageDirection = XmlUtil.getAttribute(element, "language_direction", "ltr");
             if (!("ltr".Equals(languageDirection) ||
-                "rtl".Equals(languageDirection)))
+                  "rtl".Equals(languageDirection)))
             {
                 throw new SpecParserException(
                     "Locale@language_direction must be ltr or rtl");
@@ -142,5 +143,5 @@ namespace Pesta
             }
             messageBundle = new MessageBundle(element);
         }
-    } 
+    }
 }

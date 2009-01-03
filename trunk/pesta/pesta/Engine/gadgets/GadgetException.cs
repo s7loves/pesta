@@ -17,102 +17,103 @@
  * specific language governing permissions and limitations under the License.
  */
 #endregion
-using System.Collections.Generic;
-using System.Collections;
+
 using System;
 
-/// <summary>
-/// Base class for all Gadget exceptions. The bulk of the code uses
-/// this class directly, differentiating between error conditions by
-/// the Code enumeration.
-/// </summary>
-/// <remarks>
-/// <para>
-///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
-/// </para>
-/// </remarks>
-[Serializable]
-public class GadgetException : Exception 
+namespace Pesta.Engine.gadgets
 {
-    public enum Code 
+    /// <summary>
+    /// Base class for all Gadget exceptions. The bulk of the code uses
+    /// this class directly, differentiating between error conditions by
+    /// the Code enumeration.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    ///  Apache Software License 2.0 2008 Shindig
+    /// </para>
+    /// </remarks>
+    [Serializable]
+    public class GadgetException : Exception
     {
-        // Catch-all for internal errors
-        INTERNAL_SERVER_ERROR,
+        public enum Code
+        {
+            // Catch-all for internal errors
+            INTERNAL_SERVER_ERROR,
 
-        // Configuration errors
-        INVALID_PATH,
-        INVALID_CONFIG,
+            // Configuration errors
+            INVALID_PATH,
+            INVALID_CONFIG,
 
-        // User-data related errors.
-        INVALID_USER_DATA,
-        INVALID_SECURITY_TOKEN,
+            // User-data related errors.
+            INVALID_USER_DATA,
+            INVALID_SECURITY_TOKEN,
 
-        // General xml
-        EMPTY_XML_DOCUMENT,
-        MALFORMED_XML_DOCUMENT,
+            // General xml
+            EMPTY_XML_DOCUMENT,
+            MALFORMED_XML_DOCUMENT,
 
-        // HTTP errors
-        FAILED_TO_RETRIEVE_CONTENT,
+            // HTTP errors
+            FAILED_TO_RETRIEVE_CONTENT,
 
-        // Feature-related errors
-        UNSUPPORTED_FEATURE,
+            // Feature-related errors
+            UNSUPPORTED_FEATURE,
 
-        // General error, should be accompanied by message
-        INVALID_PARAMETER,
-        MISSING_PARAMETER,
-        UNRECOGNIZED_PARAMETER,
+            // General error, should be accompanied by message
+            INVALID_PARAMETER,
+            MISSING_PARAMETER,
+            UNRECOGNIZED_PARAMETER,
 
-        // Interface component errors.
-        MISSING_FEATURE_REGISTRY,
-        MISSING_MESSAGE_BUNDLE_CACHE,
-        MISSING_REMOTE_OBJECT_FETCHER,
-        MISSING_SPEC_CACHE,
+            // Interface component errors.
+            MISSING_FEATURE_REGISTRY,
+            MISSING_MESSAGE_BUNDLE_CACHE,
+            MISSING_REMOTE_OBJECT_FETCHER,
+            MISSING_SPEC_CACHE,
 
-        // Caja error
-        MALFORMED_FOR_SAFE_INLINING,
+            // Caja error
+            MALFORMED_FOR_SAFE_INLINING,
 
-        // Parsing errors
-        CSS_PARSE_ERROR,
-        HTML_PARSE_ERROR,
-        JS_PARSE_ERROR,
+            // Parsing errors
+            CSS_PARSE_ERROR,
+            HTML_PARSE_ERROR,
+            JS_PARSE_ERROR,
 
-        // View errors
-        UNKNOWN_VIEW_SPECIFIED,
+            // View errors
+            UNKNOWN_VIEW_SPECIFIED,
 
-        // Blacklisting
-        BLACKLISTED_GADGET,
+            // Blacklisting
+            BLACKLISTED_GADGET,
 
-        // OAuth
-        OAUTH_STORAGE_ERROR,
-        OAUTH_APPROVAL_NEEDED,
+            // OAuth
+            OAUTH_STORAGE_ERROR,
+            OAUTH_APPROVAL_NEEDED,
 
-        // Signed fetch
-        REQUEST_SIGNING_FAILURE,
-    }
+            // Signed fetch
+            REQUEST_SIGNING_FAILURE,
+        }
 
-    private readonly GadgetException.Code code;
+        private readonly GadgetException.Code code;
 
-    public GadgetException(GadgetException.Code code) 
-    {
-        this.code = code;
-    }
+        public GadgetException(GadgetException.Code code)
+        {
+            this.code = code;
+        }
 
-    public GadgetException(GadgetException.Code code, Exception cause)
-        : base(cause.Message, cause)
-    {
-        this.code = code;
-    }
+        public GadgetException(GadgetException.Code code, Exception cause)
+            : base(cause.Message, cause)
+        {
+            this.code = code;
+        }
 
-    public GadgetException(GadgetException.Code code, String msg, Exception cause)
-        : base(msg, cause) 
-    {
-        this.code = code;
-    }
+        public GadgetException(GadgetException.Code code, String msg, Exception cause)
+            : base(msg, cause)
+        {
+            this.code = code;
+        }
 
-    public GadgetException(GadgetException.Code code, String msg)
-        : base(msg) 
-    {
-        this.code = code;
+        public GadgetException(GadgetException.Code code, String msg)
+            : base(msg)
+        {
+            this.code = code;
+        }
     }
 }
-

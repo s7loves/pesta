@@ -20,17 +20,17 @@
 using System;
 using System.Xml;
 using System.Collections.Generic;
-
 using System.Text;
+using Uri=Pesta.Engine.common.uri.Uri;
 
-namespace Pesta
+namespace Pesta.Engine.gadgets.spec
 {
     /// <summary>
     /// Summary description for OAuthSpec
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class OAuthSpec
@@ -76,11 +76,11 @@ namespace Pesta
                 sb.Append(service.getRequestUrl().ToString("Request"));
                 sb.Append(service.getAccessUrl().ToString("Access"));
                 sb.Append("<Authorization url='" +
-                service.getAuthorizationUrl().ToString() + "'/>");
+                          service.getAuthorizationUrl().ToString() + "'/>");
                 sb.Append("</Service>");
             }
             sb.Append("</OAuth>");
             return sb.ToString();
         }
-    } 
+    }
 }

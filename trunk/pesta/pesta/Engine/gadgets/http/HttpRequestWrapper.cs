@@ -18,19 +18,17 @@
  */
 #endregion
 using System;
-using System.Data;
-using System.Configuration;
 using System.Web;
 using System.Collections.Specialized;
 
-namespace Pesta
+namespace Pesta.Engine.gadgets.http
 {
     /// <summary>
     /// Summary description for RequestWrapper
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class HttpRequestWrapper
@@ -79,5 +77,5 @@ namespace Pesta
             }
             return entry[0];
         }
-    } 
+    }
 }

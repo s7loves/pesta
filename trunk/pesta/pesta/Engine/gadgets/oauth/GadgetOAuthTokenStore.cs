@@ -18,20 +18,20 @@
  */
 #endregion
 using System;
-using System.Data;
-using System.Configuration;
 using System.Text;
-using System.Web;
+using Pesta.Engine.auth;
+using Pesta.Engine.gadgets.spec;
+using Pesta.Interop.oauth;
 using URI = System.Uri;
 
-namespace Pesta
+namespace Pesta.Engine.gadgets.oauth
 {
     /// <summary>
     /// Summary description for GadgetOAuthTokenStore
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class GadgetOAuthTokenStore
@@ -66,7 +66,7 @@ namespace Pesta
          * and secret for that.  Signed fetch always sticks the parameters in the query string.
          */
         public AccessorInfo getOAuthAccessor(SecurityToken securityToken,
-                                                OAuthArguments arguments, OAuthClientState clientState)
+                                             OAuthArguments arguments, OAuthClientState clientState)
         {
             AccessorInfoBuilder accessorBuilder = new AccessorInfoBuilder();
 
@@ -85,14 +85,14 @@ namespace Pesta
 
             // What consumer key/secret should we use?
             OAuthStore.ConsumerInfo consumer = store.getConsumerKeyAndSecret(
-                                        securityToken, arguments.ServiceName, provider);
+                securityToken, arguments.ServiceName, provider);
             accessorBuilder.setConsumer(consumer);
 
             // Should we use the OAuth access token?  We never do this unless the client allows it, and
             // if owner == viewer.
             if (arguments.MayUseToken()
-                    && securityToken.getOwnerId() != null
-                    && securityToken.getViewerId().Equals(securityToken.getOwnerId()))
+                && securityToken.getOwnerId() != null
+                && securityToken.getViewerId().Equals(securityToken.getOwnerId()))
             {
                 lookupToken(securityToken, consumer, arguments, clientState, accessorBuilder);
             }
@@ -104,7 +104,7 @@ namespace Pesta
          * Lookup information contained in the gadget spec.
          */
         private OAuthServiceProvider lookupSpecInfo(SecurityToken securityToken, OAuthArguments arguments,
-                                                        AccessorInfoBuilder accessorBuilder)
+                                                    AccessorInfoBuilder accessorBuilder)
         {
             GadgetSpec spec = findSpec(securityToken, arguments);
             OAuthSpec oauthSpec = spec.getModulePrefs().getOAuthSpec();
@@ -123,9 +123,9 @@ namespace Pesta
             accessorBuilder.setParameterLocation(getStoreLocation(service.getRequestUrl().location));
             accessorBuilder.setMethod(getStoreMethod(service.getRequestUrl().method));
             OAuthServiceProvider provider = new OAuthServiceProvider(
-                                                    service.getRequestUrl().url.ToString(),
-                                                    service.getAuthorizationUrl().ToString(),
-                                                    service.getAccessUrl().url.ToString());
+                service.getRequestUrl().url.ToString(),
+                service.getAuthorizationUrl().ToString(),
+                service.getAccessUrl().url.ToString());
             return provider;
         }
 
@@ -147,7 +147,7 @@ namespace Pesta
          * @throws GadgetException 
          */
         private void lookupToken(SecurityToken securityToken, OAuthStore.ConsumerInfo consumerInfo,
-                OAuthArguments arguments, OAuthClientState clientState, AccessorInfoBuilder accessorBuilder)
+                                 OAuthArguments arguments, OAuthClientState clientState, AccessorInfoBuilder accessorBuilder)
         {
             if (clientState.getRequestToken() != null)
             {
@@ -165,7 +165,7 @@ namespace Pesta
             {
                 // No useful client-side state, check persistent storage
                 OAuthStore.TokenInfo tokenInfo = store.getTokenInfo(securityToken, consumerInfo,
-                arguments.ServiceName, arguments.TokenName);
+                                                                    arguments.ServiceName, arguments.TokenName);
                 if (tokenInfo != null && tokenInfo.getAccessToken() != null)
                 {
                     // We have an access token in persistent storage, use that.
@@ -197,7 +197,7 @@ namespace Pesta
                 return AccessorInfo.OAuthParamLocation.POST_BODY;
             }
             throw new GadgetException(GadgetException.Code.INTERNAL_SERVER_ERROR,
-                            "Unknown parameter location " + location);
+                                      "Unknown parameter location " + location);
         }
 
         private AccessorInfo.HttpMethod getStoreMethod(OAuthService.Method method)
@@ -211,7 +211,7 @@ namespace Pesta
                 return AccessorInfo.HttpMethod.POST;
             }
             throw new GadgetException(GadgetException.Code.INTERNAL_SERVER_ERROR,
-                            "Unknown method " + method);
+                                      "Unknown method " + method);
         }
 
         private GadgetSpec findSpec(SecurityToken securityToken, OAuthArguments arguments)
@@ -219,7 +219,7 @@ namespace Pesta
             try
             {
                 return specFactory.getGadgetSpec(new URI(securityToken.getAppUrl()),
-                                    arguments.BypassSpecCache);
+                                                 arguments.BypassSpecCache);
             }
             catch (UriFormatException e)
             {
@@ -230,11 +230,11 @@ namespace Pesta
         private GadgetException serviceNotFoundEx(SecurityToken securityToken, OAuthSpec oauthSpec, String serviceName)
         {
             StringBuilder message = new StringBuilder()
-                        .Append("Spec for gadget ")
-                        .Append(securityToken.getAppUrl())
-                        .Append(" does not contain OAuth service ")
-                        .Append(serviceName)
-                        .Append(".  Known services: ");
+                .Append("Spec for gadget ")
+                .Append(securityToken.getAppUrl())
+                .Append(" does not contain OAuth service ")
+                .Append(serviceName)
+                .Append(".  Known services: ");
             string[] temp = new string[oauthSpec.getServices().Keys.Count];
             oauthSpec.getServices().Keys.CopyTo(temp, 0);
             message.Append(String.Join(",", temp));
@@ -244,9 +244,9 @@ namespace Pesta
         private GadgetException oauthNotFoundEx(SecurityToken securityToken)
         {
             StringBuilder message = new StringBuilder()
-                        .Append("Spec for gadget ")
-                        .Append(securityToken.getAppUrl())
-                        .Append(" does not contain OAuth element.");
+                .Append("Spec for gadget ")
+                .Append(securityToken.getAppUrl())
+                .Append(" does not contain OAuth element.");
             return new UserVisibleOAuthException(message.ToString());
         }
 
@@ -254,10 +254,10 @@ namespace Pesta
          * Store an access token for the given user/gadget/service/token name
          */
         public void storeTokenKeyAndSecret(SecurityToken securityToken, OAuthStore.ConsumerInfo consumerInfo,
-                                    OAuthArguments arguments, OAuthStore.TokenInfo tokenInfo)
+                                           OAuthArguments arguments, OAuthStore.TokenInfo tokenInfo)
         {
             store.setTokenInfo(securityToken, consumerInfo, arguments.ServiceName,
-                                arguments.TokenName, tokenInfo);
+                               arguments.TokenName, tokenInfo);
         }
 
         /**
@@ -267,5 +267,5 @@ namespace Pesta
         {
             store.removeToken(securityToken, consumerInfo, arguments.ServiceName, arguments.TokenName);
         }
-    } 
+    }
 }

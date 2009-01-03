@@ -20,18 +20,19 @@
 using System;
 using System.Xml;
 using System.Collections.Generic;
-using Locale = java.util.Locale;
-
 using System.Text;
+using Pesta.Engine.gadgets.variables;
+using Pesta.Interop;
+using Uri=Pesta.Engine.common.uri.Uri;
 
-namespace Pesta
+namespace Pesta.Engine.gadgets.spec
 {
     /// <summary>
     /// Summary description for ModulePrefs
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class ModulePrefs
@@ -336,7 +337,7 @@ namespace Pesta
             int valInt = 0;
             if (value != null)
             {
-               int.TryParse(value, out valInt);
+                int.TryParse(value, out valInt);
             }
             return valInt;
         }
@@ -607,9 +608,6 @@ namespace Pesta
         void visit(XmlElement element);
     }
 
-    /**
-     * Processes ModulePrefs/Preload into a list.
-     */
     class PreloadVisitor : ElementVisitor
     {
         public List<Preload> preloaded;
@@ -632,9 +630,6 @@ namespace Pesta
         }
     }
 
-    /**
-     * Process ModulePrefs/OAuth
-     */
     class OAuthVisitor : ElementVisitor
     {
         Uri _base = null;
@@ -657,9 +652,6 @@ namespace Pesta
         }
     }
 
-    /**
-     * Processes ModulePrefs/Require and ModulePrefs/Optional
-     */
     class FeatureVisitor : ElementVisitor
     {
         Uri _base = null;
@@ -678,9 +670,6 @@ namespace Pesta
         }
     }
 
-    /**
-     * Processes ModulePrefs/Icon
-     */
     class IconVisitor : ElementVisitor
     {
         Uri _base = null;
@@ -698,9 +687,6 @@ namespace Pesta
         }
     }
 
-    /**
-     * Process ModulePrefs/Locale
-     */
     class LocaleVisitor : ElementVisitor
     {
         Uri _base = null;
@@ -719,9 +705,6 @@ namespace Pesta
         }
     }
 
-    /**
-     * Process ModulePrefs/Link
-     */
     class LinkVisitor : ElementVisitor
     {
         Uri _base = null;
@@ -739,5 +722,5 @@ namespace Pesta
         {
             _base = url;
         }
-    } 
+    }
 }
