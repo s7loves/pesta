@@ -146,7 +146,7 @@ namespace Pesta.Engine.gadgets
             {
                 // TODO: Locked domain support.
                 Uri iframeBaseUri;
-                uri = !iframeBaseUris.TryGetValue(context.getContainer(), out iframeBaseUri) ? new UriBuilder(iframeBaseUri) : new UriBuilder();
+                uri = iframeBaseUris.TryGetValue(context.getContainer(), out iframeBaseUri) ? new UriBuilder(iframeBaseUri) : new UriBuilder();
                 String host = lockedDomainService.getLockedDomainForGadget(spec, context.getContainer());
                 if (host != null) 
                 {

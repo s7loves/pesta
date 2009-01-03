@@ -43,7 +43,7 @@ namespace Pesta.Engine.gadgets
             LocaleSpec localeSpec = spec.getModulePrefs().getLocale(locale);
             if (localeSpec == null)
             {
-                return parent == null ? MessageBundle.EMPTY : parent;
+                return parent ?? MessageBundle.EMPTY;
             }
             Uri messages = localeSpec.getMessages();
             if (messages == null || messages.ToString().Length == 0)

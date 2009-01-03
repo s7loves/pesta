@@ -47,14 +47,14 @@ namespace Pesta.Engine.gadgets.variables
             public Type(int key, string value)
                 : base(key, value)
             {
-                this.prefix = "__" + value + '_';
+                prefix = "__" + value + '_';
             }
             public static readonly Type MESSAGE = new Type(1, "MSG");
             public static readonly Type BIDI = new Type(2, "BIDI");
             public static readonly Type USER_PREF = new Type(3, "UP");
             public static readonly Type MODULE = new Type(4, "MODULE");
 
-            private String prefix;
+            private readonly String prefix;
             public String getPrefix()
             {
                 return prefix;
@@ -65,7 +65,7 @@ namespace Pesta.Engine.gadgets.variables
             }
         }
 
-        private Dictionary<Substitutions.Type, Dictionary<String, String>> substitutions;
+        private readonly Dictionary<Type, Dictionary<String, String>> substitutions;
 
         /// <summary>
         /// Create a basic substitution coordinator.
@@ -73,9 +73,9 @@ namespace Pesta.Engine.gadgets.variables
         ///
         public Substitutions()
         {
-            this.substitutions = new Dictionary<Type, Dictionary<string, string>>();
+            substitutions = new Dictionary<Type, Dictionary<string, string>>();
             /* foreach */
-            foreach (Substitutions.Type type in Substitutions.Type.GetValues())
+            foreach (Type type in Type.GetValues())
             {
                 substitutions.Add(type, new Dictionary<String, String>());
             }
@@ -87,9 +87,9 @@ namespace Pesta.Engine.gadgets.variables
         /// <param name="type"></param>
         /// <param name="key"></param>
         /// <param name="value"></param>
-        public void addSubstitution(Substitutions.Type type, String key, String value_ren)
+        public void addSubstitution(Type type, String key, String value)
         {
-            substitutions[type].Add(key, value_ren);
+            substitutions[type].Add(key, value);
         }
 
         /// <summary>
@@ -98,7 +98,7 @@ namespace Pesta.Engine.gadgets.variables
         ///
         /// <param name="type"></param>
         /// <param name="entries"></param>
-        public void addSubstitutions(Substitutions.Type type, Dictionary<string, string> entries)
+        public void addSubstitutions(Type type, Dictionary<string, string> entries)
         {
             foreach (var entry in entries)
             {
@@ -110,7 +110,7 @@ namespace Pesta.Engine.gadgets.variables
         /// <param name="type"></param>
         /// <param name="name"></param>
         /// <returns>The substitution set under the given type / name, or null.</returns>
-        public String getSubstitution(Substitutions.Type type, String name)
+        public String getSubstitution(Type type, String name)
         {
             return substitutions[type][name];
         }
@@ -124,7 +124,7 @@ namespace Pesta.Engine.gadgets.variables
         /// <param name="type">The type you wish to perform substitutions for.</param>
         /// <param name="input">The base string, with substitution markers.</param>
         /// <returns>The substituted string.</returns>
-        public String substituteString(Substitutions.Type type, String input)
+        public String substituteString(Type type, String input)
         {
             if (input == null)
             {
@@ -134,7 +134,7 @@ namespace Pesta.Engine.gadgets.variables
             if (type == null)
             {
                 /* foreach */
-                foreach (Substitutions.Type t in Substitutions.Type.GetValues())
+                foreach (Type t in Type.GetValues())
                 {
                     input = substituteString(t, input);
                 }
@@ -168,7 +168,7 @@ namespace Pesta.Engine.gadgets.variables
                     if (end != -1)
                     {
                         String name = input.Substring(start, length);
-                        String replacement = (string)(substitutions[type][name]);
+                        String replacement = substitutions[type][name];
                         if (replacement != null)
                         {
                             output.Append(replacement);
@@ -213,7 +213,7 @@ namespace Pesta.Engine.gadgets.variables
             {
                 return Uri.parse(substituteString(type, uri.ToString()));
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return Uri.parse("");
             }

@@ -154,17 +154,14 @@ namespace Pesta.Engine.gadgets.rewrite.lexer
                 HtmlRewriter.rewrite(reader, source, transformerMap, writer);
                 return true;
             }
-            else if (isCSS(mimeType))
+            if (isCSS(mimeType))
             {
                 if (ProxyUrl != null)
                 {
                     CssRewriter.rewrite(reader, source, CreateLinkRewriter(spec, rewriterFeature), writer, false);
                     return true;
                 }
-                else
-                {
-                    return false;
-                }
+                return false;
             }
             return false;
         }
@@ -187,28 +184,20 @@ namespace Pesta.Engine.gadgets.rewrite.lexer
                 {
                     return HttpRuntime.AppDomainAppVirtualPath + "/gadgets/proxy.ashx?url=";
                 }
-                else
-                {
-                    return "/gadgets/proxy.ashx?url=";
-                }
-                
+                return "/gadgets/proxy.ashx?url=";
             }
         }
 
 
         protected String ConcatUrl
         {
-            get 
+            get
             {
                 if (!HttpRuntime.AppDomainAppVirtualPath.Equals("/"))
                 {
                     return HttpRuntime.AppDomainAppVirtualPath + "/gadgets/concat.ashx?"; 
                 }
-                else
-                {
-                    return "/gadgets/concat.ashx?"; 
-                }
-                
+                return "/gadgets/concat.ashx?";
             }
         }
 
