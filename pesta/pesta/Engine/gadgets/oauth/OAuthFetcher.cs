@@ -18,17 +18,18 @@
  */
 #endregion
 using System.Collections.Generic;
-using System.Collections;
-using System.Web;
 using System.IO;
-using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System;
+using Pesta.Engine.auth;
+using Pesta.Engine.gadgets.http;
+using Pesta.Interop.oauth;
+using Uri=Pesta.Engine.common.uri.Uri;
+using UriBuilder=Pesta.Engine.common.uri.UriBuilder;
 
-namespace Pesta
+namespace Pesta.Engine.gadgets.oauth
 {
-
     /// <summary>
     /// Implements both signed fetch and full OAuth for gadgets, as well as a combination of the two that
     /// is necessary to build OAuth enabled gadgets for social sites.
@@ -43,7 +44,7 @@ namespace Pesta
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class OAuthFetcher : ChainedContentFetcher
@@ -171,7 +172,7 @@ namespace Pesta
             if (response == null)
             {
                 throw new GadgetException(GadgetException.Code.INTERNAL_SERVER_ERROR,
-                            "No response for OAuth fetch to " + realRequest.Uri);
+                                          "No response for OAuth fetch to " + realRequest.Uri);
             }
             return HttpCache.addResponse(cacheKey, request, response);
         }
@@ -226,7 +227,7 @@ namespace Pesta
             if (pe.startFromScratch)
             {
                 fetcherConfig.getTokenStore().removeToken(realRequest.SecurityToken,
-                accessorInfo.getConsumer(), realRequest.OAuthArguments);
+                                                          accessorInfo.getConsumer(), realRequest.OAuthArguments);
                 accessorInfo.getAccessor().accessToken = null;
                 accessorInfo.getAccessor().requestToken = null;
                 accessorInfo.getAccessor().tokenSecret = null;
@@ -265,8 +266,8 @@ namespace Pesta
         private bool needApproval()
         {
             return (realRequest.OAuthArguments.MustUseToken()
-                        && accessorInfo.getAccessor().requestToken == null
-                        && accessorInfo.getAccessor().accessToken == null);
+                    && accessorInfo.getAccessor().requestToken == null
+                    && accessorInfo.getAccessor().accessToken == null);
         }
 
         /**
@@ -287,7 +288,7 @@ namespace Pesta
             if (stateOwner != null && !stateOwner.Equals(pageOwner))
             {
                 throw new GadgetException(GadgetException.Code.INTERNAL_SERVER_ERROR,
-                        "Client state belongs to a different person.");
+                                          "Client state belongs to a different person.");
             }
         }
 
@@ -348,8 +349,8 @@ namespace Pesta
         {
             String canonParamName = paramName.ToLower();
             return (!(canonParamName.StartsWith("oauth") ||
-                    canonParamName.StartsWith("xoauth") ||
-                    canonParamName.StartsWith("opensocial")) &&
+                      canonParamName.StartsWith("xoauth") ||
+                      canonParamName.StartsWith("opensocial")) &&
                     ALLOWED_PARAM_NAME.IsMatch(canonParamName));
         }
 
@@ -453,7 +454,7 @@ namespace Pesta
             try
             {
                 OAuthMessage signed = accessorInfo.getAccessor().newRequestMessage(
-                                                basereq.getMethod(), target.ToString(), parameters);
+                    basereq.getMethod(), target.ToString(), parameters);
                 sRequest oauthHttpRequest = createHttpRequest(basereq, selectOAuthParams(signed));
                 // Following 302s on OAuth responses is unlikely to be productive.
                 oauthHttpRequest.FollowRedirects = false;
@@ -495,8 +496,8 @@ namespace Pesta
                     if (!OAuth.isFormEncoded(contentType))
                     {
                         throw new UserVisibleOAuthException(
-                                "OAuth param location can only be post_body if post body if of " +
-                                "type x-www-form-urlencoded");
+                            "OAuth param location can only be post_body if post body if of " +
+                            "type x-www-form-urlencoded");
                     }
                     String oauthData = OAuth.formEncode(oauthParams);
                     if (result.getPostBodyLength() == 0)
@@ -576,7 +577,7 @@ namespace Pesta
             // the user experience, but that's too complex for now.
             OAuthAccessor accessor = accessorInfo.getAccessor();
             StringBuilder azn = new StringBuilder(
-                                    accessor.consumer.serviceProvider.userAuthorizationURL);
+                accessor.consumer.serviceProvider.userAuthorizationURL);
             if (azn.ToString().IndexOf("?") == -1)
             {
                 azn.Append('?');
@@ -603,8 +604,8 @@ namespace Pesta
         private bool needAccessToken()
         {
             return (realRequest.OAuthArguments.MustUseToken()
-                && accessorInfo.getAccessor().requestToken != null
-                && accessorInfo.getAccessor().accessToken == null);
+                    && accessorInfo.getAccessor().requestToken != null
+                    && accessorInfo.getAccessor().accessToken == null);
         }
 
         /**
@@ -654,7 +655,7 @@ namespace Pesta
             OAuthAccessor accessor = accessorInfo.getAccessor();
             OAuthStore.TokenInfo tokenInfo = new OAuthStore.TokenInfo(accessor.accessToken, accessor.tokenSecret);
             fetcherConfig.getTokenStore().storeTokenKeyAndSecret(realRequest.SecurityToken,
-            accessorInfo.getConsumer(), realRequest.OAuthArguments, tokenInfo);
+                                                                 accessorInfo.getConsumer(), realRequest.OAuthArguments, tokenInfo);
         }
 
         /**
@@ -776,5 +777,5 @@ namespace Pesta
             key = key.ToLower();
             return key.StartsWith("oauth") || key.StartsWith("xoauth") || key.StartsWith("opensocial");
         }
-    } 
+    }
 }

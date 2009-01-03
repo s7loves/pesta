@@ -21,16 +21,19 @@ using System;
 using System.Collections.Generic;
 using Jayrock.Json;
 using Jayrock.Json.Conversion;
+using Pesta.Engine.auth;
+using Pesta.Interop.oauth;
+using Pesta.Interop.oauth.signature;
 using URI = System.Uri;
 
-namespace Pesta
+namespace Pesta.Engine.gadgets.oauth
 {
     /// <summary>
     /// Summary description for BasicOAuthStore
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class BasicOAuthStore : OAuthStore
@@ -159,7 +162,7 @@ namespace Pesta
             if (cks == null)
             {
                 throw new GadgetException(GadgetException.Code.INTERNAL_SERVER_ERROR,
-                        "No key for gadget " + securityToken.getAppUrl() + " and service " + serviceName);
+                                          "No key for gadget " + securityToken.getAppUrl() + " and service " + serviceName);
             }
             OAuthConsumer consumer = null;
             if (cks.keyType == BasicOAuthStoreConsumerKeyAndSecret.KeyType.RSA_PRIVATE)
@@ -191,7 +194,7 @@ namespace Pesta
         }
 
         public override TokenInfo getTokenInfo(SecurityToken securityToken, ConsumerInfo consumerInfo,
-                                            String serviceName, String tokenName)
+                                               String serviceName, String tokenName)
         {
             ++accessTokenLookupCount;
             BasicOAuthStoreTokenIndex tokenKey = makeBasicOAuthStoreTokenIndex(securityToken, serviceName, tokenName);
@@ -199,7 +202,7 @@ namespace Pesta
         }
 
         public override void setTokenInfo(SecurityToken securityToken, ConsumerInfo consumerInfo,
-                                    String serviceName, String tokenName, TokenInfo tokenInfo)
+                                          String serviceName, String tokenName, TokenInfo tokenInfo)
         {
             ++accessTokenAddCount;
             BasicOAuthStoreTokenIndex tokenKey = makeBasicOAuthStoreTokenIndex(securityToken, serviceName, tokenName);
@@ -232,5 +235,5 @@ namespace Pesta
         {
             return accessTokenRemoveCount;
         }
-    } 
+    }
 }

@@ -18,64 +18,68 @@
  */
 #endregion
 using System;
+using Pesta.Engine.social.model;
 
-/// <summary>
-/// Summary description for MessageImpl
-/// </summary>
-/// <remarks>
-/// <para>
-///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
-/// </para>
-/// </remarks>
-public class MessageImpl : Message
+namespace Pesta.Engine.social.core.model
 {
-    private String body;
-    private String title;
-    private Type type;
-
-    public MessageImpl()
+    /// <summary>
+    /// Summary description for MessageImpl
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    ///  Apache Software License 2.0 2008 Shindig
+    /// </para>
+    /// </remarks>
+    public class MessageImpl : Message
     {
-    }
+        private String body;
+        private String title;
+        private Type type;
 
-    public MessageImpl(String initBody, String initTitle, Type initType)
-    {
-        this.body = initBody;
-        this.title = initTitle;
-        this.type = initType;
-    }
+        public MessageImpl()
+        {
+        }
 
-    public override String getBody()
-    {
-        return this.body;
-    }
+        public MessageImpl(String initBody, String initTitle, Type initType)
+        {
+            this.body = initBody;
+            this.title = initTitle;
+            this.type = initType;
+        }
 
-    public override void setBody(String newBody)
-    {
-        this.body = newBody;
-    }
+        public override String getBody()
+        {
+            return this.body;
+        }
 
-    public override String getTitle()
-    {
-        return this.title;
-    }
+        public override void setBody(String newBody)
+        {
+            this.body = newBody;
+        }
 
-    public override void setTitle(String newTitle)
-    {
-        this.title = newTitle;
-    }
+        public override String getTitle()
+        {
+            return this.title;
+        }
 
-    public override Type getType()
-    {
-        return type;
-    }
+        public override void setTitle(String newTitle)
+        {
+            this.title = newTitle;
+        }
 
-    public override void setType(Type newType)
-    {
-        this.type = newType;
-    }
+        public override Type getType()
+        {
+            return type;
+        }
 
-    public override String sanitizeHTML(String htmlStr)
-    {
-        return htmlStr;
+        public override void setType(Type newType)
+        {
+            this.type = newType;
+        }
+
+        public override String sanitizeHTML(String htmlStr)
+        {
+            return htmlStr;
+        }
     }
 }

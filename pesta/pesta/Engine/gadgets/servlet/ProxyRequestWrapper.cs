@@ -18,19 +18,19 @@
  */
 #endregion
 using System;
-using System.Data;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Web;
+using Pesta.Engine.gadgets.http;
 
-namespace Pesta
+namespace Pesta.Engine.gadgets.servlet
 {
     /// <summary>
     /// Summary description for ProxyRequestWrapper
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class ProxyRequestWrapper : HttpRequestWrapper
@@ -54,7 +54,7 @@ namespace Pesta
                 while (paramMatcher.NextMatch() != null)
                 {
                     extractedParameters.Add(HttpUtility.UrlDecode(paramMatcher.Groups[1].Value),
-                        HttpUtility.UrlDecode(paramMatcher.Groups[2].Value));
+                                            HttpUtility.UrlDecode(paramMatcher.Groups[2].Value));
                 }
 
                 extractedParameters.Add(ProxyHandler.URL_PARAM, chainedMatcher.Groups[2].Value);
@@ -84,5 +84,5 @@ namespace Pesta
                 return base.getParameter(name);
             }
         }
-    } 
+    }
 }

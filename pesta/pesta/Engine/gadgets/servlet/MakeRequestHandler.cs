@@ -18,22 +18,24 @@
  */
 #endregion
 using System;
-using System.Data;
-using System.Configuration;
 using System.Web;
 using System.Net;
-using org.apache.shindig.gadgets;
 using Jayrock.Json;
 using System.Text;
+using Pesta.Engine.auth;
+using Pesta.Engine.gadgets.http;
+using Pesta.Engine.gadgets.oauth;
+using Pesta.Engine.gadgets.rewrite;
+using Uri=Pesta.Engine.common.uri.Uri;
 
-namespace Pesta
+namespace Pesta.Engine.gadgets.servlet
 {
     /// <summary>
     /// Summary description for MakeRequestHandler
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class MakeRequestHandler : ProxyBase
@@ -185,7 +187,5 @@ namespace Pesta
             int numEntries = int.Parse(getParameter(req, NUM_ENTRIES_PARAM, DEFAULT_NUM_ENTRIES));
             return new FeedProcessor().process(url, xml, getSummaries, numEntries).ToString();
         }
-
-        
-    } 
+    }
 }

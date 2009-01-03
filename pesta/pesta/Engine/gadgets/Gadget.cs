@@ -18,14 +18,17 @@
  */
 #endregion
 
-namespace Pesta
+using Pesta.Engine.gadgets.preload;
+using Pesta.Engine.gadgets.spec;
+
+namespace Pesta.Engine.gadgets
 {
     /// <summary>
     /// 
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class Gadget
@@ -102,6 +105,5 @@ namespace Pesta
             return spec.getModulePrefs().getLocale(context.getLocale());
         }
 
-    } 
+    }
 }
-

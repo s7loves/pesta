@@ -17,26 +17,17 @@
  * specific language governing permissions and limitations under the License.
  */
 #endregion
-using System;
-using System.Data;
-using System.Configuration;
-using System.Web;
-using System.Web.Security;
-using System.Web.UI;
-using System.Web.UI.HtmlControls;
-using System.Web.UI.WebControls;
-using System.Web.UI.WebControls.WebParts;
 
+using Pesta.Engine.common.crypto;
 
-
-namespace Pesta
+namespace Pesta.Engine.gadgets.oauth
 {
     /// <summary>
     /// Summary description for OAuthFetcherConfig
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class OAuthFetcherConfig
@@ -65,5 +56,5 @@ namespace Pesta
         {
             return tokenStore;
         }
-    } 
+    }
 }

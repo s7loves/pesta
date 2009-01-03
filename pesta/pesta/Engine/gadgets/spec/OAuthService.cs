@@ -20,15 +20,18 @@
 using System;
 using System.Collections.Generic;
 using System.Xml;
+using Pesta.Engine.common.xml;
+using Pesta.Interop;
+using Uri=Pesta.Engine.common.uri.Uri;
 
-namespace Pesta
+namespace Pesta.Engine.gadgets.spec
 {
     /// <summary>
     /// Summary description for OAuthService
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class OAuthService
@@ -95,18 +98,18 @@ namespace Pesta
             if (requestUrl.location != accessUrl.location)
             {
                 throw new SpecParserException(
-                            "Access@location must be identical to Request@location");
+                    "Access@location must be identical to Request@location");
             }
             if (requestUrl.method != accessUrl.method)
             {
                 throw new SpecParserException(
-                            "Access@method must be identical to Request@method");
+                    "Access@method must be identical to Request@method");
             }
             if (requestUrl.location == Location.BODY &&
-                            requestUrl.method == Method.GET)
+                requestUrl.method == Method.GET)
             {
                 throw new SpecParserException("Incompatible parameter location, cannot" +
-                                    "use post-body with GET requests");
+                                              "use post-body with GET requests");
             }
         }
         /**
@@ -233,7 +236,7 @@ namespace Pesta
             public String ToString(String element)
             {
                 return '<' + element + " url='" + url.ToString() + "' " +
-                        "method='" + method + "' param_location='" + location + "'/>";
+                       "method='" + method + "' param_location='" + location + "'/>";
             }
         }
 
@@ -243,7 +246,7 @@ namespace Pesta
             if (url == null)
             {
                 throw new SpecParserException("OAuth/Service/Authorization @url is not valid: " +
-                child.Attributes[URL_ATTR]);
+                                              child.Attributes[URL_ATTR]);
             }
             return _base.resolve(url);
         }
@@ -260,5 +263,5 @@ namespace Pesta
             Method method = Method.Parse(child.GetAttribute(METHOD_ATTR));
             return new EndPoint(_base.resolve(url), method, location);
         }
-    } 
+    }
 }

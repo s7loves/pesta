@@ -18,20 +18,17 @@
  */
 #endregion
 using System;
-using System.Web;
-using System.IO;
-using System.Xml;
-
 using System.Collections.Generic;
+using Pesta.Interop;
 
-namespace Pesta
+namespace Pesta.Engine.gadgets
 {
     /// <summary>
     /// Summary description for GadgetFeatureRegistry combined with jsfeatureloader
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class GadgetFeatureRegistry
@@ -40,7 +37,7 @@ namespace Pesta
         private readonly Dictionary<String, GadgetFeature> core;
         // Caches the transitive dependencies to enable faster lookups.
         private readonly Dictionary<HashKey<String>, HashSet<GadgetFeature>> cache
-                    = new Dictionary<HashKey<String>, HashSet<GadgetFeature>>();
+            = new Dictionary<HashKey<String>, HashSet<GadgetFeature>>();
 
         private bool graphComplete = false;
         public static readonly GadgetFeatureRegistry Instance = new GadgetFeatureRegistry();
@@ -86,7 +83,7 @@ namespace Pesta
         *     graph-dependent order.
         */
         public HashSet<GadgetFeature> getFeatures(HashKey<String> needed,
-                               HashSet<String> unsupported)
+                                                  HashSet<String> unsupported)
         {
             graphComplete = true;
             if (needed.Count == 0)
@@ -129,7 +126,7 @@ namespace Pesta
             if (graphComplete)
             {
                 throw new Exception("register should never be " +
-                            "invoked after calling getLibraries");
+                                    "invoked after calling getLibraries");
             }
             if (isCore(feature))
             {
@@ -150,5 +147,5 @@ namespace Pesta
         {
             return feature.getName().StartsWith("core");
         }
-    } 
+    }
 }

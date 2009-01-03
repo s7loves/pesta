@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Runtime.Remoting.Messaging;
 
-namespace Pesta
+namespace Pesta.Engine.gadgets.preload
 {
     public class ConcurrentPreloads : Preloads
     {

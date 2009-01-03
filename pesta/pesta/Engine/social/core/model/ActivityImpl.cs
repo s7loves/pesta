@@ -19,234 +19,238 @@
 #endregion
 using System;
 using System.Collections.Generic;
+using Pesta.Engine.social.model;
 
-/// <summary>
-/// Summary description for ActivityImpl
-/// </summary>
-/// <remarks>
-/// <para>
-///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
-/// </para>
-/// </remarks>
-public class ActivityImpl : Activity
+namespace Pesta.Engine.social.core.model
 {
-    private String appId;
-    private String body;
-    private String bodyId;
-    private String externalId;
-    private String id;
-    private DateTime? updated;
-    private List<MediaItem> mediaItems;
-    private long? postedTime;
-    private float? priority;
-    private String streamFaviconUrl;
-    private String streamSourceUrl;
-    private String streamTitle;
-    private String streamUrl;
-    private Dictionary<String, String> templateParams;
-    private String title;
-    private String titleId;
-    private String url;
-    private String userId;
-
-    public ActivityImpl()
+    /// <summary>
+    /// Summary description for ActivityImpl
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    ///  Apache Software License 2.0 2008 Shindig
+    /// </para>
+    /// </remarks>
+    public class ActivityImpl : Activity
     {
-    }
+        private String appId;
+        private String body;
+        private String bodyId;
+        private String externalId;
+        private String id;
+        private DateTime? updated;
+        private List<MediaItem> mediaItems;
+        private long? postedTime;
+        private float? priority;
+        private String streamFaviconUrl;
+        private String streamSourceUrl;
+        private String streamTitle;
+        private String streamUrl;
+        private Dictionary<String, String> templateParams;
+        private String title;
+        private String titleId;
+        private String url;
+        private String userId;
 
-    public ActivityImpl(String id, String userId)
-    {
-        this.id = id;
-        this.userId = userId;
-    }
-
-    public override String getAppId()
-    {
-        return appId;
-    }
-
-    public override void setAppId(String appId)
-    {
-        this.appId = appId;
-    }
-
-    public override String getBody()
-    {
-        return body;
-    }
-
-    public override void setBody(String body)
-    {
-        this.body = body;
-    }
-
-    public override String getBodyId()
-    {
-        return bodyId;
-    }
-
-    public override void setBodyId(String bodyId)
-    {
-        this.bodyId = bodyId;
-    }
-
-    public override String getExternalId()
-    {
-        return externalId;
-    }
-
-    public override void setExternalId(String externalId)
-    {
-        this.externalId = externalId;
-    }
-
-    public override String getId()
-    {
-        return id;
-    }
-
-    public override void setId(String id)
-    {
-        this.id = id;
-    }
-
-    public override DateTime? getUpdated()
-    {
-        if (updated == null)
+        public ActivityImpl()
         {
-            return null;
         }
-        return updated;
-    }
 
-    public override void setUpdated(DateTime? updated)
-    {
-        if (updated == null)
+        public ActivityImpl(String id, String userId)
         {
-            this.updated = null;
+            this.id = id;
+            this.userId = userId;
         }
-        else
+
+        public override String getAppId()
         {
-            this.updated = updated;
+            return appId;
         }
-    }
 
-    public override List<MediaItem> getMediaItems()
-    {
-        return mediaItems;
-    }
+        public override void setAppId(String appId)
+        {
+            this.appId = appId;
+        }
 
-    public override void setMediaItems(List<MediaItem> mediaItems)
-    {
-        this.mediaItems = mediaItems;
-    }
+        public override String getBody()
+        {
+            return body;
+        }
 
-    public override long? getPostedTime()
-    {
-        return postedTime;
-    }
+        public override void setBody(String body)
+        {
+            this.body = body;
+        }
 
-    public override void setPostedTime(long? postedTime)
-    {
-        this.postedTime = postedTime;
-    }
+        public override String getBodyId()
+        {
+            return bodyId;
+        }
 
-    public override float? getPriority()
-    {
-        return priority;
-    }
+        public override void setBodyId(String bodyId)
+        {
+            this.bodyId = bodyId;
+        }
 
-    public override void setPriority(float? priority)
-    {
-        this.priority = priority;
-    }
+        public override String getExternalId()
+        {
+            return externalId;
+        }
 
-    public override String getStreamFaviconUrl()
-    {
-        return streamFaviconUrl;
-    }
+        public override void setExternalId(String externalId)
+        {
+            this.externalId = externalId;
+        }
 
-    public override void setStreamFaviconUrl(String streamFaviconUrl)
-    {
-        this.streamFaviconUrl = streamFaviconUrl;
-    }
+        public override String getId()
+        {
+            return id;
+        }
 
-    public override String getStreamSourceUrl()
-    {
-        return streamSourceUrl;
-    }
+        public override void setId(String id)
+        {
+            this.id = id;
+        }
 
-    public override void setStreamSourceUrl(String streamSourceUrl)
-    {
-        this.streamSourceUrl = streamSourceUrl;
-    }
+        public override DateTime? getUpdated()
+        {
+            if (updated == null)
+            {
+                return null;
+            }
+            return updated;
+        }
 
-    public override String getStreamTitle()
-    {
-        return streamTitle;
-    }
+        public override void setUpdated(DateTime? updated)
+        {
+            if (updated == null)
+            {
+                this.updated = null;
+            }
+            else
+            {
+                this.updated = updated;
+            }
+        }
 
-    public override void setStreamTitle(String streamTitle)
-    {
-        this.streamTitle = streamTitle;
-    }
+        public override List<MediaItem> getMediaItems()
+        {
+            return mediaItems;
+        }
 
-    public override String getStreamUrl()
-    {
-        return streamUrl;
-    }
+        public override void setMediaItems(List<MediaItem> mediaItems)
+        {
+            this.mediaItems = mediaItems;
+        }
 
-    public override void setStreamUrl(String streamUrl)
-    {
-        this.streamUrl = streamUrl;
-    }
+        public override long? getPostedTime()
+        {
+            return postedTime;
+        }
 
-    public override Dictionary<String, String> getTemplateParams()
-    {
-        return templateParams;
-    }
+        public override void setPostedTime(long? postedTime)
+        {
+            this.postedTime = postedTime;
+        }
 
-    public override void setTemplateParams(Dictionary<String, String> templateParams)
-    {
-        this.templateParams = templateParams;
-    }
+        public override float? getPriority()
+        {
+            return priority;
+        }
 
-    public override String getTitle()
-    {
-        return title;
-    }
+        public override void setPriority(float? priority)
+        {
+            this.priority = priority;
+        }
 
-    public override void setTitle(String title)
-    {
-        this.title = title;
-    }
+        public override String getStreamFaviconUrl()
+        {
+            return streamFaviconUrl;
+        }
 
-    public override String getTitleId()
-    {
-        return titleId;
-    }
+        public override void setStreamFaviconUrl(String streamFaviconUrl)
+        {
+            this.streamFaviconUrl = streamFaviconUrl;
+        }
 
-    public override void setTitleId(String titleId)
-    {
-        this.titleId = titleId;
-    }
+        public override String getStreamSourceUrl()
+        {
+            return streamSourceUrl;
+        }
 
-    public override String getUrl()
-    {
-        return url;
-    }
+        public override void setStreamSourceUrl(String streamSourceUrl)
+        {
+            this.streamSourceUrl = streamSourceUrl;
+        }
 
-    public override void setUrl(String url)
-    {
-        this.url = url;
-    }
+        public override String getStreamTitle()
+        {
+            return streamTitle;
+        }
 
-    public override String getUserId()
-    {
-        return userId;
-    }
+        public override void setStreamTitle(String streamTitle)
+        {
+            this.streamTitle = streamTitle;
+        }
 
-    public override void setUserId(String userId)
-    {
-        this.userId = userId;
+        public override String getStreamUrl()
+        {
+            return streamUrl;
+        }
+
+        public override void setStreamUrl(String streamUrl)
+        {
+            this.streamUrl = streamUrl;
+        }
+
+        public override Dictionary<String, String> getTemplateParams()
+        {
+            return templateParams;
+        }
+
+        public override void setTemplateParams(Dictionary<String, String> templateParams)
+        {
+            this.templateParams = templateParams;
+        }
+
+        public override String getTitle()
+        {
+            return title;
+        }
+
+        public override void setTitle(String title)
+        {
+            this.title = title;
+        }
+
+        public override String getTitleId()
+        {
+            return titleId;
+        }
+
+        public override void setTitleId(String titleId)
+        {
+            this.titleId = titleId;
+        }
+
+        public override String getUrl()
+        {
+            return url;
+        }
+
+        public override void setUrl(String url)
+        {
+            this.url = url;
+        }
+
+        public override String getUserId()
+        {
+            return userId;
+        }
+
+        public override void setUserId(String userId)
+        {
+            this.userId = userId;
+        }
     }
 }

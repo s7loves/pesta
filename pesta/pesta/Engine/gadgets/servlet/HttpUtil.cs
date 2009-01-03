@@ -20,18 +20,18 @@
 using System;
 using System.Web;
 using System.Collections.Generic;
-using System.Text;
 using Jayrock.Json;
+using Pesta.Engine.common;
 
 
-namespace Pesta
+namespace Pesta.Engine.gadgets.servlet
 {
     /// <summary>
     ///  
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class HttpUtil
@@ -117,7 +117,7 @@ namespace Pesta
         public static JsonObject getJsConfig(ContainerConfig config, GadgetContext context, HashSet<string> features)
         {
             JsonObject containerFeatures = config.getJsonObject(context.getContainer(),
-                                        "gadgets.features");
+                                                                "gadgets.features");
             JsonObject retv = new JsonObject();
             if (containerFeatures != null)
             {
@@ -131,5 +131,5 @@ namespace Pesta
             }
             return retv;
         }
-    } 
+    }
 }

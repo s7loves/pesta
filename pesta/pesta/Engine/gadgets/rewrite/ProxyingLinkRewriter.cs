@@ -19,15 +19,17 @@
 #endregion
 using System;
 using System.Web;
+using Pesta.Engine.gadgets.servlet;
+using Uri=Pesta.Engine.common.uri.Uri;
 
-namespace Pesta
+namespace Pesta.Engine.gadgets.rewrite
 {
     /// <summary>
     /// Summary description for ProxyingLinkRewriter
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class ProxyingLinkRewriter : LinkRewriter
@@ -61,10 +63,10 @@ namespace Pesta
                 if (rewriterFeature.shouldRewriteURL(uri.ToString()))
                 {
                     String result = prefix
-                    + HttpUtility.UrlEncode(uri.ToString())
-                    + ((gadgetUri == null) ? "" : "&gadget=" + HttpUtility.UrlEncode(gadgetUri.ToString()))
-                    + "&fp="
-                    + rewriterFeature.getFingerprint();
+                                    + HttpUtility.UrlEncode(uri.ToString())
+                                    + ((gadgetUri == null) ? "" : "&gadget=" + HttpUtility.UrlEncode(gadgetUri.ToString()))
+                                    + "&fp="
+                                    + rewriterFeature.getFingerprint();
                     if (rewriterFeature.getExpires() != null)
                     {
                         result += "&" + ProxyBase.REFRESH_PARAM + "=" + rewriterFeature.getExpires().ToString();
@@ -82,5 +84,5 @@ namespace Pesta
                 return link;
             }
         }
-    } 
+    }
 }

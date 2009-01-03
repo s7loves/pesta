@@ -17,21 +17,18 @@
  * specific language governing permissions and limitations under the License.
  */
 #endregion
-using System;
-using System.Data;
-using System.Configuration;
+
 using System.IO;
 using System.Web;
-using System.Net;
 
-namespace Pesta
+namespace Pesta.Engine.gadgets.http
 {
     /// <summary>
     /// Summary description for HttpResponseWrapper
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class HttpResponseWrapper
@@ -76,5 +73,5 @@ namespace Pesta
         {
             response.ContentType = type;
         }
-    } 
+    }
 }

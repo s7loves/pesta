@@ -18,19 +18,19 @@
  */
 #endregion
 using System;
-using System.Text;
 using System.Text.RegularExpressions;
 using com.google.caja.lexer;
 using System.Collections.Generic;
+using Uri=Pesta.Engine.common.uri.Uri;
 
-namespace Pesta
+namespace Pesta.Engine.gadgets.rewrite
 {
     /// <summary>
     /// Summary description for CssRewriter
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class CssRewriter
@@ -45,11 +45,11 @@ namespace Pesta
         }
 
         public static List<String> rewrite(java.io.Reader content, Uri source,
-          LinkRewriter rewriter, java.io.Writer writer, bool extractImports)
+                                           LinkRewriter rewriter, java.io.Writer writer, bool extractImports)
         {
             List<String> imports = new List<string>();
             CharProducer producer = CharProducer.Factory.create(content,
-                new InputSource(new java.net.URI(source.ToString())));
+                                                                new InputSource(new java.net.URI(source.ToString())));
             CssLexer lexer = new CssLexer(producer);
             try
             {
@@ -115,5 +115,5 @@ namespace Pesta
 
             return "url(\"" + rewriter.rewrite(matcher.Groups[2].Value.Trim(), _base) + "\")";
         }
-    } 
+    }
 }

@@ -21,15 +21,16 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using com.google.caja.lexer;
+using Uri=Pesta.Engine.common.uri.Uri;
 
-namespace Pesta
+namespace Pesta.Engine.gadgets.rewrite.lexer
 {
     /// <summary>
     /// Summary description for LinkingTagRewriter
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class LinkingTagRewriter : HtmlTagTransformer
@@ -58,7 +59,7 @@ namespace Pesta
         }
 
         public LinkingTagRewriter(Dictionary<String, HashSet<String>> tagAttributeTargets,
-                                        LinkRewriter linkRewriter, Uri relativeBase)
+                                  LinkRewriter linkRewriter, Uri relativeBase)
         {
             this.tagAttributeTargets = tagAttributeTargets;
             this.linkRewriter = linkRewriter;
@@ -72,7 +73,7 @@ namespace Pesta
         }
 
         public void accept(Token token,
-          Token lastToken)
+                           Token lastToken)
         {
             if (token.type == HtmlTokenType.TAGBEGIN)
             {
@@ -112,5 +113,5 @@ namespace Pesta
         {
             return s.Replace("\"", "").Replace("'", "");
         }
-    } 
+    }
 }

@@ -18,20 +18,17 @@
  */
 #endregion
 using System.Collections.Generic;
-using System.Collections;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System;
 using Jayrock.Json;
 
-namespace Pesta
+namespace Pesta.Engine.gadgets.http
 {
     /// <summary>
     /// 
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class HttpCacheKey
@@ -113,6 +110,5 @@ namespace Pesta
             }
             return json.ToString();
         }
-    } 
+    }
 }
-

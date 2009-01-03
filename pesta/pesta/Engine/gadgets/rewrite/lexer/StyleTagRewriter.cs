@@ -20,15 +20,16 @@
 using System;
 using System.Text;
 using com.google.caja.lexer;
+using Uri=Pesta.Engine.common.uri.Uri;
 
-namespace Pesta
+namespace Pesta.Engine.gadgets.rewrite.lexer
 {
     /// <summary>
     /// Summary description for StyleTagRewriter
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class StyleTagRewriter : HtmlTagTransformer
@@ -70,5 +71,5 @@ namespace Pesta
             sb.Length = 0;
             return result;
         }
-    } 
+    }
 }

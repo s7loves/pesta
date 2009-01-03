@@ -20,35 +20,38 @@
 using System;
 using com.google.caja.lexer;
 
-/// <summary>
-/// Summary description for HtmlTagTransformer
-/// </summary>
-/// <remarks>
-/// <para>
-///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
-/// </para>
-/// </remarks>
-public interface HtmlTagTransformer
+namespace Pesta.Engine.gadgets.rewrite.lexer
 {
-    /**
-   * Consume the token. Prior token supplied for context
-   * @param token current token
-   * @param lastToken 
-   */
-    void accept(Token token,
-        Token lastToken);
+    /// <summary>
+    /// Summary description for HtmlTagTransformer
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    ///  Apache Software License 2.0 2008 Shindig
+    /// </para>
+    /// </remarks>
+    public interface HtmlTagTransformer
+    {
+        /**
+       * Consume the token. Prior token supplied for context
+       * @param token current token
+       * @param lastToken 
+       */
+        void accept(Token token,
+                    Token lastToken);
 
-    /**
-     * A new tag has begun, should this transformer continue to process
-     * @param tagStart
-     * @return true if continuing to process the new tag
-     */
-    bool acceptNextTag(Token tagStart);
+        /**
+         * A new tag has begun, should this transformer continue to process
+         * @param tagStart
+         * @return true if continuing to process the new tag
+         */
+        bool acceptNextTag(Token tagStart);
 
-    /**
-     * Close the transformer, reset its state and return any content
-     * for inclusion in the rewritten output
-     * @return transformed content
-     */
-    String close();
+        /**
+         * Close the transformer, reset its state and return any content
+         * for inclusion in the rewritten output
+         * @return transformed content
+         */
+        String close();
+    }
 }

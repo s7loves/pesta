@@ -21,16 +21,21 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
+using Pesta.Engine.common;
+using Pesta.Engine.common.util;
+using Pesta.Engine.gadgets.spec;
+using Uri=Pesta.Engine.common.uri.Uri;
+using UriBuilder=Pesta.Engine.common.uri.UriBuilder;
 
 
-namespace Pesta
+namespace Pesta.Engine.gadgets
 {
     /// <summary>
     /// 
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class DefaultUrlGenerator : UrlGenerator
@@ -80,7 +85,7 @@ namespace Pesta
             }
 
             return jsPrefix.Replace("%host%", context.getHost())
-                        .Replace("%js%", getBundledJsParam(features, context));
+                .Replace("%js%", getBundledJsParam(features, context));
         }
 
         public String getBundledJsParam(ICollection<String> features, GadgetContext context) 
@@ -135,18 +140,18 @@ namespace Pesta
             UriBuilder uri;
             if (type == View.ContentType.URL)
             {
-            	uri = new UriBuilder(view.getHref());
+                uri = new UriBuilder(view.getHref());
             }
             else
             {
-            	// TODO: Locked domain support.
-                    Uri iframeBaseUri;
-                    uri = !iframeBaseUris.TryGetValue(context.getContainer(), out iframeBaseUri) ? new UriBuilder(iframeBaseUri) : new UriBuilder();
-                    String host = lockedDomainService.getLockedDomainForGadget(spec, context.getContainer());
-                    if (host != null) 
-                    {
-                        uri.setAuthority(host);
-                    }
+                // TODO: Locked domain support.
+                Uri iframeBaseUri;
+                uri = !iframeBaseUris.TryGetValue(context.getContainer(), out iframeBaseUri) ? new UriBuilder(iframeBaseUri) : new UriBuilder();
+                String host = lockedDomainService.getLockedDomainForGadget(spec, context.getContainer());
+                if (host != null) 
+                {
+                    uri.setAuthority(host);
+                }
             }
 
             uri.addQueryParameter("container", context.getContainer());
@@ -186,6 +191,5 @@ namespace Pesta
 
             return uri.ToString();
         }
-    } 
+    }
 }
-

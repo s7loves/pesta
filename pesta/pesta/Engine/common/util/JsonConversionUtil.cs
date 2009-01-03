@@ -18,20 +18,20 @@
  */
 #endregion
 using System;
-using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Text.RegularExpressions;
 using Jayrock.Json;
 using System.Web;
+using Pesta.Interop;
 
-namespace Pesta
+namespace Pesta.Engine.common.util
 {
     /// <summary>
     /// Summary description for JsonConversionUtil
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class JsonConversionUtil
@@ -147,5 +147,5 @@ namespace Pesta
                 }
             }
         }
-    } 
+    }
 }

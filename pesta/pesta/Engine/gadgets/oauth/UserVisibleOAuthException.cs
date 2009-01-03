@@ -17,29 +17,32 @@
  * specific language governing permissions and limitations under the License.
  */
 #endregion
-using System.Collections.Generic;
-using System.Collections;
+
 using System;
 
-/// <summary>
-/// Exceptions whose message text should be shown to gadget developers.
-/// </summary>
-/// <remarks>
-/// <para>
-///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
-/// </para>
-/// </remarks>
-[Serializable]
-public class UserVisibleOAuthException : GadgetException 
+namespace Pesta.Engine.gadgets.oauth
 {
+    /// <summary>
+    /// Exceptions whose message text should be shown to gadget developers.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    ///  Apache Software License 2.0 2008 Shindig
+    /// </para>
+    /// </remarks>
+    [Serializable]
+    public class UserVisibleOAuthException : GadgetException
+    {
 
-  public UserVisibleOAuthException(String msg) : base(GadgetException.Code.INVALID_PARAMETER, msg) 
-  {
-  }
-  
-  public UserVisibleOAuthException(String msg, Exception t) : base(GadgetException.Code.INVALID_PARAMETER, msg, t) 
-  {
-  }
+        public UserVisibleOAuthException(String msg)
+            : base(GadgetException.Code.INVALID_PARAMETER, msg)
+        {
+        }
 
+        public UserVisibleOAuthException(String msg, Exception t)
+            : base(GadgetException.Code.INVALID_PARAMETER, msg, t)
+        {
+        }
+
+    }
 }
-

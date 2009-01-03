@@ -17,25 +17,24 @@
  * specific language governing permissions and limitations under the License.
  */
 #endregion
-using System.Collections.Generic;
-using System.Collections;
-using System.Collections.Specialized;
 using System.IO;
 using System.Text;
 using System.Net;
 using System;
-using System.Web;
-using System.Net.Cache;
+using Pesta.Engine.auth;
+using Pesta.Engine.common;
+using Pesta.Engine.gadgets.oauth;
+using Uri=Pesta.Engine.common.uri.Uri;
 
 
-namespace Pesta
+namespace Pesta.Engine.gadgets.http
 {
     /// <summary>
     /// 
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class sRequest
@@ -414,6 +413,5 @@ namespace Pesta
             return buf.ToString();
         }
 
-    } 
+    }
 }
-

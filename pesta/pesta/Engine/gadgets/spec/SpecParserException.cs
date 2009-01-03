@@ -20,34 +20,37 @@
 using System;
 using System.Xml;
 
-/// <summary>
-/// Summary description for SpecParserException
-/// </summary>
-/// <remarks>
-/// <para>
-///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
-/// </para>
-/// </remarks>
-public class SpecParserException : GadgetException
+namespace Pesta.Engine.gadgets.spec
 {
-    /**
-   * @param message
-   */
-    public SpecParserException(String message)
-        : base(GadgetException.Code.MALFORMED_XML_DOCUMENT, message)
+    /// <summary>
+    /// Summary description for SpecParserException
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    ///  Apache Software License 2.0 2008 Shindig
+    /// </para>
+    /// </remarks>
+    public class SpecParserException : GadgetException
     {
-        
-    }
+        /**
+       * @param message
+       */
+        public SpecParserException(String message)
+            : base(GadgetException.Code.MALFORMED_XML_DOCUMENT, message)
+        {
 
-    public SpecParserException(XmlException e)
-        : base(GadgetException.Code.MALFORMED_XML_DOCUMENT, e)
-    {
-        
-    }
+        }
 
-    public SpecParserException(String message, XmlException e)
-        : base(GadgetException.Code.MALFORMED_XML_DOCUMENT, message, e)
-    {
-        
+        public SpecParserException(XmlException e)
+            : base(GadgetException.Code.MALFORMED_XML_DOCUMENT, e)
+        {
+
+        }
+
+        public SpecParserException(String message, XmlException e)
+            : base(GadgetException.Code.MALFORMED_XML_DOCUMENT, message, e)
+        {
+
+        }
     }
 }

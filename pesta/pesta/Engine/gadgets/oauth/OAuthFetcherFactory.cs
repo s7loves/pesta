@@ -17,19 +17,18 @@
  * specific language governing permissions and limitations under the License.
  */
 #endregion
-using System;
-using System.Data;
-using System.Configuration;
-using System.Web;
 
-namespace Pesta
+using Pesta.Engine.common.crypto;
+using Pesta.Engine.gadgets.http;
+
+namespace Pesta.Engine.gadgets.oauth
 {
     /// <summary>
     /// Summary description for OAuthFetcherFactory
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class OAuthFetcherFactory
@@ -43,10 +42,10 @@ namespace Pesta
         */
         protected OAuthFetcherFactory()
         {
-            byte[] masterKey = Crypto.GetRandomBytes(BasicBlobCrypter.MASTER_KEY_MIN_LEN);
-            this.fetcherConfig = new OAuthFetcherConfig(
-                        new BasicBlobCrypter(masterKey),
-                        new GadgetOAuthTokenStore(new BasicOAuthStore(), DefaultGadgetSpecFactory.Instance));
+            byte[] masterKey = Crypto.getRandomBytes(BasicBlobCrypter.MASTER_KEY_MIN_LEN);
+            fetcherConfig = new OAuthFetcherConfig(
+                new BasicBlobCrypter(masterKey),
+                new GadgetOAuthTokenStore(BasicOAuthStore.Instance, DefaultGadgetSpecFactory.Instance));
         }
 
         /**
@@ -63,5 +62,5 @@ namespace Pesta
             OAuthFetcher fetcher = new OAuthFetcher(fetcherConfig, nextFetcher, request);
             return fetcher;
         }
-    } 
+    }
 }

@@ -18,23 +18,23 @@
  */
 #endregion
 using System;
-using System.Data;
-using System.Configuration;
 using System.Xml;
 using System.Web;
-using System.Net;
 using System.Reflection;
 using System.Collections.Generic;
 using System.IO;
+using Pesta.Engine.common;
+using Pesta.Engine.common.xml;
+using Pesta.Utilities;
 
-namespace Pesta
+namespace Pesta.Engine.gadgets
 {
     /// <summary>
     /// Summary description for JsFeatureLoader
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class JsFeatureLoader

@@ -22,15 +22,20 @@ using System.Collections.Generic;
 using org.apache.shindig.gadgets.parse;
 using org.apache.shindig.gadgets.rewrite;
 using org.apache.shindig.gadgets.parse.nekohtml;
+using Pesta.Engine.gadgets.http;
+using Pesta.Engine.gadgets.render;
+using Pesta.Engine.gadgets.rewrite.lexer;
+using Pesta.Engine.gadgets.servlet;
+using Pesta.Engine.gadgets.spec;
 
-namespace Pesta
+namespace Pesta.Engine.gadgets.rewrite
 {
     /// <summary>
     /// Summary description for DefaultContentRewriterRegistry
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class DefaultContentRewriterRegistry : ContentRewriterRegistry
@@ -70,8 +75,8 @@ namespace Pesta
         {
             if (content == null) 
             {
-            // Nothing to rewrite.
-            return null;
+                // Nothing to rewrite.
+                return null;
             }
 
             MutableContent mc = getMutableContent(content);
@@ -91,13 +96,13 @@ namespace Pesta
 
             foreach(ContentRewriter rewriter in rewriters)
             {
-              rewriter.rewrite(req, resp, mc);
+                rewriter.rewrite(req, resp, mc);
             }
 
             String rewrittenContent = mc.getContent();
             if (rewrittenContent.Equals(originalContent)) 
             {
-              return resp;
+                return resp;
             }
 
             return new HttpResponseBuilder(resp).setResponseString(rewrittenContent).create();
@@ -120,5 +125,5 @@ namespace Pesta
         {
             return rewriters;
         }
-    } 
+    }
 }

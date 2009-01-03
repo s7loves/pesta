@@ -21,8 +21,10 @@ using System.Collections.Generic;
 using System;
 using System.Text;
 using System.Security.Cryptography;
+using Pesta.Engine.common;
+using Pesta.Engine.gadgets.spec;
 
-namespace Pesta
+namespace Pesta.Engine.gadgets
 {
     /// <summary>
     /// Locked domain implementation based on sha1.
@@ -32,7 +34,7 @@ namespace Pesta
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class HashLockedDomainService : LockedDomainService
@@ -163,6 +165,5 @@ namespace Pesta
             }
             return ContainerConfig.DEFAULT_CONTAINER;
         }
-    } 
+    }
 }
-

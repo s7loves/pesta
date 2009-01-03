@@ -18,59 +18,63 @@
  */
 #endregion
 using System;
+using Pesta.Engine.social.model;
 
-/// <summary>
-/// Summary description for MediaItemImpl
-/// </summary>
-/// <remarks>
-/// <para>
-///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
-/// </para>
-/// </remarks>
-public class MediaItemImpl : MediaItem
+namespace Pesta.Engine.social.core.model
 {
-    private String mimeType;
-    private MediaItem.Type type;
-    private String url;
-
-    public MediaItemImpl()
+    /// <summary>
+    /// Summary description for MediaItemImpl
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    ///  Apache Software License 2.0 2008 Shindig
+    /// </para>
+    /// </remarks>
+    public class MediaItemImpl : MediaItem
     {
-    }
+        private String mimeType;
+        private MediaItem.Type type;
+        private String url;
 
-    public MediaItemImpl(String mimeType, MediaItem.Type type, String url)
-    {
-        this.mimeType = mimeType;
-        this.type = type;
-        this.url = url;
-    }
+        public MediaItemImpl()
+        {
+        }
 
-    public override String getMimeType()
-    {
-        return mimeType;
-    }
+        public MediaItemImpl(String mimeType, MediaItem.Type type, String url)
+        {
+            this.mimeType = mimeType;
+            this.type = type;
+            this.url = url;
+        }
 
-    public override void setMimeType(String mimeType)
-    {
-        this.mimeType = mimeType;
-    }
+        public override String getMimeType()
+        {
+            return mimeType;
+        }
 
-    public override MediaItem.Type getType()
-    {
-        return type;
-    }
+        public override void setMimeType(String mimeType)
+        {
+            this.mimeType = mimeType;
+        }
 
-    public override void setType(MediaItem.Type type)
-    {
-        this.type = type;
-    }
+        public override MediaItem.Type getType()
+        {
+            return type;
+        }
 
-    public override String getUrl()
-    {
-        return url;
-    }
+        public override void setType(MediaItem.Type type)
+        {
+            this.type = type;
+        }
 
-    public override void setUrl(String url)
-    {
-        this.url = url;
+        public override String getUrl()
+        {
+            return url;
+        }
+
+        public override void setUrl(String url)
+        {
+            this.url = url;
+        }
     }
 }

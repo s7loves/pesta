@@ -17,16 +17,17 @@
  * specific language governing permissions and limitations under the License.
  */
 #endregion
-using System;
 
-namespace Pesta
+using Pesta.Interop.oauth;
+
+namespace Pesta.Engine.gadgets.oauth
 {
     /// <summary>
     /// Summary description for AccessorInfo
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class AccessorInfo
@@ -50,7 +51,7 @@ namespace Pesta
         private readonly OAuthParamLocation paramLocation;
 
         public AccessorInfo(OAuthAccessor accessor, OAuthStore.ConsumerInfo consumer, HttpMethod httpMethod,
-                                OAuthParamLocation paramLocation)
+                            OAuthParamLocation paramLocation)
         {
             this.accessor = accessor;
             this.consumer = consumer;
@@ -77,5 +78,5 @@ namespace Pesta
         {
             return httpMethod;
         }
-    } 
+    }
 }

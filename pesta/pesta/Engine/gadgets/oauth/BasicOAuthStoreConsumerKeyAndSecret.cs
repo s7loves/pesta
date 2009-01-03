@@ -17,76 +17,82 @@
  * specific language governing permissions and limitations under the License.
  */
 #endregion
-using System.Collections.Generic;
-using System.Collections;
+
 using System;
 
-
-/// @author beaton@google.com (Your Name Here)
-/// <remarks>
-/// <para>
-///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
-/// </para>
-/// </remarks>
-public class BasicOAuthStoreConsumerKeyAndSecret 
+namespace Pesta.Engine.gadgets.oauth
 {
-
-	public enum KeyType {
-		HMAC_SYMMETRIC, RSA_PRIVATE
-	}
-
-	/// <summary>
-	/// Value for oauth_consumer_key
-	/// </summary>
-	///
-	private readonly String consumerKey;
-
-	/// <summary>
-	/// HMAC secret, or RSA private key, depending on keyType
-	/// </summary>
-	///
-	private readonly String consumerSecret;
-
-	/// <summary>
-	/// Type of key
-	/// </summary>
-	///
-	public readonly KeyType keyType;
-
-	/// <summary>
-	/// Name of public key to use with xoauth_public_key parameter. May be null
-	/// </summary>
-	///
-	private readonly String keyName;
-
-	public BasicOAuthStoreConsumerKeyAndSecret(String key, String secret,
-			KeyType type, String name) 
+    /// @author beaton@google.com (Your Name Here)
+    /// <remarks>
+    /// <para>
+    ///  Apache Software License 2.0 2008 Shindig
+    /// </para>
+    /// </remarks>
+    public class BasicOAuthStoreConsumerKeyAndSecret
     {
-		consumerKey = key;
-		consumerSecret = secret;
-		keyType = type;
-		keyName = name;
-	}
 
-	public String ConsumerKey 
-    {
-	  get {
-			return consumerKey;
-		}
-	}
-	
+        public enum KeyType
+        {
+            HMAC_SYMMETRIC, RSA_PRIVATE
+        }
 
-	public String ConsumerSecret {
-	  get {
-			return consumerSecret;
-		}
-	}
-	
-	public String KeyName {
-	  get {
-			return keyName;
-		}
-	}
-	
+        /// <summary>
+        /// Value for oauth_consumer_key
+        /// </summary>
+        ///
+        private readonly String consumerKey;
+
+        /// <summary>
+        /// HMAC secret, or RSA private key, depending on keyType
+        /// </summary>
+        ///
+        private readonly String consumerSecret;
+
+        /// <summary>
+        /// Type of key
+        /// </summary>
+        ///
+        public readonly KeyType keyType;
+
+        /// <summary>
+        /// Name of public key to use with xoauth_public_key parameter. May be null
+        /// </summary>
+        ///
+        private readonly String keyName;
+
+        public BasicOAuthStoreConsumerKeyAndSecret(String key, String secret,
+                                                   KeyType type, String name)
+        {
+            consumerKey = key;
+            consumerSecret = secret;
+            keyType = type;
+            keyName = name;
+        }
+
+        public String ConsumerKey
+        {
+            get
+            {
+                return consumerKey;
+            }
+        }
+
+
+        public String ConsumerSecret
+        {
+            get
+            {
+                return consumerSecret;
+            }
+        }
+
+        public String KeyName
+        {
+            get
+            {
+                return keyName;
+            }
+        }
+
+    }
 }
-

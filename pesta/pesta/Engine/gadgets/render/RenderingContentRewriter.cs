@@ -1,27 +1,54 @@
-﻿using System;
+﻿#region License, Terms and Conditions
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
+#endregion
+using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Text;
 using Jayrock.Json;
 using org.apache.shindig.gadgets.rewrite;
+using Pesta.Engine.auth;
+using Pesta.Engine.common;
+using Pesta.Engine.gadgets.http;
+using Pesta.Engine.gadgets.preload;
+using Pesta.Engine.gadgets.spec;
+using Pesta.Interop;
+using ContentRewriter=Pesta.Engine.gadgets.rewrite.ContentRewriter;
+using Uri=Pesta.Engine.common.uri.Uri;
 
-namespace Pesta
+namespace Pesta.Engine.gadgets.render
 {
     public class RenderingContentRewriter : ContentRewriter
     {
         static readonly Regex DOCUMENT_SPLIT_PATTERN = new Regex(
-                "(.*)<head>(.*?)<\\/head>(?:.*)<body(.*?)>(.*?)<\\/body>(?:.*)", RegexOptions.Compiled | RegexOptions.IgnoreCase );
+            "(.*)<head>(.*?)<\\/head>(?:.*)<body(.*?)>(.*?)<\\/body>(?:.*)", RegexOptions.Compiled | RegexOptions.IgnoreCase );
         static readonly int BEFORE_HEAD_GROUP = 1;
         static readonly int HEAD_GROUP = 2;
         static readonly int BODY_ATTRIBUTES_GROUP = 3;
         static readonly int BODY_GROUP = 4;
         static readonly String DEFAULT_HEAD_CONTENT =
-                  "<style type=\"text/css\">" +
-                  "body,td,div,span,p{font-family:arial,sans-serif;}" +
-                  "a {color:#0000cc;}a:visited {color:#551a8b;}" +
-                  "a:active {color:#ff0000;}" +
-                  "body{margin: 0px;padding: 0px;background-color:white;}" +
-                  "</style>";
+            "<style type=\"text/css\">" +
+            "body,td,div,span,p{font-family:arial,sans-serif;}" +
+            "a {color:#0000cc;}a:visited {color:#551a8b;}" +
+            "a:active {color:#ff0000;}" +
+            "body{margin: 0px;padding: 0px;background-color:white;}" +
+            "</style>";
         static readonly String INSERT_BASE_ELEMENT_KEY = "gadgets.insertBaseElement";
         static readonly String FEATURES_KEY = "gadgets.features";
 
@@ -30,7 +57,7 @@ namespace Pesta
         private readonly GadgetFeatureRegistry featureRegistry;
         private readonly UrlGenerator urlGenerator;
 
-      /**
+        /**
        * @param messageBundleFactory Used for injecting message bundles into gadget output.
        */
         public RenderingContentRewriter()
@@ -148,8 +175,8 @@ namespace Pesta
                         if (inlineJs.Length > 0) 
                         {
                             content.appendHead("<script>")
-                                    .appendHead(inlineJs.ToString())
-                                    .appendHead("</script>");
+                                .appendHead(inlineJs.ToString())
+                                .appendHead("</script>");
                             inlineJs.Length = 0;
                         }
                         content.appendHead(String.Format(externFmt, library.Content));
@@ -183,7 +210,7 @@ namespace Pesta
             }
         }
 
-  /**
+        /**
    * Get all features needed to satisfy this rendering request.
    *
    * @param forced Forced libraries; added in addition to those found in the spec. Defaults to
@@ -317,12 +344,12 @@ namespace Pesta
         {
             GadgetContext context = gadget.getContext();
             MessageBundle bundle = messageBundleFactory.getBundle(
-                                gadget.getSpec(), context.getLocale(), context.getIgnoreCache());
+                gadget.getSpec(), context.getLocale(), context.getIgnoreCache());
 
             String msgs = new JsonObject(bundle.getMessages()).ToString();
             content.appendHead("gadgets.Prefs.setMessages_(")
-                    .appendHead(msgs)
-                    .appendHead(");");
+                .appendHead(msgs)
+                .appendHead(");");
         }
 
         /**
@@ -343,8 +370,8 @@ namespace Pesta
                 // Never happens. Name is required (cannot be null). Default value is a String.
             }
             content.appendHead("gadgets.Prefs.setDefaultPrefs_(")
-                    .appendHead(defaultPrefs.ToString())
-                    .appendHead(");");
+                .appendHead(defaultPrefs.ToString())
+                .appendHead(");");
         }
 
         /**
@@ -375,8 +402,8 @@ namespace Pesta
             }
 
             content.appendHead("gadgets.io.preloaded_=")
-            .appendHead(preload.ToString())
-            .appendHead(";");
+                .appendHead(preload.ToString())
+                .appendHead(";");
         }
 
         /**
@@ -394,12 +421,12 @@ namespace Pesta
                 {
                     GadgetContent content = new GadgetContent();
                     content.appendHead(matcher.Groups[BEFORE_HEAD_GROUP].Value)
-                            .appendHead("<head>");
+                        .appendHead("<head>");
 
                     content.appendBody(matcher.Groups[HEAD_GROUP].Value)
-                            .appendBody("</head>")
-                            .appendBody(createBodyTag(gadget, matcher.Groups[BODY_ATTRIBUTES_GROUP].Value))
-                            .appendBody(matcher.Groups[BODY_GROUP].Value);
+                        .appendBody("</head>")
+                        .appendBody(createBodyTag(gadget, matcher.Groups[BODY_ATTRIBUTES_GROUP].Value))
+                        .appendBody(matcher.Groups[BODY_GROUP].Value);
 
                     content.appendTail("</body></html>");
                     return content;
@@ -481,10 +508,10 @@ namespace Pesta
             public String assemble() 
             {
                 return new StringBuilder(head.Length + body.Length + tail.Length)
-                                    .Append(head.ToString())
-                                    .Append(body.ToString())
-                                    .Append(tail.ToString())
-                                    .ToString();
+                    .Append(head.ToString())
+                    .Append(body.ToString())
+                    .Append(tail.ToString())
+                    .ToString();
             }
 
             public override String ToString()

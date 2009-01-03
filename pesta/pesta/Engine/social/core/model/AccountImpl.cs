@@ -19,58 +19,61 @@
 #endregion
 
 using System;
+using Pesta.Engine.social.model;
 
-
-/// <summary>
-/// Summary description for AccountImpl
-/// </summary>
-/// <remarks>
-/// <para>
-///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
-/// </para>
-/// </remarks>
-public class AccountImpl : Account
+namespace Pesta.Engine.social.core.model
 {
-    String domain;
-    String userId;
-    String username;
-
-    public AccountImpl() { }
-
-    public AccountImpl(String domain, String userId, String username)
+    /// <summary>
+    /// Summary description for AccountImpl
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    ///  Apache Software License 2.0 2008 Shindig
+    /// </para>
+    /// </remarks>
+    public class AccountImpl : Account
     {
-        this.domain = domain;
-        this.userId = userId;
-        this.username = username;
-    }
+        String domain;
+        String userId;
+        String username;
 
-    public override String getDomain()
-    {
-        return domain;
-    }
+        public AccountImpl() { }
 
-    public override void setDomain(String domain)
-    {
-        this.domain = domain;
-    }
+        public AccountImpl(String domain, String userId, String username)
+        {
+            this.domain = domain;
+            this.userId = userId;
+            this.username = username;
+        }
 
-    public override String getUserId()
-    {
-        return userId;
-    }
+        public override String getDomain()
+        {
+            return domain;
+        }
 
-    public override void setUserId(String userId)
-    {
-        this.userId = userId;
-    }
+        public override void setDomain(String domain)
+        {
+            this.domain = domain;
+        }
 
-    public override String getUsername()
-    {
-        return username;
-    }
+        public override String getUserId()
+        {
+            return userId;
+        }
 
-    public override void setUsername(String username)
-    {
-        this.username = username;
+        public override void setUserId(String userId)
+        {
+            this.userId = userId;
+        }
+
+        public override String getUsername()
+        {
+            return username;
+        }
+
+        public override void setUsername(String username)
+        {
+            this.username = username;
+        }
     }
 }

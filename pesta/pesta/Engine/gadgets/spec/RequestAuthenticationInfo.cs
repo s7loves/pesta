@@ -19,15 +19,16 @@
 #endregion
 using System;
 using System.Collections.Generic;
+using Uri=Pesta.Engine.common.uri.Uri;
 
-namespace Pesta
+namespace Pesta.Engine.gadgets.spec
 {
     /// <summary>
     /// Summary description for RequestAuthenticationInfo
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public interface RequestAuthenticationInfo
@@ -57,5 +58,5 @@ namespace Pesta
          * @return A map of all relevant auth-related attributes.
          */
         Dictionary<String, String> getAttributes();
-    } 
+    }
 }

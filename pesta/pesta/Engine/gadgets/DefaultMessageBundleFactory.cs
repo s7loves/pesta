@@ -18,20 +18,21 @@
  */
 #endregion
 using System;
-using System.Data;
-using System.Configuration;
 using System.Net;
 using System.Web;
-using System.IO;
+using Pesta.Engine.gadgets.http;
+using Pesta.Engine.gadgets.spec;
+using Pesta.Utilities;
+using Uri=Pesta.Engine.common.uri.Uri;
 
-namespace Pesta
+namespace Pesta.Engine.gadgets
 {
     /// <summary>
     /// Summary description for BasicMessageBundleFactory
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class DefaultMessageBundleFactory : AbstractMessageBundleFactory
@@ -104,13 +105,13 @@ namespace Pesta
             if (response.getHttpStatusCode() != (int)HttpStatusCode.OK)
             {
                 throw new GadgetException(GadgetException.Code.FAILED_TO_RETRIEVE_CONTENT,
-                    "Unable to retrieve message bundle xml. HTTP error " +
-                    response.getHttpStatusCode());
+                                          "Unable to retrieve message bundle xml. HTTP error " +
+                                          response.getHttpStatusCode());
             }
 
             MessageBundle bundle = new MessageBundle(locale, response.responseString);
             HttpRuntime.Cache.Insert(url.ToString(), bundle, null, System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromTicks(refresh));
             return bundle;
         }
-    } 
+    }
 }

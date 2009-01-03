@@ -19,21 +19,22 @@
 #endregion
 using System;
 using System.Web;
+using Pesta.Engine.gadgets.spec;
 
-namespace Pesta
+namespace Pesta.Engine.gadgets.variables
 {
     /// <summary>
     /// Summary description for UserPrefSubstituter
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class UserPrefSubstituter
     {
         public static void addSubstitutions(Substitutions substituter,
-                    GadgetSpec spec, UserPrefs values)
+                                            GadgetSpec spec, UserPrefs values)
         {
             foreach (UserPref pref in spec.getUserPrefs())
             {
@@ -50,5 +51,5 @@ namespace Pesta
                 substituter.addSubstitution(Substitutions.Type.USER_PREF, name, HttpUtility.HtmlEncode(value));
             }
         }
-    } 
+    }
 }

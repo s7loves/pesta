@@ -18,15 +18,16 @@
  */
 #endregion
 using System;
+using Pesta.Interop.oauth;
 
-namespace Pesta
+namespace Pesta.Engine.gadgets.oauth
 {
     /// <summary>
     /// Summary description for AccessorInfoBuilder
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class AccessorInfoBuilder
@@ -92,5 +93,5 @@ namespace Pesta
         {
             this.method = method;
         }
-    } 
+    }
 }

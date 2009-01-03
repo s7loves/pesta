@@ -18,24 +18,16 @@
  */
 #endregion
 using System;
-using System.Data;
-using System.Configuration;
-using System.Web;
-using System.Web.Security;
-using System.Web.UI;
-using System.Web.UI.HtmlControls;
-using System.Web.UI.WebControls;
-using System.Web.UI.WebControls.WebParts;
 
 
-namespace Pesta
+namespace Pesta.Engine.gadgets.variables
 {
     /// <summary>
     /// Summary description for BidiSubstituter
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class BidiSubstituter
@@ -58,5 +50,5 @@ namespace Pesta
             substituter.addSubstitution(Substitutions.Type.BIDI, DIR, rtl ? RTL : LTR);
             substituter.addSubstitution(Substitutions.Type.BIDI, REVERSE_DIR, rtl ? LTR : RTL);
         }
-    } 
+    }
 }

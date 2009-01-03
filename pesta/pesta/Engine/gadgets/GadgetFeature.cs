@@ -19,17 +19,17 @@
 #endregion
 using System;
 using System.Collections.Generic;
-using System.Text;
+using Pesta.Engine.common;
 
 
-namespace Pesta
+namespace Pesta.Engine.gadgets
 {
     /// <summary>
     /// 
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class GadgetFeature
@@ -136,12 +136,12 @@ namespace Pesta
             this.dependencies = dependencies;
         }
         public GadgetFeature(String name,
-          Dictionary<RenderingContext, Dictionary<String, List<JsLibrary>>> libraries,
-          HashSet<String> dependencies)
+                             Dictionary<RenderingContext, Dictionary<String, List<JsLibrary>>> libraries,
+                             HashSet<String> dependencies)
         {
             this.name = name;
             this.libraries = libraries;
             this.dependencies = dependencies;
         }
-    } 
+    }
 }

@@ -18,21 +18,19 @@
  */
 #endregion
 using System.Collections.Generic;
-using System.Collections;
 using System.Web;
-using System.Net;
 using System;
+using Pesta.Engine.gadgets.spec;
 
 
-namespace Pesta
+namespace Pesta.Engine.gadgets.oauth
 {
-
     /// <summary>
     /// Arguments to an OAuth fetch sent by the client.
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class OAuthArguments
@@ -136,19 +134,19 @@ namespace Pesta
             this.serviceName = "";
             this.useToken = OAuthArguments.UseToken.ALWAYS;
             useToken = ParseUseToken(auth, GetRequestParam(request,
-                    USE_TOKEN_PARAM, ""));
+                                                           USE_TOKEN_PARAM, ""));
             serviceName = GetRequestParam(request, SERVICE_PARAM, "");
             tokenName = GetRequestParam(request, TOKEN_PARAM, "");
             requestToken = GetRequestParam(request, REQUEST_TOKEN_PARAM, null);
             requestTokenSecret = GetRequestParam(request,
-                    REQUEST_TOKEN_SECRET_PARAM, null);
+                                                 REQUEST_TOKEN_SECRET_PARAM, null);
             origClientState = GetRequestParam(request, CLIENT_STATE_PARAM, null);
             bypassSpecCache = "1".Equals(GetRequestParam(request,
-                    BYPASS_SPEC_CACHE_PARAM, null));
+                                                         BYPASS_SPEC_CACHE_PARAM, null));
             signOwner = Boolean.Parse(GetRequestParam(request,
-                            SIGN_OWNER_PARAM, "true"));
+                                                      SIGN_OWNER_PARAM, "true"));
             signViewer = Boolean.Parse(GetRequestParam(request,
-                            SIGN_VIEWER_PARAM, "true"));
+                                                       SIGN_VIEWER_PARAM, "true"));
         }
 
         public OAuthArguments(RequestAuthenticationInfo info)
@@ -169,7 +167,7 @@ namespace Pesta
             tokenName = GetAuthInfoParam(attrs, TOKEN_PARAM, "");
             requestToken = GetAuthInfoParam(attrs, REQUEST_TOKEN_PARAM, null);
             requestTokenSecret = GetAuthInfoParam(attrs,
-                    REQUEST_TOKEN_SECRET_PARAM, null);
+                                                  REQUEST_TOKEN_SECRET_PARAM, null);
             origClientState = null;
             bypassSpecCache = false;
             signOwner = info.isSignOwner();
@@ -396,6 +394,5 @@ namespace Pesta
             }
         }
 
-    } 
+    }
 }
-

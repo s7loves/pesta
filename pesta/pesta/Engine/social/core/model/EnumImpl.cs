@@ -18,59 +18,63 @@
  */
 #endregion
 using System;
+using Pesta.Engine.social.model;
 
-/// <summary>
-/// Summary description for EnumImpl
-/// </summary>
-/// <remarks>
-/// <para>
-///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
-/// </para>
-/// </remarks>
-public class EnumImpl<E> : Enums<E> where E : EnumKey
+namespace Pesta.Engine.social.core.model
 {
-    private String displayValue;
-    private E value = default(E);
-
-    /**
-     * Constructs a Enum object.
-     * @param value EnumKey The key to use
-     * @param displayValue String The display value
-     */
-    public EnumImpl(E value, String displayValue)
+    /// <summary>
+    /// Summary description for EnumImpl
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    ///  Apache Software License 2.0 2008 Shindig
+    /// </para>
+    /// </remarks>
+    public class EnumImpl<E> : Enums<E> where E : EnumKey
     {
-        this.value = value;
-        this.displayValue = displayValue;
-    }
+        private String displayValue;
+        private E value = default(E);
 
-    /**
-     * Constructs a Enum object.
-     * @param value The key to use. Will use the value from getDisplayValue() as
-     *     the display value.
-     */
-    public EnumImpl(E value)
-    {
-        this.value = value;
-        this.displayValue = value.getDisplayValue();
-    }
+        /**
+         * Constructs a Enum object.
+         * @param value EnumKey The key to use
+         * @param displayValue String The display value
+         */
+        public EnumImpl(E value, String displayValue)
+        {
+            this.value = value;
+            this.displayValue = displayValue;
+        }
 
-    public override String getDisplayValue()
-    {
-        return displayValue;
-    }
+        /**
+         * Constructs a Enum object.
+         * @param value The key to use. Will use the value from getDisplayValue() as
+         *     the display value.
+         */
+        public EnumImpl(E value)
+        {
+            this.value = value;
+            this.displayValue = value.getDisplayValue();
+        }
 
-    public override void setDisplayValue(String displayValue)
-    {
-        this.displayValue = displayValue;
-    }
+        public override String getDisplayValue()
+        {
+            return displayValue;
+        }
 
-    public override E getValue()
-    {
-        return value;
-    }
+        public override void setDisplayValue(String displayValue)
+        {
+            this.displayValue = displayValue;
+        }
 
-    public override void setValue(E value)
-    {
-        this.value = value;
+        public override E getValue()
+        {
+            return value;
+        }
+
+        public override void setValue(E value)
+        {
+            this.value = value;
+        }
     }
 }

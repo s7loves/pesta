@@ -18,97 +18,102 @@
  */
 #endregion
 using System;
+using Pesta.Engine.social.model;
+using Pesta.Interop;
 
-/// <summary>
-/// Summary description for ListFieldImpl
-/// </summary>
-/// <remarks>
-/// <para>
-///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
-/// </para>
-/// </remarks>
-public class ListFieldImpl : ListField
+namespace Pesta.Engine.social.core.model
 {
-    String type;
-    String value;
-    bool primary;
-
-    public class Field : EnumBaseType<Field>
+    /// <summary>
+    /// Summary description for ListFieldImpl
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    ///  Apache Software License 2.0 2008 Shindig
+    /// </para>
+    /// </remarks>
+    public class ListFieldImpl : ListField
     {
-        /// <summary>
-        /// Initializes a new instance of the Field class.
-        /// </summary>
-        public Field()
+        String type;
+        String value;
+        bool primary;
+
+        public class Field : EnumBaseType<Field>
         {
+            /// <summary>
+            /// Initializes a new instance of the Field class.
+            /// </summary>
+            public Field()
+            {
+            }
+            public Field(int key, string value)
+                : base(key, value)
+            {
+
+            }
+            /** the field name for value. */
+            public static readonly Field VALUE = new Field(1, "value");
+            /** the field name for type. */
+            public static readonly Field TYPE = new Field(2, "type");
+            /** the field name for primary. */
+            public static readonly Field PRIMARY = new Field(3, "primary");
+
+            /**
+             * The field name that the instance represents.
+             */
+            private readonly String jsonString;
+
+            /**
+             * create a field baseD on the name of an element.
+             *
+             * @param jsonString the name of the element
+             */
+            private Field(String jsonString)
+            {
+                this.jsonString = jsonString;
+            }
+
+            public override String ToString()
+            {
+                return this.jsonString;
+            }
         }
-        public Field(int key, string value)
-            : base(key, value)
+
+        public ListFieldImpl() { }
+
+        public ListFieldImpl(String type, String value)
         {
-
+            this.type = type;
+            this.value = value;
         }
-        /** the field name for value. */
-        public static readonly Field VALUE = new Field(1, "value");
-        /** the field name for type. */
-        public static readonly Field TYPE = new Field(2, "type");
-        /** the field name for primary. */
-        public static readonly Field PRIMARY = new Field(3, "primary");
 
-        /**
-         * The field name that the instance represents.
-         */
-        private readonly String jsonString;
-
-        /**
-         * create a field baseD on the name of an element.
-         *
-         * @param jsonString the name of the element
-         */
-        private Field(String jsonString)
+        public String getType()
         {
-            this.jsonString = jsonString;
+            return type;
         }
 
-        public override String ToString()
+        public void setType(String type)
         {
-            return this.jsonString;
+            this.type = type;
         }
-    }
 
-    public ListFieldImpl() { }
+        public String getValue()
+        {
+            return value;
+        }
 
-    public ListFieldImpl(String type, String value)
-    {
-        this.type = type;
-        this.value = value;
-    }
+        public void setValue(String value)
+        {
+            this.value = value;
+        }
 
-    public String getType()
-    {
-        return type;
-    }
+        public bool getPrimary()
+        {
+            return primary;
+        }
 
-    public void setType(String type)
-    {
-        this.type = type;
-    }
-
-    public String getValue()
-    {
-        return value;
-    }
-
-    public void setValue(String value)
-    {
-        this.value = value;
-    }
-
-    public bool getPrimary()
-    {
-        return primary;
-    }
-
-    public void setPrimary(bool primary)
-    {
-        this.primary = primary;
+        public void setPrimary(bool primary)
+        {
+            this.primary = primary;
+        }
     }
 }

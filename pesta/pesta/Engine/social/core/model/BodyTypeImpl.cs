@@ -18,71 +18,75 @@
  */
 #endregion
 using System;
+using Pesta.Engine.social.model;
 
-/// <summary>
-/// Summary description for BodyTypeImpl
-/// </summary>
-/// <remarks>
-/// <para>
-///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
-/// </para>
-/// </remarks>
-public class BodyTypeImpl : BodyType
+namespace Pesta.Engine.social.core.model
 {
-    private String build;
-    private String eyeColor;
-    private String hairColor;
-    private float? height;
-    private float? weight;
-
-
-    public override String getBuild()
+    /// <summary>
+    /// Summary description for BodyTypeImpl
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    ///  Apache Software License 2.0 2008 Shindig
+    /// </para>
+    /// </remarks>
+    public class BodyTypeImpl : BodyType
     {
-        return build;
-    }
+        private String build;
+        private String eyeColor;
+        private String hairColor;
+        private float? height;
+        private float? weight;
 
-    public override void setBuild(String build)
-    {
-        this.build = build;
-    }
 
-    public override String getEyeColor()
-    {
-        return eyeColor;
-    }
+        public override String getBuild()
+        {
+            return build;
+        }
 
-    public override void setEyeColor(String eyeColor)
-    {
-        this.eyeColor = eyeColor;
-    }
+        public override void setBuild(String build)
+        {
+            this.build = build;
+        }
 
-    public override String getHairColor()
-    {
-        return hairColor;
-    }
+        public override String getEyeColor()
+        {
+            return eyeColor;
+        }
 
-    public override void setHairColor(String _hairColor)
-    {
-        this.hairColor = _hairColor;
-    }
+        public override void setEyeColor(String eyeColor)
+        {
+            this.eyeColor = eyeColor;
+        }
 
-    public override float? getHeight()
-    {
-        return height;
-    }
+        public override String getHairColor()
+        {
+            return hairColor;
+        }
 
-    public override void setHeight(float _height)
-    {
-        this.height = _height;
-    }
+        public override void setHairColor(String _hairColor)
+        {
+            this.hairColor = _hairColor;
+        }
 
-    public override float? getWeight()
-    {
-        return weight;
-    }
+        public override float? getHeight()
+        {
+            return height;
+        }
 
-    public override void setWeight(float _weight)
-    {
-        this.weight = _weight;
+        public override void setHeight(float _height)
+        {
+            this.height = _height;
+        }
+
+        public override float? getWeight()
+        {
+            return weight;
+        }
+
+        public override void setWeight(float _weight)
+        {
+            this.weight = _weight;
+        }
     }
 }

@@ -20,18 +20,20 @@
 using System;
 using System.Collections.Generic;
 using System.Web;
-using System.Net;
 using System.Text;
 using com.google.caja.lexer;
+using Pesta.Engine.gadgets.servlet;
+using Pesta.Engine.gadgets.spec;
+using Uri=Pesta.Engine.common.uri.Uri;
 
-namespace Pesta
+namespace Pesta.Engine.gadgets.rewrite.lexer
 {
     /// <summary>
     /// Summary description for JavascriptTagMerger
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class JavascriptTagMerger : HtmlTagTransformer
@@ -48,18 +50,18 @@ namespace Pesta
          * @param relativeUrlBase to resolve relative urls
          */
         public JavascriptTagMerger(GadgetSpec spec, ContentRewriterFeature rewriterFeature,
-                                 String concatBase, Uri relativeUrlBase)
+                                   String concatBase, Uri relativeUrlBase)
         {
             // Force the mime-type to mimic browser expectation so rewriters
             // can function properly
             this.concatBase = concatBase
-                + ProxyBase.REWRITE_MIME_TYPE_PARAM
-                + "=text/javascript&"
-                + "gadget="
-                + HttpUtility.UrlEncode(spec.getUrl().ToString())
-                + "&fp="
-                + rewriterFeature.getFingerprint()
-                + '&';
+                              + ProxyBase.REWRITE_MIME_TYPE_PARAM
+                              + "=text/javascript&"
+                              + "gadget="
+                              + HttpUtility.UrlEncode(spec.getUrl().ToString())
+                              + "&fp="
+                              + rewriterFeature.getFingerprint()
+                              + '&';
 
             this.relativeUrlBase = relativeUrlBase;
         }
@@ -71,8 +73,8 @@ namespace Pesta
                 if (isTagOpen)
                 {
                     if (lastToken != null &&
-                    lastToken.type == HtmlTokenType.ATTRNAME &&
-                    lastToken.toString().ToLower().Equals("src"))
+                        lastToken.type == HtmlTokenType.ATTRNAME &&
+                        lastToken.toString().ToLower().Equals("src"))
                     {
                         scripts.Add(Uri.parse(stripQuotes(token.toString())));
                     }
@@ -145,7 +147,7 @@ namespace Pesta
                         srcUrl = relativeUrlBase.resolve(srcUrl);
                     }
                     builder.Append(paramIndex).Append('=')
-                    .Append(HttpUtility.UrlEncode(srcUrl.ToString()));
+                        .Append(HttpUtility.UrlEncode(srcUrl.ToString()));
                     if (i < concat.Count - 1)
                     {
                         if (builder.Length - urlStart > MAX_URL_LENGTH)
@@ -175,5 +177,5 @@ namespace Pesta
         {
             return s.Replace("\"", "").Replace("'", "");
         }
-    } 
+    }
 }

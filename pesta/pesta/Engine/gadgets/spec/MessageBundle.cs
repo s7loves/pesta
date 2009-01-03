@@ -21,15 +21,16 @@ using System;
 using System.Xml;
 using System.Collections.Generic;
 using System.Text;
+using Pesta.Engine.common.xml;
 
-namespace Pesta
+namespace Pesta.Engine.gadgets.spec
 {
     /// <summary>
     /// Summary description for MessageBundle
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class MessageBundle
@@ -56,7 +57,7 @@ namespace Pesta
             catch (XmlException e)
             {
                 throw new SpecParserException("Malformed XML in file " + locale.getMessages()
-                                + ": " + e.Message);
+                                              + ": " + e.Message);
             }
             messages = parseMessages(doc);
             languageDirection = locale.getLanguageDirection();
@@ -153,11 +154,11 @@ namespace Pesta
             foreach (var entry in messages)
             {
                 buf.Append("<msg name=\"").Append(entry.Key).Append("\">")
-                     .Append(entry.Value)
-                     .Append("</msg>\n");
+                    .Append(entry.Value)
+                    .Append("</msg>\n");
             }
             buf.Append("</messagebundle>");
             return buf.ToString();
         }
-    } 
+    }
 }

@@ -18,19 +18,18 @@
  */
 #endregion
 using System;
-using System.Data;
-using System.Configuration;
-using System.Web;
+using Pesta.Engine.common.crypto;
+using Pesta.Engine.gadgets.http;
 
 
-namespace Pesta
+namespace Pesta.Engine.gadgets.oauth
 {
     /// <summary>
     /// Summary description for OAuthResponseParams
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class OAuthResponseParams
@@ -128,5 +127,5 @@ namespace Pesta
         {
             this.errorText = errorText;
         }
-    } 
+    }
 }

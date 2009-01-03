@@ -19,17 +19,17 @@
 #endregion
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Text.RegularExpressions;
+using Pesta.Engine.gadgets.spec;
 
-namespace Pesta
+namespace Pesta.Engine.gadgets.rewrite
 {
     /// <summary>
     /// Summary description for ContentRewriterFeature
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class ContentRewriterFeature
@@ -65,9 +65,9 @@ namespace Pesta
          * @param defaultTags    Set of default tags that can be rewritten
          */
         public ContentRewriterFeature(GadgetSpec spec, String defaultInclude,
-                                    String defaultExclude,
-                                    String defaultExpires,
-                                    HashSet<String> defaultTags)
+                                      String defaultExclude,
+                                      String defaultExpires,
+                                      HashSet<String> defaultTags)
         {
             Feature f = null;
             if (spec != null)
@@ -229,5 +229,5 @@ namespace Pesta
             }
             return fingerprint;
         }
-    } 
+    }
 }

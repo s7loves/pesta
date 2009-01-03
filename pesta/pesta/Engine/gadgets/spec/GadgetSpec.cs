@@ -18,19 +18,23 @@
  */
 #endregion
 using System;
-using Locale = java.util.Locale;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
+using Pesta.Engine.common.util;
+using Pesta.Engine.common.xml;
+using Pesta.Engine.gadgets.variables;
+using Pesta.Interop;
+using Uri=Pesta.Engine.common.uri.Uri;
 
-namespace Pesta
+namespace Pesta.Engine.gadgets.spec
 {
     /// <summary>
     /// Summary description for GadgetSpec
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class GadgetSpec
@@ -157,7 +161,7 @@ namespace Pesta
         {
             StringBuilder buf = new StringBuilder();
             buf.Append("<Module>\n")
-               .Append(modulePrefs).Append('\n');
+                .Append(modulePrefs).Append('\n');
             foreach (UserPref pref in userPrefs)
             {
                 buf.Append(pref).Append('\n');
@@ -281,5 +285,5 @@ namespace Pesta
             url = spec.url;
             checksum = spec.checksum;
         }
-    } 
+    }
 }

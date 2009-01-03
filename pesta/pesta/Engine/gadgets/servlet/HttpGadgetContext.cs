@@ -20,18 +20,19 @@
 using System;
 using System.Web;
 using System.Collections.Generic;
-using Locale = java.util.Locale;
 using System.Collections.Specialized;
+using Pesta.Engine.auth;
+using Pesta.Interop;
 using URI = System.Uri;
 
-namespace Pesta
+namespace Pesta.Engine.gadgets.servlet
 {
     /// <summary>
     /// Summary description for HttpGadgetContext
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class HttpGadgetContext : GadgetContext
@@ -333,5 +334,5 @@ namespace Pesta
         {
             return request.Params["view"];
         }
-    } 
+    }
 }

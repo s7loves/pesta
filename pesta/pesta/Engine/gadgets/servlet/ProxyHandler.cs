@@ -19,27 +19,27 @@
 #endregion
 using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.IO;
-using System.Web;
 using System.Net;
+using Pesta.Engine.gadgets.http;
+using Pesta.Engine.gadgets.rewrite;
+using Uri=Pesta.Engine.common.uri.Uri;
 
-namespace Pesta
+namespace Pesta.Engine.gadgets.servlet
 {
     /// <summary>
     /// Summary description for ProxyHandler
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class ProxyHandler : ProxyBase
     {
         private static List<string> DISALLOWED_RESPONSE_HEADERS = new List<string>(){
-      "set-cookie", "content-length", "content-encoding", "etag", "last-modified" ,"accept-ranges",
-      "vary", "expires", "date", "pragma", "cache-control"
-                                                          };
+                                                                                        "set-cookie", "content-length", "content-encoding", "etag", "last-modified" ,"accept-ranges",
+                                                                                        "vary", "expires", "date", "pragma", "cache-control"
+                                                                                    };
         private LockedDomainService lockedDomainService;
         private ContentRewriterRegistry contentRewriterRegistry;
         private readonly HttpFetcher fetcher;
@@ -151,5 +151,5 @@ namespace Pesta
 
             return req;
         }
-    } 
+    }
 }

@@ -16,32 +16,35 @@
  * KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-#endregion
-using System.Collections.Generic;
-using System.Collections;
-using System;
+#endregionusing System;
 
-/// <summary>
-/// Exception thrown during request signing.
-/// </summary>
-/// <remarks>
-/// <para>
-///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
-/// </para>
-/// </remarks>
-[Serializable]
-public class RequestSigningException : GadgetException 
+namespace Pesta.Engine.gadgets
 {
+    /// <summary>
+    /// Exception thrown during request signing.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    ///  Apache Software License 2.0 2008 Shindig
+    /// </para>
+    /// </remarks>
+    [Serializable]
+    public class RequestSigningException : GadgetException
+    {
 
-	public RequestSigningException(Exception cause) : base(GadgetException.Code.REQUEST_SIGNING_FAILURE, cause) 
-    {
-	}
-	
-	public RequestSigningException(String msg, Exception cause) : base(GadgetException.Code.REQUEST_SIGNING_FAILURE, msg, cause) 
-    {
-	}
-	
-	public RequestSigningException(String msg) : base(GadgetException.Code.REQUEST_SIGNING_FAILURE, msg) 
-    {
-	}
+        public RequestSigningException(Exception cause)
+            : base(GadgetException.Code.REQUEST_SIGNING_FAILURE, cause)
+        {
+        }
+
+        public RequestSigningException(String msg, Exception cause)
+            : base(GadgetException.Code.REQUEST_SIGNING_FAILURE, msg, cause)
+        {
+        }
+
+        public RequestSigningException(String msg)
+            : base(GadgetException.Code.REQUEST_SIGNING_FAILURE, msg)
+        {
+        }
+    }
 }
