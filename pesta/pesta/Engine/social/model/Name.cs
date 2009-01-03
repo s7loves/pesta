@@ -19,72 +19,77 @@
 #endregion
 
 using System;
+using Pesta.Engine.social.core.model;
+using Pesta.Interop;
 
-/// <summary>
-/// Summary description for Name
-/// </summary>
-/// <remarks>
-/// <para>
-///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
-/// </para>
-/// </remarks>
-[ImplementedBy(typeof(NameImpl))]
-public abstract class Name
+namespace Pesta.Engine.social.model
 {
-    public class Field : EnumBaseType<Field>
+    /// <summary>
+    /// Summary description for Name
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    ///  Apache Software License 2.0 2008 Shindig
+    /// </para>
+    /// </remarks>
+    [ImplementedBy(typeof(NameImpl))]
+    public abstract class Name
     {
-        /// <summary>
-        /// Initializes a new instance of the Field class.
-        /// </summary>
-        public Field()
+        public class Field : EnumBaseType<Field>
         {
+            /// <summary>
+            /// Initializes a new instance of the Field class.
+            /// </summary>
+            public Field()
+            {
+            }
+            public Field(int key, string value)
+                : base(key, value)
+            {
+
+            }
+            public static readonly Field ADDITIONAL_NAME = new Field(1, "additionalName");
+            public static readonly Field FAMILY_NAME = new Field(2, "familyName");
+            public static readonly Field GIVEN_NAME = new Field(3, "givenName");
+            public static readonly Field HONORIFIC_PREFIX = new Field(4, "honorificPrefix");
+            public static readonly Field HONORIFIC_SUFFIX = new Field(5, "honorificSuffix");
+            public static readonly Field FORMATTED = new Field(6, "formatted");
+
+            private readonly String jsonString;
+
+            private Field(String jsonString)
+            {
+                this.jsonString = jsonString;
+            }
+
+            public override String ToString()
+            {
+                return this.jsonString;
+            }
         }
-        public Field(int key, string value) 
-            : base(key,value)
-        {
 
-        }
-        public static readonly Field ADDITIONAL_NAME = new Field(1, "additionalName");
-        public static readonly Field FAMILY_NAME = new Field(2, "familyName");
-        public static readonly Field GIVEN_NAME = new Field(3, "givenName");
-        public static readonly Field HONORIFIC_PREFIX = new Field(4, "honorificPrefix");
-        public static readonly Field HONORIFIC_SUFFIX = new Field(5, "honorificSuffix");
-        public static readonly Field FORMATTED = new Field(6, "formatted");
+        public abstract String getFormatted();
 
-        private readonly String jsonString;
+        public abstract void setFormatted(String formatted);
 
-        private Field(String jsonString) 
-        {
-            this.jsonString = jsonString;
-        }
+        public abstract String getAdditionalName();
 
-        public override String ToString() 
-        {
-            return this.jsonString;
-        }
-    }
+        public abstract void setAdditionalName(String additionalName);
 
-    public abstract String getFormatted();
+        public abstract String getFamilyName();
 
-    public abstract void setFormatted(String formatted);
+        public abstract void setFamilyName(String familyName);
 
-    public abstract String getAdditionalName();
+        public abstract String getGivenName();
 
-    public abstract void setAdditionalName(String additionalName);
+        public abstract void setGivenName(String givenName);
 
-    public abstract String getFamilyName();
+        public abstract String getHonorificPrefix();
 
-    public abstract void setFamilyName(String familyName);
+        public abstract void setHonorificPrefix(String honorificPrefix);
 
-    public abstract String getGivenName();
+        public abstract String getHonorificSuffix();
 
-    public abstract void setGivenName(String givenName);
-
-    public abstract String getHonorificPrefix();
-
-    public abstract void setHonorificPrefix(String honorificPrefix);
-
-    public abstract String getHonorificSuffix();
-
-    public abstract void setHonorificSuffix(String honorificSuffix);
+        public abstract void setHonorificSuffix(String honorificSuffix);
+    } 
 }

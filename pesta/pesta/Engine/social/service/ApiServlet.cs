@@ -18,20 +18,21 @@
  */
 #endregion
 using System;
-using System.Configuration;
 using System.Web;
-using System.Collections.Generic;
 using System.Runtime.Remoting.Messaging;
 using System.Text;
+using Pesta.Engine.auth;
+using Pesta.Engine.social.core.util;
+using Pesta.Engine.social.spi;
 
-namespace Pesta
+namespace Pesta.Engine.social.service
 {
     /// <summary>
     /// Summary description for ApiServlet
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public abstract class ApiServlet
@@ -61,8 +62,8 @@ namespace Pesta
         protected void sendSecurityError(HttpResponse response)
         {
             sendError(response, new ResponseItem(ResponseError.UNAUTHORIZED,
-                "The request did not have a proper security token nor oauth message and unauthenticated "
-                    + "requests are not allowed"));
+                                                 "The request did not have a proper security token nor oauth message and unauthenticated "
+                                                 + "requests are not allowed"));
         }
 
         /**
@@ -75,7 +76,7 @@ namespace Pesta
             if (handler == null)
             {
                 throw new SocialSpiException(ResponseError.NOT_IMPLEMENTED,
-                        "The service " + requestItem.getService() + " is not implemented");
+                                             "The service " + requestItem.getService() + " is not implemented");
             }
             
             return handler.handleItem(requestItem);
@@ -124,5 +125,5 @@ namespace Pesta
             }
             response.ContentEncoding = Encoding.GetEncoding(DEFAULT_ENCODING);
         }
-    } 
+    }
 }

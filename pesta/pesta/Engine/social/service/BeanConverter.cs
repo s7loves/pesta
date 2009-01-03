@@ -19,20 +19,23 @@
 #endregion
 using System;
 
-/// <summary>
-/// 
-/// </summary>
-/// <remarks>
-/// <para>
-///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
-/// </para>
-/// </remarks>
-public interface BeanConverter 
+namespace Pesta.Engine.social.service
 {
-    Object convertToObject(String str, Type className);
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    ///  Apache Software License 2.0 2008 Shindig
+    /// </para>
+    /// </remarks>
+    public interface BeanConverter
+    {
+        Object convertToObject(String str, Type className);
 
-    String convertToString(Object pojo);
+        String convertToString(Object pojo);
 
-    String getContentType();
+        String getContentType();
 
+    }
 }

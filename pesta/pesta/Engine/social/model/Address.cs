@@ -18,227 +18,232 @@
  */
 #endregion
 using System;
+using Pesta.Engine.social.core.model;
+using Pesta.Interop;
 
-/// <summary>
-/// Summary description for Address
-/// </summary>
-/// <remarks>
-/// <para>
-///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
-/// </para>
-/// </remarks>
-[ImplementedBy(typeof(AddressImpl))]
-public abstract class Address
+namespace Pesta.Engine.social.model
 {
-    /**
-   * The fields that represent the address object in json form.
-   */
-    public class Field : EnumBaseType<Field>
+    /// <summary>
+    /// Summary description for Address
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    ///  Apache Software License 2.0 2008 Shindig
+    /// </para>
+    /// </remarks>
+    [ImplementedBy(typeof(AddressImpl))]
+    public abstract class Address
     {
-        /// <summary>
-        /// Initializes a new instance of the Field class.
-        /// </summary>
-        public Field()
+        /**
+       * The fields that represent the address object in json form.
+       */
+        public class Field : EnumBaseType<Field>
         {
-        }
-        public Field(int key, string value)
-            : base(key, value)
-        {
+            /// <summary>
+            /// Initializes a new instance of the Field class.
+            /// </summary>
+            public Field()
+            {
+            }
+            public Field(int key, string value)
+                : base(key, value)
+            {
 
+            }
+            public static readonly Field COUNTRY = new Field(1, "country");
+            /** the field name for latitude. */
+            public static readonly Field LATITUDE = new Field(2, "latitude");
+            /** the field name for locality. */
+            public static readonly Field LOCALITY = new Field(3, "locality");
+            /** the field name for longitude. */
+            public static readonly Field LONGITUDE = new Field(4, "longitude");
+            /** the field name for postalCode. */
+            public static readonly Field POSTAL_CODE = new Field(5, "postalCode");
+            /** the field name for region. */
+            public static readonly Field REGION = new Field(6, "region");
+            /** the feild name for streetAddress this field may be multiple lines. */
+            public static readonly Field STREET_ADDRESS = new Field(7, "streetAddress");
+            /** the field name for type. */
+            public static readonly Field TYPE = new Field(8, "type");
+            /** the field name for formatted. */
+            public static readonly Field FORMATTED = new Field(9, "formatted");
+            /** the field name for primary. */
+            public static readonly Field PRIMARY = new Field(10, "primary");
+
+            /**
+            * The json field that the instance represents.
+            */
+            private readonly String jsonString;
+
+            /**
+            * create a field base on the a json element.
+            *
+            * @param jsonString the name of the element
+            */
+            private Field(String jsonString)
+            {
+                this.jsonString = jsonString;
+            }
+
+            /**
+            * emit the field as a json element.
+            *
+            * @return the field name
+            */
+            public override String ToString()
+            {
+                return this.jsonString;
+            }
         }
-        public static readonly Field COUNTRY = new Field(1, "country");
-        /** the field name for latitude. */
-        public static readonly Field LATITUDE = new Field(2,"latitude");
-        /** the field name for locality. */
-        public static readonly Field LOCALITY = new Field(3,"locality");
-        /** the field name for longitude. */
-        public static readonly Field LONGITUDE = new Field(4,"longitude");
-        /** the field name for postalCode. */
-        public static readonly Field POSTAL_CODE = new Field(5,"postalCode");
-        /** the field name for region. */
-        public static readonly Field REGION = new Field(6,"region");
-        /** the feild name for streetAddress this field may be multiple lines. */
-        public static readonly Field STREET_ADDRESS = new Field(7,"streetAddress");
-        /** the field name for type. */
-        public static readonly Field TYPE = new Field(8,"type");
-        /** the field name for formatted. */
-        public static readonly Field FORMATTED = new Field(9,"formatted");
-        /** the field name for primary. */
-        public static readonly Field PRIMARY = new Field(10,"primary");
 
         /**
-        * The json field that the instance represents.
-        */
-        private readonly String jsonString;
-
-        /**
-        * create a field base on the a json element.
+        * Get the country.
         *
-        * @param jsonString the name of the element
+        * @return the country
         */
-        private Field(String jsonString) 
-        {
-            this.jsonString = jsonString;
-        }
+        public abstract String getCountry();
 
         /**
-        * emit the field as a json element.
+        * Set the country.
         *
-        * @return the field name
+        * @param country the country
         */
-        public override String ToString() 
-        {
-            return this.jsonString;
-        }
-    }
+        public abstract void setCountry(String country);
 
-    /**
-    * Get the country.
-    *
-    * @return the country
-    */
-    public abstract  String getCountry();
+        /**
+        * Get the latitude.
+        *
+        * @return latitude
+        */
+        public abstract float? getLatitude();
 
-    /**
-    * Set the country.
-    *
-    * @param country the country
-    */
-    public abstract  void setCountry(String country);
+        /**
+        * Set the latitude.
+        *
+        * @param latitude latitude
+        */
+        public abstract void setLatitude(float? latitude);
 
-    /**
-    * Get the latitude.
-    *
-    * @return latitude
-    */
-    public abstract float? getLatitude();
+        /**
+        * Get the locality.
+        *
+        * @return the locality
+        */
+        public abstract String getLocality();
 
-    /**
-    * Set the latitude.
-    *
-    * @param latitude latitude
-    */
-    public abstract void setLatitude(float? latitude);
+        /**
+        * Set the locality.
+        *
+        * @param locality the locality
+        */
+        public abstract void setLocality(String locality);
 
-    /**
-    * Get the locality.
-    *
-    * @return the locality
-    */
-    public abstract  String getLocality();
+        /**
+        * Get the longitude of the address in degrees.
+        *
+        * @return the longitude of the address in degrees
+        */
+        public abstract float? getLongitude();
 
-    /**
-    * Set the locality.
-    *
-    * @param locality the locality
-    */
-    public abstract  void setLocality(String locality);
+        /**
+        * Set the longitude of the address in degrees.
+        *
+        * @param longitude the longitude of the address in degrees.
+        */
+        public abstract void setLongitude(float? longitude);
 
-    /**
-    * Get the longitude of the address in degrees.
-    *
-    * @return the longitude of the address in degrees
-    */
-    public abstract float? getLongitude();
+        /**
+        * Get the Postal code for the address.
+        *
+        * @return the postal code for the address
+        */
+        public abstract String getPostalCode();
 
-    /**
-    * Set the longitude of the address in degrees.
-    *
-    * @param longitude the longitude of the address in degrees.
-    */
-    public abstract void setLongitude(float? longitude);
+        /**
+        * Set the postal code for the address.
+        *
+        * @param postalCode the postal code
+        */
+        public abstract void setPostalCode(String postalCode);
 
-    /**
-    * Get the Postal code for the address.
-    *
-    * @return the postal code for the address
-    */
-    public abstract  String getPostalCode();
+        /**
+        * Get the region.
+        *
+        * @return the region
+        */
+        public abstract String getRegion();
 
-    /**
-    * Set the postal code for the address.
-    *
-    * @param postalCode the postal code
-    */
-    public abstract  void setPostalCode(String postalCode);
+        /**
+        * Set the region.
+        *
+        * @param region the region
+        */
+        public abstract void setRegion(String region);
 
-    /**
-    * Get the region.
-    *
-    * @return the region
-    */
-    public abstract  String getRegion();
+        /**
+        * Get the street address.
+        *
+        * @return the street address
+        */
+        public abstract String getStreetAddress();
 
-    /**
-    * Set the region.
-    *
-    * @param region the region
-    */
-    public abstract  void setRegion(String region);
+        /**
+        * Set the street address.
+        *
+        * @param streetAddress the street address
+        */
+        public abstract void setStreetAddress(String streetAddress);
 
-    /**
-    * Get the street address.
-    *
-    * @return the street address
-    */
-    public abstract  String getStreetAddress();
+        /**
+        * Get the type of label of the address.
+        *
+        * @return the type or label of the address
+        */
+        public abstract String getType();
 
-    /**
-    * Set the street address.
-    *
-    * @param streetAddress the street address
-    */
-    public abstract  void setStreetAddress(String streetAddress);
+        /**
+        * Get the type of label of the address.
+        *
+        * @param type the type of label of the address.
+        */
+        public abstract void setType(String type);
 
-    /**
-    * Get the type of label of the address.
-    *
-    * @return the type or label of the address
-    */
-    public abstract  String getType();
+        /**
+        * Get the formatted address.
+        *
+        * @return the formatted address
+        */
+        public abstract String getFormatted();
 
-    /**
-    * Get the type of label of the address.
-    *
-    * @param type the type of label of the address.
-    */
-    public abstract  void setType(String type);
+        /**
+        * Set the formatted address.
+        *
+        * @param formatted the formatted address
+        */
+        public abstract void setFormatted(String formatted);
 
-    /**
-    * Get the formatted address.
-    *
-    * @return the formatted address
-    */
-    public abstract  String getFormatted();
+        /**
+        * <p>
+        * Get a bool value indicating whether this instance of the Plural Field is the primary or
+        * preferred value of for this field, e.g. the preferred mailing address. Service Providers MUST
+        * NOT mark more than one instance of the same Plural Field as primary="true", and MAY choose not
+        * to mark any fields as primary, if this information is not available. Introduced in v0.8.1
+        * </p><p>
+        * The service provider may wish to share the address instance between items and primary related
+        * to the address from which this came, so if the address came from an Organization, primary
+        * relates to the primary address of the organization, and not necessary the primary address of
+        * all addresses.
+        * </p><p>
+        * If the address is not part of a list (eg Person.location ) primary has no meaning.
+        * <p>
+        * @return true if the instance if the primary instance.
+        */
+        public abstract bool? getPrimary();
 
-    /**
-    * Set the formatted address.
-    *
-    * @param formatted the formatted address
-    */
-    public abstract  void setFormatted(String formatted);
-
-    /**
-    * <p>
-    * Get a bool value indicating whether this instance of the Plural Field is the primary or
-    * preferred value of for this field, e.g. the preferred mailing address. Service Providers MUST
-    * NOT mark more than one instance of the same Plural Field as primary="true", and MAY choose not
-    * to mark any fields as primary, if this information is not available. Introduced in v0.8.1
-    * </p><p>
-    * The service provider may wish to share the address instance between items and primary related
-    * to the address from which this came, so if the address came from an Organization, primary
-    * relates to the primary address of the organization, and not necessary the primary address of
-    * all addresses.
-    * </p><p>
-    * If the address is not part of a list (eg Person.location ) primary has no meaning.
-    * <p>
-    * @return true if the instance if the primary instance.
-    */
-    public abstract bool? getPrimary();
-
-    /**
-    * @see Address.getPrimary()
-    * @param primary set the Primary status of this Address.
-    */
-    public abstract void setPrimary(bool? primary);
+        /**
+        * @see Address.getPrimary()
+        * @param primary set the Primary status of this Address.
+        */
+        public abstract void setPrimary(bool? primary);
+    } 
 }

@@ -18,419 +18,422 @@
  */
 #endregion
 using System;
-using System.Text.RegularExpressions;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Collections;
 using Jayrock.Json;
 using Jayrock.Json.Conversion;
 using System.Reflection;
+using Pesta.Engine.social.core.model;
+using Pesta.Engine.social.model;
+using Pesta.Engine.social.service;
+using Pesta.Interop;
 
-/// <summary>
-/// Summary description for BeanJsonConverter
-/// </summary>
-/// <remarks>
-/// <para>
-///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
-/// </para>
-/// </remarks>
-public class BeanJsonConverter : BeanConverter
+namespace Pesta.Engine.social.core.util
 {
-    private static readonly Object[] EMPTY_OBJECT = {};
-    private static readonly HashSet<String> EXCLUDED_FIELDS = new HashSet<String>()
-                    {"class", "declaringclass"};
-    private static readonly String GETTER_PREFIX  = "get";
-    private static readonly String SETTER_PREFIX = "set";
-
-    // Only compute the filtered getters/setters once per-class
-    private static readonly Dictionary<Type,List<MethodPair>> GETTER_METHODS = new Dictionary<Type,List<MethodPair>>();
-    private static readonly Dictionary<Type, List<MethodPair>> SETTER_METHODS = new Dictionary<Type,List<MethodPair>>();
-
-    public String getContentType()
+    /// <summary>
+    /// Summary description for BeanJsonConverter
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    ///  Apache Software License 2.0 2008 Shindig
+    /// </para>
+    /// </remarks>
+    public class BeanJsonConverter : BeanConverter
     {
-        return "application/json";
-    }
+        private static readonly Object[] EMPTY_OBJECT = { };
+        private static readonly HashSet<String> EXCLUDED_FIELDS = new HashSet<String>() { "class", "declaringclass" };
+        private static readonly String GETTER_PREFIX = "get";
+        private static readonly String SETTER_PREFIX = "set";
 
-  /**
-   * Convert the passed in object to a string.
-   *
-   * @param pojo The object to convert
-   * @return An object whos toString method will return json
-   */
-    public String convertToString(Object pojo) 
-    {
-        return convertToJson(pojo).ToString();
-    }
+        // Only compute the filtered getters/setters once per-class
+        private static readonly Dictionary<Type, List<MethodPair>> GETTER_METHODS = new Dictionary<Type, List<MethodPair>>();
+        private static readonly Dictionary<Type, List<MethodPair>> SETTER_METHODS = new Dictionary<Type, List<MethodPair>>();
 
-  /**
-   * Convert the passed in object to a json object.
-   *
-   * @param pojo The object to convert
-   * @return An object whos toString method will return json
-   */
-    public Object convertToJson(Object pojo) 
-    {
-        try 
+        public String getContentType()
         {
-            return translateObjectToJson(pojo);
-        } 
-        catch (JsonException e) 
-        {
-            throw new Exception("Could not translate " + pojo + " to json", e);
+            return "application/json";
         }
-    }
 
-    private Object translateObjectToJson(Object val)
-    {
-        if (val is Object[]) 
+        /**
+         * Convert the passed in object to a string.
+         *
+         * @param pojo The object to convert
+         * @return An object whos toString method will return json
+         */
+        public String convertToString(Object pojo)
         {
-            JsonArray array = new JsonArray();
-            foreach(Object asd in (Object[]) val) 
+            return convertToJson(pojo).ToString();
+        }
+
+        /**
+         * Convert the passed in object to a json object.
+         *
+         * @param pojo The object to convert
+         * @return An object whos toString method will return json
+         */
+        public Object convertToJson(Object pojo)
+        {
+            try
             {
-                array.Put(translateObjectToJson(asd));
+                return translateObjectToJson(pojo);
             }
-            return array;
-        }
-        else if (val != null && val.GetType().GetInterface("IList") != null) 
-        {
-            JsonArray list = new JsonArray();
-            foreach(Object item in (IList)val) 
+            catch (JsonException e)
             {
-                list.Add(translateObjectToJson(item));
+                throw new Exception("Could not translate " + pojo + " to json", e);
             }
-            return list;
-        }
-        else if (val != null && val.GetType().GetInterface("IDictionary") != null) 
-        {
-            JsonObject map = new JsonObject();
-            IDictionary originalMap = (IDictionary)val;
-
-            foreach(DictionaryEntry item in originalMap) 
-            {
-                map.Put(item.Key.ToString(), translateObjectToJson(item.Value));
-            }
-            return map;
-
-        } 
-        else if (val != null && val.GetType().IsEnum) 
-        {
-            return val.ToString();
-        } 
-        else if (val is String
-                    || val is Boolean
-                    || val is int
-                    || val is DateTime
-                    || val is long
-                    || val is float
-                    || val is JsonObject
-                    || val is JsonArray
-                    || val == null) 
-        {
-            return val;
-        }
-        return convertMethodsToJson(val);
-    }
-
-  /**
-   * Convert the object to {@link JsonObject} reading Pojo properties
-   *
-   * @param pojo The object to convert
-   * @return A JsonObject representing this pojo
-   */
-    private JsonObject convertMethodsToJson(object pojo) 
-    {
-        List<MethodPair> availableGetters = null;
-        if (!GETTER_METHODS.TryGetValue(pojo.GetType(), out availableGetters))
-        {
-            availableGetters = getMatchingMethods(pojo.GetType(), GETTER_PREFIX);
-            if (!GETTER_METHODS.ContainsKey(pojo.GetType()))
-            {
-                GETTER_METHODS.Add(pojo.GetType(), availableGetters);
-            }
-            
         }
 
-        JsonObject toReturn = new JsonObject();
-        foreach(MethodPair getter in availableGetters) 
+        private Object translateObjectToJson(Object val)
         {
-            String errorMessage = "Could not encode the " + getter.method + " method on "
-            + pojo.GetType().Name;
-            try 
+            if (val is Object[])
             {
-                Object val = getter.method.Invoke(pojo, EMPTY_OBJECT);
-                if (val != null) 
+                JsonArray array = new JsonArray();
+                foreach (Object asd in (Object[])val)
                 {
-                    toReturn.Put(getter.fieldName, translateObjectToJson(val));
+                    array.Put(translateObjectToJson(asd));
                 }
-            } 
-            catch (JsonException e) 
+                return array;
+            }
+
+            if (val != null && val.GetType().GetInterface("IList") != null)
+            {
+                JsonArray list = new JsonArray();
+                foreach (Object item in (IList)val)
+                {
+                    list.Add(translateObjectToJson(item));
+                }
+                return list;
+            }
+
+            if (val != null && val.GetType().GetInterface("IDictionary") != null)
+            {
+                JsonObject map = new JsonObject();
+                IDictionary originalMap = (IDictionary)val;
+
+                foreach (DictionaryEntry item in originalMap)
+                {
+                    map.Put(item.Key.ToString(), translateObjectToJson(item.Value));
+                }
+                return map;
+
+            }
+
+            if (val != null && val.GetType().IsEnum)
+            {
+                return val.ToString();
+            }
+
+            if (val is String
+                || val is Boolean
+                || val is int
+                || val is DateTime
+                || val is long
+                || val is float
+                || val is JsonObject
+                || val is JsonArray
+                || val == null)
+            {
+                return val;
+            }
+
+            return convertMethodsToJson(val);
+        }
+
+        /**
+         * Convert the object to {@link JsonObject} reading Pojo properties
+         *
+         * @param pojo The object to convert
+         * @return A JsonObject representing this pojo
+         */
+        private JsonObject convertMethodsToJson(object pojo)
+        {
+            List<MethodPair> availableGetters;
+            if (!GETTER_METHODS.TryGetValue(pojo.GetType(), out availableGetters))
+            {
+                availableGetters = getMatchingMethods(pojo.GetType(), GETTER_PREFIX);
+                if (!GETTER_METHODS.ContainsKey(pojo.GetType()))
+                {
+                    GETTER_METHODS.Add(pojo.GetType(), availableGetters);
+                }
+
+            }
+
+            JsonObject toReturn = new JsonObject();
+            foreach (MethodPair getter in availableGetters)
+            {
+                String errorMessage = "Could not encode the " + getter.method + " method on "
+                                      + pojo.GetType().Name;
+                try
+                {
+                    Object val = getter.method.Invoke(pojo, EMPTY_OBJECT);
+                    if (val != null && val.ToString() != "")
+                    {
+                        toReturn.Put(getter.fieldName, translateObjectToJson(val));
+                    }
+                }
+                catch (JsonException e)
+                {
+                    throw new Exception(errorMessage, e);
+                }
+                catch (Exception e)
+                {
+                    throw new Exception(errorMessage, e);
+                }
+            }
+            return toReturn;
+        }
+
+        private class MethodPair
+        {
+            public readonly MethodInfo method;
+            public readonly String fieldName;
+
+            public MethodPair(MethodInfo method, String fieldName)
+            {
+                this.method = method;
+                this.fieldName = fieldName;
+            }
+        }
+
+        private List<MethodPair> getMatchingMethods(Type pojo, String prefix)
+        {
+            List<MethodPair> availableGetters = new List<MethodPair>();
+
+            MethodInfo[] methods = pojo.GetMethods();
+            foreach (MethodInfo method in methods)
+            {
+                String name = method.Name;
+                if (!method.Name.StartsWith(prefix))
+                {
+                    continue;
+                }
+                int prefixlen = prefix.Length;
+
+                String fieldName = name.Substring(prefixlen, 1).ToLower() +
+                                   name.Substring(prefixlen + 1);
+
+                if (EXCLUDED_FIELDS.Contains(fieldName.ToLower()))
+                {
+                    continue;
+                }
+                availableGetters.Add(new MethodPair(method, fieldName));
+            }
+            return availableGetters;
+        }
+
+        public Object convertToObject(String json, Type className)
+        {
+            // ignore strings
+            if (className == typeof(String))
+            {
+                return json;
+            }
+
+            String errorMessage = "Could not convert " + json + " to " + className;
+
+            // if abstract class or interface, try go get implementer
+            if (className.IsInterface || className.IsAbstract)
+            {
+                object[] attrs = className.GetCustomAttributes(typeof(ImplementedByAttribute), false);
+                if (attrs == null)
+                {
+                    throw new Exception(errorMessage);
+                }
+                className = ((ImplementedByAttribute)attrs[0]).Implementer;
+            }
+
+            try
+            {
+                Object pojo = Activator.CreateInstance(className);
+                return convertToObject(json, pojo);
+            }
+            catch (JsonException e)
             {
                 throw new Exception(errorMessage, e);
-            } 
-            catch (Exception e) 
+            }
+            catch (Exception e)
             {
                 throw new Exception(errorMessage, e);
             }
         }
-        return toReturn;
-    }
 
-    private class MethodPair 
-    {
-        public MethodInfo method;
-        public String fieldName;
-
-        public MethodPair(MethodInfo method, String fieldName) 
+        public Object convertToObject(String json, Object pojo)
         {
-            this.method = method;
-            this.fieldName = fieldName;
-        }
-    }
-
-    private List<MethodPair> getMatchingMethods(Type pojo, String prefix) 
-    {
-        List<MethodPair> availableGetters = new List<MethodPair>();
-
-        MethodInfo[] methods = pojo.GetMethods();
-        foreach (MethodInfo method in methods) 
-        {
-            String name = method.Name;
-            if (!method.Name.StartsWith(prefix))
+            if (pojo.GetType() == typeof(String))
             {
-                continue;
+                pojo = json;
             }
-            int prefixlen = prefix.Length;
-
-            String fieldName = name.Substring(prefixlen, 1).ToLower() +
-                name.Substring(prefixlen + 1);
-
-            if (EXCLUDED_FIELDS.Contains(fieldName.ToLower())) 
+            else if (pojo.GetType().GetInterface("IDictionary") != null)
             {
-                continue;
+                // TODO: Figure out how to get the actual generic type for the
+                // second Map parameter. Right now we are hardcoding to String
+                Type mapValueClass = typeof(String);
+
+                JsonObject JsonObject = (JsonObject)JsonConvert.Import(json);
+                foreach (String key in JsonObject.Names)
+                {
+                    Object value = convertToObject(JsonObject[key].ToString(), mapValueClass);
+                    ((Dictionary<String, String>)pojo).Add(key, value.ToString());
+                }
             }
-            availableGetters.Add(new MethodPair(method, fieldName));
-        }
-        return availableGetters;
-    }
-
-    public Object convertToObject(String json, Type className) 
-    {
-        // ignore strings
-        if (className == typeof(String))
-        {
-            return json;
-        }
-
-        String errorMessage = "Could not convert " + json + " to " + className;
-
-        // if abstract class or interface, try go get implementer
-        if (className.IsInterface || className.IsAbstract)
-        {
-            object[] attrs = className.GetCustomAttributes(typeof(ImplementedByAttribute), false);
-            if (attrs == null)
+            else if (pojo.GetType().GetInterface("IList") != null)
             {
-                throw new Exception(errorMessage);
+                JsonArray array = new JsonArray(json);
+                for (int i = 0; i < array.Count; i++)
+                {
+                    ((List<Object>)pojo).Add(array[i]);
+                }
+
             }
             else
             {
-                className = ((ImplementedByAttribute)attrs[0]).Implementer;
-            }
-        }
-
-        try 
-        {
-            Object pojo = Activator.CreateInstance(className);
-            return convertToObject(json, pojo);
-        } 
-        catch (JsonException e) 
-        {
-            throw new Exception(errorMessage, e);
-        } 
-        catch (Exception e) 
-        {
-            throw new Exception(errorMessage, e);
-        }
-    }
-
-    public Object convertToObject(String json, Object pojo)
-    {
-        if (pojo.GetType() == typeof(String)) 
-        {
-            pojo = json; 
-        }
-        else if (pojo.GetType().GetInterface("IDictionary") != null) 
-        {
-            // TODO: Figure out how to get the actual generic type for the
-            // second Map parameter. Right now we are hardcoding to String
-            Type mapValueClass = typeof(String);
-
-            JsonObject JsonObject = JsonConvert.Import(json) as JsonObject;
-            foreach (String key in JsonObject.Names)
-	        {
-        		 Object value = convertToObject(JsonObject[key].ToString(), mapValueClass);
-                 ((Dictionary<String, String>)pojo).Add(key, value.ToString());
-	        }
-        }
-        else if (pojo.GetType().GetInterface("IList") != null) 
-        {
-            JsonArray array = new JsonArray(json);
-            for (int i = 0; i < array.Count; i++)
-            {
-                ((List<Object>)pojo).Add(array[i]);
-            }
-
-        } 
-        else 
-        {
-            JsonObject JsonObject = JsonConvert.Import(json) as JsonObject;
-            List<MethodPair> methods = null;
-            if (!SETTER_METHODS.TryGetValue(pojo.GetType(), out methods))
-            {
-                methods = getMatchingMethods(pojo.GetType(), SETTER_PREFIX);
-                if (!SETTER_METHODS.ContainsKey(pojo.GetType()))
+                JsonObject JsonObject = JsonConvert.Import(json) as JsonObject;
+                List<MethodPair> methods;
+                if (!SETTER_METHODS.TryGetValue(pojo.GetType(), out methods))
                 {
-                    SETTER_METHODS.Add(pojo.GetType(), methods);
-                }
-            }
-
-            foreach(MethodPair setter in methods) 
-            {
-                if (JsonObject.Contains(setter.fieldName)) 
-                {
-                    callSetterWithValue(pojo, setter.method, JsonObject, setter.fieldName);
-                }
-            }
-        }
-        return pojo;
-    }
-
-    private void callSetterWithValue(object pojo, MethodInfo method, JsonObject JsonObject, String fieldName)
-    {
-        Object value = null;
-        Type expectedType = method.GetParameters()[0].ParameterType;
-        if (expectedType.IsGenericType && expectedType.GetGenericTypeDefinition() == typeof(Nullable<>))
-        {
-            expectedType = expectedType.GetGenericArguments()[0];
-        }
-
-        if (!JsonObject.Contains(fieldName)) 
-        {
-        // Skip
-        }
-        else if (expectedType.GetInterface("IList") != null) 
-        {
-            Type type = expectedType.GetGenericArguments()[0];
-            Type rawType;
-            Type listElementClass;
-            
-            listElementClass = type;
-            rawType = typeof(List<>).MakeGenericType(new Type[] { type });
-
-            Object list = Activator.CreateInstance(rawType);
-            JsonArray JsonArray = JsonObject[fieldName] as JsonArray;
-            for (int i = 0; i < JsonArray.Length; i++) 
-            {
-                if (typeof(Enums<>).IsAssignableFrom(rawType)) 
-                {
-                    ((IList)list).Add(convertEnum(listElementClass, JsonArray.GetObject(i)));
-                } 
-                else 
-                {
-                    ((IList)list).Add(convertToObject(JsonArray.GetString(i), listElementClass));
-                }
-            }
-            value = list;
-
-        }
-        else if (expectedType.GetInterface("IDictionary") != null) 
-        {
-            Type[] types = expectedType.GetGenericArguments();
-            Type valueClass = types[1];
-
-            // We only support keys being typed as Strings.
-            // Nothing else really makes sense in json.
-            Dictionary<String, Object> map = new Dictionary<string,object>();
-            JsonObject jsonMap = JsonObject[fieldName] as JsonObject;
-            foreach (String keyName in jsonMap.Names)
-	        {
-                map.Add(keyName, convertToObject(jsonMap[keyName] as String, valueClass));
-            }
-
-            value = map;
-
-        } 
-        else if (typeof(Enums<>).IsAssignableFrom(expectedType)) 
-        {
-            value = convertEnum(method.GetGenericArguments()[0], JsonObject[fieldName] as JsonObject);
-        } 
-        else if (expectedType.IsEnum) 
-        {
-            if (JsonObject[fieldName] != null) 
-            {
-                foreach (FieldInfo v in expectedType.GetFields(BindingFlags.Static | BindingFlags.Public)) 
-                {
-                    if (v.Name.ToString().Equals(JsonObject[fieldName])) 
+                    methods = getMatchingMethods(pojo.GetType(), SETTER_PREFIX);
+                    if (!SETTER_METHODS.ContainsKey(pojo.GetType()))
                     {
-                        value = Enum.Parse(expectedType, v.GetRawConstantValue().ToString());
-                        break;
+                        SETTER_METHODS.Add(pojo.GetType(), methods);
                     }
                 }
-                if (value == null) 
+
+                foreach (MethodPair setter in methods)
                 {
-                    throw new ArgumentException("No enum value  '" + JsonObject[fieldName]
-                                + "' in " + expectedType.Name);
+                    if (JsonObject.Contains(setter.fieldName))
+                    {
+                        callSetterWithValue(pojo, setter.method, JsonObject, setter.fieldName);
+                    }
                 }
             }
-        } 
-        else if (expectedType.Equals(typeof(String))) 
-        {
-            value = JsonObject[fieldName].ToString();
-        } 
-        else if (expectedType.Equals(typeof(DateTime))) 
-        {
-            // Use JODA ISO parsing for the conversion
-            value = DateTime.Parse(JsonObject[fieldName].ToString());
-        } 
-        else if (expectedType.Equals(typeof(long))) 
-        {
-            value = long.Parse(JsonObject[fieldName].ToString());
-        } 
-        else if (expectedType.Equals(typeof(int))) 
-        {
-            value = int.Parse(JsonObject[fieldName].ToString());
-        } 
-        else if (expectedType.Equals(typeof(bool))) 
-        {
-            value = bool.Parse(JsonObject[fieldName].ToString());
-        } 
-        else if (expectedType.Equals(typeof(float))) 
-        {
-            value = float.Parse(JsonObject[fieldName].ToString());
-        } 
-        else 
-        {
-            // Assume its an injected type
-            value = convertToObject(JsonObject[fieldName].ToString(), expectedType);
+            return pojo;
         }
 
-        if (value != null) 
+        private void callSetterWithValue(object pojo, MethodInfo method, JsonObject JsonObject, String fieldName)
         {
-            method.Invoke(pojo, new object[]{value});
-        }
-    }
+            Object value = null;
+            Type expectedType = method.GetParameters()[0].ParameterType;
+            if (expectedType.IsGenericType && expectedType.GetGenericTypeDefinition() == typeof(Nullable<>))
+            {
+                expectedType = expectedType.GetGenericArguments()[0];
+            }
 
-    private Object convertEnum(Type enumKeyType, JsonObject jsonEnum)
-    {
-        Object value = null;
-        if (jsonEnum.Contains(Enums<EnumKey>.Field.VALUE.Value)) 
-        {
-            EnumKey enumKey = (EnumKey)enumKeyType.GetField(jsonEnum[Enums<EnumKey>.Field.VALUE.Value] as String).GetValue(null);
-            value = new EnumImpl<EnumKey>(enumKey, jsonEnum[Enums<EnumKey>.Field.DISPLAY_VALUE.ToString()] as String);
-        } 
-        else 
-        {
-            value = new EnumImpl<EnumKey>(null, jsonEnum[Enums<EnumKey>.Field.DISPLAY_VALUE.ToString()] as String);
+            if (!JsonObject.Contains(fieldName))
+            {
+                // Skip
+            }
+            else if (expectedType.GetInterface("IList") != null)
+            {
+                Type type = expectedType.GetGenericArguments()[0];
+                Type listElementClass = type;
+                Type rawType = typeof(List<>).MakeGenericType(new[] { type });
+
+                Object list = Activator.CreateInstance(rawType);
+                JsonArray JsonArray = (JsonArray)JsonObject[fieldName];
+                for (int i = 0; i < JsonArray.Length; i++)
+                {
+                    if (typeof(Enums<>).IsAssignableFrom(rawType))
+                    {
+                        ((IList)list).Add(convertEnum(listElementClass, JsonArray.GetObject(i)));
+                    }
+                    else
+                    {
+                        ((IList)list).Add(convertToObject(JsonArray.GetString(i), listElementClass));
+                    }
+                }
+                value = list;
+
+            }
+            else if (expectedType.GetInterface("IDictionary") != null)
+            {
+                Type[] types = expectedType.GetGenericArguments();
+                Type valueClass = types[1];
+
+                // We only support keys being typed as Strings.
+                // Nothing else really makes sense in json.
+                Dictionary<String, String> map = new Dictionary<String, String>();
+                JsonObject jsonMap = JsonObject.getJSONObject(fieldName);
+                foreach (String keyName in jsonMap.Names)
+                {
+                    map.Add(keyName, convertToObject(jsonMap[keyName] as String, valueClass) as String);
+                }
+
+                value = map;
+
+            }
+            else if (typeof(Enums<>).IsAssignableFrom(expectedType))
+            {
+                value = convertEnum(method.GetGenericArguments()[0], JsonObject[fieldName] as JsonObject);
+            }
+            else if (expectedType.IsEnum)
+            {
+                if (JsonObject[fieldName] != null)
+                {
+                    foreach (FieldInfo v in expectedType.GetFields(BindingFlags.Static | BindingFlags.Public))
+                    {
+                        if (v.Name.Equals(JsonObject[fieldName]))
+                        {
+                            value = Enum.Parse(expectedType, v.GetRawConstantValue().ToString());
+                            break;
+                        }
+                    }
+                    if (value == null)
+                    {
+                        throw new ArgumentException("No enum value  '" + JsonObject[fieldName]
+                                                    + "' in " + expectedType.Name);
+                    }
+                }
+            }
+            else if (expectedType.Equals(typeof(String)))
+            {
+                value = JsonObject[fieldName].ToString();
+            }
+            else if (expectedType.Equals(typeof(DateTime)))
+            {
+                // Use JODA ISO parsing for the conversion
+                value = DateTime.Parse(JsonObject[fieldName].ToString());
+            }
+            else if (expectedType.Equals(typeof(long)))
+            {
+                value = long.Parse(JsonObject[fieldName].ToString());
+            }
+            else if (expectedType.Equals(typeof(int)))
+            {
+                value = int.Parse(JsonObject[fieldName].ToString());
+            }
+            else if (expectedType.Equals(typeof(bool)))
+            {
+                value = bool.Parse(JsonObject[fieldName].ToString());
+            }
+            else if (expectedType.Equals(typeof(float)))
+            {
+                value = float.Parse(JsonObject[fieldName].ToString());
+            }
+            else
+            {
+                // Assume its an injected type
+                value = convertToObject(JsonObject[fieldName].ToString(), expectedType);
+            }
+
+            if (value != null)
+            {
+                method.Invoke(pojo, new[] { value });
+            }
         }
-        return value;
+
+        private Object convertEnum(Type enumKeyType, JsonObject jsonEnum)
+        {
+            Object value;
+            if (jsonEnum.Contains(Enums<EnumKey>.Field.VALUE.Value))
+            {
+                EnumKey enumKey = (EnumKey)enumKeyType.GetField(jsonEnum[Enums<EnumKey>.Field.VALUE.Value] as String).GetValue(null);
+                value = new EnumImpl<EnumKey>(enumKey, jsonEnum[Enums<EnumKey>.Field.DISPLAY_VALUE.ToString()] as String);
+            }
+            else
+            {
+                value = new EnumImpl<EnumKey>(null, jsonEnum[Enums<EnumKey>.Field.DISPLAY_VALUE.ToString()] as String);
+            }
+            return value;
+        }
     }
 }

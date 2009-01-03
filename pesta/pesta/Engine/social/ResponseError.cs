@@ -19,55 +19,59 @@
 #endregion
 using System;
 using System.Net;
+using Pesta.Interop;
 
-/// <summary>
-/// Summary description for ResponseError
-/// </summary>
-/// <remarks>
-/// <para>
-///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
-/// </para>
-/// </remarks>
-public class ResponseError : EnumBaseType<ResponseError>
+namespace Pesta.Engine.social
 {
-    public ResponseError(int key, string value)
-        : base(key,value)
+    /// <summary>
+    /// Summary description for ResponseError
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    ///  Apache Software License 2.0 2008 Shindig
+    /// </para>
+    /// </remarks>
+    public class ResponseError : EnumBaseType<ResponseError>
     {
-        this.jsonValue = value;
-        this.httpErrorCode = key;
-    }
+        public ResponseError(int key, string value)
+            : base(key, value)
+        {
+            this.jsonValue = value;
+            this.httpErrorCode = key;
+        }
 
-    public readonly static ResponseError NOT_IMPLEMENTED = new ResponseError((int)HttpStatusCode.NotImplemented, "notImplemented");
-    public readonly static ResponseError UNAUTHORIZED = new ResponseError((int)HttpStatusCode.Unauthorized, "unauthorized");
-    public readonly static ResponseError FORBIDDEN = new ResponseError((int)HttpStatusCode.Forbidden, "forbidden");
-    public readonly static ResponseError BAD_REQUEST = new ResponseError((int)HttpStatusCode.BadRequest, "badRequest");
-    public readonly static ResponseError INTERNAL_ERROR = new ResponseError((int)HttpStatusCode.InternalServerError, "internalError");
-    public readonly static ResponseError LIMIT_EXCEEDED = new ResponseError((int)HttpStatusCode.ExpectationFailed, "limitExceeded");
+        public readonly static ResponseError NOT_IMPLEMENTED = new ResponseError((int)HttpStatusCode.NotImplemented, "notImplemented");
+        public readonly static ResponseError UNAUTHORIZED = new ResponseError((int)HttpStatusCode.Unauthorized, "unauthorized");
+        public readonly static ResponseError FORBIDDEN = new ResponseError((int)HttpStatusCode.Forbidden, "forbidden");
+        public readonly static ResponseError BAD_REQUEST = new ResponseError((int)HttpStatusCode.BadRequest, "badRequest");
+        public readonly static ResponseError INTERNAL_ERROR = new ResponseError((int)HttpStatusCode.InternalServerError, "internalError");
+        public readonly static ResponseError LIMIT_EXCEEDED = new ResponseError((int)HttpStatusCode.ExpectationFailed, "limitExceeded");
 
-    /**
-   * The json value of the error.
-   */
-    private readonly String jsonValue;
-  /**
-   * The http error code associated with the error.
-   */
-    private int httpErrorCode;
+        /**
+       * The json value of the error.
+       */
+        private readonly String jsonValue;
+        /**
+         * The http error code associated with the error.
+         */
+        private int httpErrorCode;
 
-  /**
-   *
-   * Converts the ResponseError to a String representation
-   */
-    public override String ToString() 
-    {
-        return jsonValue;
-    }
+        /**
+         *
+         * Converts the ResponseError to a String representation
+         */
+        public override String ToString()
+        {
+            return jsonValue;
+        }
 
-  /**
-   * Get the HTTP error code.
-   * @return the Http Error code.
-   */
-    public int getHttpErrorCode() 
-    {
-        return httpErrorCode;
+        /**
+         * Get the HTTP error code.
+         * @return the Http Error code.
+         */
+        public int getHttpErrorCode()
+        {
+            return httpErrorCode;
+        }
     }
 }

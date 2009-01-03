@@ -18,121 +18,118 @@
  */
 #endregion
 using System;
-using System.Data;
-using System.Configuration;
-using System.Web;
-using System.Web.Security;
-using System.Web.UI;
-using System.Web.UI.HtmlControls;
-using System.Web.UI.WebControls;
-using System.Web.UI.WebControls.WebParts;
+using Pesta.Engine.social.core.model;
+using Pesta.Interop;
 
 
-/// <summary>
-/// Summary description for Account
-/// </summary>
-/// <remarks>
-/// <para>
-///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
-/// </para>
-/// </remarks>
-[ImplementedBy(typeof(AccountImpl))]
-public abstract class Account
+namespace Pesta.Engine.social.model
 {
-    /**
-   * The fields that represent the account object in json form.
-   *
-   * <p>
-   * All of the fields that an account can have, all fields are required
-   * </p>
-   *
-   */
-    public class Field : EnumBaseType<Field>
+    /// <summary>
+    /// Summary description for Account
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    ///  Apache Software License 2.0 2008 Shindig
+    /// </para>
+    /// </remarks>
+    [ImplementedBy(typeof(AccountImpl))]
+    public abstract class Account
     {
-        /// <summary>
-        /// Initializes a new instance of the Field class.
-        /// </summary>
-        public Field()
+        /**
+       * The fields that represent the account object in json form.
+       *
+       * <p>
+       * All of the fields that an account can have, all fields are required
+       * </p>
+       *
+       */
+        public class Field : EnumBaseType<Field>
         {
-        }
-        public Field(int key, string value) 
-            : base(key,value)
-        {
+            /// <summary>
+            /// Initializes a new instance of the Field class.
+            /// </summary>
+            public Field()
+            {
+            }
+            public Field(int key, string value)
+                : base(key, value)
+            {
 
+            }
+            public static readonly Field DOMAIN = new Field(1, "domain");
+            public static readonly Field USER_ID = new Field(2, "userId");
+            public static readonly Field USERNAME = new Field(3, "username");
+
+            /**
+            * The json field that the instance represents.
+            */
+            private readonly String jsonString;
+
+            /**
+            * create a field base on the a json element.
+            *
+            * @param jsonString the name of the element
+            */
+            private Field(String jsonString)
+            {
+                this.jsonString = jsonString;
+            }
+
+            /**
+            * emit the field as a json element.
+            *
+            * @return the field name
+            */
+            public override String ToString()
+            {
+                return this.jsonString;
+            }
         }
-        public static readonly Field DOMAIN = new Field(1, "domain");
-        public static readonly Field USER_ID = new Field(2, "userId");
-        public static readonly Field USERNAME = new Field(3, "username");
 
         /**
-        * The json field that the instance represents.
-        */
-        private readonly String jsonString;
-
-        /**
-        * create a field base on the a json element.
+        * The top-most authoritative domain for this account, e.g. "twitter.com". This is the Primary
+        * Sub-Field for this field, for the purposes of sorting and filtering.
         *
-        * @param jsonString the name of the element
+        * @return the domain
         */
-        private Field(String jsonString) 
-        {
-            this.jsonString = jsonString;
-        }
+        public abstract String getDomain();
 
         /**
-        * emit the field as a json element.
+        * The top-most authoritative domain for this account, e.g. "twitter.com". This is the Primary
+        * Sub-Field for this field, for the purposes of sorting and filtering. *
         *
-        * @return the field name
+        * @param domain the domain
         */
-        public override String ToString() 
-        {
-            return this.jsonString;
-        }
+        public abstract void setDomain(String domain);
+
+        /**
+        * A user ID number, usually chosen automatically, and usually numeric but sometimes alphanumeric,
+        * e.g. "12345" or "1Z425A".
+        *
+        * @return the userId
+        */
+        public abstract String getUserId();
+
+        /**
+        * A user ID number, usually chosen automatically, and usually numeric but sometimes alphanumeric,
+        * e.g. "12345" or "1Z425A".
+        *
+        * @param userId the userId
+        */
+        public abstract void setUserId(String userId);
+
+        /**
+        * An alphanumeric user name, usually chosen by the user, e.g. "jsmarr".
+        *
+        * @return the username
+        */
+        public abstract String getUsername();
+
+        /**
+        * An alphanumeric user name, usually chosen by the user, e.g. "jsmarr".
+        *
+        * @param username the username
+        */
+        public abstract void setUsername(String username);
     }
-
-    /**
-    * The top-most authoritative domain for this account, e.g. "twitter.com". This is the Primary
-    * Sub-Field for this field, for the purposes of sorting and filtering.
-    *
-    * @return the domain
-    */
-    public abstract String getDomain();
-
-    /**
-    * The top-most authoritative domain for this account, e.g. "twitter.com". This is the Primary
-    * Sub-Field for this field, for the purposes of sorting and filtering. *
-    *
-    * @param domain the domain
-    */
-    public abstract void setDomain(String domain);
-
-    /**
-    * A user ID number, usually chosen automatically, and usually numeric but sometimes alphanumeric,
-    * e.g. "12345" or "1Z425A".
-    *
-    * @return the userId
-    */
-    public abstract String getUserId();
-
-    /**
-    * A user ID number, usually chosen automatically, and usually numeric but sometimes alphanumeric,
-    * e.g. "12345" or "1Z425A".
-    *
-    * @param userId the userId
-    */
-    public abstract void setUserId(String userId);
-
-    /**
-    * An alphanumeric user name, usually chosen by the user, e.g. "jsmarr".
-    *
-    * @return the username
-    */
-    public abstract String getUsername();
-
-    /**
-    * An alphanumeric user name, usually chosen by the user, e.g. "jsmarr".
-    *
-    * @param username the username
-    */
-    public abstract void setUsername(String username);
 }

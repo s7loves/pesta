@@ -19,138 +19,143 @@
 #endregion
 
 using System;
+using Pesta.Engine.social.core.model;
+using Pesta.Interop;
 
-/// <summary>
-/// Summary description for Message
-/// </summary>
-/// <remarks>
-/// <para>
-///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
-/// </para>
-/// </remarks>
-[ImplementedBy(typeof(MessageImpl))]
-public abstract class Message
+namespace Pesta.Engine.social.model
 {
-    /**
-   * An enumeration of field names in a message.
-   */
-    public class Field : EnumBaseType<Field>
+    /// <summary>
+    /// Summary description for Message
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    ///  Apache Software License 2.0 2008 Shindig
+    /// </para>
+    /// </remarks>
+    [ImplementedBy(typeof(MessageImpl))]
+    public abstract class Message
     {
-        /// <summary>
-        /// Initializes a new instance of the Field class.
-        /// </summary>
-        public Field()
+        /**
+       * An enumeration of field names in a message.
+       */
+        public class Field : EnumBaseType<Field>
         {
-        }
-        public Field(int key, string value) 
-        : base(key,value)
-        {
+            /// <summary>
+            /// Initializes a new instance of the Field class.
+            /// </summary>
+            public Field()
+            {
+            }
+            public Field(int key, string value)
+                : base(key, value)
+            {
 
+            }
+            public static readonly Field BODY = new Field(1, "body");
+            public static readonly Field TITLE = new Field(2, "title");
+            public static readonly Field TYPE = new Field(3, "type");
+
+            /**
+            * the name of the field.
+            */
+            private readonly String jsonString;
+
+            /**
+            * Create a field based on a name.
+            * @param jsonString the name of the field
+            */
+            private Field(String jsonString)
+            {
+                this.jsonString = jsonString;
+            }
+
+
+            public override String ToString()
+            {
+                return this.jsonString;
+            }
         }
-        public static readonly Field BODY = new Field(1, "body");
-        public static readonly Field TITLE = new Field(2, "title");
-        public static readonly Field TYPE = new Field(3, "type");
 
         /**
-        * the name of the field.
-        */
-        private readonly String jsonString;
+         * The type of a message
+         */
+        public class Type : EnumBaseType<Type>
+        {
+            public Type(int key, string value)
+                : base(key, value)
+            {
+
+            }
+            public static readonly Type EMAIL = new Type(1, "EMAIL");
+            public static readonly Type NOTIFICATION = new Type(2, "NOTIFICATION");
+            public static readonly Type PRIVATE_MESSAGE = new Type(3, "PRIVATE_MESSAGE");
+            public static readonly Type PUBLIC_MESSAGE = new Type(4, "PUBLIC_MESSAGE");
+
+            /**
+            * The type of message.
+            */
+            private readonly String jsonString;
+
+            /**
+            * Create a message type based on a string token.
+            * @param jsonString the type of message
+            */
+            private Type(String jsonString)
+            {
+                this.jsonString = jsonString;
+            }
+
+            public override String ToString()
+            {
+                return this.jsonString;
+            }
+        }
 
         /**
-        * Create a field based on a name.
-        * @param jsonString the name of the field
+        * Gets the main text of the message.
+        * @return the main text of the message
         */
-        private Field(String jsonString) 
-        {
-            this.jsonString = jsonString;
-        }
-
-
-        public override String ToString() 
-        {
-            return this.jsonString;
-        }
-    }
-
-  /**
-   * The type of a message
-   */
-    public class Type : EnumBaseType<Type>
-    {
-        public Type(int key, string value) 
-        : base(key,value)
-        {
-
-        }
-        public static readonly Type EMAIL = new Type(1, "EMAIL");
-        public static readonly Type NOTIFICATION = new Type(2, "NOTIFICATION");
-        public static readonly Type PRIVATE_MESSAGE = new Type(3, "PRIVATE_MESSAGE");
-        public static readonly Type PUBLIC_MESSAGE = new Type(4, "PUBLIC_MESSAGE");
+        public abstract String getBody();
 
         /**
-        * The type of message.
+        * Sets the main text of the message.
+        * HTML attributes are allowed and are sanitized by the container
+        * @param newBody the main text of the message
         */
-        private readonly String jsonString;
+        public abstract void setBody(String newBody);
 
         /**
-        * Create a message type based on a string token.
-        * @param jsonString the type of message
+        * Gets the title of the message.
+        * @return the title of the message
         */
-        private Type(String jsonString) 
-        {
-            this.jsonString = jsonString;
-        }
+        public abstract String getTitle();
 
-        public override String ToString() 
-        {
-            return this.jsonString;
-        }
-    }
+        /**
+        * Sets the title of the message.
+        * HTML attributes are allowed and are sanitized by the container.
+        * @param newTitle the title of the message
+        */
+        public abstract void setTitle(String newTitle);
 
-    /**
-    * Gets the main text of the message.
-    * @return the main text of the message
-    */
-    public abstract String getBody();
+        /**
+        * Gets the type of the message, as specified by opensocial.Message.Type.
+        * @return the type of message (enum Message.Type)
+        */
+        public abstract Type getType();
 
-    /**
-    * Sets the main text of the message.
-    * HTML attributes are allowed and are sanitized by the container
-    * @param newBody the main text of the message
-    */
-    public abstract void setBody(String newBody);
+        /**
+        * Sets the type of the message, as specified by opensocial.Message.Type
+        * @param newType the type of message (enum Message.Type)
+        */
+        public abstract void setType(Type newType);
 
-    /**
-    * Gets the title of the message.
-    * @return the title of the message
-    */
-    public abstract String getTitle();
-
-    /**
-    * Sets the title of the message.
-    * HTML attributes are allowed and are sanitized by the container.
-    * @param newTitle the title of the message
-    */
-    public abstract void setTitle(String newTitle);
-
-    /**
-    * Gets the type of the message, as specified by opensocial.Message.Type.
-    * @return the type of message (enum Message.Type)
-    */
-    public abstract Type getType();
-
-    /**
-    * Sets the type of the message, as specified by opensocial.Message.Type
-    * @param newType the type of message (enum Message.Type)
-    */
-    public abstract void setType(Type newType);
-
-    /**
-    * TODO implement either a standard 'sanitizing' facility or
-    * define an interface that can be set on this class so
-    * others can plug in their own.
-    * @param htmlStr String to be sanitized.
-    * @return the sanitized HTML String
-    */
-    public abstract String sanitizeHTML(String htmlStr);
+        /**
+        * TODO implement either a standard 'sanitizing' facility or
+        * define an interface that can be set on this class so
+        * others can plug in their own.
+        * @param htmlStr String to be sanitized.
+        * @return the sanitized HTML String
+        */
+        public abstract String sanitizeHTML(String htmlStr);
+    } 
 }

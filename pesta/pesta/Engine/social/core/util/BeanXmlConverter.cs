@@ -21,14 +21,14 @@ using System;
 using System.IO;
 using System.Xml.Serialization;
 using System.Text;
-using System.Xml;
+using Pesta.Engine.social.service;
 
 /// <summary>
 /// Summary description for BeanXmlConverter
 /// </summary>
 /// <remarks>
 /// <para>
-///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+///  Apache Software License 2.0 2008 Shindig
 /// </para>
 /// </remarks>
 public class BeanXmlConverter : BeanConverter
