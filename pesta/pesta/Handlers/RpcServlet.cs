@@ -25,15 +25,16 @@ using System.IO;
 using System.Text;
 using Jayrock.Json.Conversion;
 using System.Text.RegularExpressions;
+using Pesta.Engine.gadgets.servlet;
 
-namespace Pesta
+namespace Pesta.Handlers
 {
     /// <summary>
     /// 
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     internal class RpcServlet : IHttpHandler
@@ -61,8 +62,8 @@ namespace Pesta
                     if (!GET_REQUEST_CALLBACK_PATTERN.Match(callbackValue).Success)
                     {
                         throw new Exception("Wrong format for parameter '" +
-                            GET_REQUEST_CALLBACK_PARAM + "' specified. Expected: " +
-                            GET_REQUEST_CALLBACK_PATTERN.ToString());
+                                            GET_REQUEST_CALLBACK_PARAM + "' specified. Expected: " +
+                                            GET_REQUEST_CALLBACK_PATTERN.ToString());
                     }
 
                 }
@@ -74,8 +75,8 @@ namespace Pesta
 
                 Result result = process(request, response, Encoding.UTF8.GetBytes(reqValue));
                 response.Output.Write(result.isSuccess()
-                    ? callbackValue + "(" + result.getOutput() + ")"
-                    : result.getOutput());
+                                          ? callbackValue + "(" + result.getOutput() + ")"
+                                          : result.getOutput());
             }
             else if (request.HttpMethod == "POST")
             {
@@ -188,5 +189,5 @@ namespace Pesta
             }
         }
 
-    } 
+    }
 }

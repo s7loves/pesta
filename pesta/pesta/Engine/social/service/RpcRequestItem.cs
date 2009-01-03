@@ -20,16 +20,17 @@
 using System;
 using Jayrock.Json;
 using System.Collections.Generic;
+using Pesta.Engine.auth;
+using Pesta.Engine.social.spi;
 
-
-namespace Pesta
+namespace Pesta.Engine.social.service
 {
     /// <summary>
     /// Summary description for RpcRequestItem
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class RpcRequestItem : RequestItem
@@ -47,7 +48,7 @@ namespace Pesta
         }
 
         public RpcRequestItem(JsonObject rpc, SecurityToken token,
-                    BeanConverter converter)
+                              BeanConverter converter)
             : base(getService(rpc["method"].ToString()), getOperation(rpc["method"].ToString()), token, converter)
         {
             if (rpc.Contains("params"))
@@ -194,5 +195,5 @@ namespace Pesta
                 throw je;
             }
         }
-    } 
+    }
 }

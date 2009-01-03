@@ -19,17 +19,16 @@
 #endregion
 using System;
 using System.Collections.Generic;
+using Pesta.Engine.auth;
 
-
-
-namespace Pesta
+namespace Pesta.Engine.social.spi
 {
     /// <summary>
     /// Summary description for AppDataService
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public interface AppDataService
@@ -45,7 +44,7 @@ namespace Pesta
        * @return The data fetched
        */
         DataCollection getPersonData(HashSet<UserId> userIds, GroupId groupId,
-            String appId, HashSet<String> fields, SecurityToken token);
+                                     String appId, HashSet<String> fields, SecurityToken token);
 
         /**
          * Deletes data for the specified user and group.
@@ -58,7 +57,7 @@ namespace Pesta
          * @return an error if one occurs
          */
         void deletePersonData(UserId userId, GroupId groupId,
-            String appId, HashSet<String> fields, SecurityToken token);
+                              String appId, HashSet<String> fields, SecurityToken token);
 
         /**
          * Updates app data for the specified user and group with the new values.
@@ -72,6 +71,6 @@ namespace Pesta
          * @return an error if one occurs
          */
         void updatePersonData(UserId userId, GroupId groupId,
-            String appId, HashSet<String> fields, Dictionary<String, String> values, SecurityToken token);
-    } 
+                              String appId, HashSet<String> fields, Dictionary<String, String> values, SecurityToken token);
+    }
 }

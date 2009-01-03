@@ -20,15 +20,19 @@
 using System;
 using System.Web;
 using System.Net;
+using Pesta.Engine.gadgets;
+using Pesta.Engine.gadgets.http;
+using Pesta.Engine.gadgets.render;
+using Pesta.Engine.gadgets.servlet;
 
-namespace Pesta
+namespace Pesta.Handlers
 {
     /// <summary>
     /// 
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     internal class GadgetRenderingServlet : IHttpHandler
@@ -109,5 +113,5 @@ namespace Pesta
             }
         }
 
-    } 
+    }
 }

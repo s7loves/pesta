@@ -21,31 +21,33 @@ using System;
 using System.Reflection;
 
 
-/// <summary>
-/// Summary description for CustomAttr
-/// </summary>
-/// <remarks>
-/// <para>
-///  Apache Software License 2.0 2008 Pesta, Sean Lin M.T. (my6solutions.com)
-/// </para>
-/// </remarks>
-
-public class ImplementedByAttribute : Attribute
+namespace Pesta.Interop
 {
     /// <summary>
-    /// Initializes a new instance of the ImplementedByAttribute class.
+    /// Summary description for CustomAttr
     /// </summary>
-    public ImplementedByAttribute(Type type)
+    /// <remarks>
+    /// <para>
+    ///  Apache Software License 2.0 2008 Pesta, Sean Lin M.T. (my6solutions.com)
+    /// </para>
+    /// </remarks>
+
+    public class ImplementedByAttribute : Attribute
     {
-        implementer = type;
-    }
-    protected Type implementer;
-    public Type Implementer
-    {
-        get
+        /// <summary>
+        /// Initializes a new instance of the ImplementedByAttribute class.
+        /// </summary>
+        public ImplementedByAttribute(Type type)
         {
-            return implementer;
+            implementer = type;
+        }
+        protected Type implementer;
+        public Type Implementer
+        {
+            get
+            {
+                return implementer;
+            }
         }
     }
 }
-

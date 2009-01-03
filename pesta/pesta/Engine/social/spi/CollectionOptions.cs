@@ -18,20 +18,17 @@
  */
 #endregion
 using System;
-using System.Data;
-using System.Configuration;
-using System.Web;
 
-namespace Pesta
+namespace Pesta.Engine.social.spi
 {
     /// <summary>
     /// Summary description for CollectionOptions
     /// </summary>
     /// <remarks>
-/// <para>
-///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
-/// </para>
-/// </remarks>
+    /// <para>
+    ///  Apache Software License 2.0 2008 Shindig
+    /// </para>
+    /// </remarks>
     public class CollectionOptions
     {
         private String sortBy = "";
@@ -166,25 +163,25 @@ namespace Pesta
 
             CollectionOptions actual = (CollectionOptions)o;
             return this.sortBy.Equals(actual.sortBy)
-                        && this.sortOrder == actual.sortOrder
-                        && this.filter.Equals(actual.filter)
-                        && this.filterOperation == actual.filterOperation
-                        && this.filterValue.Equals(actual.filterValue)
-                        && this.first == actual.first
-                        && this.max == actual.max;
+                   && this.sortOrder == actual.sortOrder
+                   && this.filter.Equals(actual.filter)
+                   && this.filterOperation == actual.filterOperation
+                   && this.filterValue.Equals(actual.filterValue)
+                   && this.first == actual.first
+                   && this.max == actual.max;
         }
 
 
         public override int GetHashCode()
         {
             return GetHashCode(this.sortBy) + GetHashCode(this.sortOrder) + GetHashCode(this.filter)
-                    + GetHashCode(this.filterOperation) + GetHashCode(this.filterValue)
-                    + GetHashCode(this.first) + GetHashCode(this.max);
+                   + GetHashCode(this.filterOperation) + GetHashCode(this.filterValue)
+                   + GetHashCode(this.first) + GetHashCode(this.max);
         }
 
         private int GetHashCode(Object o)
         {
             return o == null ? 0 : o.GetHashCode();
         }
-    } 
+    }
 }

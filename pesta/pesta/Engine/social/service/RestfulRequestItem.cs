@@ -19,21 +19,18 @@
 #endregion
 using System;
 using System.IO;
-using System.Collections.Specialized;
 using System.Collections.Generic;
 using System.Web;
+using Pesta.Engine.auth;
 
-
-using System.Text;
-
-namespace Pesta
+namespace Pesta.Engine.social.service
 {
     /// <summary>
     /// Summary description for RestfulRequestItem
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class RestfulRequestItem : RequestItem
@@ -184,17 +181,17 @@ namespace Pesta
                     {
                         // The param can be a repeated field. Use ',' as default separator
                         this.parameters.Add(expectedPart.Substring(1, expectedPart.Length - 2),
-                          new List<string>(actualPart.Split(',')));
+                                            new List<string>(actualPart.Split(',')));
                     }
                     else
                     {
                         if (actualPart.IndexOf(',') != -1)
                         {
                             throw new ArgumentException("Cannot expect plural value " + actualPart
-                                            + " for singular field " + expectedPart + " in " + this.url);
+                                                        + " for singular field " + expectedPart + " in " + this.url);
                         }
                         this.parameters.Add(expectedPart.Substring(1, expectedPart.Length - 2),
-                         new List<string>(new string[] { actualPart }));
+                                            new List<string>(new string[] { actualPart }));
                     }
                 }
             }
@@ -205,7 +202,7 @@ namespace Pesta
         {
             // We assume the the only typed parameter in a restful request is the post-content
             // and so we simply ignore the parameter name
-                return getTypedParameters(dataTypeClass);
+            return getTypedParameters(dataTypeClass);
         }
 
         public override object getTypedParameters(Type dataTypeClass)
@@ -275,5 +272,5 @@ namespace Pesta
             }
             return stringList;
         }
-    } 
+    }
 }

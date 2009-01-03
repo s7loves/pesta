@@ -19,18 +19,18 @@
 #endregion
 using System;
 using System.Collections.Generic;
+using Pesta.Engine.auth;
+using Pesta.Engine.social.model;
 
 
-
-
-namespace Pesta
+namespace Pesta.Engine.social.spi
 {
     /// <summary>
     /// Summary description for PersonService
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public abstract class PersonService
@@ -80,7 +80,7 @@ namespace Pesta
          * @param token The gadget token @return a list of people.
          */
         abstract public RestfulCollection<Person> getPeople(HashSet<UserId> userIds, GroupId groupId,
-            CollectionOptions collectionOptions, HashSet<String> fields, SecurityToken token);
+                                                            CollectionOptions collectionOptions, HashSet<String> fields, SecurityToken token);
 
         /**
          * Returns a person that corresponds to the passed in person id.
@@ -91,5 +91,5 @@ namespace Pesta
          * @return a list of people.
          */
         abstract public Person getPerson(UserId id, HashSet<String> fields, SecurityToken token);
-    } 
+    }
 }

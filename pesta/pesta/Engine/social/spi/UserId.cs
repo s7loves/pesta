@@ -20,15 +20,17 @@
 
 using System;
 using System.Collections.Generic;
+using Pesta.Engine.auth;
+using Pesta.Interop;
 
-namespace Pesta
+namespace Pesta.Engine.social.spi
 {
     /// <summary>
     /// Summary description for UserId
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class UserId
@@ -49,12 +51,12 @@ namespace Pesta
 
             /** A map of JSON strings to Type objects */
             private static readonly Dictionary<String, Type> jsonTypeMap = new Dictionary<string, Type>()
-        {
-            {"@me", Type.me},
-            {"@viewer", Type.viewer},
-            {"@owner", Type.owner},
-            {"@userId", Type.userId}
-        };
+                                                                               {
+                                                                                   {"@me", Type.me},
+                                                                                   {"@viewer", Type.viewer},
+                                                                                   {"@owner", Type.owner},
+                                                                                   {"@userId", Type.userId}
+                                                                               };
             /** Return the Type enum value given a specific jsonType **/
             public static Type jsonValueOf(String jsonType)
             {
@@ -122,7 +124,7 @@ namespace Pesta
 
             UserId actual = (UserId)o;
             return this.type == actual.type
-                    && this.userId.Equals(actual.userId);
+                   && this.userId.Equals(actual.userId);
         }
 
         public override int GetHashCode()
@@ -130,5 +132,5 @@ namespace Pesta
             int userHashCode = this.userId == null ? 0 : this.userId.GetHashCode();
             return this.type.GetHashCode() + userHashCode;
         }
-    } 
+    }
 }

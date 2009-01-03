@@ -17,36 +17,26 @@
  * specific language governing permissions and limitations under the License.
  */
 #endregion
-using System;
-using System.Collections.Generic;
 
-namespace Pesta.Engine.social.spi
+namespace Pesta.Interop
 {
-    /// <summary>
-    /// Summary description for DataCollection
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    ///  Apache Software License 2.0 2008 Shindig
-    /// </para>
-    /// </remarks>
-    public class DataCollection
+    public class Locale
     {
-        private Dictionary<String, Dictionary<String, String>> entry;
-
-        public DataCollection(Dictionary<String, Dictionary<String, String>> entry)
+        private readonly string _language;
+        private readonly string _country;
+        public Locale(string language, string country)
         {
-            this.entry = entry;
+            _language = language;
+            _country = country;
         }
 
-        public Dictionary<String, Dictionary<String, String>> getEntry()
+        public string getLanguage()
         {
-            return entry;
+            return _language;
         }
-
-        public void setEntry(Dictionary<String, Dictionary<String, String>> entry)
+        public string getCountry()
         {
-            this.entry = entry;
+            return _country;
         }
     }
 }

@@ -15,48 +15,51 @@
  */
 using System;
 
-/// <summary>
-/// Summary description for OAuthException
-/// </summary>
-/// <remarks>
-/// <para>
-///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
-/// </para>
-/// </remarks>
-public class OAuthException : Exception
+namespace Pesta.Interop.oauth
 {
-    /**
-     * For subclasses only.
-     */
-    protected OAuthException()
+    /// <summary>
+    /// Summary description for OAuthException
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    ///  Apache Software License 2.0 2008 Shindig
+    /// </para>
+    /// </remarks>
+    public class OAuthException : Exception
     {
-    }
+        /**
+         * For subclasses only.
+         */
+        protected OAuthException()
+        {
+        }
 
-    /**
-     * @param message
-     */
-    public OAuthException(String message)
-        : base(message)
-    {
-        
-    }
+        /**
+         * @param message
+         */
+        public OAuthException(String message)
+            : base(message)
+        {
 
-    /**
-     * @param cause
-     */
-    public OAuthException(Exception cause)
-        : base("", cause)
-    {
+        }
 
-    }
+        /**
+         * @param cause
+         */
+        public OAuthException(Exception cause)
+            : base("", cause)
+        {
 
-    /**
-     * @param message
-     * @param cause
-     */
-    public OAuthException(String message, Exception cause)
-        : base(message,cause)
-    {
-        
+        }
+
+        /**
+         * @param message
+         * @param cause
+         */
+        public OAuthException(String message, Exception cause)
+            : base(message, cause)
+        {
+
+        }
     }
 }

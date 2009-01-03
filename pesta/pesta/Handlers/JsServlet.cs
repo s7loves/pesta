@@ -21,17 +21,20 @@ using System;
 using System.Text;
 using System.Web;
 using System.Collections.Generic;
-using System.IO;
 using System.Net;
+using Pesta.Engine.common;
+using Pesta.Engine.gadgets;
+using Pesta.Engine.gadgets.servlet;
+using Pesta.Interop;
 
-namespace Pesta
+namespace Pesta.Handlers
 {
     /// <summary>
     /// 
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     internal class JsServlet : IHttpHandler
@@ -55,7 +58,7 @@ namespace Pesta
             // not modified. This is because when there actually is a change,
             // cache busting should occur.
             if (req.Params["If-Modified-Since"] != null &&
-                    req.Params["v"] != null)
+                req.Params["v"] != null)
             {
                 resp.StatusCode = 304;
                 return;
@@ -98,7 +101,7 @@ namespace Pesta
                 container = ContainerConfig.DEFAULT_CONTAINER;
             }
             RenderingContext rcontext = "1".Equals(containerStr) ?
-            RenderingContext.CONTAINER : RenderingContext.GADGET;
+                                                                     RenderingContext.CONTAINER : RenderingContext.GADGET;
 
             ICollection<GadgetFeature> features = registry.getFeatures(needed);
             StringBuilder jsData = new StringBuilder();
@@ -142,5 +145,5 @@ namespace Pesta
             resp.Output.Write(jsData.ToString());
             //resp.End();
         }
-    } 
+    }
 }

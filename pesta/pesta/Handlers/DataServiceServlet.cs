@@ -20,15 +20,18 @@
 using System;
 using System.Web;
 using System.Collections.Generic;
+using Pesta.Engine.auth;
+using Pesta.Engine.social.service;
+using Pesta.Engine.social.spi;
 
-namespace Pesta
+namespace Pesta.Handlers
 {
     /// <summary>
     /// 
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     internal class DataServiceServlet : ApiServlet, IHttpHandler
@@ -158,5 +161,5 @@ namespace Pesta
             }
         }
 
-    } 
+    }
 }
