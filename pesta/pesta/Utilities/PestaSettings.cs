@@ -19,11 +19,11 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Collections.Specialized;
+using System.Configuration;
+using System.Xml;
 
-namespace Pesta
+namespace Pesta.Utilities
 {
     /// <summary>
     /// 
@@ -33,9 +33,104 @@ namespace Pesta
     ///  Apache Software License 2.0 2008 Pesta, Sean Lin M.T. (my6solutions.com)
     /// </para>
     /// </remarks>
-    public sealed class PestaSettings
+    public sealed class PestaSettings : IConfigurationSectionHandler
     {
         internal const string AssemblyName = "Pesta";
         internal const string ResourcePrefixName = "Pesta.Resources";
+
+        #region static methods
+
+        static PestaSettings() 
+        {
+            Object obj = ConfigurationManager.GetSection("Pesta");
+        }
+        #endregion
+
+        #region public methods
+
+        public Object Create(Object parent, object configContext, XmlNode section) 
+        {
+            NameValueCollection settings;
+
+            try 
+            {
+                NameValueSectionHandler baseHandler = new NameValueSectionHandler();
+                settings = (NameValueCollection) baseHandler.Create(parent, configContext, section);
+            } 
+            catch
+            {
+                settings = null;
+            }
+
+            if (settings != null) 
+            {
+                jsonDb = ReadSetting(settings, "jsonDb", "");
+                allowUnauthenticated = ReadSetting(settings, "allowUnauthenticated", "true");
+                gadgetDebug = ReadSetting(settings, "gadgetDebug", "true");
+                tokenMaxAge = ReadSetting(settings, "tokenMaxAge", "3600");
+                gadgetCacheXmlRefreshInterval = ReadSetting(settings, "gadgetCacheXmlRefreshInterval", "300000");
+                allowPlaintextToken = ReadSetting(settings, "allowPlaintextToken", "true");
+            }
+
+            return null;
+        }
+
+        #endregion
+
+        internal static String ReadSetting(NameValueCollection settings, String key, String defaultValue)
+        {
+            if (settings == null || key == null)
+                throw new ArgumentNullException();
+
+            try
+            {
+                Object setting = settings[key];
+                return (setting == null) ? defaultValue : (String)setting;
+            }
+            catch
+            {
+                return defaultValue;
+            }
+        }
+
+        private static string jsonDb;
+        private static string allowUnauthenticated;
+        private static string gadgetDebug;
+        private static string gadgetCacheXmlRefreshInterval;
+        private static string allowPlaintextToken;
+        private static string tokenMaxAge;
+
+        public static String JsonDb 
+        {
+            get { return jsonDb; }
+            set { jsonDb = value; }
+        }
+        public static String AllowPlaintextToken
+        {
+            get { return allowPlaintextToken; }
+            set { allowPlaintextToken = value; }
+        }
+        public static String TokenMaxAge
+        {
+            get { return tokenMaxAge; }
+            set { tokenMaxAge = value; }
+        }
+        public static String AllowUnauthenticated
+        {
+            get { return allowUnauthenticated; }
+            set { allowUnauthenticated = value; }
+        }
+        public static String GadgetDebug
+        {
+            get { return gadgetDebug; }
+            set { gadgetDebug = value; }
+        }
+        public static String GadgetCacheXmlRefreshInterval
+        {
+            get { return gadgetCacheXmlRefreshInterval; }
+            set { gadgetCacheXmlRefreshInterval = value; }
+        }
+
+        
     }
 }

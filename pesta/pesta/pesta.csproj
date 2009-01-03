@@ -58,6 +58,9 @@
     <Reference Include="System.Data.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.ServiceModel.Web">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.XML" />
@@ -433,6 +436,7 @@
     <Compile Include="Engine\common\uri\Uri.cs" />
     <Compile Include="Engine\common\uri\UriBuilder.cs" />
     <Compile Include="Engine\gadgets\BasicGadgetBlacklist.cs" />
+    <Compile Include="Engine\gadgets\FeedProcessor.cs" />
     <Compile Include="Engine\gadgets\FetchResponseUtils.cs" />
     <Compile Include="Engine\gadgets\GadgetBlacklist.cs" />
     <Compile Include="Engine\gadgets\oauth\OAuthModule.cs" />
@@ -469,6 +473,7 @@
     <Compile Include="Handlers\OAuthCallbackServlet.cs" />
     <Compile Include="Handlers\ProxyServlet.cs" />
     <Compile Include="Handlers\RpcServlet.cs" />
+    <Compile Include="Interop\Locale.cs" />
     <Compile Include="Utilities\UnixTime.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
