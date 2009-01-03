@@ -18,22 +18,22 @@
  */
 #endregion
 using System;
-using System.Data;
 using System.IO;
-using System.Web;
 using System.Net;
 using Jayrock.Json;
 using Jayrock.Json.Conversion;
+using Pesta.DataAccess;
+using Pesta.Engine.social.spi;
 
 
-namespace Pesta
+namespace Pesta.Engine.social.service
 {
     /// <summary>
     /// Summary description for SampleContainerHandler
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class SampleContainerHandler : DataRequestHandler
@@ -81,13 +81,13 @@ namespace Pesta
                 catch (JsonException e)
                 {
                     throw new SocialSpiException(ResponseError.BAD_REQUEST,
-                                "The json state file was not valid json", e);
+                                                 "The json state file was not valid json", e);
                 }
             }
             else if (type.Equals("setevilness"))
             {
                 throw new SocialSpiException(ResponseError.NOT_IMPLEMENTED,
-                            "evil data has not been implemented yet");
+                                             "evil data has not been implemented yet");
             }
             return null;
         }
@@ -103,7 +103,7 @@ namespace Pesta
         private String fetchStateDocument(String stateFileLocation)
         {
             String errorMessage = "The json state file " + stateFileLocation
-                                        + " could not be fetched and parsed.";
+                                  + " could not be fetched and parsed.";
 
             using (WebClient client = new WebClient())
             {
@@ -123,5 +123,5 @@ namespace Pesta
             }
 
         }
-    } 
+    }
 }

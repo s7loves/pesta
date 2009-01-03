@@ -18,26 +18,28 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
 
-/// <summary>
-/// Summary description for HashKey
-/// </summary>
-public class HashKey<T> : HashSet<T>
+namespace Pesta.Interop
 {
-    public override bool Equals(object obj)
+    /// <summary>
+    /// Summary description for HashKey
+    /// </summary>
+    public class HashKey<T> : HashSet<T>
     {
-        return this.GetHashCode() == obj.GetHashCode();
-    }
-
-    public override int GetHashCode()
-    {
-        int hash = 0;
-        foreach (T item in this)
+        public override bool Equals(object obj)
         {
-            hash += item.GetHashCode();
+            return this.GetHashCode() == obj.GetHashCode();
         }
-        return hash;
+
+        public override int GetHashCode()
+        {
+            int hash = 0;
+            foreach (T item in this)
+            {
+                hash += item.GetHashCode();
+            }
+            return hash;
+        }
     }
 }

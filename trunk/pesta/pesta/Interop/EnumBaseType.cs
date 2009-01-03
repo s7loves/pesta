@@ -21,63 +21,66 @@
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
 
-public abstract class EnumBaseType<T> where T : EnumBaseType<T>
+namespace Pesta.Interop
 {
-    protected static List<T> enumValues = new List<T>();
+    public abstract class EnumBaseType<T> where T : EnumBaseType<T>
+    {
+        protected static List<T> enumValues = new List<T>();
 
-    public readonly int Key;
-    public readonly string JsonValue;
-    public readonly string Value;
+        public readonly int Key;
+        public readonly string JsonValue;
+        public readonly string Value;
 
-    public EnumBaseType()
-    {
-    }
-    public EnumBaseType(int key, string value)
-    {
-        Key = key;
-        Value = value;
-        enumValues.Add((T)this);
-    }
-    public EnumBaseType(string key, string value)
-    {
-        JsonValue = key;
-        Value = value;
-        enumValues.Add((T)this);
-    }
-
-    protected static ReadOnlyCollection<T> GetBaseValues()
-    {
-        return enumValues.AsReadOnly();
-    }
-
-    public static T GetBaseByKey(int key)
-    {
-        foreach (T t in enumValues)
+        public EnumBaseType()
         {
-            if (t.Key == key) return t;
         }
-        return null;
-    }
-    public static T GetBaseByKey(string key)
-    {
-        foreach (T t in enumValues)
+        public EnumBaseType(int key, string value)
         {
-            if (t.JsonValue.ToLower() == key.ToLower()) return t;
+            Key = key;
+            Value = value;
+            enumValues.Add((T)this);
         }
-        return null;
-    }
-
-    public static T GetBaseByValue(string value)
-    {
-        foreach (T t in enumValues)
+        public EnumBaseType(string key, string value)
         {
-            if (t.Value.ToLower() == value.ToLower()) return t;
+            JsonValue = key;
+            Value = value;
+            enumValues.Add((T)this);
         }
-        return null;
-    }
 
-    public override string ToString()
-    {
-        return Value;
+        protected static ReadOnlyCollection<T> GetBaseValues()
+        {
+            return enumValues.AsReadOnly();
+        }
+
+        public static T GetBaseByKey(int key)
+        {
+            foreach (T t in enumValues)
+            {
+                if (t.Key == key) return t;
+            }
+            return null;
+        }
+        public static T GetBaseByKey(string key)
+        {
+            foreach (T t in enumValues)
+            {
+                if (t.JsonValue.ToLower() == key.ToLower()) return t;
+            }
+            return null;
+        }
+
+        public static T GetBaseByValue(string value)
+        {
+            foreach (T t in enumValues)
+            {
+                if (t.Value.ToLower() == value.ToLower()) return t;
+            }
+            return null;
+        }
+
+        public override string ToString()
+        {
+            return Value;
+        }
     }
 }

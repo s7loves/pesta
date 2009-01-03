@@ -19,15 +19,17 @@
 #endregion
 using System;
 using System.Collections.Generic;
+using Pesta.Engine.auth;
+using Pesta.Engine.social.model;
 
-namespace Pesta
+namespace Pesta.Engine.social.spi
 {
     /// <summary>
     /// Summary description for ActivityService
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public interface ActivityService
@@ -43,7 +45,7 @@ namespace Pesta
        * @return a response item with the list of activities.
        */
         RestfulCollection<Activity> getActivities(HashSet<UserId> userIds,
-            GroupId groupId, String appId, HashSet<String> fields, SecurityToken token);
+                                                  GroupId groupId, String appId, HashSet<String> fields, SecurityToken token);
 
         /**
          * Returns a set of activities for the passed in user and group that corresponds to a list of
@@ -58,7 +60,7 @@ namespace Pesta
          * @return a response item with the list of activities.
          */
         RestfulCollection<Activity> getActivities(UserId userId, GroupId groupId,
-            String appId, HashSet<String> fields, HashSet<String> activityIds, SecurityToken token);
+                                                  String appId, HashSet<String> fields, HashSet<String> activityIds, SecurityToken token);
 
         /**
          * Returns a set of activities for the passed in user and group that corresponds to a single of
@@ -73,7 +75,7 @@ namespace Pesta
          * @return a response item with the list of activities.
          */
         Activity getActivity(UserId userId, GroupId groupId, String appId,
-            HashSet<String> fields, String activityId, SecurityToken token);
+                             HashSet<String> fields, String activityId, SecurityToken token);
 
         /**
          * Deletes the activity for the passed in user and group that corresponds to the activityId.
@@ -86,7 +88,7 @@ namespace Pesta
          * @return a response item containing any errors
          */
         void deleteActivities(UserId userId, GroupId groupId, String appId,
-            HashSet<String> activityIds, SecurityToken token);
+                              HashSet<String> activityIds, SecurityToken token);
 
         /**
          * Creates the passed in activity for the passed in user and group. Once createActivity is called,
@@ -101,6 +103,6 @@ namespace Pesta
          * @return a response item containing any errors
          */
         void createActivity(UserId userId, GroupId groupId, String appId,
-            HashSet<String> fields, Activity activity, SecurityToken token);
-    } 
+                            HashSet<String> fields, Activity activity, SecurityToken token);
+    }
 }

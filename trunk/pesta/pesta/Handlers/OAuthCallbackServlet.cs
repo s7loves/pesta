@@ -17,28 +17,34 @@
  * specific language governing permissions and limitations under the License.
  */
 #endregion
-using System;
+
 using System.Web;
 
-internal class OAuthCallbackServlet : IHttpHandler 
+namespace Pesta.Handlers
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="context"></param>
-    /// <remarks>
-    /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
-    /// </para>
-    /// </remarks>
-    public void ProcessRequest (HttpContext context) {
-        
-    }
- 
-    public bool IsReusable {
-        get {
-            return false;
-        }
-    }
+    internal class OAuthCallbackServlet : IHttpHandler
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <remarks>
+        /// <para>
+        ///  Apache Software License 2.0 2008 Shindig
+        /// </para>
+        /// </remarks>
+        public void ProcessRequest(HttpContext context)
+        {
 
+        }
+
+        public bool IsReusable
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+    }
 }

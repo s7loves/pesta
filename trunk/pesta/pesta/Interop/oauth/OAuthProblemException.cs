@@ -16,62 +16,65 @@
 using System;
 using System.Collections.Generic;
 
-/// <summary>
-/// Summary description for OAuthProblemException
-/// </summary>
-/// <remarks>
-/// <para>
-///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
-/// </para>
-/// </remarks>
-public class OAuthProblemException : OAuthException
+namespace Pesta.Interop.oauth
 {
-    public static readonly String OAUTH_PROBLEM = "oauth_problem";
-
-    public static readonly String HTTP_STATUS_CODE = "HTTP status";
-
-    public OAuthProblemException() 
+    /// <summary>
+    /// Summary description for OAuthProblemException
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    ///  Apache Software License 2.0 2008 Shindig
+    /// </para>
+    /// </remarks>
+    public class OAuthProblemException : OAuthException
     {
-    }
+        public static readonly String OAUTH_PROBLEM = "oauth_problem";
 
-    public OAuthProblemException(String problem) 
-        : base(problem)
-    {
-        if (problem != null) 
+        public static readonly String HTTP_STATUS_CODE = "HTTP status";
+
+        public OAuthProblemException()
         {
-            parameters.Add(OAUTH_PROBLEM, problem);
         }
-    }
 
-    private readonly Dictionary<string, object> parameters = new Dictionary<string, object>();
-
-    public void setParameter(String name, Object value) 
-    {
-        getParameters().Add(name, value);
-    }
-
-    public Dictionary<String, Object> getParameters() 
-    {
-        return parameters;
-    }
-
-    public String getProblem() 
-    {
-        return (String) getParameters()[OAUTH_PROBLEM];
-    }
-
-    public int getHttpStatusCode() 
-    {
-        Object code = getParameters()[HTTP_STATUS_CODE];
-        if (code == null) 
+        public OAuthProblemException(String problem)
+            : base(problem)
         {
-            return 200;
-        } 
-        else 
-        {
-            return int.Parse(code.ToString());
+            if (problem != null)
+            {
+                parameters.Add(OAUTH_PROBLEM, problem);
+            }
         }
-    }
 
-    private static readonly long serialVersionUID = 1L;
+        private readonly Dictionary<string, object> parameters = new Dictionary<string, object>();
+
+        public void setParameter(String name, Object value)
+        {
+            getParameters().Add(name, value);
+        }
+
+        public Dictionary<String, Object> getParameters()
+        {
+            return parameters;
+        }
+
+        public String getProblem()
+        {
+            return (String)getParameters()[OAUTH_PROBLEM];
+        }
+
+        public int getHttpStatusCode()
+        {
+            Object code = getParameters()[HTTP_STATUS_CODE];
+            if (code == null)
+            {
+                return 200;
+            }
+            else
+            {
+                return int.Parse(code.ToString());
+            }
+        }
+
+        private static readonly long serialVersionUID = 1L;
+    }
 }

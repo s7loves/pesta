@@ -14,29 +14,31 @@
  * limitations under the License.
  */
 using System;
-using System.Collections.Generic;
 
-/// <summary>
-/// Summary description for OAuthServiceProvider
-/// </summary>
-/// <remarks>
-/// <para>
-///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
-/// </para>
-/// </remarks>
-[Serializable]
-public class OAuthServiceProvider
+namespace Pesta.Interop.oauth
 {
-    private static readonly long serialVersionUID = 3306534392621038574L;
-    public readonly String requestTokenURL;
-    public readonly String userAuthorizationURL;
-    public readonly String accessTokenURL;
-
-    public OAuthServiceProvider(String requestTokenURL,
-            String userAuthorizationURL, String accessTokenURL) 
+    /// <summary>
+    /// Summary description for OAuthServiceProvider
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    ///  Apache Software License 2.0 2008 Shindig
+    /// </para>
+    /// </remarks>
+    [Serializable]
+    public class OAuthServiceProvider
     {
-        this.requestTokenURL = requestTokenURL;
-        this.userAuthorizationURL = userAuthorizationURL;
-        this.accessTokenURL = accessTokenURL;
+        private static readonly long serialVersionUID = 3306534392621038574L;
+        public readonly String requestTokenURL;
+        public readonly String userAuthorizationURL;
+        public readonly String accessTokenURL;
+
+        public OAuthServiceProvider(String requestTokenURL,
+                                    String userAuthorizationURL, String accessTokenURL)
+        {
+            this.requestTokenURL = requestTokenURL;
+            this.userAuthorizationURL = userAuthorizationURL;
+            this.accessTokenURL = accessTokenURL;
+        }
     }
 }

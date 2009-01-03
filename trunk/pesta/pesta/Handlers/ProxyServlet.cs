@@ -22,15 +22,19 @@ using System.Text;
 using System.Web;
 using System.Net;
 using System.Collections.Generic;
+using Pesta.Engine.gadgets;
+using Pesta.Engine.gadgets.http;
+using Pesta.Engine.gadgets.rewrite;
+using Pesta.Engine.gadgets.servlet;
 
-namespace Pesta
+namespace Pesta.Handlers
 {
     /// <summary>
     /// 
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     internal class ProxyServlet : IHttpHandler
@@ -38,8 +42,8 @@ namespace Pesta
         private ProxyHandler proxyHandler = ProxyHandler.Instance;
 
         private static List<string> DISALLOWED_RESPONSE_HEADERS = new List<string>(){
-      "set-cookie", "content-length", "content-encoding", "etag", "last-modified" ,"accept-ranges",
-      "vary", "expires", "date", "pragma", "cache-control" };
+                                                                                        "set-cookie", "content-length", "content-encoding", "etag", "last-modified" ,"accept-ranges",
+                                                                                        "vary", "expires", "date", "pragma", "cache-control" };
 
         // This isn't a final field because we want to support optional injection.
         // This is a limitation of Guice, but this workaround...works.
@@ -83,5 +87,5 @@ namespace Pesta
             }
         }
 
-    } 
+    }
 }

@@ -19,10 +19,9 @@
 #endregion
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using Pesta.Handlers;
 
-namespace Pesta 
+namespace Pesta.Engine.social.service
 {
     /// <summary>
     /// Default implementation of HandlerDispatcher.  Provides default
@@ -30,7 +29,7 @@ namespace Pesta
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class StandardHandlerDispatcher : HandlerDispatcher
@@ -46,14 +45,14 @@ namespace Pesta
 
 
         public StandardHandlerDispatcher(PersonHandler personHandlerProvider,
-                    ActivityHandler activityHandlerProvider, AppDataHandler appDataHandlerProvider)
+                                         ActivityHandler activityHandlerProvider, AppDataHandler appDataHandlerProvider)
             : this(new Dictionary<string, DataRequestHandler>() 
-            { 
-                {DataServiceServlet.PEOPLE_ROUTE, personHandlerProvider},
-                {DataServiceServlet.ACTIVITY_ROUTE, activityHandlerProvider},
-                {DataServiceServlet.APPDATA_ROUTE, appDataHandlerProvider}
-            }
-        )
+                       { 
+                           {DataServiceServlet.PEOPLE_ROUTE, personHandlerProvider},
+                           {DataServiceServlet.ACTIVITY_ROUTE, activityHandlerProvider},
+                           {DataServiceServlet.APPDATA_ROUTE, appDataHandlerProvider}
+                       }
+                )
         {
             this.handlers.Add("samplecontainer", new SampleContainerHandler());
         }

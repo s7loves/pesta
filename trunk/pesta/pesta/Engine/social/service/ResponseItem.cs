@@ -18,108 +18,107 @@
  */
 #endregion
 using System;
-using System.Data;
-using System.Configuration;
 
-using System.Web;
-
-/// <summary>
-/// Summary description for ResponseItem
-/// </summary>
-/// <remarks>
-/// <para>
-///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
-/// </para>
-/// </remarks>
-public class ResponseItem
+namespace Pesta.Engine.social.service
 {
-    /**
-    * The ResponseError associated with the item.
-    */
-    private ResponseError error;
-
-    /**
-    * The error message.
-    */
-    private String errorMessage;
-
-    /**
-    * The response value.
-    */
-    private Object response;
-
-    /**
-    * Create a ResponseItem specifying the ResponseError and error Message.
-    * @param error a ResponseError
-    * @param errorMessage the Error Message
-    */
-    public ResponseItem(ResponseError error, String errorMessage) 
+    /// <summary>
+    /// Summary description for ResponseItem
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    ///  Apache Software License 2.0 2008 Shindig
+    /// </para>
+    /// </remarks>
+    public class ResponseItem
     {
-        this.error = error;
-        this.errorMessage = errorMessage;
-        this.response = null;
-    }
+        /**
+        * The ResponseError associated with the item.
+        */
+        private ResponseError error;
 
-    /**
-    * Create a ResponseItem specifying a value.
-    */
-    public ResponseItem(Object response) 
-    {
-        this.error = null;
-        this.errorMessage = null;
-        this.response = response;
-    }
+        /**
+        * The error message.
+        */
+        private String errorMessage;
 
-    /**
-    * Get the response value.
-    */
-    public Object getResponse() 
-    {
-        return response;
-    }
+        /**
+        * The response value.
+        */
+        private Object response;
 
-    /**
-    * Get the ResponseError associated with this ResponseItem.
-    * @return the ResponseError associated with this ResponseItem
-    */
-    public ResponseError getError() 
-    {
-        return error;
-    }
-
-    /**
-    * Get the Error Message associated with this Response Item.
-    * @return the Error Message
-    */
-    public String getErrorMessage() 
-    {
-        return errorMessage;
-    }
-
-
-    public override bool Equals(Object o) 
-    {
-        if (this == o) 
+        /**
+        * Create a ResponseItem specifying the ResponseError and error Message.
+        * @param error a ResponseError
+        * @param errorMessage the Error Message
+        */
+        public ResponseItem(ResponseError error, String errorMessage)
         {
-            return true;
+            this.error = error;
+            this.errorMessage = errorMessage;
+            this.response = null;
         }
 
-        if (!(o is ResponseItem)) 
+        /**
+        * Create a ResponseItem specifying a value.
+        */
+        public ResponseItem(Object response)
         {
-            return false;
+            this.error = null;
+            this.errorMessage = null;
+            this.response = response;
         }
 
-        ResponseItem that = (ResponseItem) o;
-        return (error == that.error)
-                && Object.Equals(errorMessage, that.errorMessage)
-                && Object.Equals(response, that.response);
-    }
+        /**
+        * Get the response value.
+        */
+        public Object getResponse()
+        {
+            return response;
+        }
 
-    public override int GetHashCode() 
-    {
-        int result = (error != null ? error.GetHashCode() : 0);
-        result = 31 * result + (errorMessage != null ? errorMessage.GetHashCode() : 0);
-        result = 31 * result + (response != null ? response.GetHashCode() : 0);
-        return result;
+        /**
+        * Get the ResponseError associated with this ResponseItem.
+        * @return the ResponseError associated with this ResponseItem
+        */
+        public ResponseError getError()
+        {
+            return error;
+        }
+
+        /**
+        * Get the Error Message associated with this Response Item.
+        * @return the Error Message
+        */
+        public String getErrorMessage()
+        {
+            return errorMessage;
+        }
+
+
+        public override bool Equals(Object o)
+        {
+            if (this == o)
+            {
+                return true;
+            }
+
+            if (!(o is ResponseItem))
+            {
+                return false;
+            }
+
+            ResponseItem that = (ResponseItem)o;
+            return (error == that.error)
+                   && Object.Equals(errorMessage, that.errorMessage)
+                   && Object.Equals(response, that.response);
+        }
+
+        public override int GetHashCode()
+        {
+            int result = (error != null ? error.GetHashCode() : 0);
+            result = 31 * result + (errorMessage != null ? errorMessage.GetHashCode() : 0);
+            result = 31 * result + (response != null ? response.GetHashCode() : 0);
+            return result;
+        }
     }
 }

@@ -20,26 +20,28 @@
 using System;
 using System.Web;
 using System.Collections.Generic;
-using System.Net;
+using Pesta.Engine.auth;
+using Pesta.Engine.social.core.oauth;
+using Pesta.Engine.social.oauth;
 
-namespace Pesta
+namespace Pesta.Filters
 {
     /// <summary>
     /// Summary description for AuthenticationServletFilter
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class AuthenticationServletFilter : IHttpModule
     {
         private List<AuthenticationHandler> handlers = new List<AuthenticationHandler> 
-    { 
-        new UrlParameterAuthenticationHandler(),
-        new AnonymousAuthenticationHandler(),
-        new OAuthConsumerRequestAuthenticationHandler(new SampleContainerOAuthLookupService())
-    };
+                                                           { 
+                                                               new UrlParameterAuthenticationHandler(),
+                                                               new AnonymousAuthenticationHandler(),
+                                                               new OAuthConsumerRequestAuthenticationHandler(new SampleContainerOAuthLookupService())
+                                                           };
 
         public void Init(HttpApplication context)
         {
@@ -68,5 +70,5 @@ namespace Pesta
         void IHttpModule.Dispose()
         {
         }
-    } 
+    }
 }

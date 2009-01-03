@@ -16,48 +16,51 @@
 using System;
 using System.Collections.Generic;
 
-/// <summary>
-/// Summary description for OAuthConsumer
-/// </summary>
-/// <remarks>
-/// <para>
-///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
-/// </para>
-/// </remarks>
-[Serializable]
-public class OAuthConsumer
+namespace Pesta.Interop.oauth
 {
-    private static readonly long serialVersionUID = -2258581186977818580L;
-
-    public readonly String callbackURL;
-    public readonly String consumerKey;
-    public readonly String consumerSecret;
-    public readonly OAuthServiceProvider serviceProvider;
-
-    public OAuthConsumer(String callbackURL, String consumerKey,
-            String consumerSecret, OAuthServiceProvider serviceProvider) 
+    /// <summary>
+    /// Summary description for OAuthConsumer
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    ///  Apache Software License 2.0 2008 Shindig
+    /// </para>
+    /// </remarks>
+    [Serializable]
+    public class OAuthConsumer
     {
-        this.callbackURL = callbackURL;
-        this.consumerKey = consumerKey;
-        this.consumerSecret = consumerSecret;
-        this.serviceProvider = serviceProvider;
+        private static readonly long serialVersionUID = -2258581186977818580L;
+
+        public readonly String callbackURL;
+        public readonly String consumerKey;
+        public readonly String consumerSecret;
+        public readonly OAuthServiceProvider serviceProvider;
+
+        public OAuthConsumer(String callbackURL, String consumerKey,
+                             String consumerSecret, OAuthServiceProvider serviceProvider)
+        {
+            this.callbackURL = callbackURL;
+            this.consumerKey = consumerKey;
+            this.consumerSecret = consumerSecret;
+            this.serviceProvider = serviceProvider;
+        }
+
+        private readonly Dictionary<String, Object> properties = new Dictionary<String, Object>();
+
+        public Object getProperty(String name)
+        {
+            return properties[name];
+        }
+
+        public void setProperty(String name, Object value)
+        {
+            properties.Add(name, value);
+        }
+
+        /**
+         * The name of the property whose value is the <a
+         * href="http://oauth.pbwiki.com/AccessorSecret">Accessor Secret</a>.
+         */
+        public static readonly String ACCESSOR_SECRET = "oauth_accessor_secret";
     }
-
-    private readonly Dictionary<String, Object> properties = new Dictionary<String, Object>();
-
-    public Object getProperty(String name) 
-    {
-        return properties[name];
-    }
-
-    public void setProperty(String name, Object value) 
-    {
-        properties.Add(name, value);
-    }
-
-    /**
-     * The name of the property whose value is the <a
-     * href="http://oauth.pbwiki.com/AccessorSecret">Accessor Secret</a>.
-     */
-    public static readonly String ACCESSOR_SECRET = "oauth_accessor_secret";
 }

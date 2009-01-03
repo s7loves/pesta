@@ -17,96 +17,99 @@
  * specific language governing permissions and limitations under the License.
  */
 #endregion
-using System;
+
 using System.Collections.Generic;
 
-/// <summary>
-/// Summary description for RestfulCollection
-/// </summary>
-/// <remarks>
-/// <para>
-///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
-/// </para>
-/// </remarks>
-public class RestfulCollection<T> 
+namespace Pesta.Engine.social.spi
 {
-    private List<T> entry;
-    private int startIndex;
-    private int totalResults;
-
-    private bool filtered = true;
-    private bool sorted = true;
-    private bool updatedSince = true;
-
-    public RestfulCollection(List<T> entry)
-        : this(entry, 0, entry.Count)
+    /// <summary>
+    /// Summary description for RestfulCollection
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    ///  Apache Software License 2.0 2008 Shindig
+    /// </para>
+    /// </remarks>
+    public class RestfulCollection<T>
     {
-    }
+        private List<T> entry;
+        private int startIndex;
+        private int totalResults;
 
-    public RestfulCollection(List<T> entry, int startIndex, int totalResults)
-    {
-        this.entry = entry;
-        this.startIndex = startIndex;
-        this.totalResults = totalResults;
-    }
+        private bool filtered = true;
+        private bool sorted = true;
+        private bool updatedSince = true;
 
-    public List<T> getEntry()
-    {
-        return entry;
-    }
+        public RestfulCollection(List<T> entry)
+            : this(entry, 0, entry.Count)
+        {
+        }
 
-    public void setEntry(List<T> entry)
-    {
-        this.entry = entry;
-    }
+        public RestfulCollection(List<T> entry, int startIndex, int totalResults)
+        {
+            this.entry = entry;
+            this.startIndex = startIndex;
+            this.totalResults = totalResults;
+        }
 
-    public int getStartIndex()
-    {
-        return startIndex;
-    }
+        public List<T> getEntry()
+        {
+            return entry;
+        }
 
-    public void setStartIndex(int startIndex)
-    {
-        this.startIndex = startIndex;
-    }
+        public void setEntry(List<T> entry)
+        {
+            this.entry = entry;
+        }
 
-    public int getTotalResults()
-    {
-        return totalResults;
-    }
+        public int getStartIndex()
+        {
+            return startIndex;
+        }
 
-    public void setTotalResults(int totalResults)
-    {
-        this.totalResults = totalResults;
-    }
+        public void setStartIndex(int startIndex)
+        {
+            this.startIndex = startIndex;
+        }
 
-    public bool isFiltered()
-    {
-        return filtered;
-    }
+        public int getTotalResults()
+        {
+            return totalResults;
+        }
 
-    public void setFiltered(bool filtered)
-    {
-        this.filtered = filtered;
-    }
+        public void setTotalResults(int totalResults)
+        {
+            this.totalResults = totalResults;
+        }
 
-    public bool isSorted()
-    {
-        return sorted;
-    }
+        public bool isFiltered()
+        {
+            return filtered;
+        }
 
-    public void setSorted(bool sorted)
-    {
-        this.sorted = sorted;
-    }
+        public void setFiltered(bool filtered)
+        {
+            this.filtered = filtered;
+        }
 
-    public bool isUpdatedSince()
-    {
-        return updatedSince;
-    }
+        public bool isSorted()
+        {
+            return sorted;
+        }
 
-    public void setUpdatedSince(bool updatedSince)
-    {
-        this.updatedSince = updatedSince;
+        public void setSorted(bool sorted)
+        {
+            this.sorted = sorted;
+        }
+
+        public bool isUpdatedSince()
+        {
+            return updatedSince;
+        }
+
+        public void setUpdatedSince(bool updatedSince)
+        {
+            this.updatedSince = updatedSince;
+        }
     }
 }

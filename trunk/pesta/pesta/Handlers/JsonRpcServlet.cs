@@ -24,15 +24,20 @@ using Jayrock.Json.Conversion;
 using System.IO;
 using System.Net;
 using System.Collections.Generic;
+using Pesta.Engine.auth;
+using Pesta.Engine.common.util;
+using Pesta.Engine.social;
+using Pesta.Engine.social.service;
+using Pesta.Engine.social.spi;
 
-namespace Pesta
+namespace Pesta.Handlers
 {
     /// <summary>
     /// 
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     internal class JsonRpcServlet : ApiServlet, IHttpHandler
@@ -104,7 +109,7 @@ namespace Pesta
 
 
         protected void dispatchBatch(JsonArray batch, HttpRequest servletRequest,
-          HttpResponse servletResponse, SecurityToken token)
+                                     HttpResponse servletResponse, SecurityToken token)
         {
             // Use linked hash map to preserve order
             List<IAsyncResult> responses = new List<IAsyncResult>(batch.Length);
@@ -137,7 +142,7 @@ namespace Pesta
         }
 
         protected void dispatch(JsonObject request, HttpRequest servletRequest,
-          HttpResponse servletResponse, SecurityToken token)
+                                HttpResponse servletResponse, SecurityToken token)
         {
             String key = null;
             if (request.Contains("id"))
@@ -195,7 +200,7 @@ namespace Pesta
         private void sendBadRequest(Exception t, HttpResponse response)
         {
             sendError(response, new ResponseItem(ResponseError.BAD_REQUEST,
-                "Invalid batch - " + t.Message));
+                                                 "Invalid batch - " + t.Message));
         }
 
         private JsonObject getErrorJson(ResponseItem responseItem)
@@ -235,5 +240,5 @@ namespace Pesta
             }
         }
 
-    } 
+    }
 }

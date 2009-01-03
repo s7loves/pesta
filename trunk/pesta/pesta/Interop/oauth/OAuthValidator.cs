@@ -13,29 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-using System;
-using System.Data;
-using System.Configuration;
-using System.Web;
-
-/// <summary>
-/// Summary description for OAuthValidator
-/// </summary>
-/// <remarks>
-/// <para>
-///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
-/// </para>
-/// </remarks>
-public interface OAuthValidator
+namespace Pesta.Interop.oauth
 {
-    /**
-     * Check that the given message from the given accessor is valid.
-     * @throws OAuthException TODO
-     * @throws IOException TODO
-     * @throws URISyntaxException 
-     * @throws OAuthProblemException the message is invalid.
-     * The implementation should throw exceptions that conform to the OAuth
-     * <a href="http://wiki.oauth.net/ProblemReporting">Problem Reporting extension</a>.
-     */
-    void validateMessage(OAuthMessage message, OAuthAccessor accessor);
+    /// <summary>
+    /// Summary description for OAuthValidator
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    ///  Apache Software License 2.0 2008 Shindig
+    /// </para>
+    /// </remarks>
+    public interface OAuthValidator
+    {
+        /**
+         * Check that the given message from the given accessor is valid.
+         * @throws OAuthException TODO
+         * @throws IOException TODO
+         * @throws URISyntaxException 
+         * @throws OAuthProblemException the message is invalid.
+         * The implementation should throw exceptions that conform to the OAuth
+         * <a href="http://wiki.oauth.net/ProblemReporting">Problem Reporting extension</a>.
+         */
+        void validateMessage(OAuthMessage message, OAuthAccessor accessor);
+    }
 }

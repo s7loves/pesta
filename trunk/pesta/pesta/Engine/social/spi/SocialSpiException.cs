@@ -18,18 +18,16 @@
  */
 #endregion
 using System;
-using System.Data;
-using System.Configuration;
 
 
-namespace Pesta
+namespace Pesta.Engine.social.spi
 {
     /// <summary>
     /// Summary description for SocialSpiException
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
     public class SocialSpiException : Exception
@@ -52,5 +50,5 @@ namespace Pesta
         {
             return error;
         }
-    } 
+    }
 }

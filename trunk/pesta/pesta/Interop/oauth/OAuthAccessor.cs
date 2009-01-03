@@ -16,61 +16,64 @@
 using System;
 using System.Collections.Generic;
 
-/// <summary>
-/// Summary description for OAuthAccessor
-/// </summary>
-/// <remarks>
-/// <para>
-///  Apache Software License 2.0 2008 Shindig, ported to C# by Sean Lin M.T. (my6solutions.com)
-/// </para>
-/// </remarks>
-[Serializable]
-public class OAuthAccessor
+namespace Pesta.Interop.oauth
 {
-    private static readonly long serialVersionUID = 5590788443138352999L;
-
-    public readonly OAuthConsumer consumer;
-    public String requestToken;
-    public String accessToken;
-    public String tokenSecret;
-
-    public OAuthAccessor(OAuthConsumer consumer) 
+    /// <summary>
+    /// Summary description for OAuthAccessor
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    ///  Apache Software License 2.0 2008 Shindig
+    /// </para>
+    /// </remarks>
+    [Serializable]
+    public class OAuthAccessor
     {
-        this.consumer = consumer;
-        this.requestToken = null;
-        this.accessToken = null;
-        this.tokenSecret = null;
-    }
+        private static readonly long serialVersionUID = 5590788443138352999L;
 
-    private readonly Dictionary<String, Object> properties = new Dictionary<String, Object>();
+        public readonly OAuthConsumer consumer;
+        public String requestToken;
+        public String accessToken;
+        public String tokenSecret;
 
-    public Object getProperty(String name) 
-    {
-        return properties[name];
-    }
-
-    public void setProperty(String name, Object value) 
-    {
-        properties.Add(name, value);
-    }
-
-    public OAuthMessage newRequestMessage(String method, String url,
-            List<OAuth.Parameter> parameters)
-    {
-        if (method == null) 
+        public OAuthAccessor(OAuthConsumer consumer)
         {
-            method = (String) this.getProperty("httpMethod");
-            if (method == null) 
+            this.consumer = consumer;
+            this.requestToken = null;
+            this.accessToken = null;
+            this.tokenSecret = null;
+        }
+
+        private readonly Dictionary<String, Object> properties = new Dictionary<String, Object>();
+
+        public Object getProperty(String name)
+        {
+            return properties[name];
+        }
+
+        public void setProperty(String name, Object value)
+        {
+            properties.Add(name, value);
+        }
+
+        public OAuthMessage newRequestMessage(String method, String url,
+                                              List<OAuth.Parameter> parameters)
+        {
+            if (method == null)
             {
-                method = (String) this.consumer.getProperty("httpMethod");
-                if (method == null) 
+                method = (String)this.getProperty("httpMethod");
+                if (method == null)
                 {
-                    method = "GET";
+                    method = (String)this.consumer.getProperty("httpMethod");
+                    if (method == null)
+                    {
+                        method = "GET";
+                    }
                 }
             }
+            OAuthMessage message = new OAuthMessage(method, url, parameters);
+            message.addRequiredParameters(this);
+            return message;
         }
-        OAuthMessage message = new OAuthMessage(method, url, parameters);
-        message.addRequiredParameters(this);
-        return message;
     }
 }
