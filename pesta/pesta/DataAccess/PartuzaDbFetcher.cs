@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
@@ -16,7 +16,7 @@ namespace Pesta.DataAccess
         protected PartuzaDbFetcher()
         {
             _db = new LinqRayaDataContext(ConfigurationManager.ConnectionStrings["rayaConnectionString"].ConnectionString);
-            url_prefix = "";
+            url_prefix = "http://localhost:22518";
         }
         public static PartuzaDbFetcher get()
         {
@@ -242,8 +242,8 @@ namespace Pesta.DataAccess
                 _person.setAboutMe(p.about_me);
                 _person.setAge(p.age);
                 _person.setChildren(p.children);
-                if (p.date_of_birth.HasValue)
-                    _person.setBirthday(new DateTime(p.date_of_birth.Value));
+                //if (p.date_of_birth.HasValue)
+                //    _person.setBirthday(new DateTime(p.date_of_birth.Value));
                 _person.setEthnicity(p.ethnicity);
                 _person.setFashion(p.fashion);
                 _person.setHappiestWhen(p.happiest_when);
@@ -263,9 +263,16 @@ namespace Pesta.DataAccess
                 _person.setNickname(p.nickname);
                 _person.setPets(p.pets);
                 _person.setPoliticalViews(p.political_views);
-                _person.setProfileSong(new UrlImpl(p.profile_song, "", ""));
-                _person.setProfileUrl(url_prefix + "/profile/" + _person_id);
-                _person.setProfileVideo(new UrlImpl(p.profile_video, "", ""));
+                if (!string.IsNullOrEmpty(p.profile_song))
+                {
+                	_person.setProfileSong(new UrlImpl(p.profile_song, "", ""));
+                }
+                
+                //_person.setProfileUrl(url_prefix + "/profile/" + _person_id);
+                if (!string.IsNullOrEmpty(p.profile_video))
+                {
+                	_person.setProfileVideo(new UrlImpl(p.profile_video, "", ""));
+                }
                 _person.setRelationshipStatus(p.relationship_status);
                 _person.setReligion(p.religion);
                 _person.setRomance(p.romance);
@@ -273,12 +280,13 @@ namespace Pesta.DataAccess
                 _person.setSexualOrientation(p.sexual_orientation);
                 _person.setStatus(p.status);
 
-                _person.setThumbnailUrl(!string.IsNullOrEmpty(p.thumbnail_url) ? url_prefix + p.thumbnail_url : "");
+                //_person.setThumbnailUrl(!string.IsNullOrEmpty(p.thumbnail_url) ? url_prefix + p.thumbnail_url : "");
                 if (!string.IsNullOrEmpty(p.thumbnail_url))
                 {
+                    _person.setThumbnailUrl(url_prefix + p.thumbnail_url);
                     // also report thumbnail_url in standard photos field (this is the only photo supported by partuza)
                     _person.setPhotos(new List<ListField>{
-                  new UrlImpl(url_prefix + p.thumbnail_url, "thumbnail", "thumbnail")});
+                        new UrlImpl(url_prefix + p.thumbnail_url, "thumbnail", "thumbnail")});
                 }
                 _person.setUtcOffset(p.time_zone); // force "-00:00" utc-offset format
                 if (!String.IsNullOrEmpty(p.drinker))
@@ -287,7 +295,7 @@ namespace Pesta.DataAccess
                 }
                 if (!String.IsNullOrEmpty(p.gender))
                 {
-                    _person.setGender(p.gender.ToLower() == Person.Gender.male.ToString() ? Person.Gender.male: Person.Gender.female);
+                //    _person.setGender(p.gender.ToLower() == Person.Gender.male.ToString() ? Person.Gender.male: Person.Gender.female);
                 }
                 if (!String.IsNullOrEmpty(p.smoker))
                 {

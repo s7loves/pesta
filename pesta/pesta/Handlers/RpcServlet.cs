@@ -109,6 +109,7 @@ namespace Pesta.Handlers
 
                 Result result = process(request, response, body);
                 response.Output.Write(result.getOutput());
+                response.End();
             }
         }
 

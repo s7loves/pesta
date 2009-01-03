@@ -38,5 +38,23 @@ namespace Pesta.Interop
         {
             return _country;
         }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is Locale == false)
+            {
+                return base.Equals(obj);
+            }
+            Locale loc = (Locale) obj;
+
+            return string.Compare(loc._country, _country, true) == 0 &&
+                   string.Compare(loc._language, _language, true) == 0;
+        }
+        
+        public override int GetHashCode()
+        {
+            return ((_language != null ? _language.GetHashCode() : 0) * 397) ^ (_country != null ? _country.GetHashCode() : 0);
+        }
+        
     }
 }
