@@ -200,27 +200,18 @@ namespace Pesta.DataAccess
 
         public DataCollection getAppData(HashSet<String> _ids, HashSet<String> _keys, String _app_id) 
         {
-            var _data = new Dictionary<string,Dictionary<string, string>>();
+            var _data = new Dictionary<string, Dictionary<string, string>>();
             var _res = _db.application_settings
-                .Where(x => x.application_id.ToString() == _app_id && _ids.AsEnumerable().Contains(x.person_id.ToString()));
-            if (_keys.Count != 0)
+                .Where(x => x.application_id.ToString() == _app_id && _ids.AsEnumerable().Contains(x.person_id.ToString()) && _keys.AsEnumerable().Contains(x.name))
+                .Select(x => new { x.person_id, x.name, x.value });
+            foreach (var _re in _res)
             {
-                _res = _res.Where(x => _keys.AsEnumerable().Contains(x.name));
-            }
-            var result = _res.Select(x => new {x.person_id, x.name, x.value});
-            foreach (var id in _ids)
-            {
-                var data = new Dictionary<string, string>();
-                foreach (var _re in result)
+                if (!_data.ContainsKey(_re.person_id.ToString()))
                 {
-                    if (_re.person_id.ToString() == id)
-                    {
-                        data.Add(_re.name, _re.value);
-                    }
+                    _data.Add(_re.person_id.ToString(), new Dictionary<string, string>());
                 }
-                _data.Add(id, data);
+                _data[_re.person_id.ToString()].Add(_re.name, _re.value);
             }
-            
             return new DataCollection(_data);
         }
 
