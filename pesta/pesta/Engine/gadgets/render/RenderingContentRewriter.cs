@@ -62,10 +62,10 @@ namespace Pesta.Engine.gadgets.render
        */
         public RenderingContentRewriter()
         {
-            this.messageBundleFactory = DefaultMessageBundleFactory.Instance;
-            this.containerConfig = JsonContainerConfig.Instance;
-            this.featureRegistry = GadgetFeatureRegistry.Instance;
-            this.urlGenerator = DefaultUrlGenerator.Instance;
+            messageBundleFactory = DefaultMessageBundleFactory.Instance;
+            containerConfig = JsonContainerConfig.Instance;
+            featureRegistry = GadgetFeatureRegistry.Instance;
+            urlGenerator = DefaultUrlGenerator.Instance;
         }
 
         public RewriterResults rewrite(sRequest req, sResponse resp,  MutableContent content) 
@@ -192,7 +192,7 @@ namespace Pesta.Engine.gadgets.render
                             }
                             else 
                             {
-                                inlineJs.Append(library.DebugContent);
+                                inlineJs.Append(library.Content);
                             }
                             inlineJs.Append(";\n");
                         }
@@ -327,7 +327,7 @@ namespace Pesta.Engine.gadgets.render
                     }
                     config.Put("shindig.auth", authConfig);
                 }
-                return "gadgets.config.init(" + config.ToString() + ");\n";
+                return "gadgets.config.init(" + config + ");\n";
             }
             catch (JsonException e) 
             {
@@ -365,7 +365,7 @@ namespace Pesta.Engine.gadgets.render
                     defaultPrefs.Put(up.getName(), up.getDefaultValue());
                 }
             } 
-            catch (JsonException e) 
+            catch (JsonException) 
             {
                 // Never happens. Name is required (cannot be null). Default value is a String.
             }
@@ -390,7 +390,7 @@ namespace Pesta.Engine.gadgets.render
                 {
                     preload.Put(name, preloads.getData(name).toJson());
                 } 
-                catch (PreloadException e) 
+                catch (PreloadException) 
                 {
                     // This will be thrown in the event of some unexpected exception. We can move on.
                 } 
@@ -430,11 +430,8 @@ namespace Pesta.Engine.gadgets.render
 
                     content.appendTail("</body></html>");
                     return content;
-                } 
-                else 
-                {
-                    return makeDefaultContent(gadget, mutableContent);
                 }
+                return makeDefaultContent(gadget, mutableContent);
             }
             return makeDefaultContent(gadget, mutableContent);
         }
