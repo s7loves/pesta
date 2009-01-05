@@ -233,8 +233,8 @@ namespace Pesta.DataAccess
                 _person.setAboutMe(p.about_me);
                 _person.setAge(p.age);
                 _person.setChildren(p.children);
-                //if (p.date_of_birth.HasValue)
-                //    _person.setBirthday(new DateTime(p.date_of_birth.Value));
+                if (p.date_of_birth.HasValue)
+                    _person.setBirthday(new DateTime(p.date_of_birth.Value));
                 _person.setEthnicity(p.ethnicity);
                 _person.setFashion(p.fashion);
                 _person.setHappiestWhen(p.happiest_when);
@@ -259,7 +259,7 @@ namespace Pesta.DataAccess
                 	_person.setProfileSong(new UrlImpl(p.profile_song, "", ""));
                 }
                 
-                //_person.setProfileUrl(url_prefix + "/profile/" + _person_id);
+                _person.setProfileUrl(url_prefix + "/profile/" + _person_id);
                 if (!string.IsNullOrEmpty(p.profile_video))
                 {
                 	_person.setProfileVideo(new UrlImpl(p.profile_video, "", ""));
@@ -271,7 +271,7 @@ namespace Pesta.DataAccess
                 _person.setSexualOrientation(p.sexual_orientation);
                 _person.setStatus(p.status);
 
-                //_person.setThumbnailUrl(!string.IsNullOrEmpty(p.thumbnail_url) ? url_prefix + p.thumbnail_url : "");
+                _person.setThumbnailUrl(!string.IsNullOrEmpty(p.thumbnail_url) ? url_prefix + p.thumbnail_url : "");
                 if (!string.IsNullOrEmpty(p.thumbnail_url))
                 {
                     _person.setThumbnailUrl(url_prefix + p.thumbnail_url);
@@ -286,7 +286,7 @@ namespace Pesta.DataAccess
                 }
                 if (!String.IsNullOrEmpty(p.gender))
                 {
-                //    _person.setGender(p.gender.ToLower() == Person.Gender.male.ToString() ? Person.Gender.male: Person.Gender.female);
+                    _person.setGender(p.gender.ToLower() == Person.Gender.male.ToString() ? Person.Gender.male: Person.Gender.female);
                 }
                 if (!String.IsNullOrEmpty(p.smoker))
                 {

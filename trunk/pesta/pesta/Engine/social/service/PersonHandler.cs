@@ -37,12 +37,12 @@ namespace Pesta.Engine.social.service
     {
         private readonly PersonService personService;
 
-        private static readonly String PEOPLE_PATH = "/people/{userId}+/{groupId}/{personId}+";
+        private const string PEOPLE_PATH = "/people/{userId}+/{groupId}/{personId}+";
 
         public PersonHandler()
         {
-            //this.personService = JsonDbOpensocialService.Instance;
-            this.personService = PartuzaService.Instance;
+            //personService = JsonDbOpensocialService.Instance;
+            personService = PartuzaService.Instance;
         }
 
         protected override object handleDelete(RequestItem request)
@@ -75,7 +75,7 @@ namespace Pesta.Engine.social.service
             HashSet<UserId> userIds = request.getUsers();
 
             // Preconditions
-            DataRequestHandler.Preconditions<UserId>.requireNotEmpty(userIds, "No userId specified");
+            Preconditions<UserId>.requireNotEmpty(userIds, "No userId specified");
             if (userIds.Count > 1 && optionalPersonId.Count != 0)
             {
                 throw new ArgumentException("Cannot fetch personIds for multiple userIds");
@@ -100,29 +100,23 @@ namespace Pesta.Engine.social.service
                         iuserid.MoveNext();
                         return personService.getPerson(iuserid.Current, fields, request.getToken());
                     }
-                    else
-                    {
-                        return personService.getPeople(userIds, groupId, options, fields, request.getToken());
-                    }
+                    return personService.getPeople(userIds, groupId, options, fields, request.getToken());
                 }
-                else if (optionalPersonId.Count == 1)
+                if (optionalPersonId.Count == 1)
                 {
                     IEnumerator<string> ipersonid = optionalPersonId.GetEnumerator();
                     ipersonid.MoveNext();
                     return personService.getPerson(new UserId(UserId.Type.userId,
                                                               ipersonid.Current), fields, request.getToken());
                 }
-                else
+                HashSet<UserId> personIds = new HashSet<UserId>();
+                foreach (String pid in optionalPersonId)
                 {
-                    HashSet<UserId> personIds = new HashSet<UserId>();
-                    foreach (String pid in optionalPersonId)
-                    {
-                        personIds.Add(new UserId(UserId.Type.userId, pid));
-                    }
-                    // Every other case is a collection response of optional person ids
-                    return personService.getPeople(personIds, new GroupId(GroupId.Type.self, null),
-                                                   options, fields, request.getToken());
+                    personIds.Add(new UserId(UserId.Type.userId, pid));
                 }
+                // Every other case is a collection response of optional person ids
+                return personService.getPeople(personIds, new GroupId(GroupId.Type.self, null),
+                                               options, fields, request.getToken());
             }
 
             // Every other case is a collection response.

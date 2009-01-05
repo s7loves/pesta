@@ -37,12 +37,12 @@ namespace Pesta.Engine.social.service
     {
         private readonly AppDataService service;
 
-        private static readonly String APP_DATA_PATH = "/appdata/{userId}+/{groupId}/{appId}";
+        private const string APP_DATA_PATH = "/appdata/{userId}+/{groupId}/{appId}";
 
         public AppDataHandler()
         {
-            //this.service = JsonDbOpensocialService.Instance;
-            this.service = PartuzaService.Instance;
+            //service = JsonDbOpensocialService.Instance;
+            service = PartuzaService.Instance;
         }
 
         /**
@@ -61,8 +61,8 @@ namespace Pesta.Engine.social.service
 
             HashSet<UserId> userIds = request.getUsers();
 
-            DataRequestHandler.Preconditions<UserId>.requireNotEmpty(userIds, "No userId specified");
-            DataRequestHandler.Preconditions<UserId>.requireSingular(userIds, "Multiple userIds not supported");
+            Preconditions<UserId>.requireNotEmpty(userIds, "No userId specified");
+            Preconditions<UserId>.requireSingular(userIds, "Multiple userIds not supported");
             IEnumerator<UserId> iuserid = userIds.GetEnumerator();
             iuserid.MoveNext();
             service.deletePersonData(iuserid.Current, request.getGroup(),
@@ -100,8 +100,8 @@ namespace Pesta.Engine.social.service
 
             HashSet<UserId> userIds = request.getUsers();
 
-            DataRequestHandler.Preconditions<UserId>.requireNotEmpty(userIds, "No userId specified");
-            DataRequestHandler.Preconditions<UserId>.requireSingular(userIds, "Multiple userIds not supported");
+            Preconditions<UserId>.requireNotEmpty(userIds, "No userId specified");
+            Preconditions<UserId>.requireSingular(userIds, "Multiple userIds not supported");
 
             Dictionary<String, String> values = (Dictionary<String, String>)request.getTypedParameter("data", typeof(Dictionary<String, String>));
             foreach (String key in values.Keys)
@@ -131,7 +131,7 @@ namespace Pesta.Engine.social.service
             HashSet<UserId> userIds = request.getUsers();
 
             // Preconditions
-            DataRequestHandler.Preconditions<UserId>.requireNotEmpty(userIds, "No userId specified");
+            Preconditions<UserId>.requireNotEmpty(userIds, "No userId specified");
 
             return service.getPersonData(userIds, request.getGroup(),
                                          request.getAppId(), request.getFields(), request.getToken());
@@ -146,7 +146,7 @@ namespace Pesta.Engine.social.service
         */
         public static bool isValidKey(String key)
         {
-            if (key == null || key.Length == 0)
+            if (string.IsNullOrEmpty(key))
             {
                 return false;
             }

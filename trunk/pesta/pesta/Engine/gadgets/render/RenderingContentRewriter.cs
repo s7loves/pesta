@@ -461,10 +461,7 @@ namespace Pesta.Engine.gadgets.render
             {
                 return "<body" + extra + ">";
             }
-            else 
-            {
-                return "<body" + extra + " dir='" + localeSpec.getLanguageDirection() + "'>";
-            }
+            return "<body" + extra + " dir='" + localeSpec.getLanguageDirection() + "'>";
         }
 
         /**
