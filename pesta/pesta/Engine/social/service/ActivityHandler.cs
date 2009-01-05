@@ -41,8 +41,8 @@ namespace Pesta.Engine.social.service
 
         public ActivityHandler()
         {
-            //this.service = JsonDbOpensocialService.Instance;
-            this.service = PartuzaService.Instance;
+            //service = JsonDbOpensocialService.Instance;
+            service = PartuzaService.Instance;
         }
 
         /**
@@ -55,8 +55,8 @@ namespace Pesta.Engine.social.service
             request.applyUrlTemplate(ACTIVITY_ID_PATH);
             HashSet<UserId> userIds = request.getUsers();
             HashSet<String> activityIds = new HashSet<string>(request.getListParameter("activityId"));
-            DataRequestHandler.Preconditions<UserId>.requireNotEmpty(userIds, "No userId specified");
-            DataRequestHandler.Preconditions<UserId>.requireSingular(userIds, "Multiple userIds not supported");
+            Preconditions<UserId>.requireNotEmpty(userIds, "No userId specified");
+            Preconditions<UserId>.requireSingular(userIds, "Multiple userIds not supported");
             IEnumerator<UserId> iuserid = userIds.GetEnumerator();
             iuserid.MoveNext();
             service.deleteActivities(iuserid.Current, request.getGroup(),
@@ -87,10 +87,10 @@ namespace Pesta.Engine.social.service
             HashSet<UserId> userIds = request.getUsers();
             HashSet<String> activityIds = new HashSet<string>(request.getListParameter("activityId"));
 
-            DataRequestHandler.Preconditions<UserId>.requireNotEmpty(userIds, "No userId specified");
-            DataRequestHandler.Preconditions<UserId>.requireSingular(userIds, "Multiple userIds not supported");
+            Preconditions<UserId>.requireNotEmpty(userIds, "No userId specified");
+            Preconditions<UserId>.requireSingular(userIds, "Multiple userIds not supported");
             // TODO(lryan) This seems reasonable to allow on PUT but we don't have an update verb.
-            DataRequestHandler.Preconditions<String>.requireEmpty(activityIds, "Cannot specify activityId in create");
+            Preconditions<string>.requireEmpty(activityIds, "Cannot specify activityId in create");
             IEnumerator<UserId> iuserid = userIds.GetEnumerator();
             iuserid.MoveNext();
             service.createActivity(iuserid.Current, request.getGroup(),
@@ -115,7 +115,7 @@ namespace Pesta.Engine.social.service
             HashSet<String> optionalActivityIds = new HashSet<string>(request.getListParameter("activityId"));
 
             // Preconditions
-            DataRequestHandler.Preconditions<UserId>.requireNotEmpty(userIds, "No userId specified");
+            Preconditions<UserId>.requireNotEmpty(userIds, "No userId specified");
             if (userIds.Count > 1 && optionalActivityIds.Count != 0)
             {
                 throw new ArgumentException("Cannot fetch same activityIds for multiple userIds");
