@@ -22,8 +22,24 @@ using Pesta.Engine.gadgets.spec;
 
 namespace Pesta.Engine.gadgets.preload
 {
-    public interface PreloaderService
+    public abstract class PreloaderService
     {
+        /**
+         * Phases for preloading.
+         */
+        public enum PreloadPhase
+        {
+            /**
+             * Preloaded content that will be POSTed to a proxied render.
+             */
+            PROXY_FETCH,
+
+            /**
+             * Preloaded content that will be delivered to the final render
+             */
+            HTML_RENDER
+        }
+
         /**
        * Begin all preload operations.
        *
@@ -33,6 +49,6 @@ namespace Pesta.Engine.gadgets.preload
        *
        * TODO: This should probably have a read only input. If we can
        */
-        Preloads preload(GadgetContext context, GadgetSpec gadget);
+        public abstract Preloads preload(GadgetContext context, GadgetSpec gadget, PreloadPhase phase);
     }
 }

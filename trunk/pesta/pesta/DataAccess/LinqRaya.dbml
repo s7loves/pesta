@@ -1,19 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Database Name="raya" Class="LinqRayaDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
   <Connection Mode="AppSettings" ConnectionString="Data Source=SEANLAPTOP;Initial Catalog=raya;Integrated Security=True" SettingsObjectName="Pesta.Properties.Settings" SettingsPropertyName="rayaConnectionString" Provider="System.Data.SqlClient" />
-  <Table Name="dbo.activities" Member="activities">
-    <Type Name="activity">
-      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="person_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="app_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="title" Type="System.String" DbType="VarChar(MAX) NOT NULL" CanBeNull="false" />
-      <Column Name="body" Type="System.String" DbType="VarChar(MAX) NOT NULL" CanBeNull="false" />
-      <Column Name="created" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
-      <Association Name="activity_activity_media_item" Member="activity_media_items" ThisKey="id" OtherKey="activity_id" Type="activity_media_item" />
-      <Association Name="person_activity" Member="person" ThisKey="person_id" OtherKey="id" Type="person" IsForeignKey="true" />
-      <Association Name="application_activity" Member="application" ThisKey="app_id" OtherKey="id" Type="application" IsForeignKey="true" />
-    </Type>
-  </Table>
   <Table Name="dbo.persons" Member="persons">
     <Type Name="person">
       <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
@@ -49,7 +36,6 @@
       <Column Name="time_zone" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
       <Column Name="first_name" Type="System.String" DbType="VarChar(64) NOT NULL" CanBeNull="false" />
       <Column Name="last_name" Type="System.String" DbType="VarChar(64) NOT NULL" CanBeNull="false" />
-      <Association Name="person_activity" Member="activities" ThisKey="id" OtherKey="person_id" Type="activity" />
       <Association Name="person_authenticated" Member="authenticateds" ThisKey="id" OtherKey="person_id" Type="authenticated" />
       <Association Name="person_friend_request" Member="friend_request" ThisKey="id" OtherKey="person_id" Type="friend_request" Cardinality="One" />
       <Association Name="person_friend" Member="friend" ThisKey="id" OtherKey="person_id" Type="friend" Cardinality="One" />
@@ -78,6 +64,7 @@
       <Association Name="person_person_tv_show" Member="person_tv_shows" ThisKey="id" OtherKey="person_id" Type="person_tv_show" />
       <Association Name="person_person_url" Member="person_urls" ThisKey="id" OtherKey="person_id" Type="person_url" />
       <Association Name="person_application_setting" Member="application_settings" ThisKey="id" OtherKey="person_id" Type="application_setting" />
+      <Association Name="person_activity" Member="activities" ThisKey="id" OtherKey="person_id" Type="activity" />
     </Type>
   </Table>
   <Table Name="dbo.activity_media_items" Member="activity_media_items">
@@ -126,9 +113,9 @@
       <Column Name="height" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="scrolling" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="modified" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
-      <Association Name="application_activity" Member="activities" ThisKey="id" OtherKey="app_id" Type="activity" />
       <Association Name="application_person_application" Member="person_applications" ThisKey="id" OtherKey="application_id" Type="person_application" />
       <Association Name="application_application_setting" Member="application_settings" ThisKey="id" OtherKey="application_id" Type="application_setting" />
+      <Association Name="application_activity" Member="activities" ThisKey="id" OtherKey="app_id" Type="activity" />
     </Type>
   </Table>
   <Table Name="dbo.authenticated" Member="authenticateds">
@@ -391,6 +378,19 @@
       <Column Name="value" Type="System.String" DbType="NVarChar(255) NOT NULL" CanBeNull="false" />
       <Association Name="application_application_setting" Member="application" ThisKey="application_id" OtherKey="id" Type="application" IsForeignKey="true" />
       <Association Name="person_application_setting" Member="person" ThisKey="person_id" OtherKey="id" Type="person" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.activities" Member="activities">
+    <Type Name="activity">
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="person_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="app_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="title" Type="System.String" DbType="VarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Column Name="body" Type="System.String" DbType="VarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Column Name="created" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Association Name="activity_activity_media_item" Member="activity_media_items" ThisKey="id" OtherKey="activity_id" Type="activity_media_item" />
+      <Association Name="application_activity" Member="application" ThisKey="app_id" OtherKey="id" Type="application" IsForeignKey="true" />
+      <Association Name="person_activity" Member="person" ThisKey="person_id" OtherKey="id" Type="person" IsForeignKey="true" />
     </Type>
   </Table>
 </Database>

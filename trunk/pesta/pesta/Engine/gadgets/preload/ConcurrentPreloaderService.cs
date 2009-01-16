@@ -35,16 +35,23 @@ namespace Pesta.Engine.gadgets.preload
             this.preloaders.Add(new HttpPreloader());
         }
 
-        public Preloads preload(GadgetContext context, GadgetSpec gadget)
+        public override Preloads preload(GadgetContext context, GadgetSpec gadget, PreloadPhase phase)
         {
-            ConcurrentPreloads preloads = new ConcurrentPreloads();
+            if (preloaders.Count == 0)
+            {
+                return null;
+            }
+
+            var tasks = new List<Preloader.preloadProcessor>();
             foreach(Preloader preloader in preloaders) 
             {
-                Dictionary<String, Preloader.preloadProcessor> tasks = preloader.createPreloadTasks(context, gadget);
-                foreach(var entry in tasks)
-                {
-                    preloads.add(entry.Key, entry.Value.BeginInvoke(null,null));
-                }
+                ICollection<Preloader.preloadProcessor> taskCollection = preloader.createPreloadTasks(context, gadget, phase);
+                tasks.AddRange(taskCollection); 
+            }
+            ConcurrentPreloads preloads = new ConcurrentPreloads();
+            foreach (var task in tasks)
+            {
+                preloads.add(task.BeginInvoke(null, null));
             }
             return preloads;
         }

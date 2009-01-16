@@ -100,7 +100,11 @@ namespace Pesta.Engine.gadgets.http
             gadget = srequest.gadget;
             container = srequest.container;
             securityToken = srequest.securityToken;
+            if (srequest.postBody != null)
+            {
+                postBody = new byte[srequest.postBody.Length];
             Array.Copy(srequest.postBody, this.postBody, srequest.postBody.Length);
+            }
             if (srequest.oauthArguments != null)
             {
                 oauthArguments = new OAuthArguments(srequest.oauthArguments);
@@ -211,7 +215,15 @@ namespace Pesta.Engine.gadgets.http
 
         public void addHeader(string name, string value)
         {
+            switch (name)
+            {
+                case "Content-Type":
+                    req.ContentType = value;
+                    break;
+                default:
             this.req.Headers.Add(name, value);
+                    break;
+            }
         }
         /// <param name="name">The header to fetch</param>
         /// <returns>A list of headers with that name (may be empty).</returns>
@@ -220,6 +232,15 @@ namespace Pesta.Engine.gadgets.http
             return req.Headers.GetValues(name);
         }
 
+        /**
+        * Remove all headers with the given name from the request.
+        *
+        * @return Any values that were removed from the request.
+        */
+        public void removeHeader(String name)
+        {
+            req.Headers.Remove(name);
+        }
 
         /// <returns>The first set header with the given name or null if not set. If</returns>
         public string getHeader(String name)

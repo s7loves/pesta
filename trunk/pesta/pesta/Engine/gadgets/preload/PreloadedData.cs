@@ -18,6 +18,7 @@
  */
 #endregion
 using System;
+using System.Collections.Generic;
 
 /**
  * Contains preloaded data and methods for manipulating it.
@@ -32,6 +33,6 @@ namespace Pesta.Engine.gadgets.preload
          *
          * @return A JSON object suitable for passing to org.json.JSONObject.put(String, Object).
          */
-        Object toJson();
+        Dictionary<string, Object> toJson();
     }
 }

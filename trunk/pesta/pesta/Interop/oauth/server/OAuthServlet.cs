@@ -75,7 +75,7 @@ namespace Pesta.Interop.oauth.server
             }
             for (int i = 0; i < request.Params.Count; i++)
             {
-                String name = request.Params.GetKey(i).ToString();
+                String name = request.Params.GetKey(i);
                 foreach (String value in request.Params.GetValues(i))
                 {
                     list.Add(new OAuth.Parameter(name, value));

@@ -6,11 +6,11 @@ namespace Pesta.Engine.gadgets.preload
 {
     public class ConcurrentPreloads : Preloads
     {
-        private readonly Dictionary<String, IAsyncResult> preloads;
+        private readonly List<IAsyncResult> tasks;
 
         public ConcurrentPreloads()
         {
-            preloads = new Dictionary<string, IAsyncResult>();
+            tasks = new List<IAsyncResult>();
         }
 
         /**
@@ -19,26 +19,25 @@ namespace Pesta.Engine.gadgets.preload
         * @param key The key that this preload will be stored under.
         * @param futureData A future that will return the preloaded data.
         */
-        public ConcurrentPreloads add(String key, IAsyncResult futureData) 
+        public ConcurrentPreloads add(IAsyncResult futureData) 
         {
-            preloads.Add(key, futureData);
+            tasks.Add(futureData);
             return this;
         }
 
-        public ICollection<String> getKeys()
+        public ICollection<PreloadedData> getData() 
         {
-            return preloads.Keys;
-        }
-
-        public PreloadedData getData(String key) 
-        {
-            AsyncResult future = preloads[key] as AsyncResult;
-
-            if (future == null)
+            var collect = new List<PreloadedData>();
+            foreach (var task in tasks)
             {
-                return null;
+                collect.Add(getPreloadedData((AsyncResult)task));
             }
+            return collect;
+        }
+        
 
+        private static PreloadedData getPreloadedData(AsyncResult future) 
+        {
             try
             {
                 Preloader.preloadProcessor processor = (Preloader.preloadProcessor)future.AsyncDelegate;
@@ -46,13 +45,27 @@ namespace Pesta.Engine.gadgets.preload
             }
             catch (Exception e)
             {
-                // Callable threw an exception. Throw the original.
-                Exception cause = e.InnerException;
-                if (cause is PreloadException) 
+                return new FailedPreload(e.InnerException);
+            }
+        }
+        /** PreloadData implementation that reports failure */
+        private class FailedPreload : PreloadedData
+        {
+            private readonly Exception t;
+
+            public FailedPreload(Exception t)
+            {
+                this.t = t;
+            }
+
+            public Dictionary<String, Object> toJson()
+            {
+                if (t is PreloadException)
                 {
-                    throw (PreloadException) cause;
+                    throw t;
                 }
-                throw new PreloadException(cause);
+
+                throw new PreloadException(t);
             }
         }
     }

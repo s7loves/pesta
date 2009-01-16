@@ -28,7 +28,7 @@ using Pesta.Engine.common;
 using Pesta.Engine.gadgets.http;
 using Pesta.Engine.gadgets.preload;
 using Pesta.Engine.gadgets.spec;
-using Pesta.Interop;
+using Pesta.Utilities;
 using ContentRewriter=Pesta.Engine.gadgets.rewrite.ContentRewriter;
 using Uri=Pesta.Engine.common.uri.Uri;
 
@@ -384,21 +384,20 @@ namespace Pesta.Engine.gadgets.render
             JsonObject preload = new JsonObject();
             Preloads preloads = gadget.getPreloads();
 
-            foreach(String name in preloads.getKeys()) 
+            foreach(var preloaded in preloads.getData()) 
             {
-                try
+                try 
                 {
-                    preload.Put(name, preloads.getData(name).toJson());
+                    foreach (var entry in preloaded.toJson()) 
+                    {
+                        preload.Put(entry.Key, entry.Value);
+                    }
                 } 
-                catch (PreloadException) 
+                catch (PreloadException pe)
                 {
                     // This will be thrown in the event of some unexpected exception. We can move on.
-                } 
-                catch (JsonException e)
-                {
-                    // Shouldn't ever happen. Probably indicates a big problem, so we'll abort.
-                    throw e;
                 }
+
             }
 
             content.appendHead("gadgets.io.preloaded_=")

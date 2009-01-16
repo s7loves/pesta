@@ -21,7 +21,6 @@ using System;
 using System.Collections.Generic;
 using Pesta.Engine.common.crypto;
 
-
 namespace Pesta.Engine.gadgets.oauth
 {
     /// <summary>
@@ -38,20 +37,22 @@ namespace Pesta.Engine.gadgets.oauth
         * Maximum age for our client state; if this is exceeded we start over. One
         * hour is a fairly arbitrary time limit here.
         */
-        private static int CLIENT_STATE_MAX_AGE_SECS = 3600;
+        private const int CLIENT_STATE_MAX_AGE_SECS = 3600;
 
         // Our client state is encrypted key/value pairs.  These are the key names.
-        private static String REQ_TOKEN_KEY = "r";
-        private static String REQ_TOKEN_SECRET_KEY = "rs";
-        private static String ACCESS_TOKEN_KEY = "a";
-        private static String ACCESS_TOKEN_SECRET_KEY = "as";
-        private static String OWNER_KEY = "o";
+        private const string REQ_TOKEN_KEY = "r";
+        private const string REQ_TOKEN_SECRET_KEY = "rs";
+        private const string ACCESS_TOKEN_KEY = "a";
+        private const string ACCESS_TOKEN_SECRET_KEY = "as";
+        private const string OWNER_KEY = "o";
+        private const String SESSION_HANDLE_KEY = "sh";
+        private const String ACCESS_TOKEN_EXPIRATION_KEY = "e";
 
         /** Name/value pairs */
-        private Dictionary<string, string> state;
+        private readonly Dictionary<string, string> state;
 
         /** Crypter to use when sending these to the client */
-        private BlobCrypter crypter;
+        private readonly BlobCrypter crypter;
 
         /**
         * Create a new, empty client state blob.
@@ -60,7 +61,7 @@ namespace Pesta.Engine.gadgets.oauth
         */
         public OAuthClientState(BlobCrypter crypter)
         {
-            this.state = new Dictionary<string, string>();
+            state = new Dictionary<string, string>();
             this.crypter = crypter;
         }
 
@@ -74,19 +75,19 @@ namespace Pesta.Engine.gadgets.oauth
         public OAuthClientState(BlobCrypter crypter, String stateBlob)
         {
             this.crypter = crypter;
-            Dictionary<string, string> state = null;
+            Dictionary<string, string> _state = null;
             if (!String.IsNullOrEmpty(stateBlob))
             {
                 try
                 {
-                    state = crypter.unwrap(stateBlob, CLIENT_STATE_MAX_AGE_SECS);
+                    _state = crypter.unwrap(stateBlob, CLIENT_STATE_MAX_AGE_SECS);
                 }
-                catch (BlobCrypterException e)
+                catch (BlobCrypterException)
                 {
                     // Probably too old, pretend we never saw it at all.
                 }
             }
-            this.state = state ?? new Dictionary<string, string>();
+            state = _state ?? new Dictionary<string, string>();
         }
 
         /**
@@ -112,12 +113,12 @@ namespace Pesta.Engine.gadgets.oauth
         */
         public String getRequestToken()
         {
-            return state[REQ_TOKEN_KEY];
+            return state.ContainsKey(REQ_TOKEN_KEY) ? state[REQ_TOKEN_KEY] : null;
         }
 
         public void setRequestToken(String requestToken)
         {
-            state.Add(REQ_TOKEN_KEY, requestToken);
+            setNullCheck(REQ_TOKEN_KEY, requestToken);
         }
 
         /**
@@ -125,12 +126,12 @@ namespace Pesta.Engine.gadgets.oauth
         */
         public String getRequestTokenSecret()
         {
-            return state[REQ_TOKEN_SECRET_KEY];
+            return state.ContainsKey(REQ_TOKEN_SECRET_KEY)? state[REQ_TOKEN_SECRET_KEY]:null;
         }
 
         public void setRequestTokenSecret(String requestTokenSecret)
         {
-            state.Add(REQ_TOKEN_SECRET_KEY, requestTokenSecret);
+            setNullCheck(REQ_TOKEN_SECRET_KEY, requestTokenSecret);
         }
 
         /**
@@ -138,12 +139,12 @@ namespace Pesta.Engine.gadgets.oauth
         */
         public String getAccessToken()
         {
-            return state[ACCESS_TOKEN_KEY];
+            return state.ContainsKey(ACCESS_TOKEN_KEY)?state[ACCESS_TOKEN_KEY]:null;
         }
 
         public void setAccessToken(String accessToken)
         {
-            state.Add(ACCESS_TOKEN_KEY, accessToken);
+            setNullCheck(ACCESS_TOKEN_KEY, accessToken);
         }
 
         /**
@@ -151,12 +152,44 @@ namespace Pesta.Engine.gadgets.oauth
         */
         public String getAccessTokenSecret()
         {
-            return state[ACCESS_TOKEN_SECRET_KEY];
+            return state.ContainsKey(ACCESS_TOKEN_SECRET_KEY)?state[ACCESS_TOKEN_SECRET_KEY]:null;
         }
 
         public void setAccessTokenSecret(String accessTokenSecret)
         {
-            state.Add(ACCESS_TOKEN_SECRET_KEY, accessTokenSecret);
+            setNullCheck(ACCESS_TOKEN_SECRET_KEY, accessTokenSecret);
+        }
+
+        /**
+   * Session handle (http://oauth.googlecode.com/svn/spec/ext/session/1.0/drafts/1/spec.html)
+   */
+        public String getSessionHandle()
+        {
+            return state.ContainsKey(SESSION_HANDLE_KEY) ? state[SESSION_HANDLE_KEY] : null;
+        }
+
+        public void setSessionHandle(String sessionHandle)
+        {
+            setNullCheck(SESSION_HANDLE_KEY, sessionHandle);
+        }
+
+        /**
+         * Expiration of access token
+         * (http://oauth.googlecode.com/svn/spec/ext/session/1.0/drafts/1/spec.html)
+         */
+        public long getTokenExpireMillis()
+        {
+            String expiration = state.ContainsKey(ACCESS_TOKEN_EXPIRATION_KEY) ? state[ACCESS_TOKEN_EXPIRATION_KEY] : null; 
+            if (expiration == null)
+            {
+                return 0;
+            }
+            return long.Parse(expiration);
+        }
+
+        public void setTokenExpireMillis(long expirationMillis)
+        {
+            setNullCheck(ACCESS_TOKEN_EXPIRATION_KEY, expirationMillis.ToString());
         }
 
         /**
@@ -164,12 +197,24 @@ namespace Pesta.Engine.gadgets.oauth
         */
         public String getOwner()
         {
-            return state[OWNER_KEY];
+            return state.ContainsKey(OWNER_KEY)?state[OWNER_KEY]:null;
         }
 
         public void setOwner(String owner)
         {
-            state.Add(OWNER_KEY, owner);
+            setNullCheck(OWNER_KEY, owner);
+        }
+
+        private void setNullCheck(String key, String value)
+        {
+            if (value == null)
+            {
+                state.Remove(key);
+            }
+            else
+            {
+                state.Add(key, value);
+            }
         }
     }
 }

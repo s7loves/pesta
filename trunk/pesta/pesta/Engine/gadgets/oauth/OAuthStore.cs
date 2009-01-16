@@ -71,10 +71,14 @@ namespace Pesta.Engine.gadgets.oauth
         {
             private readonly String accessToken;
             private readonly String tokenSecret;
-            public TokenInfo(String token, String secret)
+            private readonly String sessionHandle;
+            private readonly long tokenExpireMillis;
+            public TokenInfo(String token, String secret, String sessionHandle, long tokenExpireMillis)
             {
                 accessToken = token;
                 tokenSecret = secret;
+                this.sessionHandle = sessionHandle;
+                this.tokenExpireMillis = tokenExpireMillis;
             }
             public String getAccessToken()
             {
@@ -83,6 +87,14 @@ namespace Pesta.Engine.gadgets.oauth
             public String getTokenSecret()
             {
                 return tokenSecret;
+            }
+            public String getSessionHandle()
+            {
+                return sessionHandle;
+            }
+            public long getTokenExpireMillis()
+            {
+                return tokenExpireMillis;
             }
         }
 

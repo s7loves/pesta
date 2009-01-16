@@ -33,22 +33,22 @@ namespace Pesta.Interop.oauth.signature
             return getSignature();
         }
 
-        protected override bool isValid(String signature, String baseString)
+        protected override bool isValid(String _signature, String baseString)
         {
-            return signature.Equals(getSignature());
+            return _signature.Equals(getSignature());
         }
 
         private String getSignature()
         {
             if (signature == null)
             {
-                signature = OAuth.percentEncode(getConsumerSecret()) + '&'
-                            + OAuth.percentEncode(getTokenSecret());
+                signature = Rfc3986.Encode(getConsumerSecret()) + '&'
+                            + Rfc3986.Encode(getTokenSecret());
             }
             return signature;
         }
 
-        private String signature = null;
+        private String signature;
 
         public override void setConsumerSecret(String consumerSecret)
         {

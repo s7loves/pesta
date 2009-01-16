@@ -22,7 +22,7 @@ using System.Web;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using Pesta.Engine.auth;
-using Pesta.Interop;
+using Pesta.Utilities;
 using URI = System.Uri;
 
 namespace Pesta.Engine.gadgets.servlet
@@ -208,6 +208,10 @@ namespace Pesta.Engine.gadgets.servlet
         /// </returns>
         private static bool getDebug(HttpRequest request)
         {
+            if (PestaSettings.GadgetDebug.ToLower().Equals("true"))
+            {
+                return true;
+            }
             String debug = request.Params["debug"];
             if (debug == null)
             {

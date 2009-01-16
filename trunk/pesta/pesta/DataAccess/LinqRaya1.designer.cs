@@ -30,9 +30,6 @@ namespace Pesta.DataAccess
 		
     #region Extensibility Method Definitions
     partial void OnCreated();
-    partial void Insertactivity(activity instance);
-    partial void Updateactivity(activity instance);
-    partial void Deleteactivity(activity instance);
     partial void Insertperson(person instance);
     partial void Updateperson(person instance);
     partial void Deleteperson(person instance);
@@ -75,6 +72,9 @@ namespace Pesta.DataAccess
     partial void Insertapplication_setting(application_setting instance);
     partial void Updateapplication_setting(application_setting instance);
     partial void Deleteapplication_setting(application_setting instance);
+    partial void Insertactivity(activity instance);
+    partial void Updateactivity(activity instance);
+    partial void Deleteactivity(activity instance);
     #endregion
 		
 		public LinqRayaDataContext() : 
@@ -105,14 +105,6 @@ namespace Pesta.DataAccess
 				base(connection, mappingSource)
 		{
 			OnCreated();
-		}
-		
-		public System.Data.Linq.Table<activity> activities
-		{
-			get
-			{
-				return this.GetTable<activity>();
-			}
 		}
 		
 		public System.Data.Linq.Table<person> persons
@@ -410,297 +402,13 @@ namespace Pesta.DataAccess
 				return this.GetTable<application_setting>();
 			}
 		}
-	}
-	
-	[Table(Name="dbo.activities")]
-	public partial class activity : INotifyPropertyChanging, INotifyPropertyChanged
-	{
 		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private int _id;
-		
-		private int _person_id;
-		
-		private int _app_id;
-		
-		private string _title;
-		
-		private string _body;
-		
-		private long _created;
-		
-		private EntitySet<activity_media_item> _activity_media_items;
-		
-		private EntityRef<person> _person;
-		
-		private EntityRef<application> _application;
-		
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void OnidChanging(int value);
-    partial void OnidChanged();
-    partial void Onperson_idChanging(int value);
-    partial void Onperson_idChanged();
-    partial void Onapp_idChanging(int value);
-    partial void Onapp_idChanged();
-    partial void OntitleChanging(string value);
-    partial void OntitleChanged();
-    partial void OnbodyChanging(string value);
-    partial void OnbodyChanged();
-    partial void OncreatedChanging(long value);
-    partial void OncreatedChanged();
-    #endregion
-		
-		public activity()
-		{
-			this._activity_media_items = new EntitySet<activity_media_item>(new Action<activity_media_item>(this.attach_activity_media_items), new Action<activity_media_item>(this.detach_activity_media_items));
-			this._person = default(EntityRef<person>);
-			this._application = default(EntityRef<application>);
-			OnCreated();
-		}
-		
-		[Column(Storage="_id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int id
+		public System.Data.Linq.Table<activity> activities
 		{
 			get
 			{
-				return this._id;
+				return this.GetTable<activity>();
 			}
-			set
-			{
-				if ((this._id != value))
-				{
-					this.OnidChanging(value);
-					this.SendPropertyChanging();
-					this._id = value;
-					this.SendPropertyChanged("id");
-					this.OnidChanged();
-				}
-			}
-		}
-		
-		[Column(Storage="_person_id", DbType="Int NOT NULL")]
-		public int person_id
-		{
-			get
-			{
-				return this._person_id;
-			}
-			set
-			{
-				if ((this._person_id != value))
-				{
-					if (this._person.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.Onperson_idChanging(value);
-					this.SendPropertyChanging();
-					this._person_id = value;
-					this.SendPropertyChanged("person_id");
-					this.Onperson_idChanged();
-				}
-			}
-		}
-		
-		[Column(Storage="_app_id", DbType="Int NOT NULL")]
-		public int app_id
-		{
-			get
-			{
-				return this._app_id;
-			}
-			set
-			{
-				if ((this._app_id != value))
-				{
-					if (this._application.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.Onapp_idChanging(value);
-					this.SendPropertyChanging();
-					this._app_id = value;
-					this.SendPropertyChanged("app_id");
-					this.Onapp_idChanged();
-				}
-			}
-		}
-		
-		[Column(Storage="_title", DbType="VarChar(MAX) NOT NULL", CanBeNull=false)]
-		public string title
-		{
-			get
-			{
-				return this._title;
-			}
-			set
-			{
-				if ((this._title != value))
-				{
-					this.OntitleChanging(value);
-					this.SendPropertyChanging();
-					this._title = value;
-					this.SendPropertyChanged("title");
-					this.OntitleChanged();
-				}
-			}
-		}
-		
-		[Column(Storage="_body", DbType="VarChar(MAX) NOT NULL", CanBeNull=false)]
-		public string body
-		{
-			get
-			{
-				return this._body;
-			}
-			set
-			{
-				if ((this._body != value))
-				{
-					this.OnbodyChanging(value);
-					this.SendPropertyChanging();
-					this._body = value;
-					this.SendPropertyChanged("body");
-					this.OnbodyChanged();
-				}
-			}
-		}
-		
-		[Column(Storage="_created", DbType="BigInt NOT NULL")]
-		public long created
-		{
-			get
-			{
-				return this._created;
-			}
-			set
-			{
-				if ((this._created != value))
-				{
-					this.OncreatedChanging(value);
-					this.SendPropertyChanging();
-					this._created = value;
-					this.SendPropertyChanged("created");
-					this.OncreatedChanged();
-				}
-			}
-		}
-		
-		[Association(Name="activity_activity_media_item", Storage="_activity_media_items", ThisKey="id", OtherKey="activity_id")]
-		public EntitySet<activity_media_item> activity_media_items
-		{
-			get
-			{
-				return this._activity_media_items;
-			}
-			set
-			{
-				this._activity_media_items.Assign(value);
-			}
-		}
-		
-		[Association(Name="person_activity", Storage="_person", ThisKey="person_id", OtherKey="id", IsForeignKey=true)]
-		public person person
-		{
-			get
-			{
-				return this._person.Entity;
-			}
-			set
-			{
-				person previousValue = this._person.Entity;
-				if (((previousValue != value) 
-							|| (this._person.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._person.Entity = null;
-						previousValue.activities.Remove(this);
-					}
-					this._person.Entity = value;
-					if ((value != null))
-					{
-						value.activities.Add(this);
-						this._person_id = value.id;
-					}
-					else
-					{
-						this._person_id = default(int);
-					}
-					this.SendPropertyChanged("person");
-				}
-			}
-		}
-		
-		[Association(Name="application_activity", Storage="_application", ThisKey="app_id", OtherKey="id", IsForeignKey=true)]
-		public application application
-		{
-			get
-			{
-				return this._application.Entity;
-			}
-			set
-			{
-				application previousValue = this._application.Entity;
-				if (((previousValue != value) 
-							|| (this._application.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._application.Entity = null;
-						previousValue.activities.Remove(this);
-					}
-					this._application.Entity = value;
-					if ((value != null))
-					{
-						value.activities.Add(this);
-						this._app_id = value.id;
-					}
-					else
-					{
-						this._app_id = default(int);
-					}
-					this.SendPropertyChanged("application");
-				}
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-		
-		private void attach_activity_media_items(activity_media_item entity)
-		{
-			this.SendPropertyChanging();
-			entity.activity = this;
-		}
-		
-		private void detach_activity_media_items(activity_media_item entity)
-		{
-			this.SendPropertyChanging();
-			entity.activity = null;
 		}
 	}
 	
@@ -776,8 +484,6 @@ namespace Pesta.DataAccess
 		
 		private string _last_name;
 		
-		private EntitySet<activity> _activities;
-		
 		private EntitySet<authenticated> _authenticateds;
 		
 		private EntityRef<friend_request> _friend_request;
@@ -787,6 +493,8 @@ namespace Pesta.DataAccess
 		private EntitySet<person_application> _person_applications;
 		
 		private EntitySet<application_setting> _application_settings;
+		
+		private EntitySet<activity> _activities;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -862,12 +570,12 @@ namespace Pesta.DataAccess
 		
 		public person()
 		{
-			this._activities = new EntitySet<activity>(new Action<activity>(this.attach_activities), new Action<activity>(this.detach_activities));
 			this._authenticateds = new EntitySet<authenticated>(new Action<authenticated>(this.attach_authenticateds), new Action<authenticated>(this.detach_authenticateds));
 			this._friend_request = default(EntityRef<friend_request>);
 			this._friend = default(EntityRef<friend>);
 			this._person_applications = new EntitySet<person_application>(new Action<person_application>(this.attach_person_applications), new Action<person_application>(this.detach_person_applications));
 			this._application_settings = new EntitySet<application_setting>(new Action<application_setting>(this.attach_application_settings), new Action<application_setting>(this.detach_application_settings));
+			this._activities = new EntitySet<activity>(new Action<activity>(this.attach_activities), new Action<activity>(this.detach_activities));
 			OnCreated();
 		}
 		
@@ -1531,19 +1239,6 @@ namespace Pesta.DataAccess
 			}
 		}
 		
-		[Association(Name="person_activity", Storage="_activities", ThisKey="id", OtherKey="person_id")]
-		public EntitySet<activity> activities
-		{
-			get
-			{
-				return this._activities;
-			}
-			set
-			{
-				this._activities.Assign(value);
-			}
-		}
-		
 		[Association(Name="person_authenticated", Storage="_authenticateds", ThisKey="id", OtherKey="person_id")]
 		public EntitySet<authenticated> authenticateds
 		{
@@ -1641,6 +1336,19 @@ namespace Pesta.DataAccess
 			}
 		}
 		
+		[Association(Name="person_activity", Storage="_activities", ThisKey="id", OtherKey="person_id")]
+		public EntitySet<activity> activities
+		{
+			get
+			{
+				return this._activities;
+			}
+			set
+			{
+				this._activities.Assign(value);
+			}
+		}
+		
 		public event PropertyChangingEventHandler PropertyChanging;
 		
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -1659,18 +1367,6 @@ namespace Pesta.DataAccess
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
-		}
-		
-		private void attach_activities(activity entity)
-		{
-			this.SendPropertyChanging();
-			entity.person = this;
-		}
-		
-		private void detach_activities(activity entity)
-		{
-			this.SendPropertyChanging();
-			entity.person = null;
 		}
 		
 		private void attach_authenticateds(authenticated entity)
@@ -1704,6 +1400,18 @@ namespace Pesta.DataAccess
 		}
 		
 		private void detach_application_settings(application_setting entity)
+		{
+			this.SendPropertyChanging();
+			entity.person = null;
+		}
+		
+		private void attach_activities(activity entity)
+		{
+			this.SendPropertyChanging();
+			entity.person = this;
+		}
+		
+		private void detach_activities(activity entity)
 		{
 			this.SendPropertyChanging();
 			entity.person = null;
@@ -2299,11 +2007,11 @@ namespace Pesta.DataAccess
 		
 		private long _modified;
 		
-		private EntitySet<activity> _activities;
-		
 		private EntitySet<person_application> _person_applications;
 		
 		private EntitySet<application_setting> _application_settings;
+		
+		private EntitySet<activity> _activities;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -2343,9 +2051,9 @@ namespace Pesta.DataAccess
 		
 		public application()
 		{
-			this._activities = new EntitySet<activity>(new Action<activity>(this.attach_activities), new Action<activity>(this.detach_activities));
 			this._person_applications = new EntitySet<person_application>(new Action<person_application>(this.attach_person_applications), new Action<person_application>(this.detach_person_applications));
 			this._application_settings = new EntitySet<application_setting>(new Action<application_setting>(this.attach_application_settings), new Action<application_setting>(this.detach_application_settings));
+			this._activities = new EntitySet<activity>(new Action<activity>(this.attach_activities), new Action<activity>(this.detach_activities));
 			OnCreated();
 		}
 		
@@ -2649,19 +2357,6 @@ namespace Pesta.DataAccess
 			}
 		}
 		
-		[Association(Name="application_activity", Storage="_activities", ThisKey="id", OtherKey="app_id")]
-		public EntitySet<activity> activities
-		{
-			get
-			{
-				return this._activities;
-			}
-			set
-			{
-				this._activities.Assign(value);
-			}
-		}
-		
 		[Association(Name="application_person_application", Storage="_person_applications", ThisKey="id", OtherKey="application_id")]
 		public EntitySet<person_application> person_applications
 		{
@@ -2688,6 +2383,19 @@ namespace Pesta.DataAccess
 			}
 		}
 		
+		[Association(Name="application_activity", Storage="_activities", ThisKey="id", OtherKey="app_id")]
+		public EntitySet<activity> activities
+		{
+			get
+			{
+				return this._activities;
+			}
+			set
+			{
+				this._activities.Assign(value);
+			}
+		}
+		
 		public event PropertyChangingEventHandler PropertyChanging;
 		
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -2706,18 +2414,6 @@ namespace Pesta.DataAccess
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
-		}
-		
-		private void attach_activities(activity entity)
-		{
-			this.SendPropertyChanging();
-			entity.application = this;
-		}
-		
-		private void detach_activities(activity entity)
-		{
-			this.SendPropertyChanging();
-			entity.application = null;
 		}
 		
 		private void attach_person_applications(person_application entity)
@@ -2739,6 +2435,18 @@ namespace Pesta.DataAccess
 		}
 		
 		private void detach_application_settings(application_setting entity)
+		{
+			this.SendPropertyChanging();
+			entity.application = null;
+		}
+		
+		private void attach_activities(activity entity)
+		{
+			this.SendPropertyChanging();
+			entity.application = this;
+		}
+		
+		private void detach_activities(activity entity)
 		{
 			this.SendPropertyChanging();
 			entity.application = null;
@@ -5529,6 +5237,298 @@ namespace Pesta.DataAccess
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
+		}
+	}
+	
+	[Table(Name="dbo.activities")]
+	public partial class activity : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _id;
+		
+		private int _person_id;
+		
+		private int _app_id;
+		
+		private string _title;
+		
+		private string _body;
+		
+		private long _created;
+		
+		private EntitySet<activity_media_item> _activity_media_items;
+		
+		private EntityRef<application> _application;
+		
+		private EntityRef<person> _person;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnidChanging(int value);
+    partial void OnidChanged();
+    partial void Onperson_idChanging(int value);
+    partial void Onperson_idChanged();
+    partial void Onapp_idChanging(int value);
+    partial void Onapp_idChanged();
+    partial void OntitleChanging(string value);
+    partial void OntitleChanged();
+    partial void OnbodyChanging(string value);
+    partial void OnbodyChanged();
+    partial void OncreatedChanging(long value);
+    partial void OncreatedChanged();
+    #endregion
+		
+		public activity()
+		{
+			this._activity_media_items = new EntitySet<activity_media_item>(new Action<activity_media_item>(this.attach_activity_media_items), new Action<activity_media_item>(this.detach_activity_media_items));
+			this._application = default(EntityRef<application>);
+			this._person = default(EntityRef<person>);
+			OnCreated();
+		}
+		
+		[Column(Storage="_id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int id
+		{
+			get
+			{
+				return this._id;
+			}
+			set
+			{
+				if ((this._id != value))
+				{
+					this.OnidChanging(value);
+					this.SendPropertyChanging();
+					this._id = value;
+					this.SendPropertyChanged("id");
+					this.OnidChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_person_id", DbType="Int NOT NULL")]
+		public int person_id
+		{
+			get
+			{
+				return this._person_id;
+			}
+			set
+			{
+				if ((this._person_id != value))
+				{
+					if (this._person.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.Onperson_idChanging(value);
+					this.SendPropertyChanging();
+					this._person_id = value;
+					this.SendPropertyChanged("person_id");
+					this.Onperson_idChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_app_id", DbType="Int NOT NULL")]
+		public int app_id
+		{
+			get
+			{
+				return this._app_id;
+			}
+			set
+			{
+				if ((this._app_id != value))
+				{
+					if (this._application.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.Onapp_idChanging(value);
+					this.SendPropertyChanging();
+					this._app_id = value;
+					this.SendPropertyChanged("app_id");
+					this.Onapp_idChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_title", DbType="VarChar(MAX) NOT NULL", CanBeNull=false)]
+		public string title
+		{
+			get
+			{
+				return this._title;
+			}
+			set
+			{
+				if ((this._title != value))
+				{
+					this.OntitleChanging(value);
+					this.SendPropertyChanging();
+					this._title = value;
+					this.SendPropertyChanged("title");
+					this.OntitleChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_body", DbType="VarChar(MAX) NOT NULL", CanBeNull=false)]
+		public string body
+		{
+			get
+			{
+				return this._body;
+			}
+			set
+			{
+				if ((this._body != value))
+				{
+					this.OnbodyChanging(value);
+					this.SendPropertyChanging();
+					this._body = value;
+					this.SendPropertyChanged("body");
+					this.OnbodyChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_created", DbType="BigInt NOT NULL")]
+		public long created
+		{
+			get
+			{
+				return this._created;
+			}
+			set
+			{
+				if ((this._created != value))
+				{
+					this.OncreatedChanging(value);
+					this.SendPropertyChanging();
+					this._created = value;
+					this.SendPropertyChanged("created");
+					this.OncreatedChanged();
+				}
+			}
+		}
+		
+		[Association(Name="activity_activity_media_item", Storage="_activity_media_items", ThisKey="id", OtherKey="activity_id")]
+		public EntitySet<activity_media_item> activity_media_items
+		{
+			get
+			{
+				return this._activity_media_items;
+			}
+			set
+			{
+				this._activity_media_items.Assign(value);
+			}
+		}
+		
+		[Association(Name="application_activity", Storage="_application", ThisKey="app_id", OtherKey="id", IsForeignKey=true)]
+		public application application
+		{
+			get
+			{
+				return this._application.Entity;
+			}
+			set
+			{
+				application previousValue = this._application.Entity;
+				if (((previousValue != value) 
+							|| (this._application.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._application.Entity = null;
+						previousValue.activities.Remove(this);
+					}
+					this._application.Entity = value;
+					if ((value != null))
+					{
+						value.activities.Add(this);
+						this._app_id = value.id;
+					}
+					else
+					{
+						this._app_id = default(int);
+					}
+					this.SendPropertyChanged("application");
+				}
+			}
+		}
+		
+		[Association(Name="person_activity", Storage="_person", ThisKey="person_id", OtherKey="id", IsForeignKey=true)]
+		public person person
+		{
+			get
+			{
+				return this._person.Entity;
+			}
+			set
+			{
+				person previousValue = this._person.Entity;
+				if (((previousValue != value) 
+							|| (this._person.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._person.Entity = null;
+						previousValue.activities.Remove(this);
+					}
+					this._person.Entity = value;
+					if ((value != null))
+					{
+						value.activities.Add(this);
+						this._person_id = value.id;
+					}
+					else
+					{
+						this._person_id = default(int);
+					}
+					this.SendPropertyChanged("person");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+		
+		private void attach_activity_media_items(activity_media_item entity)
+		{
+			this.SendPropertyChanging();
+			entity.activity = this;
+		}
+		
+		private void detach_activity_media_items(activity_media_item entity)
+		{
+			this.SendPropertyChanging();
+			entity.activity = null;
 		}
 	}
 }

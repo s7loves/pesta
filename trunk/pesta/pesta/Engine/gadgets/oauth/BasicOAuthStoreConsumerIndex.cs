@@ -39,22 +39,22 @@ namespace Pesta.Engine.gadgets.oauth
         {
             return gadgetUri;
         }
-        public void setGadgetUri(String gadgetUri)
+        public void setGadgetUri(String uri)
         {
-            this.gadgetUri = gadgetUri;
+            gadgetUri = uri;
         }
         public String getServiceName()
         {
             return serviceName;
         }
-        public void setServiceName(String serviceName)
+        public void setServiceName(String name)
         {
-            this.serviceName = serviceName;
+            serviceName = name;
         }
 
-        public int hashCode()
+        public override int GetHashCode()
         {
-            int prime = 31;
+            const int prime = 31;
             int result = 1;
             result =
                 prime * result + ((gadgetUri == null) ? 0 : gadgetUri.GetHashCode());
@@ -63,11 +63,11 @@ namespace Pesta.Engine.gadgets.oauth
         }
 
 
-        public bool equals(Object obj)
+        public override bool Equals(Object obj)
         {
             if (this == obj) return true;
             if (obj == null) return false;
-            if (this.GetType() != obj.GetType())
+            if (GetType() != obj.GetType())
                 return false;
             BasicOAuthStoreConsumerIndex other = (BasicOAuthStoreConsumerIndex)obj;
             if (gadgetUri == null)

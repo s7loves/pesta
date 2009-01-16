@@ -36,9 +36,9 @@ namespace Pesta.Engine.gadgets.http
     public class HttpResponseBuilder
     {
         private int httpStatusCode = (int)HttpStatusCode.OK;
-        private NameValueCollection headers = new NameValueCollection();
+        private readonly NameValueCollection headers = new NameValueCollection();
         private byte[] responseBytes;
-        private Dictionary<string, string> metadata = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> metadata = new Dictionary<string, string>();
 
         public HttpResponseBuilder() { }
 

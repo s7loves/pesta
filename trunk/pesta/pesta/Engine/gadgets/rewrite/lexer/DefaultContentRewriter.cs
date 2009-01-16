@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System;
 using System.Text;
 using System.Web;
+using java.io;
 using org.apache.shindig.gadgets.rewrite;
 using Pesta.Engine.gadgets.http;
 using Pesta.Engine.gadgets.spec;
@@ -64,48 +65,59 @@ namespace Pesta.Engine.gadgets.rewrite.lexer
 
         public virtual RewriterResults rewrite(sRequest request, sResponse original, MutableContent content)
         {
-            java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream((content.getContent().Length * 110) / 100);
-            java.io.OutputStreamWriter output = new java.io.OutputStreamWriter(baos);
-            String mimeType = original.getHeader("Content-Type");
-            if (request.RewriteMimeType != null)
+            try
             {
-                mimeType = request.RewriteMimeType;
+                java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream((content.getContent().Length * 110) / 100);
+                java.io.OutputStreamWriter output = new java.io.OutputStreamWriter(baos);
+                String mimeType = original.getHeader("Content-Type");
+                if (request.RewriteMimeType != null)
+                {
+                    mimeType = request.RewriteMimeType;
+                }
+                GadgetSpec spec = null;
+                if (request.Gadget != null)
+                {
+                    spec = _specFactory.getGadgetSpec(request.Gadget.toJavaUri(), false);
+                }
+                if (rewrite(spec, request.Uri,
+                            content,
+                            mimeType,
+                            output))
+                {
+                    content.setContent(Encoding.Default.GetString(baos.toByteArray()));
+                    return RewriterResults.cacheableIndefinitely();
+
+                }
             }
-            GadgetSpec spec = null;
-            if (request.Gadget != null)
+            catch (GadgetException ge)
             {
-                spec = _specFactory.getGadgetSpec(request.Gadget.toJavaUri(), false);
             }
-            if (rewrite(spec, request.Uri,
-                        new java.io.StringReader(content.getContent()),
-                        mimeType,
-                        output))
+            catch (Exception ex)
             {
-                content.setContent(Encoding.Default.GetString(baos.toByteArray()));
+                throw ex;
             }
 
-            return RewriterResults.cacheableIndefinitely();
+            return null;
         }
 
         public virtual RewriterResults rewrite(Gadget gadget, MutableContent content)
         {
             java.io.StringWriter sw = new java.io.StringWriter();
             GadgetSpec spec = gadget.getSpec();
-            java.io.StringReader reader = new java.io.StringReader(content.getContent());
             Uri _base = spec.getUrl();
             View view = gadget.getCurrentView();
             if (view != null && view.getHref() != null) 
             {
                 _base = view.getHref();
             }
-            if (rewrite(spec, _base, reader, "text/html", sw)) 
+            if (rewrite(spec, _base, content, "text/html", sw)) 
             {
                 content.setContent(sw.toString());
             }
-            return RewriterResults.cacheableIndefinitely();
+            return null;
         }
 
-        private bool rewrite(GadgetSpec spec, Uri source, java.io.Reader reader, String mimeType, java.io.Writer writer)
+        private bool rewrite(GadgetSpec spec, Uri source, MutableContent mc, String mimeType, java.io.Writer writer)
         {
             // Dont rewrite content if the spec is unavailable
             if (spec == null)
@@ -151,14 +163,14 @@ namespace Pesta.Engine.gadgets.rewrite.lexer
                     transformerMap["script"] = new JavascriptTagMerger(spec, rewriterFeature, ConcatUrl, source);
 
                 }
-                HtmlRewriter.rewrite(reader, source, transformerMap, writer);
+                HtmlRewriter.rewrite(new StringReader(mc.getContent()), source, transformerMap, writer);
                 return true;
             }
             if (isCSS(mimeType))
             {
                 if (ProxyUrl != null)
                 {
-                    CssRewriter.rewrite(reader, source, CreateLinkRewriter(spec, rewriterFeature), writer, false);
+                    CssRewriter.rewrite(new StringReader(mc.getContent()), source, CreateLinkRewriter(spec, rewriterFeature), writer, false);
                     return true;
                 }
                 return false;

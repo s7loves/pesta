@@ -20,7 +20,7 @@
 using System;
 using System.Data;
 using System.Configuration;
-using Pesta.Interop;
+using Pesta.Utilities;
 
 namespace Pesta.Engine.social.model
 {

@@ -91,7 +91,7 @@ namespace Pesta.Engine.common.uri
             }
         }
         /**
-        * Convert a java.net.URI to a Uri.
+        * Convert a System.Uri to a Uri.
         */
         public static Uri fromJavaUri(URI uri) 
         {
@@ -118,7 +118,7 @@ namespace Pesta.Engine.common.uri
         }
 
         /**
-           * @return a java.net.URI equal to this Uri.
+           * @return a System.Uri equal to this Uri.
            */
         public URI toJavaUri()
         {
@@ -148,9 +148,9 @@ namespace Pesta.Engine.common.uri
                 return null;
             }
             
-            URI result = null;
-            URI.TryCreate(this.toJavaUri(), other.toJavaUri(), out result);
-            return fromJavaUri(result);
+            //URI result = null;
+            //URI.TryCreate(this.toJavaUri(), other.toJavaUri(), out result);
+            return fromJavaUri(new URI(this.toJavaUri(),other.ToString()));
         }
 
         /**

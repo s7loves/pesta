@@ -18,10 +18,13 @@
  */
 #endregion
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using Jayrock.Json;
 using Jayrock.Json.Conversion;
 using Pesta.Engine.auth;
+using Pesta.Engine.common;
 using Pesta.Interop.oauth;
 using Pesta.Interop.oauth.signature;
 using URI = System.Uri;
@@ -38,23 +41,24 @@ namespace Pesta.Engine.gadgets.oauth
     /// </remarks>
     public class BasicOAuthStore : OAuthStore
     {
-        private static String CONSUMER_SECRET_KEY = "consumer_secret";
-        private static String CONSUMER_KEY_KEY = "consumer_key";
-        private static String KEY_TYPE_KEY = "key_type";
+        private const string CONSUMER_SECRET_KEY = "consumer_secret";
+        private const string CONSUMER_KEY_KEY = "consumer_key";
+        private const string KEY_TYPE_KEY = "key_type";
+        private const string OAUTH_CONFIG = "config/oauth.json";
 
         /**
          * HashMap of provider and consumer information. Maps BasicOAuthStoreConsumerIndexs (i.e.
          * nickname of a service provider and the gadget that uses that nickname) to
          * {@link BasicOAuthStoreConsumerKeyAndSecret}s.
          */
-        private Dictionary<BasicOAuthStoreConsumerIndex, BasicOAuthStoreConsumerKeyAndSecret> consumerInfos;
+        private readonly Dictionary<BasicOAuthStoreConsumerIndex, BasicOAuthStoreConsumerKeyAndSecret> consumerInfos;
 
         /**
         * HashMap of token information. Maps BasicOAuthStoreTokenIndexs (i.e. gadget id, token
         * nickname, module id, etc.) to TokenInfos (i.e. access token and token
         * secrets).
         */
-        private Dictionary<BasicOAuthStoreTokenIndex, TokenInfo> tokens;
+        private readonly Dictionary<BasicOAuthStoreTokenIndex, TokenInfo> tokens;
 
         /**
         * Key to use when no other key is found.
@@ -72,22 +76,24 @@ namespace Pesta.Engine.gadgets.oauth
 
         /** Number of times we removed an access token */
         private int accessTokenRemoveCount;
-        public readonly static BasicOAuthStore Instance = new BasicOAuthStore();
-        protected BasicOAuthStore()
+        public readonly static BasicOAuthStore Instance = new BasicOAuthStore("","");
+        protected BasicOAuthStore(string signingKeyFile, string signingKeyName)
         {
             consumerInfos = new Dictionary<BasicOAuthStoreConsumerIndex, BasicOAuthStoreConsumerKeyAndSecret>();
             tokens = new Dictionary<BasicOAuthStoreTokenIndex, TokenInfo>();
+            loadDefaultKey(signingKeyFile, signingKeyName);
+            loadConsumers();
         }
 
         public void initFromConfigString(String oauthConfigStr)
         {
             try
             {
-                JsonObject oauthConfigs = JsonConvert.Import(oauthConfigStr) as JsonObject;
-                foreach (String url in oauthConfigs)
+                JsonObject oauthConfigs = (JsonObject)JsonConvert.Import(oauthConfigStr);
+                foreach (DictionaryEntry url in oauthConfigs)
                 {
-                    URI gadgetUri = new URI(url);
-                    JsonObject oauthConfig = oauthConfigs[url] as JsonObject;
+                    URI gadgetUri = new URI(url.Key.ToString());
+                    JsonObject oauthConfig = (JsonObject)url.Value;
                     storeConsumerInfos(gadgetUri, oauthConfig);
                 }
             }
@@ -105,7 +111,7 @@ namespace Pesta.Engine.gadgets.oauth
         {
             foreach (String serviceName in oauthConfig.Names)
             {
-                JsonObject consumerInfo = oauthConfig[serviceName] as JsonObject;
+                JsonObject consumerInfo = (JsonObject)oauthConfig[serviceName];
                 storeConsumerInfo(gadgetUri, serviceName, consumerInfo);
             }
         }
@@ -117,9 +123,9 @@ namespace Pesta.Engine.gadgets.oauth
 
         private void realStoreConsumerInfo(URI gadgetUri, String serviceName, JsonObject consumerInfo)
         {
-            String consumerSecret = consumerInfo[CONSUMER_SECRET_KEY] as String;
-            String consumerKey = consumerInfo[CONSUMER_KEY_KEY] as String;
-            String keyTypeStr = consumerInfo[KEY_TYPE_KEY] as String;
+            String consumerSecret = consumerInfo[CONSUMER_SECRET_KEY].ToString();
+            String consumerKey = consumerInfo[CONSUMER_KEY_KEY].ToString();
+            String keyTypeStr = consumerInfo[KEY_TYPE_KEY].ToString();
             BasicOAuthStoreConsumerKeyAndSecret.KeyType keyType = BasicOAuthStoreConsumerKeyAndSecret.KeyType.HMAC_SYMMETRIC;
 
             if (keyTypeStr.Equals("RSA_PRIVATE"))
@@ -142,9 +148,9 @@ namespace Pesta.Engine.gadgets.oauth
             return privateKey.Replace("-----[A-Z ]*-----", "").Replace("\n", "");
         }
 
-        public void setDefaultKey(BasicOAuthStoreConsumerKeyAndSecret defaultKey)
+        public void setDefaultKey(BasicOAuthStoreConsumerKeyAndSecret _defaultKey)
         {
-            this.defaultKey = defaultKey;
+            defaultKey = _defaultKey;
         }
 
         public void setConsumerKeyAndSecret(BasicOAuthStoreConsumerIndex providerKey, BasicOAuthStoreConsumerKeyAndSecret keyAndSecret)
@@ -164,7 +170,7 @@ namespace Pesta.Engine.gadgets.oauth
                 throw new GadgetException(GadgetException.Code.INTERNAL_SERVER_ERROR,
                                           "No key for gadget " + securityToken.getAppUrl() + " and service " + serviceName);
             }
-            OAuthConsumer consumer = null;
+            OAuthConsumer consumer;
             if (cks.keyType == BasicOAuthStoreConsumerKeyAndSecret.KeyType.RSA_PRIVATE)
             {
                 consumer = new OAuthConsumer(null, cks.ConsumerKey, null, provider);
@@ -182,7 +188,7 @@ namespace Pesta.Engine.gadgets.oauth
             return new ConsumerInfo(consumer, cks.KeyName);
         }
 
-        private BasicOAuthStoreTokenIndex makeBasicOAuthStoreTokenIndex(SecurityToken securityToken, String serviceName, String tokenName)
+        private static BasicOAuthStoreTokenIndex makeBasicOAuthStoreTokenIndex(SecurityToken securityToken, String serviceName, String tokenName)
         {
             BasicOAuthStoreTokenIndex tokenKey = new BasicOAuthStoreTokenIndex();
             tokenKey.setGadgetUri(securityToken.getAppUrl());
@@ -198,7 +204,7 @@ namespace Pesta.Engine.gadgets.oauth
         {
             ++accessTokenLookupCount;
             BasicOAuthStoreTokenIndex tokenKey = makeBasicOAuthStoreTokenIndex(securityToken, serviceName, tokenName);
-            return tokens[tokenKey];
+            return tokens.ContainsKey(tokenKey)?tokens[tokenKey]:null;
         }
 
         public override void setTokenInfo(SecurityToken securityToken, ConsumerInfo consumerInfo,
@@ -234,6 +240,32 @@ namespace Pesta.Engine.gadgets.oauth
         public int getAccessTokenRemoveCount()
         {
             return accessTokenRemoveCount;
+        }
+
+        private void loadDefaultKey(String signingKeyFile, String signingKeyName)
+        {
+            BasicOAuthStoreConsumerKeyAndSecret key = null;
+            if (!String.IsNullOrEmpty(signingKeyFile))
+            {
+                using (StreamReader reader = new StreamReader(ResourceLoader.open(signingKeyFile)))
+                {
+                    String privateKey = reader.ReadToEnd();
+                    privateKey = convertFromOpenSsl(privateKey);
+                    key = new BasicOAuthStoreConsumerKeyAndSecret(null, privateKey,
+                                BasicOAuthStoreConsumerKeyAndSecret.KeyType.RSA_PRIVATE,
+                                signingKeyName);
+                }
+            }
+            if (key != null)
+            {
+                setDefaultKey(key);
+            }
+        }
+
+        private void loadConsumers()
+        {
+            String oauthConfigString = ResourceLoader.getContent(new FileInfo(AppDomain.CurrentDomain.BaseDirectory + OAUTH_CONFIG));
+            initFromConfigString(oauthConfigString);
         }
     }
 }

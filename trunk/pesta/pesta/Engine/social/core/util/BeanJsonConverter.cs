@@ -26,7 +26,7 @@ using System.Reflection;
 using Pesta.Engine.social.core.model;
 using Pesta.Engine.social.model;
 using Pesta.Engine.social.service;
-using Pesta.Interop;
+using Pesta.Utilities;
 
 namespace Pesta.Engine.social.core.util
 {

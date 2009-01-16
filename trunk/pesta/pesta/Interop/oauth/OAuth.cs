@@ -13,21 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * Copyright 2007 Netflix, Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -47,6 +32,7 @@ namespace Pesta.Interop.oauth
     /// </remarks>
     public class OAuth
     {
+        public static readonly int OAUTH_NONCE_LENGTH = 16;
         public static readonly String VERSION_1_0 = "1.0";
 
         /** The encoding used to represent characters as bytes. */
@@ -118,12 +104,12 @@ namespace Pesta.Interop.oauth
          * Write a form-urlencoded document into the given stream, containing the
          * given sequence of name/value pairs.
          */
-        public static void formEncode(List<OAuth.Parameter> parameters, Stream into)
+        public static void formEncode(List<Parameter> parameters, Stream into)
         {
             if (parameters != null)
             {
                 bool first = true;
-                byte[] towrite = null;
+                byte[] towrite;
                 foreach (Parameter parameter in parameters)
                 {
                     if (first)
@@ -135,8 +121,8 @@ namespace Pesta.Interop.oauth
                         towrite = Encoding.UTF8.GetBytes("&");
                         into.Write(towrite, 0, towrite.Length);
                     }
-                    towrite = Encoding.UTF8.GetBytes(percentEncode(ToString(parameter.Key)) +
-                                                     "=" + percentEncode(ToString(parameter.Value)));
+                    towrite = Encoding.UTF8.GetBytes(Rfc3986.Encode(ToString(parameter.Key)) +
+                                                     "=" + Rfc3986.Encode(ToString(parameter.Value)));
                     into.Write(towrite, 0, towrite.Length);
                 }
             }
@@ -155,13 +141,13 @@ namespace Pesta.Interop.oauth
                     String value;
                     if (equals < 0)
                     {
-                        name = decodePercent(nvp);
+                        name = Rfc3986.Decode(nvp);
                         value = null;
                     }
                     else
                     {
-                        name = decodePercent(nvp.Substring(0, equals));
-                        value = decodePercent(nvp.Substring(equals + 1));
+                        name = Rfc3986.Decode(nvp.Substring(0, equals));
+                        value = Rfc3986.Decode(nvp.Substring(equals + 1));
                     }
                     list.Add(new Parameter(name, value));
                 }
@@ -173,48 +159,15 @@ namespace Pesta.Interop.oauth
         public static String percentEncode(List<string> values)
         {
             StringBuilder p = new StringBuilder();
-            foreach (Object v in values)
+            foreach (string v in values)
             {
                 if (p.Length > 0)
                 {
                     p.Append("&");
                 }
-                p.Append(OAuth.percentEncode(ToString(v)));
+                p.Append(Rfc3986.Encode(ToString(v)));
             }
             return p.ToString();
-        }
-
-        public static String percentEncode(String s)
-        {
-            if (s == null)
-            {
-                return "";
-            }
-            try
-            {
-                return HttpUtility.UrlEncode(s, Encoding.GetEncoding(ENCODING))
-                    // OAuth encodes some characters differently:
-                    .Replace("+", "%20").Replace("*", "%2A")
-                    .Replace("%7E", "~");
-                // This could be done faster with more hand-crafted code.
-            }
-            catch (Exception wow)
-            {
-                throw new Exception(wow.Message, wow);
-            }
-        }
-
-        public static String decodePercent(String s)
-        {
-            try
-            {
-                return HttpUtility.UrlDecode(s, Encoding.GetEncoding(ENCODING));
-                // This implements http://oauth.pbwiki.com/FlexibleDecoding
-            }
-            catch (Exception wow)
-            {
-                throw new Exception(wow.Message, wow);
-            }
         }
 
         /**
@@ -255,8 +208,8 @@ namespace Pesta.Interop.oauth
         {
             public Parameter(String key, String value)
             {
-                this.Key = key;
-                this.Value = value;
+                Key = key;
+                Value = value;
             }
 
             public readonly String Key;
@@ -265,7 +218,7 @@ namespace Pesta.Interop.oauth
 
             public override String ToString()
             {
-                return percentEncode(Key) + '=' + percentEncode(Value);
+                return Rfc3986.Encode(Key) + '=' + Rfc3986.Encode(Value);
             }
         }
 
@@ -291,15 +244,12 @@ namespace Pesta.Interop.oauth
             {
                 return url;
             }
-            else
-            {
-                return url + ((url.IndexOf("?") < 0) ? '?' : '&') + form;
-            }
+            return url + ((url.IndexOf("?") < 0) ? '?' : '&') + form;
         }
 
         public static bool isEmpty(String str)
         {
-            return (str == null) || (str.Length == 0);
+            return string.IsNullOrEmpty(str);
         }
     }
 }

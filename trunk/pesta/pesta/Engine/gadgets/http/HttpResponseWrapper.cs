@@ -51,6 +51,11 @@ namespace Pesta.Engine.gadgets.http
             }
             return outputStream;
         }
+        public string getErrorMessage()
+        {
+            return response.StatusDescription;
+        }
+
         public void Write(byte[] buffer)
         {
             if (buffer != null && buffer.Length > 0)
@@ -60,6 +65,10 @@ namespace Pesta.Engine.gadgets.http
         public void setStatus(int code)
         {
             response.StatusCode = code;
+        }
+        public int getStatus()
+        {
+            return response.StatusCode;
         }
         public HttpResponse getResponse()
         {

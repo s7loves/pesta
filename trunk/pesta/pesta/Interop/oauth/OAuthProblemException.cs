@@ -75,6 +75,8 @@ namespace Pesta.Interop.oauth
             }
         }
 
+/*
         private static readonly long serialVersionUID = 1L;
+*/
     }
 }

@@ -30,24 +30,13 @@ namespace Pesta.Engine.gadgets.http
     ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
-    public class HttpCache
+    public interface HttpCache
     {
-        public static sResponse getResponse(HttpCacheKey key, sRequest request)
-        {
-            return HttpRuntime.Cache.Get(key.ToString()) as sResponse;
-        }
-        public static sResponse addResponse(HttpCacheKey key, sRequest request, sResponse response)
-        {
-            if (key.IsCacheable() && response != null)
-            {
-                long expire = response.getCacheExpiration();
-                HttpRuntime.Cache.Add(key.ToString(), response, null, expire != -1 ? new DateTime(expire) : DateTime.Now.AddMinutes(5), Cache.NoSlidingExpiration, CacheItemPriority.Normal, null);
-            }
-            return response;
-        }
-        public static sResponse removeResponse(HttpCacheKey key)
-        {
-            return HttpRuntime.Cache.Remove(key.ToString()) as sResponse;
-        }
+        sResponse getResponse(sRequest request);
+
+        sResponse addResponse(sRequest request, sResponse response);
+
+        sResponse removeResponse(sRequest key);
+
     }
 }

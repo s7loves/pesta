@@ -34,7 +34,7 @@ namespace Pesta.Engine.gadgets.preload
    * @return Preloading tasks that will be executed by
    *  {@link PreloaderService#preload(GadgetContext, GadgetSpec)}.
    */
-        public abstract Dictionary<String, preloadProcessor> createPreloadTasks(GadgetContext context, GadgetSpec gadget);
+        public abstract List<preloadProcessor> createPreloadTasks(GadgetContext context, GadgetSpec gadget, PreloaderService.PreloadPhase phase);
 
     }
 }

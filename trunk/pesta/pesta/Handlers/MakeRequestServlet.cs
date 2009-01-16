@@ -35,7 +35,7 @@ namespace Pesta.Handlers
     /// </remarks>
     internal class MakeRequestServlet : IHttpHandler
     {
-        private MakeRequestHandler makeRequestHandler = MakeRequestHandler.Instance;
+        private static readonly MakeRequestHandler makeRequestHandler = MakeRequestHandler.Instance;
         public void ProcessRequest(HttpContext context)
         {
             HttpRequestWrapper request = new HttpRequestWrapper(context);

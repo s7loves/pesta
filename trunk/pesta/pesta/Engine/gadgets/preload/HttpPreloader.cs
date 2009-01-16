@@ -29,55 +29,63 @@ namespace Pesta.Engine.gadgets.preload
 {
     public class HttpPreloader : Preloader
     {
-        private readonly ContentFetcherFactory fetcher;
+        private static readonly RequestPipeline requestPipeline = DefaultRequestPipeline.Instance;
         
 
         public HttpPreloader()
         {
-            this.fetcher = ContentFetcherFactory.Instance;
+
         }
 
-        public override Dictionary<String, preloadProcessor> createPreloadTasks(GadgetContext context,
-                                                                                GadgetSpec gadget) 
+        public override List<preloadProcessor> createPreloadTasks(GadgetContext context,
+                                                                                GadgetSpec gadget, PreloaderService.PreloadPhase phase) 
         {
-            Dictionary<String, preloadProcessor> preloads = new Dictionary<String, preloadProcessor>();
-
-            foreach(Preload preload in gadget.getModulePrefs().getPreloads()) 
+            List<preloadProcessor> preloads = new List<preloadProcessor>();
+            if (phase == PreloaderService.PreloadPhase.HTML_RENDER) 
             {
-                HashSet<String> preloadViews = preload.getViews();
-                if (preloadViews.Count == 0 || preloadViews.Contains(context.getView())) 
+                foreach(Preload preload in gadget.getModulePrefs().getPreloads()) 
                 {
-                    PreloadTask task = new PreloadTask(context, preload);
-                    preloadProcessor process = new preloadProcessor(task.call);
-                    preloads.Add(preload.getHref().ToString(), process);
+                    HashSet<String> preloadViews = preload.getViews();
+                    if (preloadViews.Count == 0 || preloadViews.Contains(context.getView())) 
+                    {
+                        PreloadTask task = new PreloadTask(context, preload, preload.getHref().ToString());
+                        preloads.Add(new preloadProcessor(task.call));
+                    }
                 }
             }
-
             return preloads;
         }
+
+        public static sRequest newHttpRequest(GadgetContext context,
+                    RequestAuthenticationInfo authenticationInfo)
+        {
+            sRequest request = new sRequest(authenticationInfo.getHref())
+                .setSecurityToken(context.getToken())
+                .setOAuthArguments(new OAuthArguments(authenticationInfo))
+                .setAuthType(authenticationInfo.getAuthType())
+                .setContainer(context.getContainer())
+                .setGadget(Uri.fromJavaUri(context.getUrl()));
+            return request;
+        }
+
 
         private class PreloadTask 
         {
             private readonly GadgetContext context;
             private readonly Preload preload;
+            private readonly String key;
 
-            public PreloadTask(GadgetContext context, Preload preload) 
+            public PreloadTask(GadgetContext context, Preload preload, String key) 
             {
                 this.context = context;
                 this.preload = preload;
+                this.key = key;
             }
 
             public PreloadedData call()
             {
-                // TODO: This should be extracted into a common helper that takes any
-                // org.apache.shindig.gadgets.spec.RequestAuthenticationInfo.
-                sRequest request = new sRequest(preload.getHref())
-                    .setSecurityToken(context.getToken())
-                    .setOAuthArguments(new OAuthArguments(preload))
-                    .setAuthType(preload.getAuthType())
-                    .setContainer(context.getContainer())
-                    .setGadget(Uri.fromJavaUri(context.getUrl()));
-                return new HttpPreloadData(ContentFetcherFactory.Instance.fetch(request));
+                sRequest request = newHttpRequest(context, preload);
+                return new HttpPreloadData(requestPipeline.execute(request), key);
             }
         }
 
@@ -87,24 +95,26 @@ namespace Pesta.Engine.gadgets.preload
         private struct HttpPreloadData : PreloadedData 
         {
             private readonly JsonObject data;
+            private readonly String key;
 
-            public HttpPreloadData(sResponse response) 
+            public HttpPreloadData(sResponse response, String key) 
             {
-                JsonObject data = null;
+                JsonObject _data;
                 try 
                 {
-                    data = FetchResponseUtils.getResponseAsJson(response, response.responseString);
+                    _data = FetchResponseUtils.getResponseAsJson(response, response.responseString);
                 } 
-                catch (JsonException e) 
+                catch (JsonException) 
                 {
-                    data = new JsonObject();
+                    _data = new JsonObject();
                 }
-                this.data = data;
+                this.data = _data;
+                this.key = key;
             }
 
-            public Object toJson() 
+            public Dictionary<string, Object> toJson() 
             {
-                return data;
+                return new Dictionary<string, object> { {key, data} };
             }
         }
     }

@@ -110,14 +110,14 @@ namespace Pesta.Engine.gadgets.rewrite
 
         protected MutableContent getMutableContent(String content)
         {
-            MutableContent mc = new MutableContent(htmlParser, content, null);
+            MutableContent mc = new MutableContent(htmlParser, content);
             return mc;
         }
 
         protected MutableContent getMutableContent(GadgetSpec spec, View v) 
         {
             // TODO - Consider using caching here to avoid parse costs
-            MutableContent mc = new MutableContent(htmlParser, v.getContent(), null);
+            MutableContent mc = new MutableContent(htmlParser, v.getContent());
             return mc;
         }
 

@@ -65,7 +65,7 @@ namespace Pesta.Engine.gadgets.oauth
         /// Should we attempt to use an access token for the request
         /// </summary>
         ///
-        private OAuthArguments.UseToken useToken;
+        private readonly UseToken useToken;
 
         /// <summary>
         /// OAuth service nickname. Signed fetch uses the empty string
@@ -124,15 +124,15 @@ namespace Pesta.Engine.gadgets.oauth
         /// @throws GadgetExceptionif any parameters are invalid.
         public OAuthArguments(AuthType auth, HttpRequest request)
         {
-            this.signViewer = false;
-            this.signOwner = false;
-            this.bypassSpecCache = false;
-            this.origClientState = null;
-            this.requestTokenSecret = null;
-            this.requestToken = null;
-            this.tokenName = "";
-            this.serviceName = "";
-            this.useToken = OAuthArguments.UseToken.ALWAYS;
+            signViewer = false;
+            signOwner = false;
+            bypassSpecCache = false;
+            origClientState = null;
+            requestTokenSecret = null;
+            requestToken = null;
+            tokenName = "";
+            serviceName = "";
+            useToken = UseToken.ALWAYS;
             useToken = ParseUseToken(auth, GetRequestParam(request,
                                                            USE_TOKEN_PARAM, ""));
             serviceName = GetRequestParam(request, SERVICE_PARAM, "");
@@ -151,17 +151,16 @@ namespace Pesta.Engine.gadgets.oauth
 
         public OAuthArguments(RequestAuthenticationInfo info)
         {
-            this.signViewer = false;
-            this.signOwner = false;
-            this.bypassSpecCache = false;
-            this.origClientState = null;
-            this.requestTokenSecret = null;
-            this.requestToken = null;
-            this.tokenName = "";
-            this.serviceName = "";
-            this.useToken = OAuthArguments.UseToken.ALWAYS;
-            Dictionary<string, string> attrs = new Dictionary<string, string>();
-            attrs = info.getAttributes();
+            signViewer = false;
+            signOwner = false;
+            bypassSpecCache = false;
+            origClientState = null;
+            requestTokenSecret = null;
+            requestToken = null;
+            tokenName = "";
+            serviceName = "";
+            useToken = UseToken.ALWAYS;
+            Dictionary<string, string> attrs = info.getAttributes();
             useToken = ParseUseToken(info.getAuthType(), GetAuthInfoParam(attrs, USE_TOKEN_PARAM, ""));
             serviceName = GetAuthInfoParam(attrs, SERVICE_PARAM, "");
             tokenName = GetAuthInfoParam(attrs, TOKEN_PARAM, "");
@@ -176,9 +175,9 @@ namespace Pesta.Engine.gadgets.oauth
 
 
         /// <returns>the named attribute from the Preload tag attributes, or default</returns>
-        private static String GetAuthInfoParam(Dictionary<string, string> attrs, String name, String def)
+        private static String GetAuthInfoParam(IDictionary<string, string> attrs, String name, String def)
         {
-            String val = null;
+            String val;
             if (!attrs.TryGetValue(name, out val))
             {
                 val = def;
@@ -190,11 +189,7 @@ namespace Pesta.Engine.gadgets.oauth
         /// <returns>the named parameter from the request, or default if the named</returns>
         private static String GetRequestParam(HttpRequest request, String name, String def)
         {
-            String val = request.Params[name];
-            if (val == null)
-            {
-                val = def;
-            }
+            String val = request.Params[name] ?? def;
             return val;
         }
 
@@ -202,33 +197,25 @@ namespace Pesta.Engine.gadgets.oauth
         /// Figure out what the client wants us to do with the OAuth access token.
         /// </summary>
         ///
-        private static OAuthArguments.UseToken ParseUseToken(AuthType auth, String useTokenStr)
+        private static UseToken ParseUseToken(AuthType auth, String useTokenStr)
         {
             if (useTokenStr.Length == 0)
             {
-                if (auth == AuthType.SIGNED)
-                {
-                    // signed fetch defaults to not using the token
-                    return OAuthArguments.UseToken.NEVER;
-                }
-                else
-                {
-                    // OAuth defaults to always using it.
-                    return OAuthArguments.UseToken.ALWAYS;
-                }
+                // OAuth defaults to always using it.
+                return auth == AuthType.SIGNED ? UseToken.NEVER : UseToken.ALWAYS;
             }
             useTokenStr = useTokenStr.ToLower();
             if ("always".Equals(useTokenStr))
             {
-                return OAuthArguments.UseToken.ALWAYS;
+                return UseToken.ALWAYS;
             }
             if ("if_available".Equals(useTokenStr))
             {
-                return OAuthArguments.UseToken.IF_AVAILABLE;
+                return UseToken.IF_AVAILABLE;
             }
             if ("never".Equals(useTokenStr))
             {
-                return OAuthArguments.UseToken.NEVER;
+                return UseToken.NEVER;
             }
             throw new Exception("Unknown use token value " + useTokenStr);
         }
@@ -243,15 +230,15 @@ namespace Pesta.Engine.gadgets.oauth
         ///
         public OAuthArguments()
         {
-            this.signViewer = false;
-            this.signOwner = false;
-            this.bypassSpecCache = false;
-            this.origClientState = null;
-            this.requestTokenSecret = null;
-            this.requestToken = null;
-            this.tokenName = "";
-            this.serviceName = "";
-            this.useToken = OAuthArguments.UseToken.ALWAYS;
+            signViewer = false;
+            signOwner = false;
+            bypassSpecCache = false;
+            origClientState = null;
+            requestTokenSecret = null;
+            requestToken = null;
+            tokenName = "";
+            serviceName = "";
+            useToken = UseToken.ALWAYS;
         }
 
         /// <summary>
@@ -260,15 +247,15 @@ namespace Pesta.Engine.gadgets.oauth
         ///
         public OAuthArguments(OAuthArguments orig)
         {
-            this.signViewer = false;
-            this.signOwner = false;
-            this.bypassSpecCache = false;
-            this.origClientState = null;
-            this.requestTokenSecret = null;
-            this.requestToken = null;
-            this.tokenName = "";
-            this.serviceName = "";
-            this.useToken = OAuthArguments.UseToken.ALWAYS;
+            signViewer = false;
+            signOwner = false;
+            bypassSpecCache = false;
+            origClientState = null;
+            requestTokenSecret = null;
+            requestToken = null;
+            tokenName = "";
+            serviceName = "";
+            useToken = UseToken.ALWAYS;
             useToken = orig.useToken;
             serviceName = orig.serviceName;
             tokenName = orig.tokenName;
@@ -282,12 +269,12 @@ namespace Pesta.Engine.gadgets.oauth
 
         public bool MustUseToken()
         {
-            return (useToken == OAuthArguments.UseToken.ALWAYS);
+            return (useToken == UseToken.ALWAYS);
         }
 
         public bool MayUseToken()
         {
-            return (useToken == OAuthArguments.UseToken.IF_AVAILABLE || useToken == OAuthArguments.UseToken.ALWAYS);
+            return (useToken == UseToken.IF_AVAILABLE || useToken == UseToken.ALWAYS);
         }
 
 
@@ -299,7 +286,7 @@ namespace Pesta.Engine.gadgets.oauth
             }
             set
             {
-                this.serviceName = value;
+                serviceName = value;
             }
         }
 
@@ -312,7 +299,7 @@ namespace Pesta.Engine.gadgets.oauth
             }
             set
             {
-                this.tokenName = value;
+                tokenName = value;
             }
         }
 
@@ -325,7 +312,7 @@ namespace Pesta.Engine.gadgets.oauth
             }
             set
             {
-                this.requestToken = value;
+                requestToken = value;
             }
         }
 
@@ -338,7 +325,7 @@ namespace Pesta.Engine.gadgets.oauth
             }
             set
             {
-                this.requestTokenSecret = value;
+                requestTokenSecret = value;
             }
         }
 
@@ -351,7 +338,7 @@ namespace Pesta.Engine.gadgets.oauth
             }
             set
             {
-                this.origClientState = value;
+                origClientState = value;
             }
         }
 
@@ -364,7 +351,7 @@ namespace Pesta.Engine.gadgets.oauth
             }
             set
             {
-                this.bypassSpecCache = value;
+                bypassSpecCache = value;
             }
         }
 
@@ -377,7 +364,7 @@ namespace Pesta.Engine.gadgets.oauth
             }
             set
             {
-                this.signOwner = value;
+                signOwner = value;
             }
         }
 
@@ -390,7 +377,7 @@ namespace Pesta.Engine.gadgets.oauth
             }
             set
             {
-                this.signViewer = value;
+                signViewer = value;
             }
         }
 

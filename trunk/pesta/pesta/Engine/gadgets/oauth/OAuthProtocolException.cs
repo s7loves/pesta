@@ -19,6 +19,7 @@
 #endregion
 using System.Collections.Generic;
 using System;
+using Pesta.Engine.gadgets.http;
 using Pesta.Interop.oauth;
 
 
@@ -48,36 +49,43 @@ namespace Pesta.Engine.gadgets.oauth
     internal class OAuthProtocolException : Exception
     {
 
-        static OAuthProtocolException()
-        {
-            fatalProblems = new List<String>();
-            fatalProblems.Add("version_rejected");
-            fatalProblems.Add("signature_method_rejected");
-            fatalProblems.Add("consumer_key_unknown");
-            fatalProblems.Add("consumer_key_rejected");
-            fatalProblems.Add("timestamp_refused");
-            temporaryProblems = new List<String>();
-            temporaryProblems.Add("consumer_key_refused");
-        }
-
         /// <summary>
         /// Problems that should force us to abort the protocol right away,
         /// and next time the user visits ask them for permission again.
         /// </summary>
         ///
-        private static List<string> fatalProblems;
+        private static readonly HashSet<string> fatalProblems = new HashSet<string>
+                                                            {
+                                                                "version_rejected",
+                                                                "signature_method_rejected",
+                                                                "consumer_key_unknown",
+                                                                "consumer_key_rejected",
+                                                                "timestamp_refused"
+                                                            };
 
         /// <summary>
         /// Problems that should force us to abort the protocol right away,
         /// but we can still try to use the access token again later.
         /// </summary>
         ///
-        private static List<String> temporaryProblems;
+        private static readonly HashSet<String> temporaryProblems = new HashSet<string>
+                                                            {
+                                                                "consumer_key_refused"   
+                                                            };
+
+        /**
+       * Problems that should have us try to refresh the access token.
+       */
+        private static readonly HashSet<String> extensionProblems = new HashSet<string>
+                                                            {
+                                                                "access_token_expired"
+                                                            };
 
         private readonly String problemCode;
         private readonly String problemText;
 
         public readonly bool canRetry;
+        public readonly bool canExtend;
 
         public readonly bool startFromScratch;
 
@@ -87,6 +95,7 @@ namespace Pesta.Engine.gadgets.oauth
             this.problemText = null;
             this.canRetry = canRetry_0;
             this.startFromScratch = false;
+            this.canExtend = false;
         }
 
         public OAuthProtocolException(OAuthMessage reply)
@@ -98,21 +107,30 @@ namespace Pesta.Engine.gadgets.oauth
                     "No problem reported for OAuthProtocolException");
             }
             this.problemCode = problem;
-            this.problemText = reply.getParameter("oauth_problem_advice");
+            this.problemText = OAuthUtil.getParameter(reply, "oauth_problem_advice");
             if (fatalProblems.Contains(problem))
             {
                 startFromScratch = true;
                 canRetry = false;
+                canExtend = false;
             }
             else if (temporaryProblems.Contains(problem))
             {
                 startFromScratch = false;
                 canRetry = false;
+                canExtend = false;
+            }
+            else if (extensionProblems.Contains(problem))
+            {
+                startFromScratch = false;
+                canRetry = true;
+                canExtend = true;
             }
             else
             {
                 startFromScratch = true;
                 canRetry = true;
+                canExtend = false;
             }
         }
 
@@ -136,6 +154,19 @@ namespace Pesta.Engine.gadgets.oauth
                 startFromScratch = true;
                 canRetry = false;
             }
+            canExtend = false;
+        }
+
+
+        public sResponse getResponseForGadget()
+        {
+            return new HttpResponseBuilder()
+                //.setHttpStatusCode(0)
+                // Inch towards opensocial-0.8: this is very much an experiment, don't
+                // hesitate to change it if you've got something better.
+                .setMetadata("oauthError", problemCode)
+                .setMetadata("oauthErrorText", problemText)
+                .create();
         }
     }
 }

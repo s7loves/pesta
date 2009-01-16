@@ -19,7 +19,7 @@
 #endregion
 
 using System.Collections.ObjectModel;
-using Pesta.Interop;
+using Pesta.Utilities;
 
 namespace Pesta.Engine.gadgets
 {

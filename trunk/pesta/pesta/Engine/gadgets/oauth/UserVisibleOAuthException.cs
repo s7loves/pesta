@@ -33,16 +33,29 @@ namespace Pesta.Engine.gadgets.oauth
     [Serializable]
     public class UserVisibleOAuthException : GadgetException
     {
+        private OAuthError oauthErrorCode;
 
         public UserVisibleOAuthException(String msg)
-            : base(GadgetException.Code.INVALID_PARAMETER, msg)
+            : base(Code.INVALID_PARAMETER, msg)
         {
         }
 
         public UserVisibleOAuthException(String msg, Exception t)
-            : base(GadgetException.Code.INVALID_PARAMETER, msg, t)
+            : base(Code.INVALID_PARAMETER, msg, t)
         {
         }
 
+        public UserVisibleOAuthException(OAuthError oauthErrorCode, String msg)
+            : base(Code.INVALID_PARAMETER, msg)
+        {
+            this.oauthErrorCode = oauthErrorCode;
+        }
+        /**
+       * @return the OAuth error code, or null if no code was specified.
+       */
+        public OAuthError getOAuthErrorCode()
+        {
+            return oauthErrorCode;
+        }
     }
 }
