@@ -19,7 +19,7 @@
 #endregion
 using System;
 using System.Net;
-using Pesta.Interop;
+using Pesta.Utilities;
 
 namespace Pesta.Engine.social
 {

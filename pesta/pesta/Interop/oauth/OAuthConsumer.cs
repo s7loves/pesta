@@ -29,7 +29,9 @@ namespace Pesta.Interop.oauth
     [Serializable]
     public class OAuthConsumer
     {
+/*
         private static readonly long serialVersionUID = -2258581186977818580L;
+*/
 
         public readonly String callbackURL;
         public readonly String consumerKey;

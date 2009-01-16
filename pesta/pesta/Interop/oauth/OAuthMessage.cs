@@ -15,10 +15,10 @@
  */
 using System;
 using System.Collections.Generic;
-using System.Collections;
 using System.Text.RegularExpressions;
 using System.Text;
 using Pesta.Interop.oauth.signature;
+using Pesta.Utilities;
 
 namespace Pesta.Interop.oauth
 {
@@ -32,7 +32,7 @@ namespace Pesta.Interop.oauth
     /// </remarks>
     public class OAuthMessage
     {
-        public OAuthMessage(String method, String URL, List<OAuth.Parameter> parameters)
+        public OAuthMessage(String method, String URL, ICollection<OAuth.Parameter> parameters)
         {
             this.method = method;
             this.URL = URL;
@@ -58,7 +58,7 @@ namespace Pesta.Interop.oauth
 
         private Dictionary<string, string> parameterMap;
 
-        private bool parametersAreComplete = false;
+        private bool parametersAreComplete;
 
         public override String ToString()
         {
@@ -100,35 +100,35 @@ namespace Pesta.Interop.oauth
             parameterMap = null;
         }
 
-        public void addParameters(List<OAuth.Parameter> parameters)
+        public void addParameters(List<OAuth.Parameter> _parameters)
         {
-            this.parameters.AddRange(parameters);
+            parameters.AddRange(_parameters);
             parameterMap = null;
         }
 
         public String getParameter(String name)
         {
-            return getParameterMap()[name];
+            return getParameterMap().ContainsKey(name) ? getParameterMap()[name]: null;
         }
 
         public String getConsumerKey()
         {
-            return getParameter("oauth_consumer_key");
+            return getParameter(OAuth.OAUTH_CONSUMER_KEY);
         }
 
         public String getToken()
         {
-            return getParameter("oauth_token");
+            return getParameter(OAuth.OAUTH_TOKEN);
         }
 
         public String getSignatureMethod()
         {
-            return getParameter("oauth_signature_method");
+            return getParameter(OAuth.OAUTH_SIGNATURE_METHOD);
         }
 
         public String getSignature()
         {
-            return getParameter("oauth_signature");
+            return getParameter(OAuth.OAUTH_SIGNATURE);
         }
 
         protected Dictionary<string, string> getParameterMap()
@@ -147,17 +147,6 @@ namespace Pesta.Interop.oauth
             return null; // stub
         }
 
-        /**
-         * Get a stream from which to read the body of the HTTP request or response.
-         * This is designed to support efficient streaming of a large response. If
-         * you call this method before calling getBodyAsString, then subsequent
-         * calls to either method will propagate an exception.
-         */
-        public java.io.ByteArrayInputStream getBodyAsStream()
-        {
-            return new java.io.ByteArrayInputStream(Encoding.GetEncoding("ISO-8859-1").GetBytes(getBodyAsString()));
-        }
-
         /** Construct a verbose description of this message and its origins. */
         public Dictionary<string, string> getDump()
         {
@@ -169,15 +158,9 @@ namespace Pesta.Interop.oauth
         protected void dump(Dictionary<string, string> into)
         {
             into.Add("URL", URL);
-            try
+            foreach (var item in getParameterMap())
             {
-                foreach (var item in getParameterMap())
-                {
-                    into.Add(item.Key, item.Value);
-                }
-            }
-            catch
-            {
+                into.Add(item.Key, item.Value);
             }
         }
 
@@ -219,35 +202,33 @@ namespace Pesta.Interop.oauth
         public void addRequiredParameters(OAuthAccessor accessor)
         {
             Dictionary<string, string> pMap = OAuth.newMap(parameters);
-            if (!pMap.ContainsKey("oauth_token") && accessor.accessToken != null)
+            if (!pMap.ContainsKey(OAuth.OAUTH_TOKEN) && accessor.accessToken != null)
             {
-                addParameter("oauth_token", accessor.accessToken);
+                addParameter(OAuth.OAUTH_TOKEN, accessor.accessToken);
             }
             OAuthConsumer consumer = accessor.consumer;
-            if (!pMap.ContainsKey("oauth_consumer_key"))
+            if (!pMap.ContainsKey(OAuth.OAUTH_CONSUMER_KEY))
             {
-                addParameter("oauth_consumer_key", consumer.consumerKey);
+                addParameter(OAuth.OAUTH_CONSUMER_KEY, consumer.consumerKey);
             }
-            string signatureMethod = null;
-            if (!pMap.TryGetValue("oauth_signature_method", out signatureMethod))
+            string signatureMethod;
+            if (!pMap.TryGetValue(OAuth.OAUTH_SIGNATURE_METHOD, out signatureMethod))
             {
-                signatureMethod = (string)consumer.getProperty("oauth_signature_method");
-                if (signatureMethod == null)
-                {
-                    signatureMethod = "HMAC-SHA1";
-                }
-                addParameter("oauth_signature_method", signatureMethod);
+                signatureMethod = (string)consumer.getProperty(OAuth.OAUTH_SIGNATURE_METHOD) ?? OAuth.HMAC_SHA1;
+                addParameter(OAuth.OAUTH_SIGNATURE_METHOD, signatureMethod);
             }
-            if (!pMap.ContainsKey("oauth_timestamp"))
+            if (!pMap.ContainsKey(OAuth.OAUTH_TIMESTAMP))
             {
-                addParameter("oauth_timestamp", DateTime.UtcNow.Ticks / 1000
-                                                + "");
+                //addParameter(OAuth.OAUTH_TIMESTAMP, UnixTime.ConvertToUnixTimestamp(DateTime.UtcNow).ToString());
+                addParameter(OAuth.OAUTH_TIMESTAMP, "1231465594");
             }
-            if (!pMap.ContainsKey("oauth_nonce"))
+            if (!pMap.ContainsKey(OAuth.OAUTH_NONCE))
             {
-                addParameter("oauth_nonce", DateTime.UtcNow.Ticks + "");
+                //addParameter(OAuth.OAUTH_NONCE, Crypto.getRandomString(OAuth.OAUTH_NONCE_LENGTH));
+                addParameter(OAuth.OAUTH_NONCE, "1178df08dd30faeaa1366acebf6f3ba2");
             }
-            this.sign(accessor);
+            
+            sign(accessor);
         }
 
         /**
@@ -296,7 +277,7 @@ namespace Pesta.Interop.oauth
         public String getAuthorizationHeader(String realm)
         {
             StringBuilder into = new StringBuilder(AUTH_SCHEME);
-            into.Append(" realm=\"").Append(OAuth.percentEncode(realm)).Append('"');
+            into.Append(" realm=\"").Append(Rfc3986.Encode(realm)).Append('"');
             beforeGetParameter();
             if (parameters != null)
             {
@@ -306,9 +287,9 @@ namespace Pesta.Interop.oauth
                     if (name.StartsWith("oauth_"))
                     {
                         into.Append(", ");
-                        into.Append(OAuth.percentEncode(name)).Append("=\"")
+                        into.Append(Rfc3986.Encode(name)).Append("=\"")
                             .Append(
-                            OAuth.percentEncode(ToString(parameter
+                            Rfc3986.Encode(ToString(parameter
                                                              .Value))).Append('"');
                     }
                 }
@@ -336,8 +317,8 @@ namespace Pesta.Interop.oauth
                             m = NVP.Match(nvp);
                             if (m.Success)
                             {
-                                String name = OAuth.decodePercent(m.Groups[1].Value);
-                                String value = OAuth.decodePercent(m.Groups[2].Value);
+                                String name = Rfc3986.Decode(m.Groups[1].Value);
+                                String value = Rfc3986.Decode(m.Groups[2].Value);
                                 into.Add(new OAuth.Parameter(name, value));
                             }
                         }
@@ -352,8 +333,6 @@ namespace Pesta.Interop.oauth
         static readonly Regex AUTHORIZATION = new Regex("\\s*(\\w*)\\s+(.*)", RegexOptions.Compiled);
 
         static readonly Regex NVP = new Regex("(\\S*)\\s*\\=\\s*\"([^\"]*)\"", RegexOptions.Compiled);
-
-        protected static readonly java.util.List NO_PARAMETERS = new java.util.ArrayList();
 
         private static String ToString(Object from)
         {

@@ -35,8 +35,9 @@ namespace Pesta.Engine.gadgets
     ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
-    public class DefaultMessageBundleFactory : AbstractMessageBundleFactory
+    public class DefaultMessageBundleFactory : MessageBundleFactory
     {
+        private static readonly Locale ALL_ALL = new Locale("all", "ALL");
         public static readonly String CACHE_NAME = "messageBundles";
         private readonly HttpFetcher fetcher;
         //private readonly SoftExpiringCache<Uri, MessageBundle> cache;
@@ -52,38 +53,30 @@ namespace Pesta.Engine.gadgets
             this.refresh = long.Parse(PestaSettings.GadgetCacheXmlRefreshInterval);
         }
 
-        protected override MessageBundle fetchBundle(LocaleSpec locale, bool ignoreCache)
+        public MessageBundle getBundle(GadgetSpec spec, Locale locale, bool ignoreCache)
         {
             if (ignoreCache)
             {
-                return fetchAndCacheBundle(locale, ignoreCache);
+                return getNestedBundle(spec, locale, true);
             }
 
-            Uri uri = locale.getMessages();
+            String key = spec.getUrl().ToString() + '.' + locale.ToString();
 
-            MessageBundle cached = HttpRuntime.Cache[uri.ToString()] as MessageBundle;
+            MessageBundle cached = HttpRuntime.Cache[key] as MessageBundle;
 
-            MessageBundle bundle = null;
+            MessageBundle bundle;
             if (cached == null)
             {
                 try
                 {
-                    bundle = fetchAndCacheBundle(locale, ignoreCache);
+                    bundle = getNestedBundle(spec, locale, ignoreCache);
                 }
                 catch (GadgetException e)
                 {
                     // Enforce negative caching.
-                    if (cached != null)
-                    {
-                        bundle = cached;
+                    bundle = cached ?? MessageBundle.EMPTY;
                     }
-                    else
-                    {
-                        // We create this dummy spec to avoid the cost of re-parsing when a remote site is out.
-                        bundle = MessageBundle.EMPTY;
-                    }
-                    HttpRuntime.Cache.Insert(uri.ToString(), bundle, null, System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromTicks(refresh));
-                }
+                HttpRuntime.Cache.Insert(key, bundle, null, System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromTicks(refresh));
             }
             else
             {
@@ -93,7 +86,43 @@ namespace Pesta.Engine.gadgets
             return bundle;
         }
 
-        private MessageBundle fetchAndCacheBundle(LocaleSpec locale, bool ignoreCache)
+        private MessageBundle getNestedBundle(GadgetSpec spec, Locale locale, bool ignoreCache)
+        {
+            MessageBundle parent = getParentBundle(spec, locale, ignoreCache);
+            MessageBundle child;
+            LocaleSpec localeSpec = spec.getModulePrefs().getLocale(locale);
+            if (localeSpec == null)
+            {
+                return parent ?? MessageBundle.EMPTY;
+            }
+            Uri messages = localeSpec.getMessages();
+            if (messages == null || messages.ToString().Length == 0)
+            {
+                child = localeSpec.getMessageBundle();
+            }
+            else 
+            {
+                child = fetchBundle(localeSpec, ignoreCache);
+            }
+            return new MessageBundle(parent, child);
+        }
+
+        private MessageBundle getParentBundle(GadgetSpec spec, Locale locale, bool ignoreCache)
+        {
+            if (locale.getLanguage().ToLower().Equals("all"))
+            {
+                // Top most locale already.
+                return null;
+            }
+
+            if (locale.getCountry().ToLower().Equals("all"))
+            {
+                return getBundle(spec, ALL_ALL, ignoreCache);
+            }
+
+            return getBundle(spec, new Locale(locale.getLanguage(), "ALL"), ignoreCache);
+        }
+        protected MessageBundle fetchBundle(LocaleSpec locale, bool ignoreCache)
         {
             Uri url = locale.getMessages();
             sRequest request = new sRequest(url).setIgnoreCache(ignoreCache);
@@ -110,7 +139,7 @@ namespace Pesta.Engine.gadgets
             }
 
             MessageBundle bundle = new MessageBundle(locale, response.responseString);
-            HttpRuntime.Cache.Insert(url.ToString(), bundle, null, System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromTicks(refresh));
+            //HttpRuntime.Cache.Insert(url.ToString(), bundle, null, System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromTicks(refresh));
             return bundle;
         }
     }

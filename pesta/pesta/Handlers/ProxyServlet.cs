@@ -41,18 +41,9 @@ namespace Pesta.Handlers
     {
         private ProxyHandler proxyHandler = ProxyHandler.Instance;
 
-        private static List<string> DISALLOWED_RESPONSE_HEADERS = new List<string>(){
-                                                                                        "set-cookie", "content-length", "content-encoding", "etag", "last-modified" ,"accept-ranges",
-                                                                                        "vary", "expires", "date", "pragma", "cache-control" };
-
-        // This isn't a final field because we want to support optional injection.
-        // This is a limitation of Guice, but this workaround...works.
-        private LockedDomainService lockedDomainService = HashLockedDomainService.Instance;
-        private ContentRewriterRegistry contentRewriterRegistry = DefaultContentRewriterRegistry.Instance;
-
+        
         public void ProcessRequest(HttpContext context)
         {
-            HttpRequest request = context.Request;
             HttpResponse response = context.Response;
             HttpResponseWrapper wrapper = new HttpResponseWrapper(response);
             try

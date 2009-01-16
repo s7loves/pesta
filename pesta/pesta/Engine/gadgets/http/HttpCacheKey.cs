@@ -44,11 +44,8 @@ namespace Pesta.Engine.gadgets.http
         public HttpCacheKey(sRequest request)
         {
             data = new Dictionary<String, String>();
-            Cacheable = true;
-            if (!"GET".Equals(request.req.Method) || request.IgnoreCache)
-            {
-                Cacheable = false;
-            }
+            Cacheable = isCacheable(request);
+            
             // In theory we only cache GET, but including the method in the cache
             // key
             // provides some additional insurance that we aren't mixing cache
@@ -84,10 +81,27 @@ namespace Pesta.Engine.gadgets.http
             }
         }
 
-        public bool IsCacheable()
+        public bool isCacheable()
         {
             return cacheable;
         }
+
+        private static bool isCacheable(sRequest request)
+        {
+            if (request.IgnoreCache)
+            {
+                return false;
+            }
+
+            if (!"GET".Equals(request.getMethod()) &&
+                !"GET".Equals(request.getHeader("X-Method-Override")))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
 
         /// <summary>
         /// Figure out a string representation of this cache key. The representation

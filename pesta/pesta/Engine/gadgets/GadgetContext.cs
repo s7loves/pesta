@@ -21,7 +21,6 @@ using System;
 using Pesta.Engine.auth;
 using Pesta.Engine.common;
 using Pesta.Engine.gadgets.spec;
-using Pesta.Interop;
 using Pesta.Utilities;
 using URI = System.Uri;
 

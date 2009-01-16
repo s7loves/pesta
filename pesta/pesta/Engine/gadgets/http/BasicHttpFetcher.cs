@@ -18,6 +18,7 @@
  */
 #endregion
 
+using System;
 using System.IO;
 using System.Net;
 
@@ -34,6 +35,9 @@ namespace Pesta.Engine.gadgets.http
     /// </remarks>
     public class BasicHttpFetcher : HttpFetcher
     {
+          private static readonly int CONNECT_TIMEOUT_MS = 5000;
+          private static readonly int DEFAULT_MAX_OBJECT_SIZE = 1024 * 1024;
+
         /**
          * Creates a new fetcher for fetching HTTP objects.  Not really suitable
          * for production use.  Someone should probably go and implement maxObjSize,
@@ -50,25 +54,15 @@ namespace Pesta.Engine.gadgets.http
 
         public sResponse fetch(sRequest request)
         {
-            HttpCacheKey cacheKey = new HttpCacheKey(request);
-            sResponse response = HttpCache.getResponse(cacheKey, request);
-            if (response != null)
+            try
             {
-                return response;
+                return makeResponse(request.req);
             }
-            WebRequest fetcher = WebRequest.Create(request.req.RequestUri);
-            if (request.req.ContentLength > 0)
+            catch (Exception)
             {
-                fetcher.ContentLength = request.req.ContentLength;
-                using (StreamReader reader = new StreamReader(request.req.GetRequestStream()))
-                {
-                    StreamWriter writer = new StreamWriter(fetcher.GetRequestStream());
-                    writer.Write(reader.ReadToEnd());
-                    writer.Close();
-                }
+                return sResponse.error();
             }
-            response = makeResponse(fetcher);
-            return HttpCache.addResponse(cacheKey, request, response);
+            
         }
 
         private sResponse makeResponse(WebRequest fetcher)

@@ -40,23 +40,24 @@ namespace Pesta.Engine.gadgets.servlet
     /// </remarks>
     public class MakeRequestHandler : ProxyBase
     {
-        private static String UNPARSEABLE_CRUFT = "throw 1; < don't be evil' >";
-        private static String POST_DATA_PARAM = "postData";
-        private static String METHOD_PARAM = "httpMethod";
-        private static String NOCACHE_PARAM = "nocache";
-        private static String AUTHZ_PARAM = "authz";
-        private static String CONTENT_TYPE_PARAM = "contentType";
-        private static String NUM_ENTRIES_PARAM = "numEntries";
-        private static String DEFAULT_NUM_ENTRIES = "3";
-        private static String GET_SUMMARIES_PARAM = "getSummaries";
+        private const string UNPARSEABLE_CRUFT = "throw 1; < don't be evil' >";
+        private const string POST_DATA_PARAM = "postData";
+        private const string METHOD_PARAM = "httpMethod";
+        private const string HEADERS_PARAM = "headers";
+        private const string NOCACHE_PARAM = "nocache";
+        private const string AUTHZ_PARAM = "authz";
+        private const string CONTENT_TYPE_PARAM = "contentType";
+        private const string NUM_ENTRIES_PARAM = "numEntries";
+        private const string DEFAULT_NUM_ENTRIES = "3";
+        private const string GET_SUMMARIES_PARAM = "getSummaries";
 
-        private ContentFetcherFactory contentFetcherFactory;
-        private ContentRewriterRegistry contentRewriterRegistry;
+        private readonly RequestPipeline requestPipeline;
+        private readonly ContentRewriterRegistry contentRewriterRegistry;
         public readonly static MakeRequestHandler Instance = new MakeRequestHandler();
         protected MakeRequestHandler()
         {
             contentRewriterRegistry = DefaultContentRewriterRegistry.Instance;
-            contentFetcherFactory = ContentFetcherFactory.Instance;
+            this.requestPipeline = DefaultRequestPipeline.Instance;
         }
 
         public override void fetch(HttpRequestWrapper request, HttpResponseWrapper response)
@@ -64,7 +65,7 @@ namespace Pesta.Engine.gadgets.servlet
             sRequest rcr = buildHttpRequest(request);
 
             // Serialize the response
-            sResponse results = contentFetcherFactory.fetch(rcr);
+            sResponse results = requestPipeline.execute(rcr);
 
             // Rewrite the response
             if (contentRewriterRegistry != null)
@@ -81,7 +82,7 @@ namespace Pesta.Engine.gadgets.servlet
             response.setStatus((int)HttpStatusCode.OK);
             response.setContentType("application/json");
             response.getResponse().ContentEncoding = Encoding.UTF8;
-            response.Write(System.Text.Encoding.UTF8.GetBytes(UNPARSEABLE_CRUFT + output));
+            response.Write(Encoding.UTF8.GetBytes(UNPARSEABLE_CRUFT + output));
         }
 
         /**
@@ -91,25 +92,30 @@ namespace Pesta.Engine.gadgets.servlet
         */
         private sRequest buildHttpRequest(HttpRequestWrapper request)
         {
-            String encoding = request.getRequest().ContentEncoding.EncodingName;
-            if (string.IsNullOrEmpty(encoding))
-            {
-                encoding = "UTF-8";
-            }
-
             Uri url = validateUrl(request.getParameter(URL_PARAM));
 
-            sRequest req = new sRequest(url).setPostBody(request.getRequest().ContentEncoding.GetBytes(getParameter(request, POST_DATA_PARAM, "")));
+            sRequest req = new sRequest(url)
+                .setMethod(getParameter(request, METHOD_PARAM, "GET"))
+                .setPostBody(request.getRequest().ContentEncoding.GetBytes(getParameter(request, POST_DATA_PARAM, "")))
+                .setContainer(getContainer(request));
 
-            req.Container = getContainer(request);
-            req.req.Method = getParameter(request, METHOD_PARAM, "GET");
+            String headerData = getParameter(request, HEADERS_PARAM, "");
+            if (headerData.Length > 0)
+            {
+                String[] headerList = headerData.Split('&');
+                foreach(String header in headerList) 
+                {
+                    String[] parts = header.Split('=');
+                    if (parts.Length != 2)
+                    {
+                        throw new GadgetException(GadgetException.Code.INTERNAL_SERVER_ERROR,
+                                    "Malformed header specified,");
+                    }
+                    req.addHeader(HttpUtility.UrlDecode(parts[0]), HttpUtility.UrlDecode(parts[1]));
+                }
+            }
 
-            //req.req.Connection = request.getRequest().Headers["Connection"];
-            //req.req.KeepAlive = false;
-            req.req.Referer = request.getRequest().UrlReferrer.ToString();
-            req.req.UserAgent = request.getRequest().UserAgent;
-            req.addHeader("Accept-Charset", request.getHeaders("Accept-Charset"));
-            req.addHeader("Accept-Language", request.getHeaders("Accept-Language"));
+            //removeUnsafeHeaders(req);
 
             req.setIgnoreCache("1".Equals(request.getParameter(NOCACHE_PARAM)));
 
@@ -134,11 +140,29 @@ namespace Pesta.Engine.gadgets.servlet
             return req;
         }
 
+
+        /**
+       * Removes unsafe headers from the header set.
+       */
+        private static void removeUnsafeHeaders(sRequest request) 
+        {
+            // Host must be removed.
+            String[] badHeaders = new[] 
+                {
+                // No legitimate reason to over ride these.
+                // TODO: We probably need to test variations as well.
+                "Accept", "Accept-Encoding"
+                };
+            foreach(String bad in badHeaders) 
+            {
+                request.removeHeader(bad);
+            }
+        }
         /**
        * @param request
        * @return A valid token for the given input.
        */
-        private SecurityToken extractAndValidateToken(HttpContext context)
+        private static SecurityToken extractAndValidateToken(HttpContext context)
         {
             SecurityToken token = new AuthInfo(context, context.Request.RawUrl).getSecurityToken();
             if (token == null)
@@ -156,7 +180,7 @@ namespace Pesta.Engine.gadgets.servlet
         {
             try
             {
-                String originalUrl = request.getParameter(ProxyBase.URL_PARAM);
+                String originalUrl = request.getParameter(URL_PARAM);
                 String body = results.responseString;
                 if ("FEED".Equals(request.getParameter(CONTENT_TYPE_PARAM)))
                 {
@@ -175,7 +199,7 @@ namespace Pesta.Engine.gadgets.servlet
                 // Use raw param as key as URL may have to be decoded
                 return new JsonObject().Put(originalUrl, resp).ToString();
             }
-            catch (JsonException e)
+            catch (JsonException)
             {
                 return "";
             }

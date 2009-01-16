@@ -21,7 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
-using Pesta.Interop;
+using Pesta.Utilities;
 using Uri=Pesta.Engine.common.uri.Uri;
 
 namespace Pesta.Engine.gadgets.variables
@@ -168,8 +168,8 @@ namespace Pesta.Engine.gadgets.variables
                     if (end != -1)
                     {
                         String name = input.Substring(start, length);
-                        String replacement = substitutions[type][name];
-                        if (replacement != null)
+                        String replacement;
+                        if (substitutions[type].TryGetValue(name, out replacement))
                         {
                             output.Append(replacement);
                         }

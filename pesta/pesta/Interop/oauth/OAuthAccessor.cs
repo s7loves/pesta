@@ -29,7 +29,9 @@ namespace Pesta.Interop.oauth
     [Serializable]
     public class OAuthAccessor
     {
+/*
         private static readonly long serialVersionUID = 5590788443138352999L;
+*/
 
         public readonly OAuthConsumer consumer;
         public String requestToken;
@@ -39,9 +41,9 @@ namespace Pesta.Interop.oauth
         public OAuthAccessor(OAuthConsumer consumer)
         {
             this.consumer = consumer;
-            this.requestToken = null;
-            this.accessToken = null;
-            this.tokenSecret = null;
+            requestToken = null;
+            accessToken = null;
+            tokenSecret = null;
         }
 
         private readonly Dictionary<String, Object> properties = new Dictionary<String, Object>();
@@ -61,15 +63,7 @@ namespace Pesta.Interop.oauth
         {
             if (method == null)
             {
-                method = (String)this.getProperty("httpMethod");
-                if (method == null)
-                {
-                    method = (String)this.consumer.getProperty("httpMethod");
-                    if (method == null)
-                    {
-                        method = "GET";
-                    }
-                }
+                method = (String)getProperty("httpMethod") ?? ((String)consumer.getProperty("httpMethod") ?? "GET");
             }
             OAuthMessage message = new OAuthMessage(method, url, parameters);
             message.addRequiredParameters(this);

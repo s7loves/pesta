@@ -94,7 +94,7 @@ namespace Pesta.Engine.gadgets.servlet
                 DefaultGadgetRewriter rw = new DefaultGadgetRewriter(mq);
                 CharProducer input = CharProducer.Factory.create(
                     new java.io.StringReader(content.getContent()),
-                    FilePosition.instance(new InputSource(new java.net.URI(retrievedUri.ToString())), 2, 2, 1, 1));
+                    FilePosition.instance(new InputSource(new java.net.URI(retrievedUri.ToString())), 2, 1, 1));
                 java.lang.StringBuilder output = new java.lang.StringBuilder();
 
                 try 
@@ -110,13 +110,22 @@ namespace Pesta.Engine.gadgets.servlet
                 {
                     throwCajolingException(e, mq);
                     return RewriterResults.notCacheable();
-                }      
-                content.setContent(output.ToString());
+                }
+                content.setContent(tameCajaClientApi() + output.ToString());
+
             }
-            return RewriterResults.notCacheable();
+            return null;
         }
 
-        private void throwCajolingException(Exception cause, MessageQueue mq) 
+        private static String tameCajaClientApi()
+        {
+            return "<script>" +
+              "opensocial.Container.get().enableCaja();" +
+              "</script>";
+        }
+
+
+        private static void throwCajolingException(Exception cause, MessageQueue mq) 
         {
             StringBuilder errbuilder = new StringBuilder();
             MessageContext mc = new MessageContext();
@@ -128,7 +137,7 @@ namespace Pesta.Engine.gadgets.servlet
 
             for (java.util.Iterator iter = mq.getMessages().iterator(); iter.hasNext(); )
             {
-                com.google.caja.reporting.Message m = iter.next() as com.google.caja.reporting.Message;
+                Message m = iter.next() as Message;
                 errbuilder.Append(m.format(mc)).Append('\n');
             }
         }

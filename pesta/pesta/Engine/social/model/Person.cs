@@ -21,7 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Pesta.Engine.social.core.model;
-using Pesta.Interop;
+using Pesta.Utilities;
 
 namespace Pesta.Engine.social.model
 {

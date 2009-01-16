@@ -24,6 +24,7 @@ using System.Xml;
 using Pesta.Engine.common.xml;
 using Pesta.Engine.gadgets.variables;
 using Pesta.Interop;
+using Pesta.Utilities;
 
 namespace Pesta.Engine.gadgets.spec
 {

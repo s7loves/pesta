@@ -19,7 +19,7 @@
 #endregion
 
 using Pesta.Engine.gadgets.spec;
-using Pesta.Interop;
+using Pesta.Utilities;
 using Uri=Pesta.Engine.common.uri.Uri;
 
 

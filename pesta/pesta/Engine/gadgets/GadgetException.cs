@@ -115,5 +115,11 @@ namespace Pesta.Engine.gadgets
         {
             this.code = code;
         }
+
+        public Code getCode()
+        {
+            return code;
+        }
+
     }
 }

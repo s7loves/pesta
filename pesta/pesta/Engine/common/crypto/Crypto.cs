@@ -82,7 +82,7 @@ namespace Pesta
         /// <param name="numBytes">number of bytes of randomness.</param>
         public static String getRandomString(int numBytes)
         {
-            return String.Format("0:X", getRandomBytes(numBytes));
+            return BitConverter.ToString(getRandomBytes(numBytes)).Replace("-", "").ToLower();
         }
 
         /// <summary>

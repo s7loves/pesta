@@ -36,8 +36,8 @@ namespace Pesta.Engine.gadgets.oauth
     /// </remarks>
     public class GadgetOAuthTokenStore
     {
-        private OAuthStore store;
-        private GadgetSpecFactory specFactory;
+        private readonly OAuthStore store;
+        private readonly GadgetSpecFactory specFactory;
 
         /**
          * Public constructor.
@@ -160,6 +160,8 @@ namespace Pesta.Engine.gadgets.oauth
                 // We cached the access token on the client
                 accessorBuilder.setAccessToken(clientState.getAccessToken());
                 accessorBuilder.setTokenSecret(clientState.getAccessTokenSecret());
+                accessorBuilder.setSessionHandle(clientState.getSessionHandle());
+                accessorBuilder.setTokenExpireMillis(clientState.getTokenExpireMillis());
             }
             else
             {
@@ -171,6 +173,8 @@ namespace Pesta.Engine.gadgets.oauth
                     // We have an access token in persistent storage, use that.
                     accessorBuilder.setAccessToken(tokenInfo.getAccessToken());
                     accessorBuilder.setTokenSecret(tokenInfo.getTokenSecret());
+                    accessorBuilder.setSessionHandle(tokenInfo.getSessionHandle());
+                    accessorBuilder.setTokenExpireMillis(tokenInfo.getTokenExpireMillis());
                 }
                 else
                 {
@@ -182,17 +186,17 @@ namespace Pesta.Engine.gadgets.oauth
             }
         }
 
-        private AccessorInfo.OAuthParamLocation getStoreLocation(OAuthService.Location location)
+        private static AccessorInfo.OAuthParamLocation getStoreLocation(OAuthService.Location location)
         {
             if (location == OAuthService.Location.HEADER)
             {
                 return AccessorInfo.OAuthParamLocation.AUTH_HEADER;
             }
-            else if (location == OAuthService.Location.URL)
+            if (location == OAuthService.Location.URL)
             {
                 return AccessorInfo.OAuthParamLocation.URI_QUERY;
             }
-            else if (location == OAuthService.Location.BODY)
+            if (location == OAuthService.Location.BODY)
             {
                 return AccessorInfo.OAuthParamLocation.POST_BODY;
             }
@@ -200,13 +204,13 @@ namespace Pesta.Engine.gadgets.oauth
                                       "Unknown parameter location " + location);
         }
 
-        private AccessorInfo.HttpMethod getStoreMethod(OAuthService.Method method)
+        private static AccessorInfo.HttpMethod getStoreMethod(OAuthService.Method method)
         {
             if (method == OAuthService.Method.GET)
             {
                 return AccessorInfo.HttpMethod.GET;
             }
-            else if (method == OAuthService.Method.POST)
+            if (method == OAuthService.Method.POST)
             {
                 return AccessorInfo.HttpMethod.POST;
             }
@@ -227,7 +231,7 @@ namespace Pesta.Engine.gadgets.oauth
             }
         }
 
-        private GadgetException serviceNotFoundEx(SecurityToken securityToken, OAuthSpec oauthSpec, String serviceName)
+        private static GadgetException serviceNotFoundEx(SecurityToken securityToken, OAuthSpec oauthSpec, String serviceName)
         {
             StringBuilder message = new StringBuilder()
                 .Append("Spec for gadget ")
@@ -241,7 +245,7 @@ namespace Pesta.Engine.gadgets.oauth
             return new UserVisibleOAuthException(message.ToString());
         }
 
-        private GadgetException oauthNotFoundEx(SecurityToken securityToken)
+        private static GadgetException oauthNotFoundEx(SecurityToken securityToken)
         {
             StringBuilder message = new StringBuilder()
                 .Append("Spec for gadget ")

@@ -45,7 +45,7 @@ namespace Pesta.Interop.oauth.signature
          */
         public void validate(OAuthMessage message)
         {
-            message.requireParameters(new string[] { "oauth_signature" });
+            message.requireParameters(new[] { "oauth_signature" });
             String signature = message.getSignature();
             String baseString = getBaseString(message);
             if (!isValid(signature, baseString))
@@ -64,10 +64,6 @@ namespace Pesta.Interop.oauth.signature
         {
             String baseString = getBaseString(message);
             String signature = getSignature(baseString);
-            // Logger log = Logger.getLogger(getClass().getName());
-            // if (log.isLoggable(Level.FINE)) {
-            // log.fine(signature + "=getSignature(" + baseString + ")");
-            // }
             return signature;
         }
 
@@ -79,11 +75,7 @@ namespace Pesta.Interop.oauth.signature
                 // This code supports the 'Accessor Secret' extensions
                 // described in http://oauth.pbwiki.com/AccessorSecret
                 String key = OAuthConsumer.ACCESSOR_SECRET;
-                Object accessorSecret = accessor.getProperty(key);
-                if (accessorSecret == null)
-                {
-                    accessorSecret = accessor.consumer.getProperty(key);
-                }
+                Object accessorSecret = accessor.getProperty(key) ?? accessor.consumer.getProperty(key);
                 if (accessorSecret != null)
                 {
                     secret = accessorSecret.ToString();
@@ -113,9 +105,9 @@ namespace Pesta.Interop.oauth.signature
             return consumerSecret;
         }
 
-        public virtual void setConsumerSecret(String consumerSecret)
+        public virtual void setConsumerSecret(String _consumerSecret)
         {
-            this.consumerSecret = consumerSecret;
+            consumerSecret = _consumerSecret;
         }
 
         public String getTokenSecret()
@@ -123,9 +115,9 @@ namespace Pesta.Interop.oauth.signature
             return tokenSecret;
         }
 
-        public virtual void setTokenSecret(String tokenSecret)
+        public virtual void setTokenSecret(String _tokenSecret)
         {
-            this.tokenSecret = tokenSecret;
+            tokenSecret = _tokenSecret;
         }
 
         public static String getBaseString(OAuthMessage message)
@@ -145,9 +137,9 @@ namespace Pesta.Interop.oauth.signature
                 parameters.AddRange(message.getParameters());
                 url = url.Substring(0, q);
             }
-            return OAuth.percentEncode(message.method.ToUpper()) + '&'
-                   + OAuth.percentEncode(normalizeUrl(url)) + '&'
-                   + OAuth.percentEncode(normalizeParameters(parameters));
+            return Rfc3986.Encode(message.method.ToUpper()) + '&'
+                   + Rfc3986.Encode(normalizeUrl(url)) + '&'
+                   + Rfc3986.Encode(normalizeParameters(parameters));
         }
 
         protected static String normalizeUrl(String url)
@@ -182,7 +174,7 @@ namespace Pesta.Interop.oauth.signature
             List<ComparableParameter> p = new List<ComparableParameter>(parameters.Count);
             foreach (OAuth.Parameter parameter in parameters)
             {
-                if (!"oauth_signature".Equals(parameter.Key))
+                if (!"oauth_signature".Equals(parameter.Key) && (parameter.Key.StartsWith("oauth") || parameter.Key.StartsWith("scope")))
                 {
                     p.Add(new ComparableParameter(parameter));
                 }
@@ -205,7 +197,7 @@ namespace Pesta.Interop.oauth.signature
         public static OAuthSignatureMethod newSigner(OAuthMessage message,
                                                      OAuthAccessor accessor)
         {
-            message.requireParameters(new string[] { OAuth.OAUTH_SIGNATURE_METHOD });
+            message.requireParameters(new[] { OAuth.OAUTH_SIGNATURE_METHOD });
             OAuthSignatureMethod signer = newMethod(message.getSignatureMethod(),
                                                     accessor);
             signer.setTokenSecret(accessor.tokenSecret);
@@ -235,7 +227,7 @@ namespace Pesta.Interop.oauth.signature
                 if (acceptable.Length > 0)
                 {
                     problem.setParameter("oauth_acceptable_signature_methods",
-                                         acceptable.ToString());
+                                         acceptable);
                 }
                 throw problem;
             }
@@ -246,7 +238,7 @@ namespace Pesta.Interop.oauth.signature
         }
 
         /** Retrieve the original parameters from a sorted collection. */
-        private static List<OAuth.Parameter> getParameters(List<ComparableParameter> parameters)
+        private static List<OAuth.Parameter> getParameters(ICollection<ComparableParameter> parameters)
         {
             if (parameters == null)
             {
@@ -264,7 +256,7 @@ namespace Pesta.Interop.oauth.signature
          * Subsequently, newMethod(name) will attempt to instantiate the given
          * class, with no constructor parameters.
          */
-        private static readonly Dictionary<string, Type> NAME_TO_CLASS = new Dictionary<string, Type>()
+        private static readonly Dictionary<string, Type> NAME_TO_CLASS = new Dictionary<string, Type>
                                                                              {
                                                                                  {"HMAC-SHA1", typeof( HMAC_SHA1)},
                                                                                  {"PLAINTEXT", typeof(PLAINTEXT)},
@@ -281,7 +273,7 @@ namespace Pesta.Interop.oauth.signature
                 this.value = value;
                 String n = ToString(value.Key);
                 String v = ToString(value.Value);
-                this.key = OAuth.percentEncode(n) + ' ' + OAuth.percentEncode(v);
+                key = Rfc3986.Encode(n) + ' ' + Rfc3986.Encode(v);
                 // ' ' is used because it comes before any character
                 // that can appear in a percentEncoded string.
             }
@@ -297,7 +289,7 @@ namespace Pesta.Interop.oauth.signature
 
             public int CompareTo(Object that)
             {
-                return this.key.CompareTo(((ComparableParameter)that).key);
+                return key.CompareTo(((ComparableParameter)that).key);
             }
 
             public override String ToString()

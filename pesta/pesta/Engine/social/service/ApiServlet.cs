@@ -21,6 +21,7 @@ using System;
 using System.Web;
 using System.Runtime.Remoting.Messaging;
 using System.Text;
+using Pesta.DataAccess;
 using Pesta.Engine.auth;
 using Pesta.Engine.social.core.util;
 using Pesta.Engine.social.spi;
@@ -72,7 +73,6 @@ namespace Pesta.Engine.social.service
         protected IAsyncResult handleRequestItem(RequestItem requestItem, HttpRequest servletRequest)
         {
             DataRequestHandler handler = dispatcher.getHandler(requestItem.getService());
-            //DataRequestHandler handler = (DataRequestHandler)Activator.CreateInstance(handlerType, JsonDbOpensocialService.Instance);
             if (handler == null)
             {
                 throw new SocialSpiException(ResponseError.NOT_IMPLEMENTED,

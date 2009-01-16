@@ -63,9 +63,9 @@ namespace Pesta.Engine.common.uri
             return scheme;
         }
 
-        public UriBuilder setScheme(String scheme)
+        public UriBuilder setScheme(String _scheme)
         {
-            this.scheme = scheme;
+            scheme = _scheme;
             return this;
         }
 
@@ -77,9 +77,9 @@ namespace Pesta.Engine.common.uri
             return authority;
         }
 
-        public UriBuilder setAuthority(String authority) 
+        public UriBuilder setAuthority(String _authority) 
         {
-            this.authority = authority;
+            authority = _authority;
             return this;
         }
 
@@ -94,9 +94,9 @@ namespace Pesta.Engine.common.uri
         /**
         * Sets the path component of the Uri.
         */
-        public UriBuilder setPath(String path) 
+        public UriBuilder setPath(String _path) 
         {
-            this.path = path;
+            path = _path;
             return this;
         }
 
@@ -116,21 +116,21 @@ namespace Pesta.Engine.common.uri
         * Assigns the specified query string as the query portion of the uri, automatically decoding
         * parameters to populate the parameter map for calls to getParameter.
         */
-        public UriBuilder setQuery(String query)
+        public UriBuilder setQuery(String _query)
         {
             queryParameters.Clear();
-            foreach (var item in splitParameters(query))
+            foreach (var item in splitParameters(_query))
             {
                 queryParameters.Add(item.Key,item.Value);
             }
-            this.query = query;
+            query = _query;
             return this;
         }
 
         public UriBuilder addQueryParameter(String name, String value) 
         {
             query = null;
-            List<String> parameters = null;
+            List<String> parameters;
             if (!queryParameters.TryGetValue(name, out parameters))
             {
                 parameters = new List<string>();
@@ -172,7 +172,7 @@ namespace Pesta.Engine.common.uri
         */
         public List<String> getQueryParameters(String name) 
         {
-            List<String> values = null;
+            List<String> values;
             queryParameters.TryGetValue(name, out values);
             return values;
         }
@@ -182,7 +182,7 @@ namespace Pesta.Engine.common.uri
         */
         public String getQueryParameter(String name)
         {
-            List<String> values = null;
+            List<String> values;
             if (!queryParameters.TryGetValue(name, out values)) 
             {
                 return null;
@@ -204,16 +204,16 @@ namespace Pesta.Engine.common.uri
             return fragment;
         }
 
-        public UriBuilder setFragment(String fragment)
+        public UriBuilder setFragment(String _fragment)
         {
-            this.fragment = fragment;
+            fragment = _fragment;
             return this;
         }
 
         /**
         * Utility method for joining key / value pair parameters into a url-encoded string.
         */
-        static String joinParameters(Dictionary<String, List<String>> query)
+        static String joinParameters(ICollection<KeyValuePair<string, List<string>>> query)
         {
             if (query.Count == 0) 
             {
@@ -255,7 +255,7 @@ namespace Pesta.Engine.common.uri
             {
                 String name = HttpUtility.UrlDecode(item.Groups[1].Value);
                 String value = HttpUtility.UrlDecode(item.Groups[2].Value);
-                List<String> values = null;
+                List<String> values;
                 if (!parameters.TryGetValue(name, out values)) 
                 {
                     values = new List<string>();

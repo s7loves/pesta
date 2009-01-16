@@ -43,7 +43,7 @@ namespace Pesta.Engine.gadgets.oauth
         /**
         * Transient state we want to cache client side.
         */
-        private OAuthClientState newClientState;
+        private readonly OAuthClientState newClientState;
 
         /**
         * Authorization URL for the client.
@@ -79,7 +79,7 @@ namespace Pesta.Engine.gadgets.oauth
                     throw e;
                 }
             }
-            if (aznUrl != null)
+            if (!String.IsNullOrEmpty(aznUrl))
             {
                 response.setMetadata(APPROVAL_URL, aznUrl);
             }
@@ -87,7 +87,7 @@ namespace Pesta.Engine.gadgets.oauth
             {
                 response.setMetadata(ERROR_CODE, error.ToString());
             }
-            if (errorText != null)
+            if (!String.IsNullOrEmpty(errorText))
             {
                 response.setMetadata(ERROR_TEXT, errorText);
             }

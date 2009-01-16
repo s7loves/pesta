@@ -18,7 +18,7 @@
  */
 #endregion
 using Pesta.Engine.gadgets.spec;
-using Pesta.Interop;
+using Pesta.Utilities;
 
 namespace Pesta.Engine.gadgets
 {

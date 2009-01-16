@@ -20,7 +20,6 @@
 using System;
 using System.Web;
 using System.Net;
-using System.Diagnostics;
 using Pesta.Engine.gadgets.http;
 using Pesta.Engine.gadgets.spec;
 using Pesta.Utilities;
@@ -40,10 +39,10 @@ namespace Pesta.Engine.gadgets
     public class DefaultGadgetSpecFactory : GadgetSpecFactory
     {
         public static readonly String CACHE_NAME = "gadgetSpecs";
-        static readonly String RAW_GADGETSPEC_XML_PARAM_NAME = "rawxml";
+        private const string RAW_GADGETSPEC_XML_PARAM_NAME = "rawxml";
         static readonly Uri RAW_GADGET_URI = Uri.parse("http://localhost/raw.xml");
-        static readonly String ERROR_SPEC = "<Module><ModulePrefs title='Error'/><Content/></Module>";
-        static readonly String ERROR_KEY = "parse.exception";
+        private const string ERROR_SPEC = "<Module><ModulePrefs title='Error'/><Content/></Module>";
+        private const string ERROR_KEY = "parse.exception";
 
         private readonly HttpFetcher fetcher;
         //private readonly SoftExpiringCache<Uri, GadgetSpec> cache;
@@ -53,7 +52,7 @@ namespace Pesta.Engine.gadgets
         protected DefaultGadgetSpecFactory()
         {
             fetcher = BasicHttpFetcher.Instance;
-            this.refresh = long.Parse(PestaSettings.GadgetCacheXmlRefreshInterval);
+            refresh = long.Parse(PestaSettings.GadgetCacheXmlRefreshInterval);
 
         }
 
@@ -79,7 +78,7 @@ namespace Pesta.Engine.gadgets
 
             GadgetSpec cached = HttpRuntime.Cache[gadgetUri.ToString()] as GadgetSpec;
 
-            GadgetSpec spec = null;
+            GadgetSpec spec;
             if (cached == null)
             {
                 try
@@ -88,18 +87,9 @@ namespace Pesta.Engine.gadgets
                 }
                 catch (GadgetException e)
                 {
-                    // Enforce negative caching.
-                    if (cached != null)
-                    {
-                        spec = cached;
-                        Debug.Assert(spec != null);
-                    }
-                    else
-                    {
                         // We create this dummy spec to avoid the cost of re-parsing when a remote site is out.
                         spec = new GadgetSpec(uri, ERROR_SPEC);
                         spec.setAttribute(ERROR_KEY, e);
-                    }
                     HttpRuntime.Cache.Insert(uri.ToString(), spec, null, System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromTicks(refresh));
                 }
             }
@@ -118,7 +108,10 @@ namespace Pesta.Engine.gadgets
 
         private GadgetSpec fetchObjectAndCache(Uri url, bool ignoreCache)
         {
-            sRequest request = new sRequest(url).setIgnoreCache(ignoreCache);
+            sRequest request = new sRequest(url)
+                        .setIgnoreCache(ignoreCache)
+                        .setGadget(url);
+
             // Since we don't allow any variance in cache time, we should just force the cache time
             // globally. This ensures propagation to shared caches when this is set.
             request.setCacheTtl((int)(refresh / 1000));

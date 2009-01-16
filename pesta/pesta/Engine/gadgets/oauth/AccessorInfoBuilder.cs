@@ -36,12 +36,10 @@ namespace Pesta.Engine.gadgets.oauth
         private String requestToken;
         private String accessToken;
         private String tokenSecret;
-        private AccessorInfo.OAuthParamLocation location;
+        private String sessionHandle;
+        private long tokenExpireMillis;
+        private AccessorInfo.OAuthParamLocation? location;
         private AccessorInfo.HttpMethod method;
-
-        public AccessorInfoBuilder()
-        {
-        }
 
         public AccessorInfo create()
         {
@@ -61,37 +59,47 @@ namespace Pesta.Engine.gadgets.oauth
             accessor.requestToken = requestToken;
             accessor.accessToken = accessToken;
             accessor.tokenSecret = tokenSecret;
-            return new AccessorInfo(accessor, consumer, method, location);
+            return new AccessorInfo(accessor, consumer, method, location, sessionHandle, tokenExpireMillis);
         }
 
-        public void setConsumer(OAuthStore.ConsumerInfo consumer)
+        public void setConsumer(OAuthStore.ConsumerInfo _consumer)
         {
-            this.consumer = consumer;
+            consumer = _consumer;
         }
 
-        public void setRequestToken(String requestToken)
+        public void setRequestToken(String _requestToken)
         {
-            this.requestToken = requestToken;
+            requestToken = _requestToken;
         }
 
-        public void setAccessToken(String accessToken)
+        public void setAccessToken(String _accessToken)
         {
-            this.accessToken = accessToken;
+            accessToken = _accessToken;
         }
 
-        public void setTokenSecret(String tokenSecret)
+        public void setTokenSecret(String _tokenSecret)
         {
-            this.tokenSecret = tokenSecret;
+            tokenSecret = _tokenSecret;
         }
 
-        public void setParameterLocation(AccessorInfo.OAuthParamLocation location)
+        public void setParameterLocation(AccessorInfo.OAuthParamLocation _location)
         {
-            this.location = location;
+            location = _location;
         }
 
-        public void setMethod(AccessorInfo.HttpMethod method)
+        public void setMethod(AccessorInfo.HttpMethod _method)
         {
-            this.method = method;
+            method = _method;
+        }
+
+        public void setSessionHandle(String _sessionHandle)
+        {
+            sessionHandle = _sessionHandle;
+        }
+
+        public void setTokenExpireMillis(long _tokenExpireMillis)
+        {
+            tokenExpireMillis = _tokenExpireMillis;
         }
     }
 }

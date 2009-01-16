@@ -1,9 +1,6 @@
 ﻿using System;
+using System.Security.Cryptography;
 using System.Text;
-using java.security;
-using javax.crypto;
-
-using javax.crypto.spec;
 
 namespace Pesta.Interop.oauth.signature
 {
@@ -24,10 +21,6 @@ namespace Pesta.Interop.oauth.signature
                 String signature = base64Encode(computeSignature(baseString));
                 return signature;
             }
-            catch (GeneralSecurityException e)
-            {
-                throw new OAuthException(e);
-            }
             catch (Exception e)
             {
                 throw new OAuthException(e);
@@ -40,11 +33,7 @@ namespace Pesta.Interop.oauth.signature
             {
                 byte[] expected = computeSignature(baseString);
                 byte[] actual = decodeBase64(signature);
-                return Array.Equals(expected, actual);
-            }
-            catch (GeneralSecurityException e)
-            {
-                throw new OAuthException(e);
+                return Equals(expected, actual);
             }
             catch (Exception e)
             {
@@ -54,30 +43,30 @@ namespace Pesta.Interop.oauth.signature
 
         private byte[] computeSignature(String baseString)
         {
-            SecretKey key = null;
+            byte[] _key;
             lock (this)
             {
-                if (this.key == null)
+                if (key == null)
                 {
-                    String keyString = OAuth.percentEncode(getConsumerSecret())
-                                       + '&' + OAuth.percentEncode(getTokenSecret());
-                    byte[] keyBytes = Encoding.GetEncoding(ENCODING).GetBytes(keyString);
-                    this.key = new SecretKeySpec(keyBytes, MAC_NAME);
+                    String keyString = Rfc3986.Encode(getConsumerSecret())
+                                       + "&" + Rfc3986.Encode(getTokenSecret());
+                    key = Encoding.GetEncoding(ENCODING).GetBytes(keyString);
                 }
-                key = this.key;
+                _key = key;
             }
-            Mac mac = Mac.getInstance(MAC_NAME);
-            mac.init(key);
-            byte[] text = Encoding.GetEncoding(ENCODING).GetBytes(baseString);
-            return mac.doFinal(text);
+            using (HMACSHA1 crypto = new HMACSHA1())
+            {
+                crypto.Key = _key;
+                byte[] hash = crypto.ComputeHash(Encoding.GetEncoding(ENCODING).GetBytes(baseString));
+                crypto.Clear();
+                return hash;
+            }
         }
 
         /** ISO-8859-1 or US-ASCII would work, too. */
         private static readonly String ENCODING = OAuth.ENCODING;
 
-        private static readonly String MAC_NAME = "HmacSHA1";
-
-        private SecretKey key = null;
+        private byte[] key;
 
         public override void setConsumerSecret(String consumerSecret)
         {

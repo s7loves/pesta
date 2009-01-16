@@ -28,7 +28,9 @@ namespace Pesta.Interop.oauth
     [Serializable]
     public class OAuthServiceProvider
     {
+/*
         private static readonly long serialVersionUID = 3306534392621038574L;
+*/
         public readonly String requestTokenURL;
         public readonly String userAuthorizationURL;
         public readonly String accessTokenURL;

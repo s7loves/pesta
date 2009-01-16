@@ -34,11 +34,12 @@ namespace Pesta.Engine.gadgets.oauth
     {
         private BlobCrypter stateCrypter;
         private GadgetOAuthTokenStore tokenStore;
-
-        public OAuthFetcherConfig(BlobCrypter stateCrypter, GadgetOAuthTokenStore tokenStore)
+        public static readonly OAuthFetcherConfig Instace = new OAuthFetcherConfig();
+        protected OAuthFetcherConfig()
         {
-            this.stateCrypter = stateCrypter;
-            this.tokenStore = tokenStore;
+            byte[] masterKey = Crypto.getRandomBytes(BasicBlobCrypter.MASTER_KEY_MIN_LEN);
+            this.stateCrypter = new BasicBlobCrypter(masterKey);
+            this.tokenStore = new GadgetOAuthTokenStore(BasicOAuthStore.Instance, DefaultGadgetSpecFactory.Instance);
         }
 
         /**

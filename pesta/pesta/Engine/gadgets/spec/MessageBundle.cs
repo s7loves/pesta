@@ -142,7 +142,14 @@ namespace Pesta.Engine.gadgets.spec
                     throw new SpecParserException(
                         "All message bundle entries must have a name attribute.");
                 }
-                messages.Add(name, msg.InnerText.Trim());
+                if (messages.ContainsKey(name))
+                {
+                    messages[name] = msg.InnerText.Trim();
+                }
+                else
+                {
+                    messages.Add(name, msg.InnerText.Trim());
+                }
             }
             return messages;
         }

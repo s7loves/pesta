@@ -25,6 +25,7 @@ using Pesta.Engine.gadgets.process;
 using Pesta.Engine.gadgets.spec;
 using Uri=Pesta.Engine.common.uri.Uri;
 using URI = System.Uri;
+using System.Linq;
 
 namespace Pesta.Engine.gadgets.render
 {
@@ -65,7 +66,7 @@ namespace Pesta.Engine.gadgets.render
                 {
                     return RenderingResults.error("Unable to locate an appropriate view in this gadget. " +
                                                   "Requested: '" + gadget.getContext().getView() +
-                                                  "' Available: " + gadget.getSpec().getViews().Keys);
+                                                  "' Available: " + String.Join(",",gadget.getSpec().getViews().Keys.ToArray()));
                 }
 
                 if (gadget.getCurrentView().getType() == View.ContentType.URL)

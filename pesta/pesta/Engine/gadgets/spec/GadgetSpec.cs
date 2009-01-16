@@ -24,7 +24,7 @@ using System.Xml;
 using Pesta.Engine.common.util;
 using Pesta.Engine.common.xml;
 using Pesta.Engine.gadgets.variables;
-using Pesta.Interop;
+using Pesta.Utilities;
 using Uri=Pesta.Engine.common.uri.Uri;
 
 namespace Pesta.Engine.gadgets.spec

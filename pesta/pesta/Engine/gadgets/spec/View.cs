@@ -23,7 +23,7 @@ using System.Xml;
 using System.Collections.Generic;
 using Pesta.Engine.common.xml;
 using Pesta.Engine.gadgets.variables;
-using Pesta.Interop;
+using Pesta.Utilities;
 using Uri=Pesta.Engine.common.uri.Uri;
 
 namespace Pesta.Engine.gadgets.spec
@@ -38,7 +38,8 @@ namespace Pesta.Engine.gadgets.spec
     /// </remarks>
     public class View : RequestAuthenticationInfo
     {
-        private static readonly List<String> KNOWN_ATTRIBUTES = new List<string>(){
+        private static readonly List<String> KNOWN_ATTRIBUTES = new List<string>
+                                                                    {
                                                                                       "type", "view", "href", "preferred_height", "preferred_width", "authz", "quirks",
                                                                                       "sign_owner", "sign_viwer"
                                                                                   };
@@ -101,8 +102,8 @@ namespace Pesta.Engine.gadgets.spec
             this.needsUserPrefSubstitution = this.content.Contains("__UP_");
             this.quirks = quirks;
             this.href = href;
-            this.rawType = contentType == null ? "html" : contentType;
-            this.type = type == null ? ContentType.HTML : type;
+            this.rawType = contentType ?? "html";
+            this.type = type ?? ContentType.HTML;
             this.preferredHeight = preferredHeight;
             this.preferredWidth = preferredWidth;
             this.attributes = attributes;
@@ -135,12 +136,12 @@ namespace Pesta.Engine.gadgets.spec
             content = substituter.substituteString(null, view.content);
             _base = view._base;
             href = _base.resolve(substituter.substituteUri(null, view.href));
-            Dictionary<String, String> attributes = new Dictionary<string, string>();
+            Dictionary<String, String> _attributes = new Dictionary<string, string>();
             foreach (var entry in view.attributes)
             {
-                attributes.Add(entry.Key, substituter.substituteString(null, entry.Value));
+                _attributes.Add(entry.Key, substituter.substituteString(null, entry.Value));
             }
-            this.attributes = attributes;
+            attributes = _attributes;
         }
 
         /**

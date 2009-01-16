@@ -19,7 +19,7 @@
 #endregion
 using System;
 using System.Collections.Generic;
-using Pesta.Interop;
+using Pesta.Utilities;
 
 namespace Pesta.Engine.gadgets
 {
@@ -39,7 +39,7 @@ namespace Pesta.Engine.gadgets
         private readonly Dictionary<HashKey<String>, HashSet<GadgetFeature>> cache
             = new Dictionary<HashKey<String>, HashSet<GadgetFeature>>();
 
-        private bool graphComplete = false;
+        private bool graphComplete;
         public static readonly GadgetFeatureRegistry Instance = new GadgetFeatureRegistry();
         private GadgetFeatureRegistry()
         {
@@ -53,7 +53,7 @@ namespace Pesta.Engine.gadgets
         {
             foreach (string feature in needed)
             {
-                GadgetFeature feat = null;
+                GadgetFeature feat;
                 if (features.TryGetValue(feature, out feat) &&
                     !deps.Contains(feat))
                 {
@@ -95,7 +95,7 @@ namespace Pesta.Engine.gadgets
             }
             // We use the cache only for situations where all needed are available.
             // if any are missing, the result won't be cached.
-            HashSet<GadgetFeature> libCache = null;
+            HashSet<GadgetFeature> libCache;
             if (cache.TryGetValue(needed, out libCache))
             {
                 return libCache;
@@ -143,7 +143,7 @@ namespace Pesta.Engine.gadgets
             features[feature.getName()] = feature;
         }
 
-        private bool isCore(GadgetFeature feature)
+        private static bool isCore(GadgetFeature feature)
         {
             return feature.getName().StartsWith("core");
         }

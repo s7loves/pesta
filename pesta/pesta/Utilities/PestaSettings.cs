@@ -25,14 +25,6 @@ using System.Xml;
 
 namespace Pesta.Utilities
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    ///  Apache Software License 2.0 2008 Pesta, Sean Lin M.T. (my6solutions.com)
-    /// </para>
-    /// </remarks>
     public sealed class PestaSettings : IConfigurationSectionHandler
     {
         internal const string AssemblyName = "Pesta";
@@ -70,6 +62,7 @@ namespace Pesta.Utilities
                 tokenMaxAge = ReadSetting(settings, "tokenMaxAge", "3600");
                 gadgetCacheXmlRefreshInterval = ReadSetting(settings, "gadgetCacheXmlRefreshInterval", "300000");
                 allowPlaintextToken = ReadSetting(settings, "allowPlaintextToken", "true");
+                containerUrlPrefix = ReadSetting(settings, "containerUrlPrefix", "");
             }
 
             return null;
@@ -99,6 +92,7 @@ namespace Pesta.Utilities
         private static string gadgetCacheXmlRefreshInterval;
         private static string allowPlaintextToken;
         private static string tokenMaxAge;
+        private static string containerUrlPrefix;
 
         public static String JsonDb 
         {
@@ -131,6 +125,10 @@ namespace Pesta.Utilities
             set { gadgetCacheXmlRefreshInterval = value; }
         }
 
-        
+        public static String ContainerUrlPrefix
+        {
+            get { return containerUrlPrefix; }
+            set { containerUrlPrefix = value; }
+        }
     }
 }

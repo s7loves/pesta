@@ -38,14 +38,50 @@ namespace Pesta.Engine.gadgets.http
     /// </remarks>
     public class sResponse
     {
+        public const int SC_CONTINUE = 100;
+        public const int SC_SWITCHING_PROTOCOLS = 101;
+
         public const int SC_OK = 200;
-        public const int SC_MOVED_TEMPORARILY = 301;
-        public const int SC_MOVED_PERMANENTLY = 302;
+        public const int SC_CREATED = 201;
+        public const int SC_ACCEPTED = 202;
+        public const int SC_NON_AUTHORITATIVE_INFORMATION = 203;
+        public const int SC_NO_CONTENT = 204;
+        public const int SC_RESET_CONTENT = 205;
+        public const int SC_PARTIAL_CONTENT = 206;
+
+        public const int SC_MULTIPLE_CHOICES = 300;
+        public const int SC_MOVED_PERMANENTLY = 301;
+        public const int SC_FOUND = 302;
+        public const int SC_SEE_OTHER = 303;
+        public const int SC_NOT_MODIFIED = 304;
+        public const int SC_USE_PROXY = 305;
+        public const int SC_TEMPORARY_REDIRECT = 307;
+
+        public const int SC_BAD_REQUEST = 400;
         public const int SC_UNAUTHORIZED = 401;
+        public const int SC_PAYMENT_REQUIRED = 402;
         public const int SC_FORBIDDEN = 403;
         public const int SC_NOT_FOUND = 404;
+        public const int SC_METHOD_NOT_ALLOWED = 405;
+        public const int SC_NOT_ACCEPTABLE = 406;
+        public const int SC_PROXY_AUTHENTICATION_REQUIRED = 407;
+        public const int SC_REQUEST_TIMEOUT = 408;
+        public const int SC_CONFLICT = 409;
+        public const int SC_GONE = 410;
+        public const int SC_LENGTH_REQUIRED = 411;
+        public const int SC_PRECONDITION_FAILED = 412;
+        public const int SC_REQUEST_ENTITY_TOO_LARGE = 413;
+        public const int SC_REQUEST_URI_TOO_LONG = 414;
+        public const int SC_UNSUPPORTED_MEDIA_TYPE = 415;
+        public const int SC_REQUESTED_RANGE_NOT_SATISFIABLE = 416;
+        public const int SC_EXPECTATION_FAILED = 417;
+
         public const int SC_INTERNAL_SERVER_ERROR = 500;
-        public const int SC_TIMEOUT = 504;
+        public const int SC_NOT_IMPLEMENTED = 501;
+        public const int SC_BAD_GATEWAY = 502;
+        public const int SC_SERVICE_UNAVAILABLE = 503;
+        public const int SC_GATEWAY_TIMEOUT = 504;
+        public const int SC_HTTP_VERSION_NOT_SUPPORTED = 505;
 
         // These content types can always skip encoding detection.
         private static readonly List<string> BINARY_CONTENT_TYPES = new List<string>()
@@ -75,9 +111,9 @@ namespace Pesta.Engine.gadgets.http
 
         internal const String DEFAULT_ENCODING = "UTF-8";
 
-        private static long negativeCacheTtl = DEFAULT_NEGATIVE_CACHE_TTL;
+        private const long negativeCacheTtl = DEFAULT_NEGATIVE_CACHE_TTL;
 
-        private static long defaultTtl = DEFAULT_TTL;
+        private const long defaultTtl = DEFAULT_TTL;
 
         public readonly byte[] responseBytes;
         public String responseString = "";
@@ -108,7 +144,10 @@ namespace Pesta.Engine.gadgets.http
             headers = headerCopy;
             encoding = getAndUpdateEncoding(headerCopy, responseBytes);
             Encoding encoder = Encoding.GetEncoding(encoding);
+            if (responseBytes != null)
+            {
             responseString = encoder.GetString(responseBytes);
+            }
 
             // Strip BOM if present
             if (responseString.Length > 0 && responseString[0] == 0xFEFF)
@@ -117,7 +156,34 @@ namespace Pesta.Engine.gadgets.http
             }
         }
 
-        
+        private sResponse(int httpStatusCode, String body)
+            : this(new HttpResponseBuilder()
+                      .setHttpStatusCode(httpStatusCode)
+                      .setResponseString(body))
+        {
+    
+        }
+
+        public sResponse(String body)
+                : this(SC_OK, body)
+        {
+
+        }
+
+        public static sResponse error()
+        {
+            return new sResponse(SC_INTERNAL_SERVER_ERROR, "");
+        }
+
+        public static sResponse timeout()
+        {
+            return new sResponse(SC_GATEWAY_TIMEOUT, "");
+        }
+
+        public static sResponse notFound()
+        {
+            return new sResponse(SC_NOT_FOUND, "");
+        }
 
         public int getHttpStatusCode()
         {
@@ -149,7 +215,7 @@ namespace Pesta.Engine.gadgets.http
             string[] retv = headers.GetValues(name);
             if (retv == null)
             {
-                return new string[1] { "" };
+                return new[] { "" };
             }
             return retv;
         }
@@ -304,6 +370,14 @@ namespace Pesta.Engine.gadgets.http
         }
 
         /**
+         * @return True if this result is stale.
+         */
+        public bool isStale()
+        {
+            return getCacheTtl() <= 0;
+        }
+
+        /**
        * @return True if the status code is considered to be an error.
        */
         public bool isError()
@@ -316,6 +390,10 @@ namespace Pesta.Engine.gadgets.http
         */
         public bool isStrictNoCache()
         {
+            if (isError() && !NEGATIVE_CACHING_EXEMPT_STATUS.Contains(httpStatusCode))
+            {
+                return true;
+            }
             string cacheControl = getHeader("Cache-Control");
             if (!string.IsNullOrEmpty(cacheControl))
             {

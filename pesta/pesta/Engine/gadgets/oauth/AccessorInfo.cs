@@ -18,6 +18,7 @@
  */
 #endregion
 
+using System;
 using Pesta.Interop.oauth;
 
 namespace Pesta.Engine.gadgets.oauth
@@ -48,18 +49,22 @@ namespace Pesta.Engine.gadgets.oauth
         private readonly OAuthAccessor accessor;
         private readonly OAuthStore.ConsumerInfo consumer;
         private readonly HttpMethod httpMethod;
-        private readonly OAuthParamLocation paramLocation;
+        private readonly OAuthParamLocation? paramLocation;
+        private String sessionHandle;
+        private long tokenExpireMillis;
 
         public AccessorInfo(OAuthAccessor accessor, OAuthStore.ConsumerInfo consumer, HttpMethod httpMethod,
-                            OAuthParamLocation paramLocation)
+                            OAuthParamLocation? paramLocation, String sessionHandle, long tokenExpireMillis)
         {
             this.accessor = accessor;
             this.consumer = consumer;
             this.httpMethod = httpMethod;
             this.paramLocation = paramLocation;
+            this.sessionHandle = sessionHandle;
+            this.tokenExpireMillis = tokenExpireMillis;
         }
 
-        public OAuthParamLocation getParamLocation()
+        public OAuthParamLocation? getParamLocation()
         {
             return paramLocation;
         }
@@ -77,6 +82,26 @@ namespace Pesta.Engine.gadgets.oauth
         public HttpMethod getHttpMethod()
         {
             return httpMethod;
+        }
+
+        public String getSessionHandle()
+        {
+            return sessionHandle;
+        }
+
+        public void setSessionHandle(String _sessionHandle)
+        {
+            sessionHandle = _sessionHandle;
+        }
+
+        public long getTokenExpireMillis()
+        {
+            return tokenExpireMillis;
+        }
+
+        public void setTokenExpireMillis(long _tokenExpireMillis)
+        {
+            tokenExpireMillis = _tokenExpireMillis;
         }
     }
 }

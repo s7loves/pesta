@@ -21,7 +21,7 @@
 using System;
 using System.Collections.Generic;
 using Pesta.Engine.auth;
-using Pesta.Interop;
+using Pesta.Utilities;
 
 namespace Pesta.Engine.social.spi
 {

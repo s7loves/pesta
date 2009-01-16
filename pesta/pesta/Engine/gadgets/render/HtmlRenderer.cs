@@ -18,7 +18,10 @@
  */
 #endregion
 using System;
+using System.Collections.Generic;
 using System.Net;
+using System.Text;
+using Jayrock.Json;
 using Pesta.Engine.gadgets.http;
 using Pesta.Engine.gadgets.oauth;
 using Pesta.Engine.gadgets.preload;
@@ -30,15 +33,15 @@ namespace Pesta.Engine.gadgets.render
 {
     public class HtmlRenderer
     {
-        private readonly ContentFetcherFactory fetcher;
+        private readonly RequestPipeline requestPipeline;
         private readonly PreloaderService preloader;
         private readonly ContentRewriterRegistry rewriter;
 
         public HtmlRenderer() 
         {
-            this.fetcher = ContentFetcherFactory.Instance;
-            this.preloader = new ConcurrentPreloaderService();
-            this.rewriter = DefaultContentRewriterRegistry.Instance;
+            requestPipeline = DefaultRequestPipeline.Instance;
+            preloader = new ConcurrentPreloaderService();
+            rewriter = DefaultContentRewriterRegistry.Instance;
         }
 
         /**
@@ -62,12 +65,14 @@ namespace Pesta.Engine.gadgets.render
                 GadgetContext context = gadget.getContext();
                 GadgetSpec spec = gadget.getSpec();
 
-                Preloads preloads = preloader.preload(context, spec);
+                Preloads preloads = preloader.preload(context, spec,
+                                PreloaderService.PreloadPhase.HTML_RENDER);
                 gadget.setPreloads(preloads);
+                String content;
 
                 if (view.getHref() == null) 
                 {
-                    return rewriter.rewriteGadget(gadget, view.getContent());
+                    content = view.getContent();
                 } 
                 else
                 {
@@ -83,19 +88,79 @@ namespace Pesta.Engine.gadgets.render
                         .setSecurityToken(context.getToken())
                         .setContainer(context.getContainer())
                         .setGadget(spec.getUrl());
-                    sResponse response = fetcher.fetch(request);
-                    if (response.getHttpStatusCode() != (int)HttpStatusCode.OK)
+                    sResponse response = DefaultHttpCache.Instance.getResponse(request);
+
+                    if (response == null || response.isStale())
+                    {
+                        sRequest proxyRequest = createPipelinedProxyRequest(gadget, request);
+                        response = requestPipeline.execute(proxyRequest);
+                        DefaultHttpCache.Instance.addResponse(request, response);
+                    }
+
+                    if (response.isError())
                     {
                         throw new RenderingException("Unable to reach remote host. HTTP status " +
                                                      response.getHttpStatusCode());
                     }
-                    return rewriter.rewriteGadget(gadget, response.responseString);
-                }   
+                    content = response.responseString;
+
+                }
+
+                return rewriter.rewriteGadget(gadget, content);
             }
             catch (GadgetException e)
             {
                 throw new RenderingException(e.Message, e);
             }
         }
+        /**
+        * Creates a proxy request by fetching pipelined data and adding it to an existing request.
+        *
+        */
+        private sRequest createPipelinedProxyRequest(Gadget gadget, sRequest original) 
+        {
+            sRequest request = new sRequest(original);
+            request.setIgnoreCache(true);
+            GadgetSpec spec = gadget.getSpec();
+            GadgetContext context = gadget.getContext();
+            Preloads proxyPreloads = preloader.preload(context, spec,
+                                PreloaderService.PreloadPhase.PROXY_FETCH);
+            // TODO: Add current url to GadgetContext to support transitive proxying.
+
+            // POST any preloaded content
+            if ((proxyPreloads != null) && proxyPreloads.getData().Count != 0) 
+            {
+                JsonArray array = new JsonArray();
+
+                foreach(PreloadedData preload in proxyPreloads.getData()) 
+                {
+                    try 
+                    {
+                      Dictionary<String, Object> dataMap = preload.toJson();
+                      foreach(var entry in dataMap) 
+                      {
+                        // TODO: the existing, supported content is JSONObjects that contain the
+                        // key already.  Discarding the key is odd.
+                        array.Put(entry.Value);
+                      }
+                    } 
+                    catch (PreloadException pe)
+                    {
+                      // TODO: Determine whether this is a terminal path for the request. The spec is not
+                      // clear.
+                      // logger.log(Level.WARNING, "Unexpected error when preloading", pe);
+                    }
+                }
+
+                String postContent = array.ToString();
+                // POST the preloaded content, with a method override of GET
+                // to enable caching
+                request.setMethod("POST")
+                  .setPostBody(Encoding.UTF8.GetBytes(postContent))
+                  .setHeader("Content-Type", "text/json;charset=utf-8");
+            }
+            return request;
+        }
+
     }
 }

@@ -21,6 +21,7 @@ using System;
 using System.Web;
 using System.Net;
 using System.Text;
+using Pesta.Engine.gadgets;
 using Pesta.Engine.gadgets.http;
 using Pesta.Engine.gadgets.servlet;
 
@@ -70,16 +71,46 @@ namespace Pesta.Handlers
                 {
                     wrapper.Write(Encoding.UTF8.GetBytes("/* ---- Start " + url + " ---- */"));
                     proxyHandler.fetch(new RequestWrapper(context, url, true), wrapper);
+                    if (wrapper.getStatus() != (int)HttpStatusCode.OK)
+                    {
+                        wrapper.Write(Encoding.UTF8.GetBytes(
+                            formatHttpError(wrapper.getStatus(), wrapper.getErrorMessage())));
+                    }
+
                     wrapper.Write(Encoding.UTF8.GetBytes("/* ---- End " + url + " ---- */"));
                 }
-                catch (Exception ex)
+                catch (GadgetException ge)
                 {
-                    outputError(ex, url, response);
-                    return;
+                    if (ge.getCode() != GadgetException.Code.FAILED_TO_RETRIEVE_CONTENT)
+                    {
+                        outputError(ge, url, response);
+                        return;
+                    }
+                    else
+                    {
+                        wrapper.Write(Encoding.UTF8.GetBytes("/* ---- End " + url + " 404 ---- */"));
+                    }
+
                 }
             }
             response.End();
         }
+
+        private String formatHttpError(int status, String errorMessage)
+        {
+            StringBuilder err = new StringBuilder();
+            err.Append("/* ---- Error ");
+            err.Append(status);
+            if (errorMessage != null)
+            {
+                err.Append(", ");
+                err.Append(errorMessage);
+            }
+
+            err.Append(" ---- */");
+            return err.ToString();
+        }
+
 
         private class RequestWrapper : HttpRequestWrapper
         {

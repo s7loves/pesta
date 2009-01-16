@@ -5,7 +5,7 @@ using System.Linq;
 using Pesta.Engine.social.core.model;
 using Pesta.Engine.social.model;
 using Pesta.Engine.social.spi;
-using Pesta.Interop;
+using Pesta.Utilities;
 
 namespace Pesta.DataAccess
 {
@@ -16,7 +16,7 @@ namespace Pesta.DataAccess
         protected PartuzaDbFetcher()
         {
             _db = new LinqRayaDataContext(ConfigurationManager.ConnectionStrings["rayaConnectionString"].ConnectionString);
-            url_prefix = "http://localhost:22518";
+            url_prefix = PestaSettings.ContainerUrlPrefix;
         }
         public static PartuzaDbFetcher get()
         {

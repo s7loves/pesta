@@ -20,7 +20,7 @@
 using System;
 using System.Collections.Generic;
 using Jayrock.Json;
-using Pesta.Interop;
+using Pesta.Utilities;
 using URI = System.Uri;
 
 namespace Pesta.Engine.gadgets.servlet

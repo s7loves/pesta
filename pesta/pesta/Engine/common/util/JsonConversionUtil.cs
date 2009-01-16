@@ -22,7 +22,7 @@ using System.Collections.Specialized;
 using System.Text.RegularExpressions;
 using Jayrock.Json;
 using System.Web;
-using Pesta.Interop;
+using Pesta.Utilities;
 
 namespace Pesta.Engine.common.util
 {
@@ -45,10 +45,10 @@ namespace Pesta.Engine.common.util
             //String methodName = request.getPathInfo().replaceAll("/", "");
             JsonObject root = new JsonObject();
             NameValueCollection parameters = request.Params;
-            root.Put("method", parameters["method"][0]);
+            root.Put("method", parameters["method"]);
             if (!string.IsNullOrEmpty(parameters.Get("id")))
             {
-                root.Put("id", parameters["id"][0]);
+                root.Put("id", parameters["id"]);
             }
             JsonObject paramsRoot = new JsonObject();
             for (int i = 0; i < parameters.Count; i++)

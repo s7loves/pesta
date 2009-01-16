@@ -36,18 +36,22 @@
     <Reference Include="IKVM.OpenJDK.ClassLibrary, Version=0.38.0.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\..\ikvm\ikvm-0.38.0.0\bin\IKVM.OpenJDK.ClassLibrary.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="IKVM.Runtime, Version=0.38.0.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\..\ikvm\ikvm-0.38.0.0\bin\IKVM.Runtime.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="IKVM.Runtime.JNI, Version=0.38.0.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\..\ikvm\ikvm-0.38.0.0\bin\IKVM.Runtime.JNI.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="shindig, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\..\ikvm\ikvm-0.38.0.0\bin\shindig.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -102,8 +106,7 @@
     <Compile Include="Engine\gadgets\GadgetSpecFactory.cs" />
     <Compile Include="Engine\gadgets\HashLockedDomainService.cs" />
     <Compile Include="Engine\gadgets\http\BasicHttpFetcher.cs" />
-    <Compile Include="Engine\gadgets\http\ContentFetcherFactory.cs" />
-    <Compile Include="Engine\gadgets\http\HttpCache.cs" />
+    <Compile Include="Engine\gadgets\http\DefaultHttpCache.cs" />
     <Compile Include="Engine\gadgets\http\HttpCacheKey.cs" />
     <Compile Include="Engine\gadgets\http\HttpFetcher.cs" />
     <Compile Include="Engine\gadgets\http\HttpRequestWrapper.cs" />
@@ -126,9 +129,7 @@
     <Compile Include="Engine\gadgets\oauth\OAuthArguments.cs" />
     <Compile Include="Engine\gadgets\oauth\OAuthClientState.cs" />
     <Compile Include="Engine\gadgets\oauth\OAuthError.cs" />
-    <Compile Include="Engine\gadgets\oauth\OAuthFetcher.cs" />
     <Compile Include="Engine\gadgets\oauth\OAuthFetcherConfig.cs" />
-    <Compile Include="Engine\gadgets\oauth\OAuthFetcherFactory.cs" />
     <Compile Include="Engine\gadgets\oauth\OAuthProtocolException.cs" />
     <Compile Include="Engine\gadgets\oauth\OAuthResponseParams.cs" />
     <Compile Include="Engine\gadgets\oauth\OAuthStore.cs" />
@@ -174,9 +175,9 @@
     <Compile Include="Engine\gadgets\UrlGenerator.cs" />
     <Compile Include="Engine\gadgets\variables\UserPrefSubstituter.cs" />
     <Compile Include="Handlers\PestaHandlerFactory.cs" />
-    <Compile Include="Interop\CustomAttr.cs" />
-    <Compile Include="Interop\EnumBaseType.cs" />
-    <Compile Include="Interop\HashKey.cs" />
+    <Compile Include="Utilities\CustomAttr.cs" />
+    <Compile Include="Utilities\EnumBaseType.cs" />
+    <Compile Include="Utilities\HashKey.cs" />
     <Compile Include="Interop\jayrock.json\BooleanObject.cs" />
     <Compile Include="Interop\jayrock.json\collections\KeyedCollection.cs" />
     <Compile Include="Interop\jayrock.json\Compat.cs" />
@@ -336,6 +337,10 @@
     <Content Include="Interop\jayrock.json\COPYING.txt" />
     <Content Include="LICENSE.txt" />
     <Content Include="NOTICE.txt" />
+    <EmbeddedResource Include="Resources\features\caja\domita.js" />
+    <EmbeddedResource Include="Resources\features\caja\domita.opt.js" />
+    <EmbeddedResource Include="Resources\features\core\html-sanitizer.js" />
+    <EmbeddedResource Include="Resources\features\core\html-sanitizer.opt.js" />
     <EmbeddedResource Include="Resources\features\auth-refresh\auth-refresh.opt.js" />
     <EmbeddedResource Include="Resources\features\core.io\io.opt.js" />
     <EmbeddedResource Include="Resources\features\core.io\iotest.opt.js" />
@@ -435,11 +440,18 @@
     <Compile Include="Engine\common\JsonContainerConfig.cs" />
     <Compile Include="Engine\common\uri\Uri.cs" />
     <Compile Include="Engine\common\uri\UriBuilder.cs" />
+    <Compile Include="Engine\common\xml\DomUtil.cs" />
     <Compile Include="Engine\gadgets\BasicGadgetBlacklist.cs" />
     <Compile Include="Engine\gadgets\FeedProcessor.cs" />
     <Compile Include="Engine\gadgets\FetchResponseUtils.cs" />
     <Compile Include="Engine\gadgets\GadgetBlacklist.cs" />
+    <Compile Include="Engine\gadgets\http\AbstractHttpCache.cs" />
+    <Compile Include="Engine\gadgets\http\DefaultRequestPipeline.cs" />
+    <Compile Include="Engine\gadgets\http\HttpCache.cs" />
+    <Compile Include="Engine\gadgets\http\RequestPipeline.cs" />
     <Compile Include="Engine\gadgets\oauth\OAuthModule.cs" />
+    <Compile Include="Engine\gadgets\oauth\OAuthRequest.cs" />
+    <Compile Include="Engine\gadgets\oauth\OAuthUtil.cs" />
     <Compile Include="Engine\gadgets\preload\ConcurrentPreloaderService.cs" />
     <Compile Include="Engine\gadgets\preload\ConcurrentPreloads.cs" />
     <Compile Include="Engine\gadgets\preload\HttpPreloader.cs" />
@@ -473,7 +485,41 @@
     <Compile Include="Handlers\OAuthCallbackServlet.cs" />
     <Compile Include="Handlers\ProxyServlet.cs" />
     <Compile Include="Handlers\RpcServlet.cs" />
-    <Compile Include="Interop\Locale.cs" />
+    <Compile Include="Interop\HtmlAgilityPack\crc32.cs" />
+    <Compile Include="Interop\HtmlAgilityPack\EncodingFoundException.cs" />
+    <Compile Include="Interop\HtmlAgilityPack\HtmlAttribute.cs" />
+    <Compile Include="Interop\HtmlAgilityPack\HtmlAttributeCollection.cs" />
+    <Compile Include="Interop\HtmlAgilityPack\HtmlCmdLine.cs" />
+    <Compile Include="Interop\HtmlAgilityPack\HtmlCommentNode.cs" />
+    <Compile Include="Interop\HtmlAgilityPack\HtmlConsoleListener.cs" />
+    <Compile Include="Interop\HtmlAgilityPack\HtmlDocument.cs" />
+    <Compile Include="Interop\HtmlAgilityPack\HtmlElementFlag.cs" />
+    <Compile Include="Interop\HtmlAgilityPack\HtmlEntity.cs" />
+    <Compile Include="Interop\HtmlAgilityPack\HtmlNameTable.cs" />
+    <Compile Include="Interop\HtmlAgilityPack\HtmlNode.cs" />
+    <Compile Include="Interop\HtmlAgilityPack\HtmlNodeCollection.cs" />
+    <Compile Include="Interop\HtmlAgilityPack\HtmlNodeNavigator.cs" />
+    <Compile Include="Interop\HtmlAgilityPack\HtmlNodeType.cs" />
+    <Compile Include="Interop\HtmlAgilityPack\HtmlParseError.cs" />
+    <Compile Include="Interop\HtmlAgilityPack\HtmlParseErrorCode.cs" />
+    <Compile Include="Interop\HtmlAgilityPack\HtmlTextNode.cs" />
+    <Compile Include="Interop\HtmlAgilityPack\HtmlWeb.cs" />
+    <Compile Include="Interop\HtmlAgilityPack\HtmlWebException.cs" />
+    <Compile Include="Interop\HtmlAgilityPack\IOLibrary.cs" />
+    <Compile Include="Interop\HtmlAgilityPack\MixedCodeDocument.cs" />
+    <Compile Include="Interop\HtmlAgilityPack\MixedCodeDocumentCodeFragment.cs" />
+    <Compile Include="Interop\HtmlAgilityPack\MixedCodeDocumentFragment.cs" />
+    <Compile Include="Interop\HtmlAgilityPack\MixedCodeDocumentFragmentList.cs" />
+    <Compile Include="Interop\HtmlAgilityPack\MixedCodeDocumentFragmentType.cs" />
+    <Compile Include="Interop\HtmlAgilityPack\MixedCodeDocumentTextFragment.cs" />
+    <Compile Include="Interop\HtmlAgilityPack\NameValuePair.cs" />
+    <Compile Include="Interop\HtmlAgilityPack\NameValuePairList.cs" />
+    <Compile Include="Interop\oauth\Constants.cs" />
+    <Compile Include="Interop\oauth\Rfc3986.cs" />
+    <Compile Include="Utilities\ASPNETMVC\HttpCompressionModule.cs" />
+    <Compile Include="Utilities\ASPNETMVC\StaticFileHandler.cs" />
+    <Compile Include="Utilities\Locale.cs" />
+    <Compile Include="Utilities\Provider.cs" />
     <Compile Include="Utilities\UnixTime.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
