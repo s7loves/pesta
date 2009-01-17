@@ -18,10 +18,18 @@
  */
 
 {
-  "http://localhost:8080/gadgets/files/samplecontainer/examples/oauth.xml" : {
+  "http://localhost:8702/gadgets/files/samplecontainer/examples/oauth.xml" : {
     "" : {
       "consumer_key" : "gadgetConsumer",
       "consumer_secret" : "gadgetSecret",
+      "key_type" : "HMAC_SYMMETRIC"
+    }
+  },
+  
+  "http://localhost:22518/html/gadgets/oauthtest.xml" : {
+    "google" : {
+      "consumer_key" : "my6solutions.com",
+      "consumer_secret" : "WjbzTy7PK3eZpoTDiROOmzAO",
       "key_type" : "HMAC_SYMMETRIC"
     }
   }
