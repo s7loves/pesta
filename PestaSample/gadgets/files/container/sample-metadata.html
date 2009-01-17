@@ -50,15 +50,11 @@
     for (var lib in features) {libs.push(lib);}
     libs.sort();
     libs = libs.join(":");
-    for (var i = 0, gadget; gadget = gadgetList[i]; ++i) 
-    {
+    for (var i = 0, gadget; gadget = gadgetList[i]; ++i) {
       var newGadget = document.createElement("div");
-      if (gadget.errors) 
-      {
-        newGadget.innerHTML = ["Unable to process gadget: ", gadget.url, ". Errors: <pre>", (gadget.errors).join("\n"), "</pre>"].join("");
-      } 
-      else 
-      {
+      if (gadget.errors && gadget.errors.length > 0) {
+        newGadget.innerHTML = ["Unable to process gadget: ", gadget.url, ". Errors: <pre>", gadget.errors.join("\n"), "</pre>"].join("");
+      } else {
         newGadget.innerHTML = ['<h2>', gadget.title, '</h2>',
           '<iframe src="', gadget.iframeUrl, '&libs=', libs ,'" id="remote_iframe_', gadget.moduleId, '" name="remote_iframe_', gadget.moduleId, '"></iframe>'
         ].join("");
