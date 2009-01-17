@@ -44,7 +44,7 @@
 
 // Container must be an array; this allows multiple containers
 // to share configuration.
-{"gadgets.container" : ["default"],
+{"gadgets.container" : ["default", "partuza"],
 
 // Set of regular expressions to validate the parent parameter. This is
 // necessary to support situations where you want a single container to support
@@ -60,6 +60,24 @@
 // DNS domain on which gadgets should render.
 "gadgets.lockedDomainSuffix" : "-a.example.com:8080",
 
+// Various urls generated throughout the code base.
+// iframeBaseUri will automatically have the host inserted
+// if locked domain is enabled and the implementation supports it.
+// query parameters will be added.
+"gadgets.iframeBaseUri" : "/PestaSample/gadgets/ifr.ashx",
+
+// jsUriTemplate will have localhost:8702/PestaSample and %js% substituted.
+// No locked domain special cases, but jsUriTemplate must
+// never conflict with a lockedDomainSuffix.
+"gadgets.jsUriTemplate" : "http://localhost:8702/PestaSample/gadgets/js/%js%",
+
+// Use an insecure security token by default
+"gadgets.securityTokenType" : "insecure",
+
+// Uncomment these to switch to a secure version
+// 
+//"gadgets.securityTokenType" : "secure",
+//"gadgets.securityTokenKeyFile" : "/path/to/key/file.txt",
 // This config data will be passed down to javascript. Please
 // configure your object using the feature name rather than
 // the javascript name.
@@ -69,18 +87,18 @@
 "gadgets.features" : {
   "core.io" : {
     // Note: /proxy is an open proxy. Be careful how you expose this!
-    "proxyUrl" : "proxy.ashx?refresh=%refresh%&url=%url%",
-    "jsonProxyUrl" : "makeRequest.ashx"
+    "proxyUrl" : "http://localhost:8702/PestaSample/gadgets/proxy.ashx?refresh=%refresh%&url=%url%",
+    "jsonProxyUrl" : "http://localhost:8702/PestaSample/gadgets/makeRequest.ashx"
   },
   "views" : {
     "profile" : {
       "isOnlyVisible" : false,
-      "urlTemplate" : "http://localhost/gadgets/profile?{var}",
+      "urlTemplate" : "http://localhost:8702/PestaSample/gadgets/profile.ashx?{var}",
       "aliases": ["DASHBOARD", "default"]
     },
     "canvas" : {
       "isOnlyVisible" : true,
-      "urlTemplate" : "http://localhost/gadgets/canvas?{var}",
+      "urlTemplate" : "http://localhost:8702/PestaSample/gadgets/canvas.ashx?{var}",
       "aliases" : ["FULL_PAGE"]
     }
   },
@@ -110,7 +128,7 @@
     // Path to fetch opensocial data from
     // Must be on the same domain as the gadget rendering server
     "impl" : "rpc",  //Use "rpc" to enable JSON-RPC, "rest' for REST
-    "path" : "social",
+    "path" : "http://localhost:8702/PestaSample/social",
     "domain" : "shindig",
     "enableCaja" : false,
     "supportedFields" : {
