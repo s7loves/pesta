@@ -105,7 +105,7 @@ namespace Pesta.DataAccess
         }
 
         public RestfulCollection<Activity> getActivities(HashSet<UserId> userIds, GroupId groupId,
-                                                         String appId, HashSet<String> fields, SecurityToken token)
+                                                         String appId, HashSet<String> fields, ISecurityToken token)
         {
             List<Activity> result = new List<Activity>();
             try
@@ -139,7 +139,7 @@ namespace Pesta.DataAccess
         }
 
         public RestfulCollection<Activity> getActivities(UserId userId, GroupId groupId, String appId,
-                                                         HashSet<String> fields, HashSet<String> activityIds, SecurityToken token)
+                                                         HashSet<String> fields, HashSet<String> activityIds, ISecurityToken token)
         {
             List<Activity> result = new List<Activity>();
             try
@@ -167,7 +167,7 @@ namespace Pesta.DataAccess
         }
 
         public Activity getActivity(UserId userId,
-                                    GroupId groupId, String appId, HashSet<String> fields, String activityId, SecurityToken token)
+                                    GroupId groupId, String appId, HashSet<String> fields, String activityId, ISecurityToken token)
         {
             try
             {
@@ -194,7 +194,7 @@ namespace Pesta.DataAccess
         }
 
         public void deleteActivities(UserId userId, GroupId groupId, String appId,
-                                     HashSet<String> activityIds, SecurityToken token)
+                                     HashSet<String> activityIds, ISecurityToken token)
         {
             try
             {
@@ -229,7 +229,7 @@ namespace Pesta.DataAccess
         }
 
         public void createActivity(UserId userId, GroupId groupId, String appId,
-                                   HashSet<String> fields, Activity activity, SecurityToken token)
+                                   HashSet<String> fields, Activity activity, ISecurityToken token)
         {
             // Are fields really needed here?
             try
@@ -254,7 +254,7 @@ namespace Pesta.DataAccess
         }
 
         public override RestfulCollection<Person> getPeople(HashSet<UserId> userIds, GroupId groupId,
-                                                            CollectionOptions options, HashSet<String> fields, SecurityToken token)
+                                                            CollectionOptions options, HashSet<String> fields, ISecurityToken token)
         {
             List<Person> result = new List<Person>();
             try
@@ -300,7 +300,7 @@ namespace Pesta.DataAccess
             }
         }
 
-        public override Person getPerson(UserId id, HashSet<String> fields, SecurityToken token)
+        public override Person getPerson(UserId id, HashSet<String> fields, ISecurityToken token)
         {
             try
             {
@@ -323,7 +323,7 @@ namespace Pesta.DataAccess
         }
 
         public DataCollection getPersonData(HashSet<UserId> userIds, GroupId groupId,
-                                            String appId, HashSet<String> fields, SecurityToken token)
+                                            String appId, HashSet<String> fields, ISecurityToken token)
         {
             try
             {
@@ -366,7 +366,7 @@ namespace Pesta.DataAccess
             }
         }
 
-        public void deletePersonData(UserId userId, GroupId groupId, String appId, HashSet<String> fields, SecurityToken token)
+        public void deletePersonData(UserId userId, GroupId groupId, String appId, HashSet<String> fields, ISecurityToken token)
         {
             try
             {
@@ -394,7 +394,7 @@ namespace Pesta.DataAccess
         }
 
         public void updatePersonData(UserId userId, GroupId groupId, String appId,
-                                     HashSet<String> fields, Dictionary<String, String> values, SecurityToken token)
+                                     HashSet<String> fields, Dictionary<String, String> values, ISecurityToken token)
         {
             // TODO: this seems redundant. No need to pass both fields and a map of field->value
             // TODO: According to rest, yes there is. If a field is in the param list but not in the map
@@ -423,7 +423,7 @@ namespace Pesta.DataAccess
         /**
         * Get the set of user id's from a user and group
         */
-        private HashSet<String> getIdSet(UserId user, GroupId group, SecurityToken token)
+        private HashSet<String> getIdSet(UserId user, GroupId group, ISecurityToken token)
         {
             String userId = user.getUserId(token);
 
@@ -457,7 +457,7 @@ namespace Pesta.DataAccess
         /**
         * Get the set of user id's for a set of users and a group
         */
-        private HashSet<String> getIdSet(HashSet<UserId> users, GroupId group, SecurityToken token)
+        private HashSet<String> getIdSet(HashSet<UserId> users, GroupId group, ISecurityToken token)
         {
             HashSet<String> ids = new HashSet<string>();
             foreach (UserId user in users)

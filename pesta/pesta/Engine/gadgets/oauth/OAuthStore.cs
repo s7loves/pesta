@@ -108,7 +108,7 @@ namespace Pesta.Engine.gadgets.oauth
         * 
         * @throws GadgetException if no OAuth consumer can be found (e.g. no consumer key can be used.)
         */
-        public abstract ConsumerInfo getConsumerKeyAndSecret(SecurityToken securityToken, String serviceName,
+        public abstract ConsumerInfo getConsumerKeyAndSecret(ISecurityToken securityToken, String serviceName,
                                                              OAuthServiceProvider provider);
 
         /**
@@ -120,19 +120,19 @@ namespace Pesta.Engine.gadgets.oauth
         * @return the token and secret, or null if none exist
         * @throws GadgetException if an error occurs during lookup
         */
-        public abstract TokenInfo getTokenInfo(SecurityToken securityToken, ConsumerInfo consumerInfo,
+        public abstract TokenInfo getTokenInfo(ISecurityToken securityToken, ConsumerInfo consumerInfo,
                                                String serviceName, String tokenName);
 
         /**
         * Set the access token for the given user/gadget/service/token
         */
-        public abstract void setTokenInfo(SecurityToken securityToken, ConsumerInfo consumerInfo, String serviceName,
+        public abstract void setTokenInfo(ISecurityToken securityToken, ConsumerInfo consumerInfo, String serviceName,
                                           String tokenName, TokenInfo tokenInfo);
 
         /**
         * Remove the access token for the given user/gadget/service/token
         */
-        public abstract void removeToken(SecurityToken securityToken, ConsumerInfo consumerInfo,
+        public abstract void removeToken(ISecurityToken securityToken, ConsumerInfo consumerInfo,
                                          String serviceName, String tokenName);
     }
 }

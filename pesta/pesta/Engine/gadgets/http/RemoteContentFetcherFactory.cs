@@ -30,14 +30,14 @@ namespace Pesta.Engine.gadgets.http
     /// </remarks>
     public class RemoteContentFetcherFactory
     {
-        private HttpFetcher fetcher;
+        private IHttpFetcher fetcher;
         public readonly static RemoteContentFetcherFactory Instance = new RemoteContentFetcherFactory();
         protected RemoteContentFetcherFactory()
         {
             this.fetcher = BasicHttpFetcher.Instance;
         }
 
-        public HttpFetcher get()
+        public IHttpFetcher get()
         {
             return fetcher;
         }

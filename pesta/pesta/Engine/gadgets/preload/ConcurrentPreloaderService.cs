@@ -29,13 +29,12 @@ namespace Pesta.Engine.gadgets.preload
         /// <summary>
         /// Initializes a new instance of the ConcurrentPreloaderService class.
         /// </summary>
-        /// <param name="preloaders"></param>
         public ConcurrentPreloaderService()
         {
             this.preloaders.Add(new HttpPreloader());
         }
 
-        public override Preloads preload(GadgetContext context, GadgetSpec gadget, PreloadPhase phase)
+        public override IPreloads preload(GadgetContext context, GadgetSpec gadget, PreloadPhase phase)
         {
             if (preloaders.Count == 0)
             {

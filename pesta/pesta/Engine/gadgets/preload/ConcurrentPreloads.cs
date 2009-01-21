@@ -4,7 +4,7 @@ using System.Runtime.Remoting.Messaging;
 
 namespace Pesta.Engine.gadgets.preload
 {
-    public class ConcurrentPreloads : Preloads
+    public class ConcurrentPreloads : IPreloads
     {
         private readonly List<IAsyncResult> tasks;
 

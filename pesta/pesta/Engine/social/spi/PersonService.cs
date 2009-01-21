@@ -80,7 +80,7 @@ namespace Pesta.Engine.social.spi
          * @param token The gadget token @return a list of people.
          */
         abstract public RestfulCollection<Person> getPeople(HashSet<UserId> userIds, GroupId groupId,
-                                                            CollectionOptions collectionOptions, HashSet<String> fields, SecurityToken token);
+                                                            CollectionOptions collectionOptions, HashSet<String> fields, ISecurityToken token);
 
         /**
          * Returns a person that corresponds to the passed in person id.
@@ -90,6 +90,6 @@ namespace Pesta.Engine.social.spi
          * @param token The gadget token
          * @return a list of people.
          */
-        abstract public Person getPerson(UserId id, HashSet<String> fields, SecurityToken token);
+        abstract public Person getPerson(UserId id, HashSet<String> fields, ISecurityToken token);
     }
 }

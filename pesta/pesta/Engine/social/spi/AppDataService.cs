@@ -44,7 +44,7 @@ namespace Pesta.Engine.social.spi
        * @return The data fetched
        */
         DataCollection getPersonData(HashSet<UserId> userIds, GroupId groupId,
-                                     String appId, HashSet<String> fields, SecurityToken token);
+                                     String appId, HashSet<String> fields, ISecurityToken token);
 
         /**
          * Deletes data for the specified user and group.
@@ -57,7 +57,7 @@ namespace Pesta.Engine.social.spi
          * @return an error if one occurs
          */
         void deletePersonData(UserId userId, GroupId groupId,
-                              String appId, HashSet<String> fields, SecurityToken token);
+                              String appId, HashSet<String> fields, ISecurityToken token);
 
         /**
          * Updates app data for the specified user and group with the new values.
@@ -71,6 +71,6 @@ namespace Pesta.Engine.social.spi
          * @return an error if one occurs
          */
         void updatePersonData(UserId userId, GroupId groupId,
-                              String appId, HashSet<String> fields, Dictionary<String, String> values, SecurityToken token);
+                              String appId, HashSet<String> fields, Dictionary<String, String> values, ISecurityToken token);
     }
 }

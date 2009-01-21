@@ -48,7 +48,7 @@ namespace Pesta.Engine.auth
             return AUTH_URL_PARAMETER;
         }
 
-        public SecurityToken getSecurityTokenFromRequest(HttpRequest request)
+        public ISecurityToken getSecurityTokenFromRequest(HttpRequest request)
         {
             try
             {

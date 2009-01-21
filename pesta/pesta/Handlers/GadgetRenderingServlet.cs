@@ -37,7 +37,7 @@ namespace Pesta.Handlers
     /// </remarks>
     internal class GadgetRenderingServlet : IHttpHandler
     {
-        static readonly int DEFAULT_CACHE_TTL = 60 * 5;
+        static readonly int DEFAULT_CACHE_TTL = 300;  // seconds
         private Renderer renderer = new Renderer();
         private HttpContext _context;
 

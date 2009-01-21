@@ -35,7 +35,7 @@ namespace Pesta.Engine.gadgets
     {
         private GadgetContext context;
         private GadgetSpec spec;
-        private Preloads preloads;
+        private IPreloads preloads;
         private View currentView;
         /**
          * @param context The request that the gadget is being processed for.
@@ -68,13 +68,13 @@ namespace Pesta.Engine.gadgets
         /**
          * @param preloads The preloads for the gadget that is being processed.
          */
-        public Gadget setPreloads(Preloads preloads)
+        public Gadget setPreloads(IPreloads preloads)
         {
             this.preloads = preloads;
             return this;
         }
 
-        public Preloads getPreloads()
+        public IPreloads getPreloads()
         {
             return preloads;
         }

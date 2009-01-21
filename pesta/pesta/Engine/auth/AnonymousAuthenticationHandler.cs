@@ -47,7 +47,7 @@ namespace Pesta.Engine.auth
             return AUTH_UNAUTHENTICATED;
         }
 
-        public SecurityToken getSecurityTokenFromRequest(HttpRequest request)
+        public ISecurityToken getSecurityTokenFromRequest(HttpRequest request)
         {
             if (allowUnauthenticated)
             {

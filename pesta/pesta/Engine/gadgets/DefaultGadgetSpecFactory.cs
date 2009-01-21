@@ -36,7 +36,7 @@ namespace Pesta.Engine.gadgets
     ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
-    public class DefaultGadgetSpecFactory : GadgetSpecFactory
+    public class DefaultGadgetSpecFactory : IGadgetSpecFactory
     {
         public static readonly String CACHE_NAME = "gadgetSpecs";
         private const string RAW_GADGETSPEC_XML_PARAM_NAME = "rawxml";
@@ -44,7 +44,7 @@ namespace Pesta.Engine.gadgets
         private const string ERROR_SPEC = "<Module><ModulePrefs title='Error'/><Content/></Module>";
         private const string ERROR_KEY = "parse.exception";
 
-        private readonly HttpFetcher fetcher;
+        private readonly IHttpFetcher fetcher;
         //private readonly SoftExpiringCache<Uri, GadgetSpec> cache;
         private readonly long refresh;
 

@@ -57,7 +57,7 @@ namespace Pesta.Filters
                 HttpRequest request = app.Context.Request;
                 foreach (AuthenticationHandler handler in handlers)
                 {
-                    SecurityToken token = handler.getSecurityTokenFromRequest(request);
+                    ISecurityToken token = handler.getSecurityTokenFromRequest(request);
                     if (token != null)
                     {
                         new AuthInfo(app.Context, request.RawUrl).setAuthType(handler.getName()).setSecurityToken(token);

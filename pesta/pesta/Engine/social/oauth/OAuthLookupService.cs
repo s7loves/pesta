@@ -34,6 +34,6 @@ namespace Pesta.Engine.social.oauth
     public interface OAuthLookupService
     {
         bool thirdPartyHasAccessToUser(OAuthMessage message, String appUrl, String userId);
-        SecurityToken getSecurityToken(String appUrl, String userId);
+        ISecurityToken getSecurityToken(String appUrl, String userId);
     }
 }

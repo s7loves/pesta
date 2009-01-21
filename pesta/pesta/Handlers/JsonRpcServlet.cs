@@ -50,7 +50,7 @@ namespace Pesta.Handlers
             string method = request.HttpMethod;
             if (method == "POST")
             {
-                SecurityToken token = getSecurityToken(context);
+                ISecurityToken token = getSecurityToken(context);
                 if (token == null)
                 {
                     sendSecurityError(response);
@@ -87,7 +87,7 @@ namespace Pesta.Handlers
             }
             else if (method == "GET")
             {
-                SecurityToken token = getSecurityToken(context);
+                ISecurityToken token = getSecurityToken(context);
                 if (token == null)
                 {
                     sendSecurityError(response);
@@ -109,7 +109,7 @@ namespace Pesta.Handlers
 
 
         protected void dispatchBatch(JsonArray batch, HttpRequest servletRequest,
-                                     HttpResponse servletResponse, SecurityToken token)
+                                     HttpResponse servletResponse, ISecurityToken token)
         {
             // Use linked hash map to preserve order
             List<IAsyncResult> responses = new List<IAsyncResult>(batch.Length);
@@ -142,7 +142,7 @@ namespace Pesta.Handlers
         }
 
         protected void dispatch(JsonObject request, HttpRequest servletRequest,
-                                HttpResponse servletResponse, SecurityToken token)
+                                HttpResponse servletResponse, ISecurityToken token)
         {
             String key = null;
             if (request.Contains("id"))

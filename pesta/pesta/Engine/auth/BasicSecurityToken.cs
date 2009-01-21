@@ -31,7 +31,7 @@ namespace Pesta.Engine.auth
     ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
-    public class BasicSecurityToken : SecurityToken
+    public class BasicSecurityToken : ISecurityToken
     {
         /** serialized form of the token */
         private readonly String token;

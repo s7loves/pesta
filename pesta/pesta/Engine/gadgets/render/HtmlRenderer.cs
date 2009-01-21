@@ -33,9 +33,9 @@ namespace Pesta.Engine.gadgets.render
 {
     public class HtmlRenderer
     {
-        private readonly RequestPipeline requestPipeline;
+        private readonly IRequestPipeline requestPipeline;
         private readonly PreloaderService preloader;
-        private readonly ContentRewriterRegistry rewriter;
+        private readonly IContentRewriterRegistry rewriter;
 
         public HtmlRenderer() 
         {
@@ -65,7 +65,7 @@ namespace Pesta.Engine.gadgets.render
                 GadgetContext context = gadget.getContext();
                 GadgetSpec spec = gadget.getSpec();
 
-                Preloads preloads = preloader.preload(context, spec,
+                IPreloads preloads = preloader.preload(context, spec,
                                 PreloaderService.PreloadPhase.HTML_RENDER);
                 gadget.setPreloads(preloads);
                 String content;
@@ -123,7 +123,7 @@ namespace Pesta.Engine.gadgets.render
             request.setIgnoreCache(true);
             GadgetSpec spec = gadget.getSpec();
             GadgetContext context = gadget.getContext();
-            Preloads proxyPreloads = preloader.preload(context, spec,
+            IPreloads proxyPreloads = preloader.preload(context, spec,
                                 PreloaderService.PreloadPhase.PROXY_FETCH);
             // TODO: Add current url to GadgetContext to support transitive proxying.
 

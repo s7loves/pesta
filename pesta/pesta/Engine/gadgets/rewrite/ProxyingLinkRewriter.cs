@@ -32,7 +32,7 @@ namespace Pesta.Engine.gadgets.rewrite
     ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
-    public class ProxyingLinkRewriter : LinkRewriter
+    public class ProxyingLinkRewriter : ILinkRewriter
     {
         private readonly String prefix;
 

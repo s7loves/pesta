@@ -50,7 +50,7 @@ namespace Pesta.Handlers
             HttpRequest request = context.Request;
             HttpResponse response = context.Response;
             string method = request.HttpMethod;
-            SecurityToken token = getSecurityToken(context); // BasicSecurityToken
+            ISecurityToken token = getSecurityToken(context); // BasicSecurityToken
             if (token == null)
             {
                 sendSecurityError(response);
@@ -60,7 +60,7 @@ namespace Pesta.Handlers
             handleSingleRequest(request, response, token, converter);
         }
 
-        private void handleSingleRequest(HttpRequest servletRequest, HttpResponse response, SecurityToken token, BeanConverter converter)
+        private void handleSingleRequest(HttpRequest servletRequest, HttpResponse response, ISecurityToken token, BeanConverter converter)
         {
             RestfulRequestItem requestItem = new RestfulRequestItem(servletRequest, token, converter);
             ResponseItem responseItem = getResponseItem(handleRequestItem(requestItem, servletRequest));

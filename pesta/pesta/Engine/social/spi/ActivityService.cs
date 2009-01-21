@@ -45,7 +45,7 @@ namespace Pesta.Engine.social.spi
        * @return a response item with the list of activities.
        */
         RestfulCollection<Activity> getActivities(HashSet<UserId> userIds,
-                                                  GroupId groupId, String appId, HashSet<String> fields, SecurityToken token);
+                                                  GroupId groupId, String appId, HashSet<String> fields, ISecurityToken token);
 
         /**
          * Returns a set of activities for the passed in user and group that corresponds to a list of
@@ -60,7 +60,7 @@ namespace Pesta.Engine.social.spi
          * @return a response item with the list of activities.
          */
         RestfulCollection<Activity> getActivities(UserId userId, GroupId groupId,
-                                                  String appId, HashSet<String> fields, HashSet<String> activityIds, SecurityToken token);
+                                                  String appId, HashSet<String> fields, HashSet<String> activityIds, ISecurityToken token);
 
         /**
          * Returns a set of activities for the passed in user and group that corresponds to a single of
@@ -75,7 +75,7 @@ namespace Pesta.Engine.social.spi
          * @return a response item with the list of activities.
          */
         Activity getActivity(UserId userId, GroupId groupId, String appId,
-                             HashSet<String> fields, String activityId, SecurityToken token);
+                             HashSet<String> fields, String activityId, ISecurityToken token);
 
         /**
          * Deletes the activity for the passed in user and group that corresponds to the activityId.
@@ -88,7 +88,7 @@ namespace Pesta.Engine.social.spi
          * @return a response item containing any errors
          */
         void deleteActivities(UserId userId, GroupId groupId, String appId,
-                              HashSet<String> activityIds, SecurityToken token);
+                              HashSet<String> activityIds, ISecurityToken token);
 
         /**
          * Creates the passed in activity for the passed in user and group. Once createActivity is called,
@@ -103,6 +103,6 @@ namespace Pesta.Engine.social.spi
          * @return a response item containing any errors
          */
         void createActivity(UserId userId, GroupId groupId, String appId,
-                            HashSet<String> fields, Activity activity, SecurityToken token);
+                            HashSet<String> fields, Activity activity, ISecurityToken token);
     }
 }

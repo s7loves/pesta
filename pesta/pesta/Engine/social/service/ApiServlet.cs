@@ -55,7 +55,7 @@ namespace Pesta.Engine.social.service
         }
         protected abstract void sendError(HttpResponse response, ResponseItem responseItem);
 
-        protected SecurityToken getSecurityToken(HttpContext context)
+        protected ISecurityToken getSecurityToken(HttpContext context)
         {
             return new AuthInfo(context, context.Request.RawUrl).getSecurityToken();
         }

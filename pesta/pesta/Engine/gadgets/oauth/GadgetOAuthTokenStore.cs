@@ -37,7 +37,7 @@ namespace Pesta.Engine.gadgets.oauth
     public class GadgetOAuthTokenStore
     {
         private readonly OAuthStore store;
-        private readonly GadgetSpecFactory specFactory;
+        private readonly IGadgetSpecFactory specFactory;
 
         /**
          * Public constructor.
@@ -46,7 +46,7 @@ namespace Pesta.Engine.gadgets.oauth
          *              tokens, as well as information about service providers.
          */
 
-        public GadgetOAuthTokenStore(OAuthStore store, GadgetSpecFactory specFactory)
+        public GadgetOAuthTokenStore(OAuthStore store, IGadgetSpecFactory specFactory)
         {
             this.store = store;
             this.specFactory = specFactory;
@@ -65,7 +65,7 @@ namespace Pesta.Engine.gadgets.oauth
          * Note that most of that work gets skipped for signed fetch, we just look up the consumer key
          * and secret for that.  Signed fetch always sticks the parameters in the query string.
          */
-        public AccessorInfo getOAuthAccessor(SecurityToken securityToken,
+        public AccessorInfo getOAuthAccessor(ISecurityToken securityToken,
                                              OAuthArguments arguments, OAuthClientState clientState)
         {
             AccessorInfoBuilder accessorBuilder = new AccessorInfoBuilder();
@@ -103,7 +103,7 @@ namespace Pesta.Engine.gadgets.oauth
         /**
          * Lookup information contained in the gadget spec.
          */
-        private OAuthServiceProvider lookupSpecInfo(SecurityToken securityToken, OAuthArguments arguments,
+        private OAuthServiceProvider lookupSpecInfo(ISecurityToken securityToken, OAuthArguments arguments,
                                                     AccessorInfoBuilder accessorBuilder)
         {
             GadgetSpec spec = findSpec(securityToken, arguments);
@@ -146,7 +146,7 @@ namespace Pesta.Engine.gadgets.oauth
          *    preference.
          * @throws GadgetException 
          */
-        private void lookupToken(SecurityToken securityToken, OAuthStore.ConsumerInfo consumerInfo,
+        private void lookupToken(ISecurityToken securityToken, OAuthStore.ConsumerInfo consumerInfo,
                                  OAuthArguments arguments, OAuthClientState clientState, AccessorInfoBuilder accessorBuilder)
         {
             if (clientState.getRequestToken() != null)
@@ -218,7 +218,7 @@ namespace Pesta.Engine.gadgets.oauth
                                       "Unknown method " + method);
         }
 
-        private GadgetSpec findSpec(SecurityToken securityToken, OAuthArguments arguments)
+        private GadgetSpec findSpec(ISecurityToken securityToken, OAuthArguments arguments)
         {
             try
             {
@@ -231,7 +231,7 @@ namespace Pesta.Engine.gadgets.oauth
             }
         }
 
-        private static GadgetException serviceNotFoundEx(SecurityToken securityToken, OAuthSpec oauthSpec, String serviceName)
+        private static GadgetException serviceNotFoundEx(ISecurityToken securityToken, OAuthSpec oauthSpec, String serviceName)
         {
             StringBuilder message = new StringBuilder()
                 .Append("Spec for gadget ")
@@ -245,7 +245,7 @@ namespace Pesta.Engine.gadgets.oauth
             return new UserVisibleOAuthException(message.ToString());
         }
 
-        private static GadgetException oauthNotFoundEx(SecurityToken securityToken)
+        private static GadgetException oauthNotFoundEx(ISecurityToken securityToken)
         {
             StringBuilder message = new StringBuilder()
                 .Append("Spec for gadget ")
@@ -257,7 +257,7 @@ namespace Pesta.Engine.gadgets.oauth
         /**
          * Store an access token for the given user/gadget/service/token name
          */
-        public void storeTokenKeyAndSecret(SecurityToken securityToken, OAuthStore.ConsumerInfo consumerInfo,
+        public void storeTokenKeyAndSecret(ISecurityToken securityToken, OAuthStore.ConsumerInfo consumerInfo,
                                            OAuthArguments arguments, OAuthStore.TokenInfo tokenInfo)
         {
             store.setTokenInfo(securityToken, consumerInfo, arguments.ServiceName,
@@ -267,7 +267,7 @@ namespace Pesta.Engine.gadgets.oauth
         /**
          * Remove an access token for the given user/gadget/service/token name
          */
-        public void removeToken(SecurityToken securityToken, OAuthStore.ConsumerInfo consumerInfo, OAuthArguments arguments)
+        public void removeToken(ISecurityToken securityToken, OAuthStore.ConsumerInfo consumerInfo, OAuthArguments arguments)
         {
             store.removeToken(securityToken, consumerInfo, arguments.ServiceName, arguments.TokenName);
         }

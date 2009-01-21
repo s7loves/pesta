@@ -51,8 +51,8 @@ namespace Pesta.Engine.gadgets.servlet
         private const string DEFAULT_NUM_ENTRIES = "3";
         private const string GET_SUMMARIES_PARAM = "getSummaries";
 
-        private readonly RequestPipeline requestPipeline;
-        private readonly ContentRewriterRegistry contentRewriterRegistry;
+        private readonly IRequestPipeline requestPipeline;
+        private readonly IContentRewriterRegistry contentRewriterRegistry;
         public readonly static MakeRequestHandler Instance = new MakeRequestHandler();
         protected MakeRequestHandler()
         {
@@ -162,9 +162,9 @@ namespace Pesta.Engine.gadgets.servlet
        * @param request
        * @return A valid token for the given input.
        */
-        private static SecurityToken extractAndValidateToken(HttpContext context)
+        private static ISecurityToken extractAndValidateToken(HttpContext context)
         {
-            SecurityToken token = new AuthInfo(context, context.Request.RawUrl).getSecurityToken();
+            ISecurityToken token = new AuthInfo(context, context.Request.RawUrl).getSecurityToken();
             if (token == null)
             {
                 throw new Exception("Invalid security token");
@@ -176,7 +176,7 @@ namespace Pesta.Engine.gadgets.servlet
        * Format a response as JSON, including additional JSON inserted by
        * chained content fetchers.
        */
-        private String convertResponseToJson(SecurityToken authToken, HttpRequestWrapper request, sResponse results)
+        private String convertResponseToJson(ISecurityToken authToken, HttpRequestWrapper request, sResponse results)
         {
             try
             {

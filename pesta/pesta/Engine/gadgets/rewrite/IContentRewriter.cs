@@ -1,4 +1,4 @@
-#region License, Terms and Conditions
+﻿#region License, Terms and Conditions
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -18,9 +18,10 @@
  */
 #endregion
 
+using org.apache.shindig.gadgets.rewrite;
 using Pesta.Engine.gadgets.http;
 
-namespace Pesta.Engine.gadgets
+namespace Pesta.Engine.gadgets.rewrite
 {
     /// <summary>
     /// 
@@ -30,23 +31,23 @@ namespace Pesta.Engine.gadgets
     ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
-    public abstract class ChainedContentFetcher : IHttpFetcher
+    public interface IContentRewriter
     {
-        /// <summary>
-        /// next fetcher in the chain, may be null 
-        /// </summary>
+        /**
+        * Rewrite the original content located at source.
+        * 
+        * @param request Originating request, as context.
+        * @param response Original HTTP response, for context.
+        * @param content Original content.
+        */
+        RewriterResults rewrite(sRequest request, sResponse original, MutableContent content);
 
-        protected internal IHttpFetcher nextFetcher;
-
-        protected internal ChainedContentFetcher(IHttpFetcher nextFetcher_0)
-        {
-            this.nextFetcher = nextFetcher_0;
-        }
-
-        /// <summary>
-        /// from org.apache.shindig.gadgets.http.HttpFetcher
-        /// </summary>
-        ///
-        public abstract sResponse fetch(sRequest request);
+        /**
+        * Rewrite the gadget. The Gadget object's manipulation methods are used
+        * for the bulk of this.
+        * 
+        * @param gadget Gadget to rewrite.
+        */
+        RewriterResults rewrite(Gadget gadget, MutableContent content);
     }
 }

@@ -17,37 +17,19 @@
  * specific language governing permissions and limitations under the License.
  */
 #endregion
-using System;
-using System.Reflection;
 
-
-namespace Pesta.Interop
+namespace Pesta.Engine.gadgets.http
 {
     /// <summary>
-    /// Summary description for CustomAttr
+    /// Summary description for HttpFetcher
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Pesta, Sean Lin M.T. (my6solutions.com)
+    ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
-
-    public class ImplementedByAttribute : Attribute
+    public interface IHttpFetcher
     {
-        /// <summary>
-        /// Initializes a new instance of the ImplementedByAttribute class.
-        /// </summary>
-        public ImplementedByAttribute(Type type)
-        {
-            implementer = type;
-        }
-        protected Type implementer;
-        public Type Implementer
-        {
-            get
-            {
-                return implementer;
-            }
-        }
+        sResponse fetch(sRequest request);
     }
 }

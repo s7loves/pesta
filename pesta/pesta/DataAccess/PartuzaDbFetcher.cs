@@ -202,8 +202,9 @@ namespace Pesta.DataAccess
         {
             var _data = new Dictionary<string, Dictionary<string, string>>();
             var _res = _db.application_settings
-                .Where(x => x.application_id.ToString() == _app_id && _ids.AsEnumerable().Contains(x.person_id.ToString()) && _keys.AsEnumerable().Contains(x.name))
+                .Where(x => x.application_id.ToString() == _app_id && _ids.AsEnumerable().Contains(x.person_id.ToString()) && (_keys.Count == 0?true:_keys.AsEnumerable().Contains(x.name)) )
                 .Select(x => new { x.person_id, x.name, x.value });
+            
             foreach (var _re in _res)
             {
                 if (!_data.ContainsKey(_re.person_id.ToString()))

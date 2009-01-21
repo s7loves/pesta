@@ -28,7 +28,7 @@ namespace Pesta.Engine.gadgets.rewrite
 {
     class ContentRewriterFeatureFactory
     {
-        private readonly GadgetSpecFactory specFactory;
+        private readonly IGadgetSpecFactory specFactory;
         private readonly String includeUrls;
         private readonly String excludeUrls;
         private readonly String expires;
@@ -38,7 +38,7 @@ namespace Pesta.Engine.gadgets.rewrite
 
         public readonly static ContentRewriterFeatureFactory Instance = new ContentRewriterFeatureFactory(DefaultGadgetSpecFactory.Instance, ".*", "", "86400", "link,script,embed,img,style");
         protected ContentRewriterFeatureFactory(
-            GadgetSpecFactory specFactory,
+            IGadgetSpecFactory specFactory,
             String includeUrls,
             String excludeUrls,
             String expires,

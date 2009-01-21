@@ -29,7 +29,7 @@ namespace Pesta.Engine.gadgets.process
 {
     public class Processor
     {
-        private readonly GadgetSpecFactory gadgetSpecFactory;
+        private readonly IGadgetSpecFactory gadgetSpecFactory;
         private readonly VariableSubstituter substituter;
         private readonly ContainerConfig containerConfig;
         private readonly GadgetBlacklist blacklist;
