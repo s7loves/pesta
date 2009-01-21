@@ -42,7 +42,7 @@ namespace Pesta.DataAccess
             return converter.convertToObject(inobject.ToString(), typeof(Person)) as Person;
         }
 
-        private HashSet<String> getIdSet(UserId user, GroupId group, SecurityToken token)
+        private HashSet<String> getIdSet(UserId user, GroupId group, ISecurityToken token)
         {
             String userId = user.getUserId(token);
 
@@ -70,7 +70,7 @@ namespace Pesta.DataAccess
             return returnVal;
         }
 
-        private HashSet<String> getIdSet(HashSet<UserId> users, GroupId group, SecurityToken _token)
+        private HashSet<String> getIdSet(HashSet<UserId> users, GroupId group, ISecurityToken _token)
         {
             HashSet<String> ids = new HashSet<string>();
             foreach (UserId user in users)
@@ -81,7 +81,7 @@ namespace Pesta.DataAccess
         }
 
         override public RestfulCollection<Person> getPeople(HashSet<UserId> _userId, GroupId _groupId,
-            CollectionOptions _options, HashSet<String> _fields, SecurityToken _token)
+            CollectionOptions _options, HashSet<String> _fields, ISecurityToken _token)
         {
             HashSet<String> _ids = this.getIdSet(_userId, _groupId, _token);
             var _allPeople = PartuzaDbFetcher.get().getPeople(_ids, _fields, _options);
@@ -126,7 +126,7 @@ namespace Pesta.DataAccess
         }
 
 
-        override public Person getPerson(UserId _userId, HashSet<String> _fields, SecurityToken _token)
+        override public Person getPerson(UserId _userId, HashSet<String> _fields, ISecurityToken _token)
         {
             try
             {
@@ -145,7 +145,7 @@ namespace Pesta.DataAccess
         }
 
         public DataCollection getPersonData(HashSet<UserId> _userId, GroupId _groupId,
-            String _appId, HashSet<String> _fields, SecurityToken _token)
+            String _appId, HashSet<String> _fields, ISecurityToken _token)
         {
             var _ids = this.getIdSet(_userId, _groupId, _token);
             var _data = PartuzaDbFetcher.get().getAppData(_ids, _fields, _appId);
@@ -155,7 +155,7 @@ namespace Pesta.DataAccess
 
 
         public void deletePersonData(UserId _userId, GroupId _groupId,
-            String _appId, HashSet<String> _fields, SecurityToken _token)
+            String _appId, HashSet<String> _fields, ISecurityToken _token)
         {
             var _ids = this.getIdSet(_userId, _groupId, _token);
             if (_ids.Count < 1)
@@ -180,7 +180,7 @@ namespace Pesta.DataAccess
         }
         
         public void updatePersonData(UserId _userId, GroupId _groupId,
-            String _appId, HashSet<String> _fields, Dictionary<String, String> _values, SecurityToken _token)
+            String _appId, HashSet<String> _fields, Dictionary<String, String> _values, ISecurityToken _token)
         {
             if (_userId.getUserId(_token) == null) 
             {
@@ -204,7 +204,7 @@ namespace Pesta.DataAccess
         }
 
         public RestfulCollection<Activity> getActivities(HashSet<UserId> _userIds,
-            GroupId _groupId, String _appId, HashSet<String> _fields, SecurityToken _token)
+            GroupId _groupId, String _appId, HashSet<String> _fields, ISecurityToken _token)
         {
             var _ids = this.getIdSet(_userIds, _groupId, _token);
             var _activities = PartuzaDbFetcher.get().getActivities(_ids, _appId, _fields);
@@ -217,13 +217,13 @@ namespace Pesta.DataAccess
         }
         
         public RestfulCollection<Activity> getActivities(UserId _userId, GroupId _groupId,
-            String _appId, HashSet<String> _fields, HashSet<String> _activityIds, SecurityToken _token)
+            String _appId, HashSet<String> _fields, HashSet<String> _activityIds, ISecurityToken _token)
         {
             throw new SocialSpiException(ResponseError.NOT_IMPLEMENTED, "We don't support retrieving activities by activity IDs yet");
         }
         
         public Activity getActivity(UserId _userId, GroupId _groupId, String _appId,
-            HashSet<String> _fields, String _activityId, SecurityToken _token)
+            HashSet<String> _fields, String _activityId, ISecurityToken _token)
         {
             var _activities = this.getActivities(new HashSet<UserId>{ _userId }, _groupId, _appId, _fields, _token);
             var acts = _activities.getEntry();
@@ -239,7 +239,7 @@ namespace Pesta.DataAccess
 
         
         public void deleteActivities(UserId _userId, GroupId _groupId, String _appId,
-            HashSet<String> _activityIds, SecurityToken _token)
+            HashSet<String> _activityIds, ISecurityToken _token)
         {
             var _ids = this.getIdSet(_userId, _groupId, _token);
             if (_ids.Count < 1 || _ids.Count > 1)
@@ -256,7 +256,7 @@ namespace Pesta.DataAccess
 
         
         public void createActivity(UserId _userId, GroupId _groupId, String _appId,
-            HashSet<String> _fields, Activity _activity, SecurityToken _token)
+            HashSet<String> _fields, Activity _activity, ISecurityToken _token)
         {
             try 
             {

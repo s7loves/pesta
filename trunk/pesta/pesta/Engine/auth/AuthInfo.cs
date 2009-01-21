@@ -65,9 +65,9 @@ namespace Pesta.Engine.auth
         *
         * @return The security token
         */
-        public SecurityToken getSecurityToken()
+        public ISecurityToken getSecurityToken()
         {
-            return context.Items[url + Attribute.SECURITY_TOKEN.ToString()] as SecurityToken;
+            return context.Items[url + Attribute.SECURITY_TOKEN.ToString()] as ISecurityToken;
         }
 
         /**
@@ -86,7 +86,7 @@ namespace Pesta.Engine.auth
         * @param token The security token
         * @return This object
         */
-        public AuthInfo setSecurityToken(SecurityToken token)
+        public AuthInfo setSecurityToken(ISecurityToken token)
         {
             context.Items[url + Attribute.SECURITY_TOKEN.ToString()] = token;
             return this;

@@ -33,10 +33,10 @@ namespace Pesta.Engine.gadgets.http
     ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
-    public class BasicHttpFetcher : HttpFetcher
+    public class BasicHttpFetcher : IHttpFetcher
     {
-          private static readonly int CONNECT_TIMEOUT_MS = 5000;
-          private static readonly int DEFAULT_MAX_OBJECT_SIZE = 1024 * 1024;
+          private const int CONNECT_TIMEOUT_MS = 5000;
+          private const int READ_TIMEOUT_MS = 20000;
 
         /**
          * Creates a new fetcher for fetching HTTP objects.  Not really suitable
@@ -67,14 +67,15 @@ namespace Pesta.Engine.gadgets.http
 
         private sResponse makeResponse(WebRequest fetcher)
         {
-            HttpWebResponse resp = null;
+            HttpWebResponse resp;
+            fetcher.Timeout = CONNECT_TIMEOUT_MS;
             try
             {
                 resp = (HttpWebResponse)fetcher.GetResponse();
             }
             catch (WebException ex)
             {
-                resp = (HttpWebResponse)((WebException)ex).Response;
+                resp = (HttpWebResponse)ex.Response;
             }
             int responseCode = (int)HttpStatusCode.GatewayTimeout;
             MemoryStream memoryStream = new MemoryStream(0x10000);
@@ -84,9 +85,10 @@ namespace Pesta.Engine.gadgets.http
                 headers = resp.Headers;
                 responseCode = (int)resp.StatusCode;
                 byte[] buffer = new byte[0x1000];
-                int bytes;
                 using (Stream responseStream = resp.GetResponseStream())
                 {
+                    int bytes;
+                    responseStream.ReadTimeout = READ_TIMEOUT_MS;
                     while ((bytes = responseStream.Read(buffer, 0, buffer.Length)) > 0)
                     {
                         memoryStream.Write(buffer, 0, bytes);

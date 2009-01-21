@@ -41,8 +41,8 @@ namespace Pesta.Engine.gadgets.servlet
                                                                                         "vary", "expires", "date", "pragma", "cache-control"
                                                                                     };
         private LockedDomainService lockedDomainService;
-        private ContentRewriterRegistry contentRewriterRegistry;
-        private readonly HttpFetcher fetcher;
+        private IContentRewriterRegistry contentRewriterRegistry;
+        private readonly IHttpFetcher fetcher;
         public static readonly ProxyHandler Instance = new ProxyHandler();
         protected ProxyHandler()
         {

@@ -57,7 +57,7 @@ namespace Pesta.Engine.auth
         /**
         * Encodes a token using the a plaintext dummy format.
         */
-        public String encodeToken(SecurityToken token)
+        public String encodeToken(ISecurityToken token)
         {
             try
             {
@@ -82,7 +82,7 @@ namespace Pesta.Engine.auth
         *
         * Returns a token with some faked out values.
         */
-        public override SecurityToken createToken(Dictionary<String, String> parameters)
+        public override ISecurityToken createToken(Dictionary<String, String> parameters)
         {
             String token = parameters[SECURITY_TOKEN_NAME];
             if (token == null || token.Trim().Length == 0)

@@ -19,12 +19,12 @@
 #endregion
 using System;
 using System.Xml;
-using System.Web;
 using System.Reflection;
 using System.Collections.Generic;
 using System.IO;
 using Pesta.Engine.common;
 using Pesta.Engine.common.xml;
+using Pesta.Engine.gadgets.http;
 using Pesta.Utilities;
 
 namespace Pesta.Engine.gadgets
@@ -32,22 +32,15 @@ namespace Pesta.Engine.gadgets
     /// <summary>
     /// Summary description for JsFeatureLoader
     /// </summary>
-    /// <remarks>
-    /// <para>
-    ///  Apache Software License 2.0 2008 Shindig
-    /// </para>
-    /// </remarks>
     public class JsFeatureLoader
     {
         public static char FILE_SEPARATOR = ',';
 
-        //private WebRequest fetcher;
+        private readonly IHttpFetcher fetcher;
 
         public JsFeatureLoader()
         {
-            //
-            // TODO: Add constructor logic here
-            //
+            fetcher = BasicHttpFetcher.Instance;
         }
         public void loadFeatures(string path, GadgetFeatureRegistry registry)
         {
@@ -176,7 +169,7 @@ namespace Pesta.Engine.gadgets
                         type = JsLibrary.Type.FILE;
                     }
                 }
-                JsLibrary library = JsLibrary.create(type, content, feature.name, inlineOk ? HttpContext.Current : null);
+                JsLibrary library = JsLibrary.create(type, content, feature.name, inlineOk ? fetcher : null);
                 foreach (String cont in container.Split(','))
                 {
                     feature.AddLibrary(renderingContext, cont.Trim(), library);

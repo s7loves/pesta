@@ -17,29 +17,21 @@
  * specific language governing permissions and limitations under the License.
  */
 #endregion
+using System;
+using Uri=Pesta.Engine.common.uri.Uri;
 
-using System.Collections.Generic;
-
-namespace Pesta.Interop
+namespace Pesta.Engine.gadgets.rewrite
 {
     /// <summary>
-    /// Summary description for HashKey
+    /// Summary description for LinkRewriter
     /// </summary>
-    public class HashKey<T> : HashSet<T>
+    /// <remarks>
+    /// <para>
+    ///  Apache Software License 2.0 2008 Shindig
+    /// </para>
+    /// </remarks>
+    public interface ILinkRewriter
     {
-        public override bool Equals(object obj)
-        {
-            return this.GetHashCode() == obj.GetHashCode();
-        }
-
-        public override int GetHashCode()
-        {
-            int hash = 0;
-            foreach (T item in this)
-            {
-                hash += item.GetHashCode();
-            }
-            return hash;
-        }
+        String rewrite(String link, Uri context);
     }
 }

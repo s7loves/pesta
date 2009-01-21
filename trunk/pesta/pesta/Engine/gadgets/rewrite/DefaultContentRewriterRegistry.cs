@@ -38,14 +38,14 @@ namespace Pesta.Engine.gadgets.rewrite
     ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
-    public class DefaultContentRewriterRegistry : ContentRewriterRegistry
+    public class DefaultContentRewriterRegistry : IContentRewriterRegistry
     {
-        protected readonly List<ContentRewriter> rewriters;
+        protected readonly List<IContentRewriter> rewriters;
         protected readonly GadgetHtmlParser htmlParser;
         public static readonly DefaultContentRewriterRegistry Instance = new DefaultContentRewriterRegistry();
         protected DefaultContentRewriterRegistry()
         {
-            this.rewriters = new List<ContentRewriter>
+            this.rewriters = new List<IContentRewriter>
                                  {
                                      new DefaultContentRewriter(DefaultGadgetSpecFactory.Instance, ".*", "", "86400",
                                                                 "style, link, img, script, embed"),
@@ -64,7 +64,7 @@ namespace Pesta.Engine.gadgets.rewrite
             }
             MutableContent mc = getMutableContent(gadget.getSpec(), currentView);
 
-            foreach(ContentRewriter rewriter in rewriters) 
+            foreach(IContentRewriter rewriter in rewriters) 
             {
                 rewriter.rewrite(gadget, mc);
             }
@@ -81,7 +81,7 @@ namespace Pesta.Engine.gadgets.rewrite
 
             MutableContent mc = getMutableContent(content);
 
-            foreach(ContentRewriter rewriter in rewriters) 
+            foreach(IContentRewriter rewriter in rewriters) 
             {
                 rewriter.rewrite(gadget, mc);
             }
@@ -94,7 +94,7 @@ namespace Pesta.Engine.gadgets.rewrite
             String originalContent = resp.responseString;
             MutableContent mc = getMutableContent(originalContent);
 
-            foreach(ContentRewriter rewriter in rewriters)
+            foreach(IContentRewriter rewriter in rewriters)
             {
                 rewriter.rewrite(req, resp, mc);
             }
@@ -121,7 +121,7 @@ namespace Pesta.Engine.gadgets.rewrite
             return mc;
         }
 
-        protected List<ContentRewriter> getRewriters()
+        protected List<IContentRewriter> getRewriters()
         {
             return rewriters;
         }

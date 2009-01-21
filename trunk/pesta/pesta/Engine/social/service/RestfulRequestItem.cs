@@ -43,13 +43,13 @@ namespace Pesta.Engine.social.service
 
         private String postData;
 
-        public RestfulRequestItem(String service, String method, SecurityToken token, BeanConverter converter)
+        public RestfulRequestItem(String service, String method, ISecurityToken token, BeanConverter converter)
             : base(service, method, token, converter)
         {
 
         }
 
-        public RestfulRequestItem(String path, String method, String postData, SecurityToken token, BeanConverter converter)
+        public RestfulRequestItem(String path, String method, String postData, ISecurityToken token, BeanConverter converter)
             : base(getServiceFromPath(path), method, token, converter)
         {
             this.postData = postData;
@@ -57,7 +57,7 @@ namespace Pesta.Engine.social.service
             putUrlParamsIntoParameters();
         }
 
-        public RestfulRequestItem(HttpRequest request, SecurityToken token, BeanConverter converter)
+        public RestfulRequestItem(HttpRequest request, ISecurityToken token, BeanConverter converter)
             : base(getServiceFromPath(request.RawUrl), getMethod(request), token, converter)
         {
             this.url = request.RawUrl.Replace(SOCIAL_RESTFUL_PATH, "/");

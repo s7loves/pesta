@@ -19,36 +19,24 @@
 #endregion
 
 using Pesta.Engine.gadgets.spec;
+using URI = System.Uri;
 
-namespace Pesta.Engine.gadgets.preload
+namespace Pesta.Engine.gadgets
 {
-    public abstract class PreloaderService
+    /// <summary>
+    /// Summary description for GadgetSpecFactory
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    ///  Apache Software License 2.0 2008 Shindig
+    /// </para>
+    /// </remarks>
+    public interface IGadgetSpecFactory
     {
-        /**
-         * Phases for preloading.
-         */
-        public enum PreloadPhase
-        {
-            /**
-             * Preloaded content that will be POSTed to a proxied render.
-             */
-            PROXY_FETCH,
+        /** Return a gadget spec for a context */
+        GadgetSpec getGadgetSpec(GadgetContext context);
 
-            /**
-             * Preloaded content that will be delivered to the final render
-             */
-            HTML_RENDER
-        }
-
-        /**
-       * Begin all preload operations.
-       *
-       * @param context The request that needs preloading.
-       * @param gadget The gadget that the operations will be performed for.
-       * @return The preloads for the gadget.
-       *
-       * TODO: This should probably have a read only input. If we can
-       */
-        public abstract IPreloads preload(GadgetContext context, GadgetSpec gadget, PreloadPhase phase);
+        /** Return a gadget spec for a URI */
+        GadgetSpec getGadgetSpec(URI gadgetUri, bool ignoreCache);
     }
 }

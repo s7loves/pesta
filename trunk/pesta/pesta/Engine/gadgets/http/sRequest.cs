@@ -61,7 +61,7 @@ namespace Pesta.Engine.gadgets.http
         private string method;
 
         // For signed fetch & OAuth
-        private SecurityToken securityToken;
+        private ISecurityToken securityToken;
         private OAuthArguments oauthArguments;
         private AuthType authType;
 
@@ -175,7 +175,7 @@ namespace Pesta.Engine.gadgets.http
         /// request.
         /// </summary>
         ///
-        public sRequest setSecurityToken(SecurityToken securityToken)
+        public sRequest setSecurityToken(ISecurityToken securityToken)
         {
             this.securityToken = securityToken;
             return this;
@@ -347,7 +347,7 @@ namespace Pesta.Engine.gadgets.http
         }
 
 
-        public SecurityToken SecurityToken
+        public ISecurityToken SecurityToken
         {
             get
             {

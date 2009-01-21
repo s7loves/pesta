@@ -39,7 +39,7 @@ namespace Pesta.Engine.gadgets
     {
         private static readonly Locale ALL_ALL = new Locale("all", "ALL");
         public static readonly String CACHE_NAME = "messageBundles";
-        private readonly HttpFetcher fetcher;
+        private readonly IHttpFetcher fetcher;
         //private readonly SoftExpiringCache<Uri, MessageBundle> cache;
         private readonly long refresh;
 

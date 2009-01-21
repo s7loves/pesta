@@ -26,7 +26,7 @@ using URI = System.Uri;
 using com.google.caja.opensocial;
 using com.google.caja.reporting;
 using com.google.caja.lexer;
-using ContentRewriter=Pesta.Engine.gadgets.rewrite.ContentRewriter;
+using ContentRewriter=Pesta.Engine.gadgets.rewrite.IContentRewriter;
 using Reader = java.io.Reader;
 using Uri=Pesta.Engine.common.uri.Uri;
 

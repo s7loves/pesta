@@ -43,6 +43,6 @@ namespace Pesta.Engine.auth
          * @param request The request to extract a token from.
          * @return A valid security token for the request, or null if it wasn't possible to authenticate.
          */
-        SecurityToken getSecurityTokenFromRequest(HttpRequest request);
+        ISecurityToken getSecurityTokenFromRequest(HttpRequest request);
     }
 }

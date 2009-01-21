@@ -29,7 +29,7 @@ namespace Pesta.Engine.auth
     ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
-    public class AnonymousSecurityToken : SecurityToken
+    public class AnonymousSecurityToken : ISecurityToken
     {
         public AnonymousSecurityToken() { }
 

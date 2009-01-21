@@ -35,11 +35,11 @@ namespace Pesta.Engine.gadgets.rewrite.lexer
     public class StyleTagRewriter : HtmlTagTransformer
     {
         private Uri source;
-        private LinkRewriter linkRewriter;
+        private ILinkRewriter linkRewriter;
 
         private StringBuilder sb;
 
-        public StyleTagRewriter(Uri source, LinkRewriter linkRewriter)
+        public StyleTagRewriter(Uri source, ILinkRewriter linkRewriter)
         {
             this.source = source;
             this.linkRewriter = linkRewriter;

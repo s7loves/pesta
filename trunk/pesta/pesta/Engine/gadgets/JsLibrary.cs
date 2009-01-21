@@ -20,9 +20,9 @@
 using System;
 using System.IO;
 using System.Net;
-using System.Text;
 using System.Web;
 using Pesta.Engine.common;
+using Pesta.Engine.gadgets.http;
 using Uri=Pesta.Engine.common.uri.Uri;
 
 namespace Pesta.Engine.gadgets
@@ -97,10 +97,7 @@ namespace Pesta.Engine.gadgets
             {
                 return "<script src=\"" + content + "\"></script>";
             }
-            else
-            {
-                return "<script><!--\n" + content + "\n--></script>";
-            }
+            return "<script><!--\n" + content + "\n--></script>";
         }
 
         /**
@@ -127,7 +124,7 @@ namespace Pesta.Engine.gadgets
         * @return The newly created library.
         * @throws GadgetException
         */
-        public static JsLibrary create(Type type, String content, String feature, HttpContext context)
+        public static JsLibrary create(Type type, String content, String feature, IHttpFetcher fetcher)
         {
             String optimizedContent = null;
             String debugContent;
@@ -146,14 +143,14 @@ namespace Pesta.Engine.gadgets
                     }
                     break;
                 case Type.URL:
-                    if (context == null)
+                    if (fetcher == null)
                     {
                         debugContent = optimizedContent = content;
                     }
                     else
                     {
                         type = Type.FILE;
-                        debugContent = optimizedContent = loadDataFromUrl(content);
+                        debugContent = optimizedContent = loadDataFromUrl(content, fetcher);
                     }
                     break;
                 default:
@@ -176,7 +173,7 @@ namespace Pesta.Engine.gadgets
             {
                 return loadFile(name);
             }
-            else if (type == Type.RESOURCE)
+            if (type == Type.RESOURCE)
             {
                 return loadResource(name);
             }
@@ -191,26 +188,25 @@ namespace Pesta.Engine.gadgets
         * @return The contents of the JS file, or null if it can't be fetched.
         * @throws GadgetException
         */
-        private static String loadDataFromUrl(String url)
+        private static String loadDataFromUrl(String url, IHttpFetcher fetcher)
         {
-            StringBuilder html = new StringBuilder();
             try
             {
                 // set up the request and response objects
                 Uri uri = Uri.parse(url);
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri.ToString());
-                request.Credentials = CredentialCache.DefaultNetworkCredentials;
-                using (StreamReader reader = new StreamReader(request.GetResponse().GetResponseStream()))
+                sRequest request = new sRequest(uri);
+                sResponse response = fetcher.fetch(request);
+                if (response.getHttpStatusCode() == (int)HttpStatusCode.OK)
                 {
-                    // get and read the response stream
-                    html.Append(reader.ReadToEnd());
+                    return response.responseString;
                 }
+                return null;
             }
             catch
             {
                 // The remote site is currently down. Try again next time.
             }
-            return html.ToString();
+            return null;
         }
 
         /**

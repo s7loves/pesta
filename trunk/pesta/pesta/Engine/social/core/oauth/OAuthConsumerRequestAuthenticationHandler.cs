@@ -50,7 +50,7 @@ namespace Pesta.Engine.social.core.oauth
             return AUTH_OAUTH_CONSUMER_REQUEST;
         }
 
-        public SecurityToken getSecurityTokenFromRequest(HttpRequest request)
+        public ISecurityToken getSecurityTokenFromRequest(HttpRequest request)
         {
             OAuthMessage requestMessage = OAuthServlet.getMessage(request, null);
 

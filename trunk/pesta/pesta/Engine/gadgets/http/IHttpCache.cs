@@ -16,11 +16,11 @@
  * KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-#endregion
+#endregionusing System;
+using System.Web;
+using System.Web.Caching;
 
-using Pesta.Engine.gadgets.http;
-
-namespace Pesta.Engine.gadgets
+namespace Pesta.Engine.gadgets.http
 {
     /// <summary>
     /// 
@@ -30,23 +30,13 @@ namespace Pesta.Engine.gadgets
     ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
-    public abstract class ChainedContentFetcher : IHttpFetcher
+    public interface IHttpCache
     {
-        /// <summary>
-        /// next fetcher in the chain, may be null 
-        /// </summary>
+        sResponse getResponse(sRequest request);
 
-        protected internal IHttpFetcher nextFetcher;
+        sResponse addResponse(sRequest request, sResponse response);
 
-        protected internal ChainedContentFetcher(IHttpFetcher nextFetcher_0)
-        {
-            this.nextFetcher = nextFetcher_0;
-        }
+        sResponse removeResponse(sRequest key);
 
-        /// <summary>
-        /// from org.apache.shindig.gadgets.http.HttpFetcher
-        /// </summary>
-        ///
-        public abstract sResponse fetch(sRequest request);
     }
 }

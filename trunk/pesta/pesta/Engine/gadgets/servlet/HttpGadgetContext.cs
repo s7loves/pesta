@@ -153,7 +153,7 @@ namespace Pesta.Engine.gadgets.servlet
             return renderingContext;
         }
 
-        public override SecurityToken getToken()
+        public override ISecurityToken getToken()
         {
             return new AuthInfo(context, this.request.RawUrl).getSecurityToken();
         }

@@ -17,38 +17,13 @@
  * specific language governing permissions and limitations under the License.
  */
 #endregion
-
-using Pesta.Engine.gadgets.spec;
+using System;
+using System.Collections.Generic;
 
 namespace Pesta.Engine.gadgets.preload
 {
-    public abstract class PreloaderService
+    public interface IPreloads
     {
-        /**
-         * Phases for preloading.
-         */
-        public enum PreloadPhase
-        {
-            /**
-             * Preloaded content that will be POSTed to a proxied render.
-             */
-            PROXY_FETCH,
-
-            /**
-             * Preloaded content that will be delivered to the final render
-             */
-            HTML_RENDER
-        }
-
-        /**
-       * Begin all preload operations.
-       *
-       * @param context The request that needs preloading.
-       * @param gadget The gadget that the operations will be performed for.
-       * @return The preloads for the gadget.
-       *
-       * TODO: This should probably have a read only input. If we can
-       */
-        public abstract IPreloads preload(GadgetContext context, GadgetSpec gadget, PreloadPhase phase);
+        ICollection<PreloadedData> getData();
     }
 }

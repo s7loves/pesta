@@ -1,4 +1,4 @@
-#region License, Terms and Conditions
+﻿#region License, Terms and Conditions
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -18,35 +18,10 @@
  */
 #endregion
 
-using Pesta.Engine.gadgets.http;
-
-namespace Pesta.Engine.gadgets
+namespace Pesta.Engine.gadgets.http
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    ///  Apache Software License 2.0 2008 Shindig
-    /// </para>
-    /// </remarks>
-    public abstract class ChainedContentFetcher : IHttpFetcher
+    public interface IRequestPipeline
     {
-        /// <summary>
-        /// next fetcher in the chain, may be null 
-        /// </summary>
-
-        protected internal IHttpFetcher nextFetcher;
-
-        protected internal ChainedContentFetcher(IHttpFetcher nextFetcher_0)
-        {
-            this.nextFetcher = nextFetcher_0;
-        }
-
-        /// <summary>
-        /// from org.apache.shindig.gadgets.http.HttpFetcher
-        /// </summary>
-        ///
-        public abstract sResponse fetch(sRequest request);
+          sResponse execute(sRequest request);
     }
 }

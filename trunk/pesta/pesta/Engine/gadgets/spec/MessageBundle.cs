@@ -21,6 +21,7 @@ using System;
 using System.Xml;
 using System.Collections.Generic;
 using System.Text;
+using Jayrock.Json;
 using Pesta.Engine.common.xml;
 
 namespace Pesta.Engine.gadgets.spec
@@ -39,6 +40,7 @@ namespace Pesta.Engine.gadgets.spec
 
         private readonly Dictionary<String, String> messages;
         private readonly String languageDirection;
+        private readonly String jsonString;
 
         /**
         * Constructs a message bundle from input xml (fetched from an external file).
@@ -60,6 +62,7 @@ namespace Pesta.Engine.gadgets.spec
                                               + ": " + e.Message);
             }
             messages = parseMessages(doc);
+            jsonString = new JsonObject(messages).ToString();
             languageDirection = locale.getLanguageDirection();
         }
 
@@ -70,6 +73,7 @@ namespace Pesta.Engine.gadgets.spec
         {
             messages = parseMessages(element);
             languageDirection = XmlUtil.getAttribute(element, "language_direction", "ltr");
+            jsonString = new JsonObject(messages).ToString();
         }
 
         /**
@@ -99,12 +103,14 @@ namespace Pesta.Engine.gadgets.spec
                 dir = child.languageDirection;
             }
             messages = merged;
+            jsonString = new JsonObject(messages).ToString();
             languageDirection = dir;
         }
 
         private MessageBundle()
         {
-            this.messages = new Dictionary<string, string>();
+            messages = new Dictionary<string, string>();
+            jsonString = "{}";
             languageDirection = "ltr";
         }
 
@@ -131,7 +137,7 @@ namespace Pesta.Engine.gadgets.spec
         private Dictionary<String, String> parseMessages(XmlElement element)
         {
             XmlNodeList nodes = element.GetElementsByTagName("msg");
-            Dictionary<String, String> messages = new Dictionary<String, String>(nodes.Count);
+            Dictionary<String, String> _messages = new Dictionary<String, String>(nodes.Count);
 
             for (int i = 0, j = nodes.Count; i < j; ++i)
             {
@@ -142,16 +148,9 @@ namespace Pesta.Engine.gadgets.spec
                     throw new SpecParserException(
                         "All message bundle entries must have a name attribute.");
                 }
-                if (messages.ContainsKey(name))
-                {
-                    messages[name] = msg.InnerText.Trim();
-                }
-                else
-                {
-                    messages.Add(name, msg.InnerText.Trim());
-                }
+                _messages.Add(name, msg.InnerText.Trim());
             }
-            return messages;
+            return _messages;
         }
 
         public override String ToString()
@@ -166,6 +165,11 @@ namespace Pesta.Engine.gadgets.spec
             }
             buf.Append("</messagebundle>");
             return buf.ToString();
+        }
+
+        public String ToJSONString()
+        {
+            return jsonString;
         }
     }
 }

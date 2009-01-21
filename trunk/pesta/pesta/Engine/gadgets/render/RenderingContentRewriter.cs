@@ -19,38 +19,37 @@
 #endregion
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
 using System.Text;
 using Jayrock.Json;
+using Jayrock.Json.Conversion;
+using org.apache.shindig.gadgets.parse;
 using org.apache.shindig.gadgets.rewrite;
+using org.apache.shindig.common.xml;
+using org.w3c.dom;
 using Pesta.Engine.auth;
 using Pesta.Engine.common;
 using Pesta.Engine.gadgets.http;
 using Pesta.Engine.gadgets.preload;
 using Pesta.Engine.gadgets.spec;
 using Pesta.Utilities;
-using ContentRewriter=Pesta.Engine.gadgets.rewrite.ContentRewriter;
+using ContentRewriter=Pesta.Engine.gadgets.rewrite.IContentRewriter;
 using Uri=Pesta.Engine.common.uri.Uri;
 
 namespace Pesta.Engine.gadgets.render
 {
     public class RenderingContentRewriter : ContentRewriter
     {
-        static readonly Regex DOCUMENT_SPLIT_PATTERN = new Regex(
-            "(.*)<head>(.*?)<\\/head>(?:.*)<body(.*?)>(.*?)<\\/body>(?:.*)", RegexOptions.Compiled | RegexOptions.IgnoreCase );
-        static readonly int BEFORE_HEAD_GROUP = 1;
-        static readonly int HEAD_GROUP = 2;
-        static readonly int BODY_ATTRIBUTES_GROUP = 3;
-        static readonly int BODY_GROUP = 4;
-        static readonly String DEFAULT_HEAD_CONTENT =
-            "<style type=\"text/css\">" +
-            "body,td,div,span,p{font-family:arial,sans-serif;}" +
-            "a {color:#0000cc;}a:visited {color:#551a8b;}" +
-            "a:active {color:#ff0000;}" +
-            "body{margin: 0px;padding: 0px;background-color:white;}" +
-            "</style>";
-        static readonly String INSERT_BASE_ELEMENT_KEY = "gadgets.insertBaseElement";
-        static readonly String FEATURES_KEY = "gadgets.features";
+        
+        private const String DEFAULT_CSS =
+                "body,td,div,span,p{font-family:arial,sans-serif;}" +
+                "a {color:#0000cc;}a:visited {color:#551a8b;}" +
+                "a:active {color:#ff0000;}" +
+                "body{margin: 0px;padding: 0px;background-color:white;}";
+
+        private const string INSERT_BASE_ELEMENT_KEY = "gadgets.insertBaseElement";
+        private const string FEATURES_KEY = "gadgets.features";
 
         private readonly MessageBundleFactory messageBundleFactory;
         private readonly ContainerConfig containerConfig;
@@ -70,37 +69,80 @@ namespace Pesta.Engine.gadgets.render
 
         public RewriterResults rewrite(sRequest req, sResponse resp,  MutableContent content) 
         {
-            return RewriterResults.cacheableIndefinitely();
+            return null;
         }
 
         public RewriterResults rewrite(Gadget gadget, MutableContent mutableContent)
         {
-            try 
+            try
             {
-                GadgetContent content = createGadgetContent(gadget, mutableContent);
+                Document document = mutableContent.getDocument();
 
-                injectBaseTag(gadget, content);
-                injectFeatureLibraries(gadget, content);
+                Element head = (Element)DomUtil.getFirstNamedChildNode(document.getDocumentElement(), "head");
+
+                // Remove all the elements currently in head and add them back after we inject content
+                NodeList children = head.getChildNodes();
+                List<Node> existingHeadContent = new List<Node>(children.getLength());
+                for (int i = 0; i < children.getLength(); i++) 
+                {
+                    existingHeadContent.Add(children.item(i));
+                }
+
+                foreach(Node n in existingHeadContent) 
+                {
+                    head.removeChild(n);
+                }
+
+                // Only inject default styles if no doctype was specified.
+                if (document.getDoctype() == null) 
+                {
+                    Element defaultStyle = document.createElement("style");
+                    defaultStyle.setAttribute("type", "text/css");
+                    head.appendChild(defaultStyle);
+                    defaultStyle.appendChild(defaultStyle.getOwnerDocument().
+                    createTextNode(DEFAULT_CSS));
+                }
+
+                injectBaseTag(gadget, head);
+                injectFeatureLibraries(gadget, head);
+
                 // This can be one script block.
-                content.appendHead("<script>");
-                injectMessageBundles(gadget, content);
-                injectDefaultPrefs(gadget, content);
-                injectPreloads(gadget, content);
-                content.appendHead("</script>");
-                injectOnLoadHandlers(content);
-                // TODO: Use preloads when RenderedGadget gets promoted to Gadget.
-                mutableContent.setContent(readonlyizeDocument(gadget, content));
+                Element mainScriptTag = document.createElement("script");
+                injectMessageBundles(gadget, mainScriptTag);
+                injectDefaultPrefs(gadget, mainScriptTag);
+                injectPreloads(gadget, mainScriptTag);
+
+                // We need to inject our script before any developer scripts.
+                head.appendChild(mainScriptTag);
+
+                Element body = (Element)DomUtil.getFirstNamedChildNode(document.getDocumentElement(), "body");
+
+                LocaleSpec localeSpec = gadget.getLocale();
+                if (localeSpec != null) {
+                body.setAttribute("dir", localeSpec.getLanguageDirection());
+                }
+
+                // re append head content
+                foreach(Node node in existingHeadContent)
+                {
+                    head.appendChild(node);
+                }
+
+                injectOnLoadHandlers(body);
+
+                mutableContent.documentChanged();
                 return RewriterResults.notCacheable();
             } 
-            catch (GadgetException e) 
+            catch (GadgetException ex) 
             {
                 // TODO: Rewriter interface needs to be modified to handle GadgetException or
                 // RewriterException or something along those lines.
-                throw e;
+                throw ex;
             }
+
         }
 
-        private void injectBaseTag(Gadget gadget, GadgetContent content)
+        private void injectBaseTag(Gadget gadget, Node headTag)
         {
             GadgetContext context = gadget.getContext();
             if ("true".Equals(containerConfig.get(context.getContainer(), INSERT_BASE_ELEMENT_KEY))) 
@@ -111,19 +153,25 @@ namespace Pesta.Engine.gadgets.render
                 {
                     _base = view.getHref();
                 }
-                content.appendHead("<base href='" + _base + "'/>");
+                Element baseTag = headTag.getOwnerDocument().createElement("base");
+                baseTag.setAttribute("href", _base.ToString());
+                headTag.insertBefore(baseTag, headTag.getFirstChild());
+
             }
         }
 
-        private void injectOnLoadHandlers(GadgetContent content) 
+        private void injectOnLoadHandlers(Node bodyTag) 
         {
-            content.appendBody("<script>gadgets.util.runOnLoadHandlers();</script>");
+            Element onloadScript = bodyTag.getOwnerDocument().createElement("script");
+            bodyTag.appendChild(onloadScript);
+            onloadScript.appendChild(bodyTag.getOwnerDocument().createTextNode(
+                "gadgets.util.runOnLoadHandlers();"));
         }
 
         /**
         * Injects javascript libraries needed to satisfy feature dependencies.
         */
-        private void injectFeatureLibraries(Gadget gadget, GadgetContent content)
+        private void injectFeatureLibraries(Gadget gadget, Node headTag)
         {
             // TODO: If there isn't any js in the document, we can skip this. Unfortunately, that means
             // both script tags (easy to detect) and event handlers (much more complex).
@@ -131,7 +179,7 @@ namespace Pesta.Engine.gadgets.render
             GadgetSpec spec = gadget.getSpec();
             String forcedLibs = context.getParameter("libs");
             HashKey<String> forced;
-            if (forcedLibs == null || forcedLibs.Length == 0) 
+            if (string.IsNullOrEmpty(forcedLibs)) 
             {
                 forced = new HashKey<string>();
             } 
@@ -144,13 +192,15 @@ namespace Pesta.Engine.gadgets.render
                 }
             }
 
-            String externFmt = "<script src=\"{0}\"></script>";
 
             // Forced libs are always done first.
             if (forced.Count != 0) 
             {
                 String jsUrl = urlGenerator.getBundledJsUrl(forced, context);
-                content.appendHead(String.Format(externFmt, jsUrl));
+                Element libsTag = headTag.getOwnerDocument().createElement("script");
+                libsTag.setAttribute("src", jsUrl);
+                headTag.appendChild(libsTag);
+
                 // Forced transitive deps need to be added as well so that they don't get pulled in twice.
                 // TODO: Figure out a clean way to avoid having to call getFeatures twice.
                 foreach(GadgetFeature dep in featureRegistry.getFeatures(forced)) 
@@ -159,38 +209,54 @@ namespace Pesta.Engine.gadgets.render
                 }
             }
 
-            StringBuilder inlineJs = new StringBuilder();
-
             // Inline any libs that weren't forced. The ugly context switch between inline and external
             // Js is needed to allow both inline and external scripts declared in feature.xml.
             String container = context.getContainer();
             ICollection<GadgetFeature> features = getFeatures(spec, forced);
 
+            // Precalculate the maximum length in order to avoid excessive garbage generation.
+            int size = 0;
             foreach(GadgetFeature feature in features) 
             {
                 foreach(JsLibrary library in feature.getJsLibraries(RenderingContext.GADGET, container))
                 {
                     if (library.GetType().Equals(JsLibrary.Type.URL))
                     {
-                        if (inlineJs.Length > 0) 
+                        size += library.Content.Length;
+                    }
+                }
+            }
+
+            // Really inexact.
+            StringBuilder inlineJs = new StringBuilder(size);
+
+            foreach (GadgetFeature feature in features)
+            {
+                foreach (JsLibrary library in feature.getJsLibraries(RenderingContext.GADGET, container))
+                {
+                    if (library._Type.Equals(JsLibrary.Type.URL))
+                    {
+                        if (inlineJs.Length > 0)
                         {
-                            content.appendHead("<script>")
-                                .appendHead(inlineJs.ToString())
-                                .appendHead("</script>");
+                            Element inlineTag = headTag.getOwnerDocument().createElement("script");
+                            headTag.appendChild(inlineTag);
+                            inlineTag.appendChild(headTag.getOwnerDocument().createTextNode(inlineJs.ToString()));
                             inlineJs.Length = 0;
                         }
-                        content.appendHead(String.Format(externFmt, library.Content));
-                    } 
-                    else 
+                        Element referenceTag = headTag.getOwnerDocument().createElement("script");
+                        referenceTag.setAttribute("src", library.Content);
+                        headTag.appendChild(referenceTag);
+                    }
+                    else
                     {
-                        if (!forced.Contains(feature.getName())) 
+                        if (!forced.Contains(feature.getName()))
                         {
                             // already pulled this file in from the shared contents.
                             if (context.getDebug())
                             {
                                 inlineJs.Append(library.DebugContent);
                             }
-                            else 
+                            else
                             {
                                 inlineJs.Append(library.Content);
                             }
@@ -204,9 +270,9 @@ namespace Pesta.Engine.gadgets.render
 
             if (inlineJs.Length > 0) 
             {
-                content.appendHead("<script>")
-                    .appendHead(inlineJs.ToString())
-                    .appendHead("</script>");
+                Element inlineTag = headTag.getOwnerDocument().createElement("script");
+                headTag.appendChild(inlineTag);
+                inlineTag.appendChild(headTag.getOwnerDocument().createTextNode(inlineJs.ToString()));
             }
         }
 
@@ -281,97 +347,89 @@ namespace Pesta.Engine.gadgets.render
 
             JsonObject features = containerConfig.getJsonObject(context.getContainer(), FEATURES_KEY);
 
-            try 
+            Dictionary<String, Object> config = new Dictionary<string, object>(features == null ? 2 : features.Names.Count + 2);
+
+            if (features != null) 
             {
                 // Discard what we don't care about.
-                JsonObject config;
-                if (features == null) 
+                foreach (GadgetFeature feature in reqs) 
                 {
-                    config = new JsonObject();
-                } 
-                else 
-                {
-                    String[] properties = new String[reqs.Count];
-                    int i = 0;
-                    foreach(GadgetFeature feature in reqs)
+                    String name = feature.getName();
+                    Object conf = features.Opt(name);
+                    if (conf != null) 
                     {
-                        properties[i++] = feature.getName();
+                      config.Add(name, conf);
                     }
-                    config = new JsonObject(features, properties);
                 }
+            }
 
                 // Add gadgets.util support. This is calculated dynamically based on request inputs.
                 ModulePrefs prefs = gadget.getSpec().getModulePrefs();
-                JsonObject featureMap = new JsonObject();
+                var values = prefs.getFeatures().Values;
+                Dictionary<String, Dictionary<String, String>> featureMap = 
+                    new Dictionary<string, Dictionary<string, string>>(values.Count);
 
-                foreach(Feature feature in prefs.getFeatures().Values)
+                foreach(Feature feature in values)
                 {
-                    featureMap.Put(feature.getName(), feature.getParams());
+                    featureMap.Add(feature.getName(), feature.getParams());
                 }
-                config.Put("core.util", featureMap);
+                config.Add("core.util", featureMap);
 
                 // Add authentication token config
-                SecurityToken authToken = context.getToken();
+                ISecurityToken authToken = context.getToken();
                 if (authToken != null) 
                 {
-                    JsonObject authConfig = new JsonObject();
+                    Dictionary<String,String> authConfig = new Dictionary<String,String>(2);
                     String updatedToken = authToken.getUpdatedToken();
                     if (updatedToken != null) 
                     {
-                        authConfig.Put("authToken", updatedToken);
+                        authConfig.Add("authToken", updatedToken);
                     }
                     String trustedJson = authToken.getTrustedJson();
                     if (trustedJson != null)
                     {
-                        authConfig.Put("trustedJson", trustedJson);
+                        authConfig.Add("trustedJson", trustedJson);
                     }
-                    config.Put("shindig.auth", authConfig);
+                    config.Add("shindig.auth", authConfig);
                 }
-                return "gadgets.config.init(" + config + ");\n";
-            }
-            catch (JsonException e) 
-            {
-                // Shouldn't be possible.
-                throw e;
-            }
+                    return "gadgets.config.init(" + JsonConvert.ExportToString(config) + ");\n";
         }
 
         /**
         * Injects message bundles into the gadget output.
         * @throws GadgetException If we are unable to retrieve the message bundle.
         */
-        private void injectMessageBundles(Gadget gadget, GadgetContent content) 
+        private void injectMessageBundles(Gadget gadget, Node scriptTag) 
         {
             GadgetContext context = gadget.getContext();
             MessageBundle bundle = messageBundleFactory.getBundle(
                 gadget.getSpec(), context.getLocale(), context.getIgnoreCache());
 
-            String msgs = new JsonObject(bundle.getMessages()).ToString();
-            content.appendHead("gadgets.Prefs.setMessages_(")
-                .appendHead(msgs)
-                .appendHead(");");
+            String msgs = bundle.ToJSONString();
+
+            Text text = scriptTag.getOwnerDocument().createTextNode("gadgets.Prefs.setMessages_(");
+            text.appendData(msgs);
+            text.appendData(");");
+            scriptTag.appendChild(text);
+
         }
 
         /**
         * Injects default values for user prefs into the gadget output.
         */
-        private void injectDefaultPrefs(Gadget gadget, GadgetContent content)
+        private void injectDefaultPrefs(Gadget gadget, Node scriptTag)
         {
-            JsonObject defaultPrefs = new JsonObject();
-            try 
-            {
+                List<UserPref> prefs = gadget.getSpec().getUserPrefs();
+                Dictionary<String, String> defaultPrefs = new Dictionary<string, string>(prefs.Count);
+
                 foreach(UserPref up in gadget.getSpec().getUserPrefs())
                 {
-                    defaultPrefs.Put(up.getName(), up.getDefaultValue());
+                    defaultPrefs.Add(up.getName(), up.getDefaultValue());
                 }
-            } 
-            catch (JsonException) 
-            {
-                // Never happens. Name is required (cannot be null). Default value is a String.
-            }
-            content.appendHead("gadgets.Prefs.setDefaultPrefs_(")
-                .appendHead(defaultPrefs.ToString())
-                .appendHead(");");
+                Text text = scriptTag.getOwnerDocument().createTextNode("gadgets.Prefs.setDefaultPrefs_(");
+                text.appendData(JsonConvert.ExportToString(defaultPrefs));
+                text.appendData(");");
+                scriptTag.appendChild(text);
         }
 
         /**
@@ -379,138 +437,30 @@ namespace Pesta.Engine.gadgets.render
         *
         * If preloading fails for any reason, we just output an empty object.
         */
-        private void injectPreloads(Gadget gadget, GadgetContent content) 
+        private void injectPreloads(Gadget gadget, Node scriptTag) 
         {
-            JsonObject preload = new JsonObject();
-            Preloads preloads = gadget.getPreloads();
+            IPreloads preloads = gadget.getPreloads();
 
-            foreach(var preloaded in preloads.getData()) 
+            Dictionary<String, Object> preload = new Dictionary<string, object>();
+
+            foreach(PreloadedData preloaded in preloads.getData()) 
             {
                 try 
                 {
-                    foreach (var entry in preloaded.toJson()) 
+                    foreach(var entry in preloaded.toJson()) 
                     {
-                        preload.Put(entry.Key, entry.Value);
+                        preload.Add(entry.Key, entry.Value);
                     }
                 } 
-                catch (PreloadException pe)
+                catch (PreloadException pe) 
                 {
                     // This will be thrown in the event of some unexpected exception. We can move on.
                 }
-
             }
-
-            content.appendHead("gadgets.io.preloaded_=")
-                .appendHead(preload.ToString())
-                .appendHead(";");
-        }
-
-        /**
-        * Produces GadgetContent by parsing the document into 3 pieces (head, body, and tail). If the
-        */
-        private GadgetContent createGadgetContent(Gadget gadget, MutableContent mutableContent)
-        {
-            String doc = mutableContent.getContent();
-            // Quick check for full document tags
-            String head = doc.Substring(0, Math.Min(150, doc.Length));
-            if (head.Contains("<HTML") || head.Contains("<html")) 
-            {
-                Match matcher = DOCUMENT_SPLIT_PATTERN.Match(doc);
-                if (matcher.Success) 
-                {
-                    GadgetContent content = new GadgetContent();
-                    content.appendHead(matcher.Groups[BEFORE_HEAD_GROUP].Value)
-                        .appendHead("<head>");
-
-                    content.appendBody(matcher.Groups[HEAD_GROUP].Value)
-                        .appendBody("</head>")
-                        .appendBody(createBodyTag(gadget, matcher.Groups[BODY_ATTRIBUTES_GROUP].Value))
-                        .appendBody(matcher.Groups[BODY_GROUP].Value);
-
-                    content.appendTail("</body></html>");
-                    return content;
-                }
-                return makeDefaultContent(gadget, mutableContent);
-            }
-            return makeDefaultContent(gadget, mutableContent);
-        }
-
-        /**
-        * Inserts basic content for a gadget. Used when the content does not contain a valid html doc.
-        */
-        private GadgetContent makeDefaultContent(Gadget gadget, MutableContent mutableContent)
-        {
-            GadgetContent content = new GadgetContent();
-            content.appendHead("<html><head>");
-            content.appendHead(DEFAULT_HEAD_CONTENT);
-            content.appendBody("</head>");
-            content.appendBody(createBodyTag(gadget, ""));
-            content.appendBody(mutableContent.getContent());
-            content.appendTail("</body></html>");
-            return content;
-        }
-
-        /**
-        * Produces the default body tag, inserting language direction as needed.
-        */
-        private String createBodyTag(Gadget gadget, String extra) 
-        {
-            LocaleSpec localeSpec = gadget.getLocale();
-            if (localeSpec == null) 
-            {
-                return "<body" + extra + ">";
-            }
-            return "<body" + extra + " dir='" + localeSpec.getLanguageDirection() + "'>";
-        }
-
-        /**
-        * Produces a readonly document for the gadget's content.
-        */
-        private String readonlyizeDocument(Gadget gadget, GadgetContent content)
-        {
-            return content.assemble();
-        }
-
-        private class GadgetContent 
-        {
-            private readonly StringBuilder head = new StringBuilder();
-            private readonly StringBuilder body = new StringBuilder();
-            private readonly StringBuilder tail = new StringBuilder();
-
-            public GadgetContent appendHead(String content) 
-            {
-                head.Append(content);
-                return this;
-            }
-
-            public GadgetContent appendBody(String content)
-            {
-                body.Append(content);
-                return this;
-            }
-
-            public GadgetContent appendTail(String content) 
-            {
-                tail.Append(content);
-                return this;
-            }
-
-            /**
-            * @return The readonly content for the gadget.
-            */
-            public String assemble() 
-            {
-                return new StringBuilder(head.Length + body.Length + tail.Length)
-                    .Append(head.ToString())
-                    .Append(body.ToString())
-                    .Append(tail.ToString())
-                    .ToString();
-            }
-
-            public override String ToString()
-            {
-                return assemble();
-            }
+            Text text = scriptTag.getOwnerDocument().createTextNode("gadgets.io.preloaded_=");
+            text.appendData(JsonConvert.ExportToString(preload));
+            text.appendData(";");
+            scriptTag.appendChild(text);
         }
     }
 }

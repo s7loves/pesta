@@ -36,7 +36,7 @@ namespace Pesta.Engine.gadgets.rewrite.lexer
     public class LinkingTagRewriter : HtmlTagTransformer
     {
         private readonly Uri relativeBase;
-        private readonly LinkRewriter linkRewriter;
+        private readonly ILinkRewriter linkRewriter;
         private readonly Dictionary<String, HashSet<String>> tagAttributeTargets;
         private readonly StringBuilder builder;
         private HashSet<String> currentTagAttrs;
@@ -50,7 +50,7 @@ namespace Pesta.Engine.gadgets.rewrite.lexer
             return targets;
         }
 
-        public LinkingTagRewriter(LinkRewriter linkRewriter, Uri relativeBase)
+        public LinkingTagRewriter(ILinkRewriter linkRewriter, Uri relativeBase)
         {
             this.linkRewriter = linkRewriter;
             this.relativeBase = relativeBase;
@@ -59,7 +59,7 @@ namespace Pesta.Engine.gadgets.rewrite.lexer
         }
 
         public LinkingTagRewriter(Dictionary<String, HashSet<String>> tagAttributeTargets,
-                                  LinkRewriter linkRewriter, Uri relativeBase)
+                                  ILinkRewriter linkRewriter, Uri relativeBase)
         {
             this.tagAttributeTargets = tagAttributeTargets;
             this.linkRewriter = linkRewriter;

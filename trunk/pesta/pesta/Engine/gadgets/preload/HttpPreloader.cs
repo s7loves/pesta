@@ -29,7 +29,7 @@ namespace Pesta.Engine.gadgets.preload
 {
     public class HttpPreloader : Preloader
     {
-        private static readonly RequestPipeline requestPipeline = DefaultRequestPipeline.Instance;
+        private static readonly IRequestPipeline requestPipeline = DefaultRequestPipeline.Instance;
         
 
         public HttpPreloader()

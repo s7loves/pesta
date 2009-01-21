@@ -47,7 +47,7 @@ namespace Pesta.Engine.social.service
             return rpcMethod.Substring(rpcMethod.IndexOf('.') + 1);
         }
 
-        public RpcRequestItem(JsonObject rpc, SecurityToken token,
+        public RpcRequestItem(JsonObject rpc, ISecurityToken token,
                               BeanConverter converter)
             : base(getService(rpc["method"].ToString()), getOperation(rpc["method"].ToString()), token, converter)
         {

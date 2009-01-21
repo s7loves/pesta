@@ -37,15 +37,15 @@ namespace Pesta.Engine.gadgets.rewrite.lexer
     ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
-    public class DefaultContentRewriter : ContentRewriter
+    public class DefaultContentRewriter : IContentRewriter
     {
-        private readonly GadgetSpecFactory _specFactory;
+        private readonly IGadgetSpecFactory _specFactory;
         private readonly String includeUrls;
         private readonly String excludeUrls;
         private readonly String expires;
         private readonly HashSet<String> includeTags;
 
-        public DefaultContentRewriter(GadgetSpecFactory specFactory, String includeUrls,
+        public DefaultContentRewriter(IGadgetSpecFactory specFactory, String includeUrls,
                                       String excludeUrls, String expires, String includeTags)
         {
             this._specFactory = specFactory;
@@ -138,7 +138,7 @@ namespace Pesta.Engine.gadgets.rewrite.lexer
 
                 if (ProxyUrl != null)
                 {
-                    LinkRewriter linkRewriter = CreateLinkRewriter(spec, rewriterFeature);
+                    ILinkRewriter linkRewriter = CreateLinkRewriter(spec, rewriterFeature);
                     LinkingTagRewriter rewriter = new LinkingTagRewriter(linkRewriter, source);
                     HashSet<String> toProcess = new HashSet<string>();
                     foreach (var item in rewriter.getSupportedTags())
@@ -214,7 +214,7 @@ namespace Pesta.Engine.gadgets.rewrite.lexer
         }
 
 
-        protected internal LinkRewriter CreateLinkRewriter(GadgetSpec spec, ContentRewriterFeature rewriterFeature)
+        protected internal ILinkRewriter CreateLinkRewriter(GadgetSpec spec, ContentRewriterFeature rewriterFeature)
         {
             return new ProxyingLinkRewriter(spec.getUrl(), rewriterFeature, ProxyUrl);
         }

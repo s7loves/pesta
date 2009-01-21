@@ -158,7 +158,7 @@ namespace Pesta.Engine.gadgets.oauth
             consumerInfos.Add(providerKey, keyAndSecret);
         }
 
-        public override ConsumerInfo getConsumerKeyAndSecret(SecurityToken securityToken, String serviceName, OAuthServiceProvider provider)
+        public override ConsumerInfo getConsumerKeyAndSecret(ISecurityToken securityToken, String serviceName, OAuthServiceProvider provider)
         {
             ++consumerKeyLookupCount;
             BasicOAuthStoreConsumerIndex pk = new BasicOAuthStoreConsumerIndex();
@@ -188,7 +188,7 @@ namespace Pesta.Engine.gadgets.oauth
             return new ConsumerInfo(consumer, cks.KeyName);
         }
 
-        private static BasicOAuthStoreTokenIndex makeBasicOAuthStoreTokenIndex(SecurityToken securityToken, String serviceName, String tokenName)
+        private static BasicOAuthStoreTokenIndex makeBasicOAuthStoreTokenIndex(ISecurityToken securityToken, String serviceName, String tokenName)
         {
             BasicOAuthStoreTokenIndex tokenKey = new BasicOAuthStoreTokenIndex();
             tokenKey.setGadgetUri(securityToken.getAppUrl());
@@ -199,7 +199,7 @@ namespace Pesta.Engine.gadgets.oauth
             return tokenKey;
         }
 
-        public override TokenInfo getTokenInfo(SecurityToken securityToken, ConsumerInfo consumerInfo,
+        public override TokenInfo getTokenInfo(ISecurityToken securityToken, ConsumerInfo consumerInfo,
                                                String serviceName, String tokenName)
         {
             ++accessTokenLookupCount;
@@ -207,7 +207,7 @@ namespace Pesta.Engine.gadgets.oauth
             return tokens.ContainsKey(tokenKey)?tokens[tokenKey]:null;
         }
 
-        public override void setTokenInfo(SecurityToken securityToken, ConsumerInfo consumerInfo,
+        public override void setTokenInfo(ISecurityToken securityToken, ConsumerInfo consumerInfo,
                                           String serviceName, String tokenName, TokenInfo tokenInfo)
         {
             ++accessTokenAddCount;
@@ -215,7 +215,7 @@ namespace Pesta.Engine.gadgets.oauth
             tokens.Add(tokenKey, tokenInfo);
         }
 
-        public override void removeToken(SecurityToken securityToken, ConsumerInfo consumerInfo, String serviceName, String tokenName)
+        public override void removeToken(ISecurityToken securityToken, ConsumerInfo consumerInfo, String serviceName, String tokenName)
         {
             ++accessTokenRemoveCount;
             BasicOAuthStoreTokenIndex tokenKey = makeBasicOAuthStoreTokenIndex(securityToken, serviceName, tokenName);

@@ -61,7 +61,7 @@ namespace Pesta.Engine.social.service
 
         public static readonly String APP_SUBSTITUTION_TOKEN = "@app";
 
-        private readonly SecurityToken token;
+        private readonly ISecurityToken token;
 
         protected readonly BeanConverter converter;
 
@@ -69,7 +69,7 @@ namespace Pesta.Engine.social.service
 
         private readonly String service;
 
-        public RequestItem(String service, String operation, SecurityToken token, BeanConverter converter)
+        public RequestItem(String service, String operation, ISecurityToken token, BeanConverter converter)
         {
             this.service = service;
             this.operation = operation;
@@ -222,7 +222,7 @@ namespace Pesta.Engine.social.service
             return service;
         }
 
-        public SecurityToken getToken()
+        public ISecurityToken getToken()
         {
             return token;
         }

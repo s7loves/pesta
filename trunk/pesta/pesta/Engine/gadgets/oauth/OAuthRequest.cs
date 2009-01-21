@@ -88,7 +88,7 @@ namespace Pesta.Engine.gadgets.oauth
         /// </summary>
         ///
         protected internal readonly OAuthFetcherConfig fetcherConfig;
-        protected internal readonly HttpFetcher fetcher;
+        protected internal readonly IHttpFetcher fetcher;
         /// <summary>
         /// OAuth specific stuff to include in the response.
         /// </summary>

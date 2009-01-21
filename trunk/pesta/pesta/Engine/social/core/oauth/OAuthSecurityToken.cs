@@ -30,7 +30,7 @@ namespace Pesta.Engine.social.core.oauth
     ///  Apache Software License 2.0 2008 Shindig
     /// </para>
     /// </remarks>
-    public class OAuthSecurityToken : SecurityToken
+    public class OAuthSecurityToken : ISecurityToken
     {
         private readonly String userId;
         private readonly String appUrl;

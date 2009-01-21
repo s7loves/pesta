@@ -112,7 +112,7 @@ namespace Pesta.Engine.social.oauth
             return false;
         }
 
-        public SecurityToken getSecurityToken(String appUrl, String userId)
+        public ISecurityToken getSecurityToken(String appUrl, String userId)
         {
             return new OAuthSecurityToken(userId, appUrl, getAppId(appUrl), "samplecontainer");
         }

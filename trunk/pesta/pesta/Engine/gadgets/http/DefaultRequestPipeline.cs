@@ -26,9 +26,9 @@ using Pesta.Utilities;
 
 namespace Pesta.Engine.gadgets.http
 {
-    public class DefaultRequestPipeline : RequestPipeline
+    public class DefaultRequestPipeline : IRequestPipeline
     {
-        private readonly HttpFetcher httpFetcher;
+        private readonly IHttpFetcher httpFetcher;
         private readonly Provider<OAuthRequest> oauthRequestProvider;
         public readonly static DefaultRequestPipeline Instance = new DefaultRequestPipeline();
         protected DefaultRequestPipeline() 

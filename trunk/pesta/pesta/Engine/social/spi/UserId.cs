@@ -85,7 +85,7 @@ namespace Pesta.Engine.social.spi
             return userId;
         }
 
-        public String getUserId(SecurityToken token)
+        public String getUserId(ISecurityToken token)
         {
             if (type == Type.owner)
             {

@@ -137,7 +137,7 @@ namespace Pesta.Engine.gadgets
         /**
          * @return The token associated with this request
          */
-        public virtual SecurityToken getToken()
+        public virtual ISecurityToken getToken()
         {
             return null;
         }

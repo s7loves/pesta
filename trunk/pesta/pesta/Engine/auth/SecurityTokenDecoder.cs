@@ -45,6 +45,6 @@ namespace Pesta.Engine.auth
          * @return the decrypted and verified token.
          * @throws SecurityTokenException If tokenString is not a valid token
          */
-        public abstract SecurityToken createToken(Dictionary<String, String> tokenParameters);
+        public abstract ISecurityToken createToken(Dictionary<String, String> tokenParameters);
     }
 }

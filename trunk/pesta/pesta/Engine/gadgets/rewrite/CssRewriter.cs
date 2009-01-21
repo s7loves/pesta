@@ -37,7 +37,7 @@ namespace Pesta.Engine.gadgets.rewrite
     {
         private static readonly Regex urlMatcher = new Regex("(url\\s*\\(\\s*['\"]?)([^\\)'\"]*)(['\"]?\\s*\\))", RegexOptions.IgnoreCase);
 
-        public static String rewrite(String content, Uri source, LinkRewriter linkRewriter)
+        public static String rewrite(String content, Uri source, ILinkRewriter linkRewriter)
         {
             java.io.StringWriter sw = new java.io.StringWriter((content.Length * 110) / 100);
             rewrite(new java.io.StringReader(content), source, linkRewriter, sw, false);
@@ -45,7 +45,7 @@ namespace Pesta.Engine.gadgets.rewrite
         }
 
         public static List<String> rewrite(java.io.Reader content, Uri source,
-                                           LinkRewriter rewriter, java.io.Writer writer, bool extractImports)
+                                           ILinkRewriter rewriter, java.io.Writer writer, bool extractImports)
         {
             List<String> imports = new List<string>();
             CharProducer producer = CharProducer.Factory.create(content,
@@ -107,7 +107,7 @@ namespace Pesta.Engine.gadgets.rewrite
             return imports;
         }
 
-        private static String rewriteLink(Token token, Uri _base, LinkRewriter rewriter)
+        private static String rewriteLink(Token token, Uri _base, ILinkRewriter rewriter)
         {
             Match matcher = urlMatcher.Match(token.toString());
             if (!matcher.Success)

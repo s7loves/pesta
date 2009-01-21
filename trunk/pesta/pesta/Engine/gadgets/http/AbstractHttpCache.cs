@@ -23,7 +23,7 @@ using Pesta.Engine.auth;
 
 namespace Pesta.Engine.gadgets.http
 {
-    public abstract class AbstractHttpCache : HttpCache
+    public abstract class AbstractHttpCache : IHttpCache
     {
         public static readonly char KEY_SEPARATOR = ':';
         public static readonly String DEFAULT_KEY_VALUE = "0";
@@ -165,7 +165,7 @@ namespace Pesta.Engine.gadgets.http
 
         protected static String getTokenOwner(sRequest request)
         {
-            SecurityToken st = request.SecurityToken;
+            ISecurityToken st = request.SecurityToken;
             if (request.AuthType != AuthType.NONE &&
                 st.getOwnerId() != null
                 && st.getOwnerId().Equals(st.getViewerId())
