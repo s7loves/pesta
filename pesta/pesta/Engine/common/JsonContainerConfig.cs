@@ -26,6 +26,7 @@ using Jayrock.Json.Conversion;
 
 namespace Pesta.Engine.common
 {
+    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
     class JsonContainerConfig : ContainerConfig
     {
         

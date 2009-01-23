@@ -23,6 +23,7 @@ using Pesta.Engine.gadgets.spec;
 
 namespace Pesta.Engine.gadgets.preload
 {
+    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
     public class ConcurrentPreloaderService : PreloaderService
     {
         private readonly List<Preloader> preloaders = new List<Preloader>();

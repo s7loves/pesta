@@ -30,7 +30,7 @@ namespace Pesta.Engine.social.service
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig
+    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
     /// </para>
     /// </remarks>
     public class ActivityHandler : DataRequestHandler
@@ -42,7 +42,7 @@ namespace Pesta.Engine.social.service
         public ActivityHandler()
         {
             //service = JsonDbOpensocialService.Instance;
-            service = PartuzaService.Instance;
+            service = RayaService.Instance;
         }
 
         /**

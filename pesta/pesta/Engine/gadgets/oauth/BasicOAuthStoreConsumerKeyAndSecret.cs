@@ -25,7 +25,7 @@ namespace Pesta.Engine.gadgets.oauth
     /// @author beaton@google.com (Your Name Here)
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig
+    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
     /// </para>
     /// </remarks>
     public class BasicOAuthStoreConsumerKeyAndSecret

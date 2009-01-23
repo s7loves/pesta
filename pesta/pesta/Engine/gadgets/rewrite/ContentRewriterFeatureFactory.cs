@@ -26,6 +26,7 @@ using URI = System.Uri;
 
 namespace Pesta.Engine.gadgets.rewrite
 {
+    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
     class ContentRewriterFeatureFactory
     {
         private readonly IGadgetSpecFactory specFactory;

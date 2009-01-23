@@ -1,4 +1,23 @@
-﻿using System;
+﻿#region License, Terms and Conditions
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
+#endregion
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Jayrock.Json;
@@ -11,10 +30,11 @@ using Pesta.Engine.social.spi;
 
 namespace Pesta.DataAccess
 {
-    public class PartuzaService : PersonService, ActivityService, AppDataService, MessagesService
+    ///  Apache Software License 2.0 2008 Partuza! ported to Pesta by Sean Lin M.T. (my6solutions.com)
+    public class RayaService : PersonService, ActivityService, AppDataService, MessagesService
     {
-        public readonly static PartuzaService Instance = new PartuzaService();
-        protected PartuzaService()
+        public readonly static RayaService Instance = new RayaService();
+        protected RayaService()
         {
             this.converter = new BeanJsonConverter();
         }
@@ -57,7 +77,7 @@ namespace Pesta.DataAccess
                 case GroupId.Type.all:
                 case GroupId.Type.friends:
                 case GroupId.Type.groupId:
-                    var friendIds = PartuzaDbFetcher.get().getFriendIds(int.Parse(userId)).ToArray();
+                    var friendIds = RayaDbFetcher.get().getFriendIds(int.Parse(userId)).ToArray();
                     for (int i = 0; i < friendIds.Length; i++)
                     {
                         returnVal.Add(friendIds[i].ToString());
@@ -84,7 +104,7 @@ namespace Pesta.DataAccess
             CollectionOptions _options, HashSet<String> _fields, ISecurityToken _token)
         {
             HashSet<String> _ids = this.getIdSet(_userId, _groupId, _token);
-            var _allPeople = PartuzaDbFetcher.get().getPeople(_ids, _fields, _options);
+            var _allPeople = RayaDbFetcher.get().getPeople(_ids, _fields, _options);
             var _totalSize = _allPeople.Count;
             var result = new List<Person>();
             foreach (var _id in _ids) 
@@ -148,7 +168,7 @@ namespace Pesta.DataAccess
             String _appId, HashSet<String> _fields, ISecurityToken _token)
         {
             var _ids = this.getIdSet(_userId, _groupId, _token);
-            var _data = PartuzaDbFetcher.get().getAppData(_ids, _fields, _appId);
+            var _data = RayaDbFetcher.get().getAppData(_ids, _fields, _appId);
             
             return _data;
         }
@@ -172,7 +192,7 @@ namespace Pesta.DataAccess
             _appId = _token.getAppId();
             foreach (var _key in _fields)
             {
-                if (!PartuzaDbFetcher.get().deleteAppData(userId, _key, _appId)) 
+                if (!RayaDbFetcher.get().deleteAppData(userId, _key, _appId)) 
                 {
                     throw new SocialSpiException(ResponseError.INTERNAL_ERROR, "Internal server error");
                 }
@@ -192,7 +212,7 @@ namespace Pesta.DataAccess
                     foreach (var _key in _fields) 
                     {
                         var _value = _values[_key] ?? null;
-                        if (! PartuzaDbFetcher.get().setAppData(_userId.getUserId(_token), _key, _value, _token.getAppId())) 
+                        if (! RayaDbFetcher.get().setAppData(_userId.getUserId(_token), _key, _value, _token.getAppId())) 
                         {
                             throw new SocialSpiException(ResponseError.INTERNAL_ERROR, "Internal server error");
                         }
@@ -207,7 +227,7 @@ namespace Pesta.DataAccess
             GroupId _groupId, String _appId, HashSet<String> _fields, ISecurityToken _token)
         {
             var _ids = this.getIdSet(_userIds, _groupId, _token);
-            var _activities = PartuzaDbFetcher.get().getActivities(_ids, _appId, _fields);
+            var _activities = RayaDbFetcher.get().getActivities(_ids, _appId, _fields);
             if (_activities.Count != 0)
             {
                 return new RestfulCollection<Activity>(_activities);
@@ -248,7 +268,7 @@ namespace Pesta.DataAccess
             }
             IEnumerator<string> iuserid = _ids.GetEnumerator();
             iuserid.MoveNext();
-            if (!PartuzaDbFetcher.get().deleteActivities(iuserid.Current, _appId, _activityIds)) 
+            if (!RayaDbFetcher.get().deleteActivities(iuserid.Current, _appId, _activityIds)) 
             {
                 throw new SocialSpiException(ResponseError.NOT_IMPLEMENTED, "Invalid activity id(s)");
             }
@@ -264,7 +284,7 @@ namespace Pesta.DataAccess
                 {
                     throw new SocialSpiException(ResponseError.UNAUTHORIZED, "unauthorized: Create activity permission denied.");
                 }
-                PartuzaDbFetcher.get().createActivity(_userId.getUserId(_token), _activity, _token.getAppId());
+                RayaDbFetcher.get().createActivity(_userId.getUserId(_token), _activity, _token.getAppId());
             } 
             catch (Exception _e) 
             {
