@@ -21,6 +21,7 @@ using System;
 
 namespace Pesta.Engine.gadgets.process
 {
+    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
     public class ProcessingException : Exception
     {
         public ProcessingException(Exception t)

@@ -23,6 +23,7 @@ using Pesta.Interop.oauth;
 
 namespace Pesta.Engine.gadgets.oauth
 {
+    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
     public class OAuthUtil
     {
         public static String getParameter(OAuthMessage message, String name)

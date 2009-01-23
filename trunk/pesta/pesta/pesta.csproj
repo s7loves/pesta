@@ -435,8 +435,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>LinqRaya.dbml</DependentUpon>
     </Compile>
-    <Compile Include="DataAccess\PartuzaDbFetcher.cs" />
-    <Compile Include="DataAccess\PartuzaService.cs" />
+    <Compile Include="DataAccess\RayaDbFetcher.cs" />
+    <Compile Include="DataAccess\RayaService.cs" />
     <Compile Include="Engine\common\JsonContainerConfig.cs" />
     <Compile Include="Engine\common\uri\Uri.cs" />
     <Compile Include="Engine\common\uri\UriBuilder.cs" />

@@ -26,6 +26,7 @@ using Pesta.Utilities;
 
 namespace Pesta.Engine.gadgets.http
 {
+    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
     public class DefaultRequestPipeline : IRequestPipeline
     {
         private readonly IHttpFetcher httpFetcher;
