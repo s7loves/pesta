@@ -56,7 +56,8 @@ namespace Pesta.Engine.gadgets.http
         {
             try
             {
-                return makeResponse(request.req);
+                sResponse resp = makeResponse(request.req);
+                return resp;
             }
             catch (Exception)
             {

@@ -90,7 +90,7 @@ namespace Pesta.Engine.gadgets
                         // We create this dummy spec to avoid the cost of re-parsing when a remote site is out.
                         spec = new GadgetSpec(uri, ERROR_SPEC);
                         spec.setAttribute(ERROR_KEY, e);
-                    HttpRuntime.Cache.Insert(uri.ToString(), spec, null, System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromTicks(refresh));
+                    HttpRuntime.Cache.Insert(uri.ToString(), spec, null, System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromSeconds(refresh));
                 }
             }
             else
@@ -125,7 +125,7 @@ namespace Pesta.Engine.gadgets
             }
 
             GadgetSpec spec = new GadgetSpec(url, response.responseString);
-            HttpRuntime.Cache.Insert(url.ToString(), spec, null, System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromTicks(refresh));
+            HttpRuntime.Cache.Insert(url.ToString(), spec, null, System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromSeconds(refresh));
             return spec;
         }
     }
