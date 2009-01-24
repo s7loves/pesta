@@ -76,7 +76,7 @@ namespace Pesta.Engine.gadgets
                     // Enforce negative caching.
                     bundle = cached ?? MessageBundle.EMPTY;
                     }
-                HttpRuntime.Cache.Insert(key, bundle, null, System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromTicks(refresh));
+                HttpRuntime.Cache.Insert(key, bundle, null, System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromSeconds(refresh));
             }
             else
             {
@@ -139,7 +139,6 @@ namespace Pesta.Engine.gadgets
             }
 
             MessageBundle bundle = new MessageBundle(locale, response.responseString);
-            //HttpRuntime.Cache.Insert(url.ToString(), bundle, null, System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromTicks(refresh));
             return bundle;
         }
     }
