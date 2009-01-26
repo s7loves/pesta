@@ -194,9 +194,9 @@ namespace Pesta.Engine.gadgets.rewrite.lexer
             {
                 if (!HttpRuntime.AppDomainAppVirtualPath.Equals("/"))
                 {
-                    return HttpRuntime.AppDomainAppVirtualPath + "/gadgets/proxy.ashx?url=";
+                    return HttpRuntime.AppDomainAppVirtualPath + "/gadgets/proxy?url=";
                 }
-                return "/gadgets/proxy.ashx?url=";
+                return "/gadgets/proxy?url=";
             }
         }
 
@@ -207,9 +207,9 @@ namespace Pesta.Engine.gadgets.rewrite.lexer
             {
                 if (!HttpRuntime.AppDomainAppVirtualPath.Equals("/"))
                 {
-                    return HttpRuntime.AppDomainAppVirtualPath + "/gadgets/concat.ashx?"; 
+                    return HttpRuntime.AppDomainAppVirtualPath + "/gadgets/concat?"; 
                 }
-                return "/gadgets/concat.ashx?";
+                return "/gadgets/concat?";
             }
         }
 

@@ -121,12 +121,12 @@ shindig.Auth = function() {
    * efficiently including the gadget URL in the auth token.  If you embed
    * the entire URL in the security token, you effectively double the size
    * of the URL passed on the gadget rendering request:
-   *   /gadgets/ifr.ashx?url=<gadget-url>#st=<encrypted-gadget-url>
+   *   /gadgets/ifr?url=<gadget-url>#st=<encrypted-gadget-url>
    *
    * This can push the gadget render URL beyond the max length supported
    * by browsers, and then things break.  To work around this, the
    * security token can include only a (much shorter) hash of the gadget-url:
-   *  /gadgets/ifr.ashx?url=<gadget-url>#st=<xyz>
+   *  /gadgets/ifr?url=<gadget-url>#st=<xyz>
    *  
    * However, we still want the proxy that handles gadgets.io.makeRequest
    * to be able to look up the gadget URL efficiently, without requring
