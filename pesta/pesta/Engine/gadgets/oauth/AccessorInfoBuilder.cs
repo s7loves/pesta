@@ -41,15 +41,15 @@ namespace Pesta.Engine.gadgets.oauth
         private AccessorInfo.OAuthParamLocation? location;
         private AccessorInfo.HttpMethod method;
 
-        public AccessorInfo create()
+        public AccessorInfo create(OAuthResponseParams responseParams)
         {
             if (location == null)
             {
-                throw new GadgetException(GadgetException.Code.INTERNAL_SERVER_ERROR, "no location");
+                throw responseParams.oauthRequestException(OAuthError.UNKNOWN_PROBLEM, "no location");
             }
             if (consumer == null)
             {
-                throw new GadgetException(GadgetException.Code.INTERNAL_SERVER_ERROR, "no consumer");
+                throw responseParams.oauthRequestException(OAuthError.UNKNOWN_PROBLEM, "no consumer");
             }
 
             OAuthAccessor accessor = new OAuthAccessor(consumer.getConsumer());

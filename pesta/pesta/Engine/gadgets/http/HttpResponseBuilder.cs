@@ -60,7 +60,7 @@ namespace Pesta.Engine.gadgets.http
             headers.Add(response.getHeaders());
             foreach (var item in response.getMetadata())
             {
-                this.metadata.Add(item.Key, item.Value);
+                metadata.Add(item.Key, item.Value);
             }
             responseBytes = response.responseBytes;
         }
@@ -203,7 +203,7 @@ namespace Pesta.Engine.gadgets.http
             return headers;
         }
 
-        private Dictionary<string, string> getMetadata()
+        public Dictionary<string, string> getMetadata()
         {
             return metadata;
         }

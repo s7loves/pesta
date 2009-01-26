@@ -219,13 +219,11 @@ namespace Pesta.Interop.oauth
             }
             if (!pMap.ContainsKey(OAuth.OAUTH_TIMESTAMP))
             {
-                //addParameter(OAuth.OAUTH_TIMESTAMP, UnixTime.ConvertToUnixTimestamp(DateTime.UtcNow).ToString());
-                addParameter(OAuth.OAUTH_TIMESTAMP, "1231465594");
+                addParameter(OAuth.OAUTH_TIMESTAMP, UnixTime.ConvertToUnixTimestamp(DateTime.UtcNow).ToString());
             }
             if (!pMap.ContainsKey(OAuth.OAUTH_NONCE))
             {
-                //addParameter(OAuth.OAUTH_NONCE, Crypto.getRandomString(OAuth.OAUTH_NONCE_LENGTH));
-                addParameter(OAuth.OAUTH_NONCE, "1178df08dd30faeaa1366acebf6f3ba2");
+                addParameter(OAuth.OAUTH_NONCE, Crypto.getRandomString(OAuth.OAUTH_NONCE_LENGTH));
             }
             
             sign(accessor);

@@ -84,6 +84,24 @@ namespace Pesta.Engine.social.service
         */
         public abstract class Preconditions<T>
         {
+            public static T checkNotNull(T coll, T message)
+            {
+                if (coll == null)
+                {
+                    return message;
+                }
+                return coll;
+            }
+
+            public static string checkNotNull(string coll)
+            {
+                if (coll == null)
+                {
+                    return "Null value";
+                }
+                return coll;
+            }
+
             public static void requireNotEmpty(ICollection<T> coll, String message)
             {
                 if (coll.Count == 0)

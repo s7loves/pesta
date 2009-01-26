@@ -18,6 +18,7 @@
  */
 #endregion
 using System;
+using System.Linq;
 using System.Text;
 using Pesta.Engine.auth;
 using Pesta.Engine.gadgets.spec;
@@ -66,16 +67,16 @@ namespace Pesta.Engine.gadgets.oauth
          * and secret for that.  Signed fetch always sticks the parameters in the query string.
          */
         public AccessorInfo getOAuthAccessor(ISecurityToken securityToken,
-                                             OAuthArguments arguments, OAuthClientState clientState)
+                                             OAuthArguments arguments, OAuthClientState clientState, OAuthResponseParams responseParams)
         {
             AccessorInfoBuilder accessorBuilder = new AccessorInfoBuilder();
 
             // Does the gadget spec tell us any details about the service provider, like where to put the
             // OAuth parameters and what methods to use for their URLs?
             OAuthServiceProvider provider = null;
-            if (arguments.MayUseToken())
+            if (arguments.mayUseToken())
             {
-                provider = lookupSpecInfo(securityToken, arguments, accessorBuilder);
+                provider = lookupSpecInfo(securityToken, arguments, accessorBuilder, responseParams);
             }
             else
             {
@@ -84,44 +85,60 @@ namespace Pesta.Engine.gadgets.oauth
             }
 
             // What consumer key/secret should we use?
-            OAuthStore.ConsumerInfo consumer = store.getConsumerKeyAndSecret(
-                securityToken, arguments.ServiceName, provider);
-            accessorBuilder.setConsumer(consumer);
+            OAuthStore.ConsumerInfo consumer;
+            try
+            {
+                consumer = store.getConsumerKeyAndSecret(
+                    securityToken, arguments.getServiceName(), provider);
+                accessorBuilder.setConsumer(consumer);
+            }
+            catch (GadgetException e)
+            {
+                throw responseParams.oauthRequestException(OAuthError.UNKNOWN_PROBLEM,
+                    "Unable to retrieve consumer key", e);
+            }
+
 
             // Should we use the OAuth access token?  We never do this unless the client allows it, and
             // if owner == viewer.
-            if (arguments.MayUseToken()
+            if (arguments.mayUseToken()
                 && securityToken.getOwnerId() != null
                 && securityToken.getViewerId().Equals(securityToken.getOwnerId()))
             {
-                lookupToken(securityToken, consumer, arguments, clientState, accessorBuilder);
+                lookupToken(securityToken, consumer, arguments, clientState, accessorBuilder, responseParams);
             }
 
-            return accessorBuilder.create();
+            return accessorBuilder.create(responseParams);
         }
 
         /**
          * Lookup information contained in the gadget spec.
          */
         private OAuthServiceProvider lookupSpecInfo(ISecurityToken securityToken, OAuthArguments arguments,
-                                                    AccessorInfoBuilder accessorBuilder)
+                                                    AccessorInfoBuilder accessorBuilder, OAuthResponseParams responseParams)
         {
-            GadgetSpec spec = findSpec(securityToken, arguments);
+            GadgetSpec spec = findSpec(securityToken, arguments, responseParams);
             OAuthSpec oauthSpec = spec.getModulePrefs().getOAuthSpec();
             if (oauthSpec == null)
             {
-                throw oauthNotFoundEx(securityToken);
+                throw responseParams.oauthRequestException(OAuthError.BAD_OAUTH_CONFIGURATION,
+                    "Failed to retrieve OAuth URLs, spec for gadget " +
+                    securityToken.getAppUrl() + " does not contain OAuth element.");
             }
-            OAuthService service = oauthSpec.getServices()[arguments.ServiceName];
+            OAuthService service = oauthSpec.getServices()[arguments.getServiceName()];
             if (service == null)
             {
-                throw serviceNotFoundEx(securityToken, oauthSpec, arguments.ServiceName);
+                throw responseParams.oauthRequestException(OAuthError.BAD_OAUTH_CONFIGURATION,
+                    "Failed to retrieve OAuth URLs, spec for gadget does not contain OAuth service " +
+                    arguments.getServiceName() + ".  Known services: " +
+                    String.Join(",",oauthSpec.getServices().Keys.AsEnumerable().ToArray()) + '.');
+
             }
             // In theory some one could specify different parameter locations for request token and
             // access token requests, but that's probably not useful.  We just use the request token
             // rules for everything.
-            accessorBuilder.setParameterLocation(getStoreLocation(service.getRequestUrl().location));
-            accessorBuilder.setMethod(getStoreMethod(service.getRequestUrl().method));
+            accessorBuilder.setParameterLocation(getStoreLocation(service.getRequestUrl().location, responseParams));
+            accessorBuilder.setMethod(getStoreMethod(service.getRequestUrl().method, responseParams));
             OAuthServiceProvider provider = new OAuthServiceProvider(
                 service.getRequestUrl().url.ToString(),
                 service.getAuthorizationUrl().ToString(),
@@ -147,7 +164,7 @@ namespace Pesta.Engine.gadgets.oauth
          * @throws GadgetException 
          */
         private void lookupToken(ISecurityToken securityToken, OAuthStore.ConsumerInfo consumerInfo,
-                                 OAuthArguments arguments, OAuthClientState clientState, AccessorInfoBuilder accessorBuilder)
+                                 OAuthArguments arguments, OAuthClientState clientState, AccessorInfoBuilder accessorBuilder, OAuthResponseParams responseParams)
         {
             if (clientState.getRequestToken() != null)
             {
@@ -166,8 +183,17 @@ namespace Pesta.Engine.gadgets.oauth
             else
             {
                 // No useful client-side state, check persistent storage
-                OAuthStore.TokenInfo tokenInfo = store.getTokenInfo(securityToken, consumerInfo,
-                                                                    arguments.ServiceName, arguments.TokenName);
+                OAuthStore.TokenInfo tokenInfo;
+                try
+                {
+                    tokenInfo = store.getTokenInfo(securityToken, consumerInfo,
+                        arguments.getServiceName(), arguments.getTokenName());
+                }
+                catch (GadgetException e)
+                {
+                    throw responseParams.oauthRequestException(OAuthError.UNKNOWN_PROBLEM,
+                        "Unable to retrieve access token", e);
+                }
                 if (tokenInfo != null && tokenInfo.getAccessToken() != null)
                 {
                     // We have an access token in persistent storage, use that.
@@ -180,13 +206,13 @@ namespace Pesta.Engine.gadgets.oauth
                 {
                     // We don't have an access token yet, but the client sent us a (hopefully) preapproved
                     // request token.
-                    accessorBuilder.setRequestToken(arguments.RequestToken);
-                    accessorBuilder.setTokenSecret(arguments.RequestTokenSecret);
+                    accessorBuilder.setRequestToken(arguments.getRequestToken());
+                    accessorBuilder.setTokenSecret(arguments.getRequestTokenSecret());
                 }
             }
         }
 
-        private static AccessorInfo.OAuthParamLocation getStoreLocation(OAuthService.Location location)
+        private static AccessorInfo.OAuthParamLocation getStoreLocation(OAuthService.Location location, OAuthResponseParams responseParams)
         {
             if (location == OAuthService.Location.HEADER)
             {
@@ -200,11 +226,11 @@ namespace Pesta.Engine.gadgets.oauth
             {
                 return AccessorInfo.OAuthParamLocation.POST_BODY;
             }
-            throw new GadgetException(GadgetException.Code.INTERNAL_SERVER_ERROR,
-                                      "Unknown parameter location " + location);
+            throw responseParams.oauthRequestException(OAuthError.INVALID_REQUEST,
+                    "Unknown parameter location " + location);
         }
 
-        private static AccessorInfo.HttpMethod getStoreMethod(OAuthService.Method method)
+        private static AccessorInfo.HttpMethod getStoreMethod(OAuthService.Method method, OAuthResponseParams responseParams)
         {
             if (method == OAuthService.Method.GET)
             {
@@ -214,62 +240,64 @@ namespace Pesta.Engine.gadgets.oauth
             {
                 return AccessorInfo.HttpMethod.POST;
             }
-            throw new GadgetException(GadgetException.Code.INTERNAL_SERVER_ERROR,
-                                      "Unknown method " + method);
+            throw responseParams.oauthRequestException(OAuthError.INVALID_REQUEST, "Unknown method " + method);
+
         }
 
-        private GadgetSpec findSpec(ISecurityToken securityToken, OAuthArguments arguments)
+        private GadgetSpec findSpec(ISecurityToken securityToken, OAuthArguments arguments, OAuthResponseParams responseParams)
         {
             try
             {
                 return specFactory.getGadgetSpec(new URI(securityToken.getAppUrl()),
-                                                 arguments.BypassSpecCache);
+                                                 arguments.getBypassSpecCache());
             }
             catch (UriFormatException e)
             {
-                throw new UserVisibleOAuthException("could not fetch gadget spec, gadget URI invalid", e);
+                throw responseParams.oauthRequestException(OAuthError.UNKNOWN_PROBLEM,
+                        "Could not fetch gadget spec, gadget URI invalid.", e);
             }
-        }
-
-        private static GadgetException serviceNotFoundEx(ISecurityToken securityToken, OAuthSpec oauthSpec, String serviceName)
-        {
-            StringBuilder message = new StringBuilder()
-                .Append("Spec for gadget ")
-                .Append(securityToken.getAppUrl())
-                .Append(" does not contain OAuth service ")
-                .Append(serviceName)
-                .Append(".  Known services: ");
-            string[] temp = new string[oauthSpec.getServices().Keys.Count];
-            oauthSpec.getServices().Keys.CopyTo(temp, 0);
-            message.Append(String.Join(",", temp));
-            return new UserVisibleOAuthException(message.ToString());
-        }
-
-        private static GadgetException oauthNotFoundEx(ISecurityToken securityToken)
-        {
-            StringBuilder message = new StringBuilder()
-                .Append("Spec for gadget ")
-                .Append(securityToken.getAppUrl())
-                .Append(" does not contain OAuth element.");
-            return new UserVisibleOAuthException(message.ToString());
+            catch (GadgetException e)
+            {
+                throw responseParams.oauthRequestException(OAuthError.UNKNOWN_PROBLEM,
+                    "Could not fetch gadget spec", e);
+            }
         }
 
         /**
          * Store an access token for the given user/gadget/service/token name
          */
         public void storeTokenKeyAndSecret(ISecurityToken securityToken, OAuthStore.ConsumerInfo consumerInfo,
-                                           OAuthArguments arguments, OAuthStore.TokenInfo tokenInfo)
+                                           OAuthArguments arguments, OAuthStore.TokenInfo tokenInfo, OAuthResponseParams responseParams)
         {
-            store.setTokenInfo(securityToken, consumerInfo, arguments.ServiceName,
-                               arguments.TokenName, tokenInfo);
+            try
+            {
+                store.setTokenInfo(securityToken, consumerInfo, arguments.getServiceName(),
+                    arguments.getTokenName(), tokenInfo);
+            }
+            catch (GadgetException e)
+            {
+                throw responseParams.oauthRequestException(OAuthError.UNKNOWN_PROBLEM,
+                    "Unable to store access token", e);
+            }
+
         }
 
         /**
          * Remove an access token for the given user/gadget/service/token name
          */
-        public void removeToken(ISecurityToken securityToken, OAuthStore.ConsumerInfo consumerInfo, OAuthArguments arguments)
+        public void removeToken(ISecurityToken securityToken, OAuthStore.ConsumerInfo consumerInfo, OAuthArguments arguments, OAuthResponseParams responseParams)
         {
-            store.removeToken(securityToken, consumerInfo, arguments.ServiceName, arguments.TokenName);
+            try
+            {
+                store.removeToken(securityToken, consumerInfo, arguments.getServiceName(),
+                    arguments.getTokenName());
+            }
+            catch (GadgetException e)
+            {
+                throw responseParams.oauthRequestException(OAuthError.UNKNOWN_PROBLEM,
+                    "Unable to remove access token", e);
+            }
+
         }
     }
 }

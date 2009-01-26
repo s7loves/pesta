@@ -79,7 +79,7 @@ namespace Pesta.Engine.gadgets.rewrite.lexer
                 {
                     spec = _specFactory.getGadgetSpec(request.Gadget.toJavaUri(), false);
                 }
-                if (rewrite(spec, request.Uri,
+                if (rewrite(spec, request.getUri(),
                             content,
                             mimeType,
                             output))
