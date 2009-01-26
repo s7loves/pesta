@@ -64,12 +64,12 @@
 // iframeBaseUri will automatically have the host inserted
 // if locked domain is enabled and the implementation supports it.
 // query parameters will be added.
-"gadgets.iframeBaseUri" : "/PestaSample/gadgets/ifr.ashx",
+"gadgets.iframeBaseUri" : "/PestaSample/gadgets/ifr",
 
 // jsUriTemplate will have localhost:8702/PestaSample and %js% substituted.
 // No locked domain special cases, but jsUriTemplate must
 // never conflict with a lockedDomainSuffix.
-"gadgets.jsUriTemplate" : "http://localhost:8702/PestaSample/gadgets/js/%js%",
+"gadgets.jsUriTemplate" : "http://localhost:13917/PestaSample/gadgets/js/%js%",
 
 // Use an insecure security token by default
 "gadgets.securityTokenType" : "insecure",
@@ -87,18 +87,18 @@
 "gadgets.features" : {
   "core.io" : {
     // Note: /proxy is an open proxy. Be careful how you expose this!
-    "proxyUrl" : "http://localhost:8702/PestaSample/gadgets/proxy.ashx?refresh=%refresh%&url=%url%",
-    "jsonProxyUrl" : "http://localhost:8702/PestaSample/gadgets/makeRequest.ashx"
+    "proxyUrl" : "http://localhost:13917/PestaSample/gadgets/proxy?refresh=%refresh%&url=%url%",
+    "jsonProxyUrl" : "http://localhost:13917/PestaSample/gadgets/makeRequest"
   },
   "views" : {
     "profile" : {
       "isOnlyVisible" : false,
-      "urlTemplate" : "http://localhost:8702/PestaSample/gadgets/profile.ashx?{var}",
+      "urlTemplate" : "http://localhost:13917/PestaSample/gadgets/profile?{var}",
       "aliases": ["DASHBOARD", "default"]
     },
     "canvas" : {
       "isOnlyVisible" : true,
-      "urlTemplate" : "http://localhost:8702/PestaSample/gadgets/canvas.ashx?{var}",
+      "urlTemplate" : "http://localhost:13917/PestaSample/gadgets/canvas?{var}",
       "aliases" : ["FULL_PAGE"]
     }
   },
@@ -128,7 +128,7 @@
     // Path to fetch opensocial data from
     // Must be on the same domain as the gadget rendering server
     "impl" : "rpc",  //Use "rpc" to enable JSON-RPC, "rest' for REST
-    "path" : "http://localhost:8702/PestaSample/social",
+    "path" : "http://localhost:13917/PestaSample/social",
     "domain" : "shindig",
     "enableCaja" : false,
     "supportedFields" : {

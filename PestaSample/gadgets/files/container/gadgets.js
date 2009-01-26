@@ -533,7 +533,7 @@ gadgets.IfrGadget.prototype.getUserPrefsDialogId = function() {
 };
 
 gadgets.IfrGadget.prototype.getIframeUrl = function() {
-  return this.serverBase_ + 'ifr.ashx?' +
+  return this.serverBase_ + 'ifr?' +
       'container=' + this.CONTAINER +
       '&mid=' +  this.id +
       '&nocache=' + gadgets.container.nocache_ +

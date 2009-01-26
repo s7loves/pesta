@@ -11,7 +11,7 @@
     <div>
     <p>The following are some useful samples</p>
     <ul>
-    <li><a href='/PestaSample/gadgets/ifr.ashx?url=http://www.labpixies.com/campaigns/todo/todo.xml'>TODO gadget list</a></li>
+    <li><a href='/PestaSample/gadgets/ifr?url=http://www.labpixies.com/campaigns/todo/todo.xml'>TODO gadget list</a></li>
     <li><a href='/PestaSample/gadgets/files/samplecontainer/samplecontainer.html'>Social Hello World example</a></li>
     </ul>
     </div>
