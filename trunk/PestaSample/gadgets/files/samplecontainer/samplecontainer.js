@@ -178,7 +178,7 @@ shindig.samplecontainer = {};
       }]
     };
 
-    sendRequestToServer("../../metadata.ashx", "POST", 
+    sendRequestToServer("../../metadata", "POST", 
         gadgets.json.stringify(request), opt_callback, true);
   }
 
