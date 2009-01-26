@@ -43,27 +43,27 @@ namespace Pesta
             {
                 handlerToReturn = new JsServlet();
             }
-            else if (fullOrigionalpath.Contains("ifr.ashx"))
+            else if (fullOrigionalpath.Contains("/gadgets/ifr"))
             {
                 handlerToReturn = new GadgetRenderingServlet();
             }
-            else if (fullOrigionalpath.Contains("concat.ashx"))
+            else if (fullOrigionalpath.Contains("/gadgets/concat"))
             {
                 handlerToReturn = new ConcatProxyServlet();
             }
-            else if (fullOrigionalpath.Contains("proxy.ashx"))
+            else if (fullOrigionalpath.Contains("/gadgets/proxy"))
             {
                 handlerToReturn = new ProxyServlet();
             }
-            else if (fullOrigionalpath.Contains("makeRequest.ashx"))
+            else if (fullOrigionalpath.Contains("/gadgets/makeRequest"))
             {
                 handlerToReturn = new MakeRequestServlet();
             }
-            else if (fullOrigionalpath.Contains("oauthcallback.ashx"))
+            else if (fullOrigionalpath.Contains("/gadgets/oauthcallback"))
             {
                 handlerToReturn = new OAuthCallbackServlet();
             }
-            else if (fullOrigionalpath.Contains("metadata.ashx"))
+            else if (fullOrigionalpath.Contains("/gadgets/metadata"))
             {
                 handlerToReturn = new RpcServlet();
             }

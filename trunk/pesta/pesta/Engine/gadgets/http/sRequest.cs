@@ -60,7 +60,6 @@ namespace Pesta.Engine.gadgets.http
         // Context for the request.
         private Uri gadget;
         private String container;
-        private string method;
 
         // For signed fetch & OAuth
         private ISecurityToken securityToken;
