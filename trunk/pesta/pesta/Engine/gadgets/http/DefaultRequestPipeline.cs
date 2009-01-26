@@ -17,6 +17,8 @@
  * specific language governing permissions and limitations under the License.
  */
 #endregion
+
+using System.Net;
 using Pesta.Engine.gadgets.oauth;
 using Pesta.Utilities;
 
@@ -59,7 +61,7 @@ namespace Pesta.Engine.gadgets.http
                 return sResponse.error();
             }
 
-            if (!request.IgnoreCache)
+            if (!request.IgnoreCache && response.getHttpStatusCode() == (int)HttpStatusCode.OK)
             {
                 DefaultHttpCache.Instance.addResponse(request, response);
             }

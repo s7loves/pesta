@@ -120,9 +120,9 @@ namespace Pesta.Engine.gadgets.http
          */
         protected String createKey(sRequest request)
         {
-            String uri = request.Uri.ToString();
+            String uri = request.getUri().ToString();
             StringBuilder key = new StringBuilder(uri.Length * 2);
-            key.Append(request.Uri);
+            key.Append(request.getUri());
             key.Append(KEY_SEPARATOR);
             key.Append(request.AuthType);
             key.Append(KEY_SEPARATOR);
@@ -145,9 +145,9 @@ namespace Pesta.Engine.gadgets.http
         protected static String getOwnerId(sRequest request)
         {
             if (request.AuthType != AuthType.NONE &&
-                request.OAuthArguments.SignOwner)
+                request.getOAuthArguments().getSignOwner())
             {
-                return request.SecurityToken.getOwnerId();
+                return request.getSecurityToken().getOwnerId();
             }
             // Requests that don't use authentication can share the result.
             return DEFAULT_KEY_VALUE;
@@ -156,9 +156,9 @@ namespace Pesta.Engine.gadgets.http
         protected static String getViewerId(sRequest request)
         {
             if (request.AuthType != AuthType.NONE &&
-                request.OAuthArguments.SignViewer)
+                request.getOAuthArguments().getSignViewer())
             {
-                return request.SecurityToken.getViewerId();
+                return request.getSecurityToken().getViewerId();
             }
             // Requests that don't use authentication can share the result.
             return DEFAULT_KEY_VALUE;
@@ -166,11 +166,11 @@ namespace Pesta.Engine.gadgets.http
 
         protected static String getTokenOwner(sRequest request)
         {
-            ISecurityToken st = request.SecurityToken;
+            ISecurityToken st = request.getSecurityToken();
             if (request.AuthType != AuthType.NONE &&
                 st.getOwnerId() != null
                 && st.getOwnerId().Equals(st.getViewerId())
-                && request.OAuthArguments.MayUseToken())
+                && request.getOAuthArguments().mayUseToken())
             {
                 return st.getOwnerId();
             }
@@ -182,7 +182,7 @@ namespace Pesta.Engine.gadgets.http
         {
             if (request.AuthType != AuthType.NONE)
             {
-                return request.SecurityToken.getAppUrl();
+                return request.getSecurityToken().getAppUrl();
             }
             // Requests that don't use authentication can share the result.
             return DEFAULT_KEY_VALUE;
@@ -192,7 +192,7 @@ namespace Pesta.Engine.gadgets.http
         {
             if (request.AuthType != AuthType.NONE)
             {
-                return request.SecurityToken.getModuleId().ToString();
+                return request.getSecurityToken().getModuleId().ToString();
             }
             // Requests that don't use authentication can share the result.
             return DEFAULT_KEY_VALUE;
@@ -202,7 +202,7 @@ namespace Pesta.Engine.gadgets.http
         {
             if (request.AuthType != AuthType.NONE)
             {
-                return request.OAuthArguments.ServiceName;
+                return request.getOAuthArguments().getServiceName();
             }
             // Requests that don't use authentication can share the result.
             return DEFAULT_KEY_VALUE;
@@ -212,7 +212,7 @@ namespace Pesta.Engine.gadgets.http
         {
             if (request.AuthType != AuthType.NONE)
             {
-                return request.OAuthArguments.TokenName;
+                return request.getOAuthArguments().getTokenName();
             }
             // Requests that don't use authentication can share the result.
             return DEFAULT_KEY_VALUE;

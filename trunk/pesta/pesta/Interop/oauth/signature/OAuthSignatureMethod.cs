@@ -133,7 +133,7 @@ namespace Pesta.Interop.oauth.signature
             {
                 // Combine the URL query string with the other parameters:
                 parameters = new List<OAuth.Parameter>();
-                parameters.AddRange(OAuth.decodeForm(message.URL.Substring(q + 1)));
+                parameters.AddRange(OAuth.decodeForm(url.Substring(q + 1)));
                 parameters.AddRange(message.getParameters());
                 url = url.Substring(0, q);
             }
@@ -174,7 +174,7 @@ namespace Pesta.Interop.oauth.signature
             List<ComparableParameter> p = new List<ComparableParameter>(parameters.Count);
             foreach (OAuth.Parameter parameter in parameters)
             {
-                if (!"oauth_signature".Equals(parameter.Key) && (parameter.Key.StartsWith("oauth") || parameter.Key.StartsWith("scope")))
+                if (!"oauth_signature".Equals(parameter.Key))
                 {
                     p.Add(new ComparableParameter(parameter));
                 }

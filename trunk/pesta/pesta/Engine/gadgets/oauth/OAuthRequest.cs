@@ -18,15 +18,16 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
-using System;
 using Jayrock.Json;
 using Pesta.Engine.gadgets.http;
 using Pesta.Interop.oauth;
 using Pesta.Utilities;
+using String=System.String;
 using Uri=Pesta.Engine.common.uri.Uri;
 using UriBuilder=Pesta.Engine.common.uri.UriBuilder;
 
@@ -88,7 +89,17 @@ namespace Pesta.Engine.gadgets.oauth
         /// </summary>
         ///
         protected internal readonly OAuthFetcherConfig fetcherConfig;
+
+        /**
+         * Next fetcher to use in chain.
+         */
         protected internal readonly IHttpFetcher fetcher;
+
+          /**
+            * Additional trusted parameters to be included in the OAuth request.
+            */
+        private readonly List<OAuth.Parameter> trustedParams;
+
         /// <summary>
         /// OAuth specific stuff to include in the response.
         /// </summary>
@@ -110,96 +121,133 @@ namespace Pesta.Engine.gadgets.oauth
         private sRequest realRequest;
 
         private Dictionary<String, String> accessTokenData;
-        /**
+      /**
        * @param fetcherConfig configuration options for the fetcher
-       * @param nextFetcher fetcher to use for actually making requests
-       * @param request request that will be sent through the fetcher
+       * @param fetcher fetcher to use for actually making requests
        */
-        public OAuthRequest()
+        public OAuthRequest() 
+        : this(OAuthFetcherConfig.Instace, BasicHttpFetcher.Instance, null)
         {
-            fetcherConfig = OAuthFetcherConfig.Instace;
-            fetcher = BasicHttpFetcher.Instance;
         }
 
         /**
-        * Retrieves metadata from our persistent store.
-        *
-        * TODO(beaton): can we fix this so it avoids hitting the persistent data
-        * store when a client makes multiple requests with an approved access token?
-        *
-        * @throws GadgetException
+        * @param fetcherConfig configuration options for the fetcher
+        * @param fetcher fetcher to use for actually making requests
+        * @param trustedParams additional parameters to include in all outgoing OAuth requests, useful
+        *     for client data that can't be pulled from the security token but is still trustworthy.
         */
-        private void lookupOAuthMetadata()
+        public OAuthRequest(OAuthFetcherConfig fetcherConfig, IHttpFetcher fetcher,
+                List<OAuth.Parameter> trustedParams) 
         {
-            accessorInfo = fetcherConfig.getTokenStore().getOAuthAccessor(realRequest.SecurityToken, realRequest.OAuthArguments, clientState);
+            this.fetcherConfig = fetcherConfig;
+            this.fetcher = fetcher;
+            this.trustedParams = trustedParams;
         }
 
-        public sResponse fetch(sRequest request)
+        /**
+        * OAuth authenticated fetch.
+        */
+        public sResponse fetch(sRequest request) 
         {
+            realRequest = request;
             clientState = new OAuthClientState(
             fetcherConfig.getStateCrypter(),
-            request.OAuthArguments.OrigClientState);
-            responseParams = new OAuthResponseParams(fetcherConfig.getStateCrypter());
-            realRequest = request;
-
-            sResponse response = null;
-
-
-            try
+            request.getOAuthArguments().getOrigClientState());
+            responseParams = new OAuthResponseParams(request.getSecurityToken(), request, fetcherConfig.getStateCrypter());
+            try 
             {
-                lookupOAuthMetadata();
-            }
-            catch (GadgetException e)
+                return fetchNoThrow();
+            } 
+            catch (Exception e) 
             {
-                responseParams.setError(OAuthError.BAD_OAUTH_CONFIGURATION);
-                return buildErrorResponse(e);
+                // We log here to record the request/response pairs that created the failure.
+                responseParams.logDetailedWarning("OAuth fetch unexpected fatal error", e);
+                throw e;
+            }
+        }
+
+        /**
+        * Fetch data and build a response to return to the client.  We try to always return something
+        * reasonable to the calling app no matter what kind of madness happens along the way.  If an
+        * unchecked exception occurs, well, then the client is out of luck.
+        */
+        private sResponse fetchNoThrow() 
+        {
+            HttpResponseBuilder response = null;
+            try 
+            {
+                accessorInfo = fetcherConfig.getTokenStore().getOAuthAccessor(
+                realRequest.getSecurityToken(), realRequest.getOAuthArguments(), clientState,
+                responseParams);
+                response = fetchWithRetry();
+            } 
+            catch (OAuthResponseParams.OAuthRequestException e) 
+            {
+                // No data for us.
+                responseParams.logDetailedWarning("OAuth fetch fatal error", e);
+                responseParams.setSendTraceToClient(true);
+                if (response == null) 
+                {
+                    response = new HttpResponseBuilder()
+                    .setHttpStatusCode(sResponse.SC_FORBIDDEN);
+                    responseParams.addToResponse(response);
+                    return response.create();
+                }
             }
 
+            // OK, got some data back, annotate it as necessary.
+            if (response.getHttpStatusCode() >= 400) 
+            {
+                responseParams.logDetailedWarning("OAuth fetch fatal error");
+                responseParams.setSendTraceToClient(true);
+            } 
+            else if (responseParams.getAznUrl() != null && responseParams.sawErrorResponse()) 
+            {
+                responseParams.logDetailedWarning("OAuth fetch error, reprompting for user approval");
+                responseParams.setSendTraceToClient(true);
+            }
+
+            responseParams.addToResponse(response);
+
+            return response.create();
+        }
+
+        /**
+        * Fetch data, retrying in the event that that the service provider returns an error and we think
+        * we can recover by restarting the protocol flow.
+        */
+        private HttpResponseBuilder fetchWithRetry()
+        {
             int attempts = 0;
             bool retry;
-            do
+            HttpResponseBuilder response = null;
+            do 
             {
                 retry = false;
                 ++attempts;
-                try
+                try 
                 {
                     response = attemptFetch();
-                }
-                catch (OAuthProtocolException pe)
+                } 
+                catch (OAuthProtocolException pe) 
                 {
                     retry = handleProtocolException(pe, attempts);
-                    if (!retry)
+                    if (!retry) 
                     {
-                        response = pe.getResponseForGadget();
+                        if (pe.getProblemCode() != null) 
+                        {
+                            throw responseParams.oauthRequestException(pe.getProblemCode(),
+                                "Service provider rejected request", pe);
+                        }
+
+                        throw responseParams.oauthRequestException(OAuthError.UNKNOWN_PROBLEM,
+                                "Service provider rejected request", pe);
                     }
                 }
-                catch (UserVisibleOAuthException e)
-                {
-                    responseParams.setError(e.getOAuthErrorCode());
-                    return buildErrorResponse(e);
-                }
             } while (retry);
-
-            if (response == null)
-            {
-                throw new GadgetException(GadgetException.Code.INTERNAL_SERVER_ERROR,
-                                          "No response for OAuth fetch to " + realRequest.Uri);
-            }
             return response;
         }
 
-        private sResponse buildErrorResponse(Exception e)
-        {
-            if (responseParams.getError() == null)
-            {
-                responseParams.setError(OAuthError.UNKNOWN_PROBLEM);
-            }
-            if (responseParams.getErrorText() == null && (e is UserVisibleOAuthException)) 
-            {
-                responseParams.setErrorText(e.Message);
-            }
-            return buildNonDataResponse((int)HttpStatusCode.Forbidden);
-        }
 
         private bool handleProtocolException(OAuthProtocolException pe, int attempts)
         {
@@ -209,8 +257,8 @@ namespace Pesta.Engine.gadgets.oauth
             }
             else if (pe.startFromScratch)
             {
-                fetcherConfig.getTokenStore().removeToken(realRequest.SecurityToken,
-                    accessorInfo.getConsumer(), realRequest.OAuthArguments);
+                fetcherConfig.getTokenStore().removeToken(realRequest.getSecurityToken(),
+                    accessorInfo.getConsumer(), realRequest.getOAuthArguments(), responseParams);
                 accessorInfo.getAccessor().accessToken = null;
                 accessorInfo.getAccessor().requestToken = null;
                 accessorInfo.getAccessor().tokenSecret = null;
@@ -220,7 +268,7 @@ namespace Pesta.Engine.gadgets.oauth
             return (attempts < MAX_ATTEMPTS && pe.canRetry);
         }
 
-        private sResponse attemptFetch()
+        private HttpResponseBuilder attemptFetch()
         {
             if (needApproval())
             {
@@ -232,7 +280,9 @@ namespace Pesta.Engine.gadgets.oauth
                 buildAznUrl();
                 // break out of the content fetching chain, we need permission from
                 // the user to do this
-                return buildOAuthApprovalResponse();
+                return new HttpResponseBuilder()
+                       .setHttpStatusCode(sResponse.SC_OK)
+                       .setStrictNoCache();
             }
             if (needAccessToken())
             {
@@ -250,7 +300,7 @@ namespace Pesta.Engine.gadgets.oauth
         */
         private bool needApproval()
         {
-            return (realRequest.OAuthArguments.MustUseToken()
+            return (realRequest.getOAuthArguments().mustUseToken()
                     && accessorInfo.getAccessor().requestToken == null
                     && accessorInfo.getAccessor().accessToken == null);
         }
@@ -263,52 +313,43 @@ namespace Pesta.Engine.gadgets.oauth
         */
         private void checkCanApprove()
         {
-            String pageOwner = realRequest.SecurityToken.getOwnerId();
-            String pageViewer = realRequest.SecurityToken.getViewerId();
+            String pageOwner = realRequest.getSecurityToken().getOwnerId();
+            String pageViewer = realRequest.getSecurityToken().getViewerId();
             String stateOwner = clientState.getOwner();
             if (pageOwner == null)
             {
-                throw new UserVisibleOAuthException(OAuthError.UNAUTHENTICATED, "Unauthenticated");
+                throw responseParams.oauthRequestException(OAuthError.UNAUTHENTICATED, "Unauthenticated");
             }
             if (!pageOwner.Equals(pageViewer))
             {
-                throw new UserVisibleOAuthException(OAuthError.NOT_OWNER,
+                throw responseParams.oauthRequestException(OAuthError.NOT_OWNER,
                                                     "Only page owners can grant OAuth approval");
             }
             if (stateOwner != null && !stateOwner.Equals(pageOwner))
             {
-                throw new GadgetException(GadgetException.Code.INTERNAL_SERVER_ERROR,
-                                          "Client state belongs to a different person.");
+                throw responseParams.oauthRequestException(OAuthError.UNKNOWN_PROBLEM,
+                                "Client state belongs to a different person " +
+                                "(state owner=" + stateOwner + ", pageOwner=" + pageOwner + ')');
+
             }
         }
 
         private void fetchRequestToken()
         {
-            try
+            OAuthAccessor accessor = accessorInfo.getAccessor();
+            sRequest request = new sRequest(Uri.parse(accessor.consumer.serviceProvider.requestTokenURL));
+            request.setMethod(accessorInfo.getHttpMethod().ToString());
+            if (accessorInfo.getHttpMethod().CompareTo(AccessorInfo.HttpMethod.POST) == 0)
             {
-                OAuthAccessor accessor = accessorInfo.getAccessor();
-                sRequest request = new sRequest(Uri.parse(accessor.consumer.serviceProvider.requestTokenURL));
-                request.setMethod(accessorInfo.getHttpMethod().ToString());
-                if (accessorInfo.getHttpMethod().CompareTo(AccessorInfo.HttpMethod.POST) == 0)
-                {
-                    request.setHeader("Content-Type", OAuth.FORM_ENCODED);
-                }
-
-                sRequest signed = sanitizeAndSign(request, null);
-
-                OAuthMessage reply = sendOAuthMessage(signed);
-
-                accessor.requestToken = reply.getParameter(OAuth.OAUTH_TOKEN);
-                accessor.tokenSecret = reply.getParameter(OAuth.OAUTH_TOKEN_SECRET);
+                request.setContentType(OAuth.FORM_ENCODED);
             }
-            catch (OAuthException e)
-            {
-                throw new UserVisibleOAuthException(e.Message, e);
-            }
-            catch (Exception e)
-            {
-                throw new GadgetException(GadgetException.Code.INTERNAL_SERVER_ERROR, e);
-            }
+
+            sRequest signed = sanitizeAndSign(request, null);
+
+            OAuthMessage reply = sendOAuthMessage(signed);
+
+            accessor.requestToken = reply.getParameter(OAuth.OAUTH_TOKEN);
+            accessor.tokenSecret = reply.getParameter(OAuth.OAUTH_TOKEN_SECRET);
         }
 
         /**
@@ -316,7 +357,7 @@ namespace Pesta.Engine.gadgets.oauth
         * 
         * @throws RequestSigningException
         */
-        private static List<OAuth.Parameter> sanitize(IEnumerable<OAuth.Parameter> parameters)
+        private List<OAuth.Parameter> sanitize(IEnumerable<OAuth.Parameter> parameters)
         {
             List<OAuth.Parameter> list = new List<OAuth.Parameter>();
             foreach (OAuth.Parameter p in parameters)
@@ -328,7 +369,8 @@ namespace Pesta.Engine.gadgets.oauth
                 }
                 else
                 {
-                    throw new RequestSigningException("invalid parameter name " + name);
+                    throw responseParams.oauthRequestException(OAuthError.INVALID_REQUEST,
+                            "invalid parameter name " + name + ", applications may not override opensocial or oauth parameters");
                 }
             }
             return list;
@@ -351,34 +393,42 @@ namespace Pesta.Engine.gadgets.oauth
             // If no owner or viewer information is required, don't add any identity params.  This lets
             // us be compatible with strict OAuth service providers that reject extra parameters on
             // requests.
-            if (!realRequest.OAuthArguments.SignOwner &&
-                !realRequest.OAuthArguments.SignViewer)
+            if (!realRequest.getOAuthArguments().getSignOwner() &&
+                !realRequest.getOAuthArguments().getSignViewer())
             {
                 return;
             }
 
-            String owner = realRequest.SecurityToken.getOwnerId();
-            if (owner != null && realRequest.OAuthArguments.SignOwner)
+            String owner = realRequest.getSecurityToken().getOwnerId();
+            if (owner != null && realRequest.getOAuthArguments().getSignOwner())
             {
                 parameters.Add(new OAuth.Parameter(OPENSOCIAL_OWNERID, owner));
             }
 
-            String viewer = realRequest.SecurityToken.getViewerId();
-            if (viewer != null && realRequest.OAuthArguments.SignViewer)
+            String viewer = realRequest.getSecurityToken().getViewerId();
+            if (viewer != null && realRequest.getOAuthArguments().getSignViewer())
             {
                 parameters.Add(new OAuth.Parameter(OPENSOCIAL_VIEWERID, viewer));
             }
 
-            String app = realRequest.SecurityToken.getAppId();
+            String app = realRequest.getSecurityToken().getAppId();
             if (app != null)
             {
                 parameters.Add(new OAuth.Parameter(OPENSOCIAL_APPID, app));
             }
 
-            String appUrl = realRequest.SecurityToken.getAppUrl();
+            String appUrl = realRequest.getSecurityToken().getAppUrl();
             if (appUrl != null)
             {
                 parameters.Add(new OAuth.Parameter(OPENSOCIAL_APPURL, appUrl));
+            }
+
+            if (trustedParams != null)
+            {
+                foreach (var param in trustedParams)
+                {
+                    parameters.Add(param);
+                }
             }
         }
 
@@ -389,7 +439,7 @@ namespace Pesta.Engine.gadgets.oauth
         {
             if (accessorInfo.getConsumer().getConsumer().consumerKey == null)
             {
-                parameters.Add(new OAuth.Parameter(OAuth.OAUTH_CONSUMER_KEY, realRequest.SecurityToken.getDomain()));
+                parameters.Add(new OAuth.Parameter(OAuth.OAUTH_CONSUMER_KEY, realRequest.getSecurityToken().getDomain()));
             }
 
             if (accessorInfo.getConsumer().getKeyName() != null)
@@ -439,11 +489,11 @@ namespace Pesta.Engine.gadgets.oauth
             {
                 parameters = new List<OAuth.Parameter>();
             }
-            UriBuilder target = new UriBuilder(basereq.Uri);
+            UriBuilder target = new UriBuilder(basereq.getUri());
             String query = target.getQuery();
             target.setQuery(null);
             parameters.AddRange(sanitize(OAuth.decodeForm(query)));
-            if (OAuth.isFormEncoded(basereq.getHeader("Content-Type")))
+            if (OAuth.isFormEncoded(basereq.ContentType))
             {
                 parameters.AddRange(sanitize(OAuth.decodeForm(basereq.getPostBodyAsString())));
             }
@@ -463,7 +513,8 @@ namespace Pesta.Engine.gadgets.oauth
             }
             catch (Exception e)
             {
-                throw new GadgetException(GadgetException.Code.INTERNAL_SERVER_ERROR, e);
+                throw responseParams.oauthRequestException(OAuthError.UNKNOWN_PROBLEM,
+                            "Error signing message", e);
             }
         }
 
@@ -493,10 +544,9 @@ namespace Pesta.Engine.gadgets.oauth
                     break;
 
                 case AccessorInfo.OAuthParamLocation.POST_BODY:
-                    String contentType = result.getHeader("Content-Type");
-                    if (!OAuth.isFormEncoded(contentType))
+                    if (!OAuth.isFormEncoded(result.ContentType))
                     {
-                        throw new UserVisibleOAuthException(
+                        throw responseParams.oauthRequestException(OAuthError.INVALID_REQUEST,
                             "OAuth param location can only be post_body if post body is of " +
                             "type x-www-form-urlencoded");
                     }
@@ -512,7 +562,7 @@ namespace Pesta.Engine.gadgets.oauth
                     break;
 
                 case AccessorInfo.OAuthParamLocation.URI_QUERY:
-                    result.Uri = Uri.parse(OAuth.addParameters(result.Uri.ToString(), oauthParams));
+                    result.setUri(Uri.parse(OAuth.addParameters(result.getUri().ToString(), oauthParams)));
                     break;
             }
             return result;
@@ -526,26 +576,23 @@ namespace Pesta.Engine.gadgets.oauth
         */
         private OAuthMessage sendOAuthMessage(sRequest request)
         {
-            sResponse response = fetcher.fetch(request);
-            bool done = false;
-            try
-            {
-                checkForProtocolProblem(response);
-                OAuthMessage reply = new OAuthMessage(null, null, null);
+            sResponse response = fetchFromServer(request);
+            checkForProtocolProblem(response);
+            OAuthMessage reply = new OAuthMessage(null, null, null);
 
-                reply.addParameters(OAuth.decodeForm(response.responseString));
-                reply = parseAuthHeader(reply, response);
-                OAuthUtil.requireParameters(reply, new[]{OAuth.OAUTH_TOKEN, OAuth.OAUTH_TOKEN_SECRET});
-                done = true;
-                return reply;
-            }
-            finally
+            reply.addParameters(OAuth.decodeForm(response.responseString));
+            reply = parseAuthHeader(reply, response);
+            if (OAuthUtil.getParameter(reply, OAuth.OAUTH_TOKEN) == null)
             {
-                if (!done)
-                {
-                    //logServiceProviderError(request, response);
-                }
+                throw responseParams.oauthRequestException(OAuthError.UNKNOWN_PROBLEM,
+                    "No oauth_token returned from service provider");
             }
+            if (OAuthUtil.getParameter(reply, OAuth.OAUTH_TOKEN_SECRET) == null)
+            {
+                throw responseParams.oauthRequestException(OAuthError.UNKNOWN_PROBLEM,
+                    "No oauth_token_secret returned from service provider");
+            }
+            return reply;
         }
 
         /**
@@ -579,7 +626,7 @@ namespace Pesta.Engine.gadgets.oauth
             OAuthAccessor accessor = accessorInfo.getAccessor();
             responseParams.getNewClientState().setRequestToken(accessor.requestToken);
             responseParams.getNewClientState().setRequestTokenSecret(accessor.tokenSecret);
-            responseParams.getNewClientState().setOwner(realRequest.SecurityToken.getOwnerId());
+            responseParams.getNewClientState().setOwner(realRequest.getSecurityToken().getOwnerId());
         }
 
         /**
@@ -606,35 +653,18 @@ namespace Pesta.Engine.gadgets.oauth
             responseParams.setAznUrl(azn.ToString());
         }
 
-        private sResponse buildOAuthApprovalResponse()
-        {
-            return buildNonDataResponse((int)HttpStatusCode.OK);
-        }
-
-        private sResponse buildNonDataResponse(int status)
-        {
-            HttpResponseBuilder response = new HttpResponseBuilder().setHttpStatusCode(status);
-            responseParams.addToResponse(response);
-            response.setStrictNoCache();
-            return response.create();
-        }
-
         /**
         * Do we need to exchange a request token for an access token?
         */
         private bool needAccessToken()
         {
-            if (realRequest.OAuthArguments.MustUseToken()
-                    && accessorInfo.getAccessor().requestToken != null
-                    && accessorInfo.getAccessor().accessToken == null)
+            if (realRequest.getOAuthArguments().mustUseToken()
+                && accessorInfo.getAccessor().requestToken != null
+                && accessorInfo.getAccessor().accessToken == null)
             {
                 return true;
             }
-            if (realRequest.OAuthArguments.MayUseToken() && accessTokenExpired())
-            {
-                return true;
-            }
-            return false;
+            return realRequest.getOAuthArguments().mayUseToken() && accessTokenExpired();
         }
 
         private bool accessTokenExpired()
@@ -648,26 +678,24 @@ namespace Pesta.Engine.gadgets.oauth
         */
         private void exchangeRequestToken()
         {
-            try 
+            if (accessorInfo.getAccessor().accessToken != null)
             {
-                if (accessorInfo.getAccessor().accessToken != null)
-                {
-                    // session extension per
-                    // http://oauth.googlecode.com/svn/spec/ext/session/1.0/drafts/1/spec.html
-                    accessorInfo.getAccessor().requestToken = accessorInfo.getAccessor().accessToken;
-                    accessorInfo.getAccessor().accessToken = null;
-                }
+                // session extension per
+                // http://oauth.googlecode.com/svn/spec/ext/session/1.0/drafts/1/spec.html
+                accessorInfo.getAccessor().requestToken = accessorInfo.getAccessor().accessToken;
+                accessorInfo.getAccessor().accessToken = null;
+            }
             OAuthAccessor accessor = accessorInfo.getAccessor();
             Uri accessTokenUri = Uri.parse(accessor.consumer.serviceProvider.accessTokenURL);
             sRequest request = new sRequest(accessTokenUri);
             request.setMethod(accessorInfo.getHttpMethod().ToString());
             if (accessorInfo.getHttpMethod() == AccessorInfo.HttpMethod.POST) 
             {
-                request.setHeader("Content-Type", OAuth.FORM_ENCODED);
+                request.setContentType(OAuth.FORM_ENCODED);
             }
 
-            List<OAuth.Parameter> msgParams = new List<OAuth.Parameter>();
-            msgParams.Add(new OAuth.Parameter(OAuth.OAUTH_TOKEN, accessor.requestToken));
+            List<OAuth.Parameter> msgParams = new List<OAuth.Parameter>
+                                                  {new OAuth.Parameter(OAuth.OAUTH_TOKEN, accessor.requestToken)};
             if (accessorInfo.getSessionHandle() != null) 
             {
                 msgParams.Add(new OAuth.Parameter(OAUTH_SESSION_HANDLE, accessorInfo.getSessionHandle()));
@@ -693,7 +721,7 @@ namespace Pesta.Engine.gadgets.oauth
                 {
                     // Hrm.  Bogus server.  We can safely ignore this, we'll just wait for the server to
                     // tell us when the access token has expired.
-                    //logger.log(Level.WARNING, "server returned bogus expiration: " + reply);
+                    responseParams.logDetailedWarning("server returned bogus expiration");
                 }
             }
 
@@ -709,7 +737,7 @@ namespace Pesta.Engine.gadgets.oauth
             // Note that this data is not stored server-side.  Clients need to cache these user-ids or
             // other data themselves, probably in user prefs, if they expect to need the data in the
             // future.
-            if (accessTokenUri.Equals(realRequest.Uri)) 
+            if (accessTokenUri.Equals(realRequest.getUri())) 
             {
                 accessTokenData = new Dictionary<string, string>();
                 foreach(var param in OAuthUtil.getParameters(reply))
@@ -719,10 +747,6 @@ namespace Pesta.Engine.gadgets.oauth
                         accessTokenData.Add(param.Key, param.Value);
                     } 
                 }
-            }
-            } catch (OAuthException e)
-            {
-                throw new UserVisibleOAuthException(e.Message, e);
             }
         }
 
@@ -736,8 +760,8 @@ namespace Pesta.Engine.gadgets.oauth
             OAuthAccessor accessor = accessorInfo.getAccessor();
             OAuthStore.TokenInfo tokenInfo = new OAuthStore.TokenInfo(accessor.accessToken, accessor.tokenSecret,
                                     accessorInfo.getSessionHandle(), accessorInfo.getTokenExpireMillis());
-            fetcherConfig.getTokenStore().storeTokenKeyAndSecret(realRequest.SecurityToken,
-                                                                 accessorInfo.getConsumer(), realRequest.OAuthArguments, tokenInfo);
+            fetcherConfig.getTokenStore().storeTokenKeyAndSecret(realRequest.getSecurityToken(),
+                                                                 accessorInfo.getConsumer(), realRequest.getOAuthArguments(), tokenInfo, responseParams);
         }
 
         /**
@@ -748,7 +772,7 @@ namespace Pesta.Engine.gadgets.oauth
             OAuthAccessor accessor = accessorInfo.getAccessor();
             responseParams.getNewClientState().setAccessToken(accessor.accessToken);
             responseParams.getNewClientState().setAccessTokenSecret(accessor.tokenSecret);
-            responseParams.getNewClientState().setOwner(realRequest.SecurityToken.getOwnerId());
+            responseParams.getNewClientState().setOwner(realRequest.getSecurityToken().getOwnerId());
             responseParams.getNewClientState().setSessionHandle(accessorInfo.getSessionHandle());
             responseParams.getNewClientState().setTokenExpireMillis(accessorInfo.getTokenExpireMillis());
         }
@@ -759,7 +783,7 @@ namespace Pesta.Engine.gadgets.oauth
         * @throws OAuthProtocolException if the service provider returns an OAuth
         * related error instead of user data.
         */
-        private sResponse fetchData()
+        private HttpResponseBuilder fetchData()
         {
             HttpResponseBuilder builder;
             if (accessTokenData != null)
@@ -770,22 +794,36 @@ namespace Pesta.Engine.gadgets.oauth
             else
             {
                 sRequest signed = sanitizeAndSign(realRequest, null);
-                sResponse response = fetcher.fetch(signed);
-                try
-                {
-                    checkForProtocolProblem(response);
-                }
-                catch (OAuthProtocolException e)
-                {
-                    throw e;
-                }
+                sResponse response = fetchFromServer(signed);
+                checkForProtocolProblem(response);
                 builder = new HttpResponseBuilder(response);
             }
-            // Track metadata on the response
-            responseParams.addToResponse(builder);
-            return builder.create();
+            return builder;
         }
 
+        private sResponse fetchFromServer(sRequest request) 
+        {
+            sResponse response = null;
+            try 
+            {
+                response = fetcher.fetch(request);
+                if (response == null) 
+                {
+                    throw responseParams.oauthRequestException(OAuthError.UNKNOWN_PROBLEM,
+                    "No response from server");
+                }
+                return response;
+            } 
+            catch (GadgetException e) 
+            {
+                throw responseParams.oauthRequestException(
+                    OAuthError.UNKNOWN_PROBLEM, "No response from server", e);
+            } 
+            finally 
+            {
+                responseParams.addRequestTrace(request, response);
+            }
+        }
 
         /**
         * Access token data is returned to the gadget as json key/value pairs:
@@ -840,7 +878,7 @@ namespace Pesta.Engine.gadgets.oauth
                 return false;
             }
             // If the client forced us to use full OAuth, this might be OAuth related.
-            if (realRequest.OAuthArguments.MustUseToken())
+            if (realRequest.getOAuthArguments().mustUseToken())
             {
                 return true;
             }
@@ -886,7 +924,7 @@ namespace Pesta.Engine.gadgets.oauth
         private static bool isContainerInjectedParameter(String key)
         {
             key = key.ToLower();
-            return key.StartsWith("oauth")/* || key.StartsWith("xoauth") || key.StartsWith("opensocial")*/;
+            return key.StartsWith("oauth") || key.StartsWith("xoauth") || key.StartsWith("opensocial");
         }
     }
 }

@@ -84,7 +84,7 @@ namespace Pesta.Engine.gadgets.http
         public const int SC_HTTP_VERSION_NOT_SUPPORTED = 505;
 
         // These content types can always skip encoding detection.
-        private static readonly List<string> BINARY_CONTENT_TYPES = new List<string>()
+        private static readonly List<string> BINARY_CONTENT_TYPES = new List<string>
                                                                         {"image/jpeg", "image/png",
                                                                          "image/gif", "image/jpg", "application/x-shockwave-flash",
                                                                          "application/octet-stream", "application/ogg",
@@ -99,7 +99,7 @@ namespace Pesta.Engine.gadgets.http
         // other status codes are treated as errors and will use the
         // negativeCacheTtl value.
         private static readonly List<int> NEGATIVE_CACHING_EXEMPT_STATUS =
-            new List<int>() { SC_UNAUTHORIZED, SC_FORBIDDEN };
+            new List<int> { SC_UNAUTHORIZED, SC_FORBIDDEN };
 
         // TTL to use when an error response is fetched. This should be non-zero to
         // avoid high rates of requests to bad urls in high-traffic situations.
@@ -117,7 +117,7 @@ namespace Pesta.Engine.gadgets.http
 
         public readonly byte[] responseBytes;
         public String responseString = "";
-        private readonly Dictionary<string, string> metadata = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> metadata;
         private readonly NameValueCollection headers;
         private readonly long date;
         private readonly int httpStatusCode;
@@ -129,13 +129,12 @@ namespace Pesta.Engine.gadgets.http
         public sResponse(HttpResponseBuilder builder)
         {
             httpStatusCode = builder.getHttpStatusCode();
-            NameValueCollection headerCopy = new NameValueCollection();
-            headerCopy.Add(builder.getHeaders());
+            NameValueCollection headerCopy = new NameValueCollection {builder.getHeaders()};
 
             // Always safe, HttpResponseBuilder won't modify the body.
             responseBytes = builder.getResponse();
 
-            Dictionary<String, String> metadataCopy = new Dictionary<string,string>();
+            Dictionary<String, String> metadataCopy = new Dictionary<string,string>(builder.getMetadata());
             metadata = metadataCopy;
 
             // We want to modify the headers to ensure that the proper Content-Type and Date headers
@@ -231,10 +230,7 @@ namespace Pesta.Engine.gadgets.http
             {
                 return null;
             }
-            else
-            {
-                return headerList[0];
-            }
+            return headerList[0];
         }
 
         /**
@@ -257,7 +253,7 @@ namespace Pesta.Engine.gadgets.http
             String dateStr = dates == null ? null : dates.Length == 0 ? null : dates[0];
             if (dateStr != null)
             {
-                DateTime d = DateTime.Now;
+                DateTime d;
                 if (DateTime.TryParse(dateStr, out d))
                 {
                     timestamp = d.Ticks;
@@ -458,7 +454,7 @@ namespace Pesta.Engine.gadgets.http
                             {
                                 return long.Parse(parts[1]) * 1000;
                             }
-                            catch (FormatException ignore)
+                            catch (FormatException)
                             {
                                 return -1;
                             }
@@ -480,9 +476,13 @@ namespace Pesta.Engine.gadgets.http
             for (int i = 0; i < headers.Count; i++)
             {
                 string name = headers.GetKey(i);
-                foreach (string value in headers.GetValues(i))
+                var values = headers.GetValues(i);
+                if (values != null)
                 {
-                    buf.Append(name).Append(": ").Append(value).Append('\n');
+                    foreach (string value in values)
+                    {
+                        buf.Append(name).Append(": ").Append(value).Append('\n');
+                    }
                 }
             }
             buf.Append("\r\n");

@@ -35,7 +35,7 @@ namespace Pesta.Engine.gadgets.http
     /// </remarks>
     public class BasicHttpFetcher : IHttpFetcher
     {
-          private const int CONNECT_TIMEOUT_MS = 5000;
+          private const int CONNECT_TIMEOUT_MS = 10000;
           private const int READ_TIMEOUT_MS = 20000;
 
         /**
@@ -56,7 +56,13 @@ namespace Pesta.Engine.gadgets.http
         {
             try
             {
-                sResponse resp = makeResponse(request.req);
+                WebRequest req = request.getRequest();
+                req.ContentLength = request.getPostBodyLength();
+                if (request.getPostBodyLength() > 0)
+                {
+                    req.GetRequestStream().Write(request.getPostBody(),0,request.getPostBodyLength());
+                }
+                sResponse resp = makeResponse(req);
                 return resp;
             }
             catch (Exception)

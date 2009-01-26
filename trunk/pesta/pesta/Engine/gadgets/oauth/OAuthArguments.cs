@@ -65,7 +65,7 @@ namespace Pesta.Engine.gadgets.oauth
         /// Should we attempt to use an access token for the request
         /// </summary>
         ///
-        private readonly UseToken useToken;
+        private UseToken useToken;
 
         /// <summary>
         /// OAuth service nickname. Signed fetch uses the empty string
@@ -114,6 +114,10 @@ namespace Pesta.Engine.gadgets.oauth
         /// </summary>
         ///
         private bool signViewer;
+
+
+        /** Arbitrary name/value pairs associated with the request */
+        private readonly Dictionary<String, String> requestOptions = new Dictionary<string, string>();
 
         /// <summary>
         /// Parse OAuthArguments from parameters to the makeRequest servlet.
@@ -171,6 +175,10 @@ namespace Pesta.Engine.gadgets.oauth
             bypassSpecCache = false;
             signOwner = info.isSignOwner();
             signViewer = info.isSignViewer();
+            foreach (var pair in info.getAttributes())
+            {
+                requestOptions.Add(pair.Key,pair.Value);
+            }
         }
 
 
@@ -267,119 +275,119 @@ namespace Pesta.Engine.gadgets.oauth
             signViewer = orig.signViewer;
         }
 
-        public bool MustUseToken()
+        public bool mustUseToken()
         {
             return (useToken == UseToken.ALWAYS);
         }
 
-        public bool MayUseToken()
+        public bool mayUseToken()
         {
             return (useToken == UseToken.IF_AVAILABLE || useToken == UseToken.ALWAYS);
         }
 
-
-        public String ServiceName
+        public UseToken getUseToken()
         {
-            get
-            {
-                return serviceName;
-            }
-            set
-            {
-                serviceName = value;
-            }
+            return useToken;
         }
 
-
-        public String TokenName
+        public void setUseToken(UseToken _useToken)
         {
-            get
-            {
-                return tokenName;
-            }
-            set
-            {
-                tokenName = value;
-            }
+            useToken = _useToken;
         }
 
-
-        public String RequestToken
+        public String getServiceName()
         {
-            get
-            {
-                return requestToken;
-            }
-            set
-            {
-                requestToken = value;
-            }
+            return serviceName;
         }
 
-
-        public String RequestTokenSecret
+        public void setServiceName(String _serviceName)
         {
-            get
-            {
-                return requestTokenSecret;
-            }
-            set
-            {
-                requestTokenSecret = value;
-            }
+            serviceName = _serviceName;
         }
 
-
-        public String OrigClientState
+        public String getTokenName()
         {
-            get
-            {
-                return origClientState;
-            }
-            set
-            {
-                origClientState = value;
-            }
+            return tokenName;
         }
 
-
-        public bool BypassSpecCache
+        public void setTokenName(String _tokenName)
         {
-            get
-            {
-                return bypassSpecCache;
-            }
-            set
-            {
-                bypassSpecCache = value;
-            }
+            tokenName = _tokenName;
         }
 
-
-        public bool SignOwner
+        public String getRequestToken()
         {
-            get
-            {
-                return signOwner;
-            }
-            set
-            {
-                signOwner = value;
-            }
+            return requestToken;
         }
 
-
-        public bool SignViewer
+        public void setRequestToken(String _requestToken)
         {
-            get
-            {
-                return signViewer;
-            }
-            set
-            {
-                signViewer = value;
-            }
+            requestToken = _requestToken;
         }
 
+        public String getRequestTokenSecret()
+        {
+            return requestTokenSecret;
+        }
+
+        public void setRequestTokenSecret(String _requestTokenSecret)
+        {
+            requestTokenSecret = _requestTokenSecret;
+        }
+
+        public String getOrigClientState()
+        {
+            return origClientState;
+        }
+
+        public void setOrigClientState(String _origClientState)
+        {
+            origClientState = _origClientState;
+        }
+
+        public bool getBypassSpecCache()
+        {
+            return bypassSpecCache;
+        }
+
+        public void setBypassSpecCache(bool _bypassSpecCache)
+        {
+            bypassSpecCache = _bypassSpecCache;
+        }
+
+        public bool getSignOwner()
+        {
+            return signOwner;
+        }
+
+        public void setSignOwner(bool _signOwner)
+        {
+            signOwner = _signOwner;
+        }
+
+        public bool getSignViewer()
+        {
+            return signViewer;
+        }
+
+        public void setSignViewer(bool _signViewer)
+        {
+            signViewer = _signViewer;
+        }
+
+        public void setRequestOption(String name, String value)
+        {
+            requestOptions.Add(name, value);
+        }
+
+        public void removeRequestOption(String name)
+        {
+            requestOptions.Remove(name);
+        }
+
+        public String getRequestOption(String name)
+        {
+            return requestOptions[name];
+        }
     }
 }

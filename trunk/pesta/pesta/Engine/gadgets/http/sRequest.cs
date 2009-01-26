@@ -42,8 +42,9 @@ namespace Pesta.Engine.gadgets.http
         public static readonly String DOS_PREVENTION_HEADER = "X-shindig-dos";
         internal const String DEFAULT_CONTENT_TYPE = "application/x-www-form-urlencoded; charset=utf-8";
         internal const int CONNECT_TIMEOUT_MS = 10000;
-        public HttpWebRequest req;
         private Uri uri;
+        private readonly HttpWebRequest req;
+        
         // TODO: It might be useful to refactor these into a simple map of objects
         // and use sub classes
         // for more detailed data.
@@ -51,6 +52,7 @@ namespace Pesta.Engine.gadgets.http
         // Cache control.
         private bool ignoreCache;
         private int cacheTtl;
+        // this becoming redundant
         private byte[] postBody;
         // Whether to follow redirects
         private bool followRedirects;
@@ -73,16 +75,15 @@ namespace Pesta.Engine.gadgets.http
         ///
         public sRequest(Uri uri)
         {
-            this.req = (HttpWebRequest)WebRequest.Create(uri.ToString());
+            req = (HttpWebRequest)WebRequest.Create(uri.ToString());
             //this.req.Headers.Add(HttpRequestHeader.AcceptEncoding, "gzip,deflate");
             //this.req.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
-            this.req.KeepAlive = true;
+            req.KeepAlive = true;
             //this.req.Timeout = CONNECT_TIMEOUT_MS;
-            this.container = ContainerConfig.DEFAULT_CONTAINER;
-            this.followRedirects = true;
-            this.req.AllowAutoRedirect = true;
-            this.cacheTtl = -1;
-            this.uri = uri;
+            container = ContainerConfig.DEFAULT_CONTAINER;
+            followRedirects = true;
+            req.AllowAutoRedirect = true;
+            cacheTtl = -1;
             authType = AuthType.NONE;
             addHeader(DOS_PREVENTION_HEADER, "on");
         }
@@ -93,7 +94,7 @@ namespace Pesta.Engine.gadgets.http
         ///
         public sRequest(sRequest srequest)
         {
-            this.req = srequest.req;
+            req = srequest.req;
             uri = srequest.uri;
             ignoreCache = srequest.ignoreCache;
             cacheTtl = srequest.cacheTtl;
@@ -103,7 +104,7 @@ namespace Pesta.Engine.gadgets.http
             if (srequest.postBody != null)
             {
                 postBody = new byte[srequest.postBody.Length];
-            Array.Copy(srequest.postBody, this.postBody, srequest.postBody.Length);
+                Array.Copy(srequest.postBody, postBody, srequest.postBody.Length);
             }
             if (srequest.oauthArguments != null)
             {
@@ -114,59 +115,59 @@ namespace Pesta.Engine.gadgets.http
             followRedirects = srequest.followRedirects;
         }
 
-        /// <param name="ignoreCache_0">Whether to ignore all caching for this request.</param>
-        public sRequest setIgnoreCache(bool ignoreCache)
+        /// <param name="_ignoreCache">Whether to ignore all caching for this request.</param>
+        public sRequest setIgnoreCache(bool _ignoreCache)
         {
             this.ignoreCache = ignoreCache;
             if (ignoreCache)
             {
                 // Bypass any proxy caches as well.
-                this.req.Headers["Pragma"] = "no-cache";
+                req.Headers["Pragma"] = "no-cache";
             }
             return this;
         }
 
-        public sRequest setPostBody(byte[] postBody)
+        public sRequest setPostBody(byte[] _postBody)
         {
-            if (postBody != null)
+            if (_postBody != null)
             {
-                this.postBody = new byte[postBody.Length];
-                Array.Copy(postBody, this.postBody, postBody.Length);
+                postBody = new byte[_postBody.Length];
+                Array.Copy(_postBody, postBody, _postBody.Length);
             }
             return this;
         }
 
-        public sRequest setMethod(String method)
+        public sRequest setMethod(String _method)
         {
-            this.method = method;
+            req.Method = _method;
             return this;
         }
 
 
-        /// <param name="cacheTtl_0">The amount of time to cache the result object for, in</param>
-        public sRequest setCacheTtl(int cacheTtl)
+        /// <param name="_cacheTtl">The amount of time to cache the result object for, in</param>
+        public sRequest setCacheTtl(int _cacheTtl)
         {
-            this.cacheTtl = cacheTtl;
+            cacheTtl = _cacheTtl;
             return this;
         }
 
 
-        /// <param name="gadget_0">The gadget that caused this HTTP request to be necessary. May</param>
-        public sRequest setGadget(Uri gadget)
+        /// <param name="_gadget">The gadget that caused this HTTP request to be necessary. May</param>
+        public sRequest setGadget(Uri _gadget)
         {
-            this.gadget = gadget;
+            gadget = _gadget;
             return this;
         }
 
         public void setHeader(string name, string value)
         {
-            this.req.Headers[name] = value;
+            req.Headers[name] = value;
         }
 
-        /// <param name="container_0">The container that this request originated from.</param>
-        public sRequest setContainer(String container)
+        /// <param name="_container">The container that this request originated from.</param>
+        public sRequest setContainer(String _container)
         {
-            this.container = container;
+            container = _container;
             return this;
         }
 
@@ -175,41 +176,41 @@ namespace Pesta.Engine.gadgets.http
         /// request.
         /// </summary>
         ///
-        public sRequest setSecurityToken(ISecurityToken securityToken)
+        public sRequest setSecurityToken(ISecurityToken _securityToken)
         {
-            this.securityToken = securityToken;
+            securityToken = _securityToken;
             return this;
         }
 
 
-        /// <param name="oauthArguments_0">arguments for OAuth/signed fetched</param>
-        public sRequest setOAuthArguments(OAuthArguments oauthArguments)
+        /// <param name="_oauthArguments">arguments for OAuth/signed fetched</param>
+        public sRequest setOAuthArguments(OAuthArguments _oauthArguments)
         {
-            this.oauthArguments = oauthArguments;
+            oauthArguments = _oauthArguments;
             return this;
         }
 
 
-        /// <param name="followRedirects_0">whether this request should automatically follow redirects.</param>
-        public sRequest setFollowRedirects(bool followRedirects)
+        /// <param name="_followRedirects">whether this request should automatically follow redirects.</param>
+        public sRequest setFollowRedirects(bool _followRedirects)
         {
-            this.followRedirects = followRedirects;
+            followRedirects = _followRedirects;
             return this;
         }
 
 
-        /// <param name="authType_0">The type of authentication being used for this request.</param>
-        public sRequest setAuthType(AuthType authType)
+        /// <param name="_authType">The type of authentication being used for this request.</param>
+        public sRequest setAuthType(AuthType _authType)
         {
-            this.authType = authType;
+            this.authType = _authType;
             return this;
         }
 
 
-        /// <param name="rewriteMimeType_0">The assumed content type of the response to be rewritten.</param>
-        public sRequest setRewriteMimeType(String rewriteMimeType)
+        /// <param name="_rewriteMimeType">The assumed content type of the response to be rewritten.</param>
+        public sRequest setRewriteMimeType(String _rewriteMimeType)
         {
-            this.rewriteMimeType = rewriteMimeType;
+            this.rewriteMimeType = _rewriteMimeType;
             return this;
         }
 
@@ -221,7 +222,7 @@ namespace Pesta.Engine.gadgets.http
                     req.ContentType = value;
                     break;
                 default:
-            this.req.Headers.Add(name, value);
+                    req.Headers.Add(name, value);
                     break;
             }
         }
@@ -254,7 +255,7 @@ namespace Pesta.Engine.gadgets.http
         }
         public string getMethod()
         {
-            return this.req.Method;
+            return req.Method;
         }
         /**
        * @return The post body as a string, assuming UTF-8 encoding.
@@ -263,15 +264,25 @@ namespace Pesta.Engine.gadgets.http
        */
         public String getPostBodyAsString()
         {
+            if (postBody == null)
+            {
+                return "";
+            }
             return Encoding.UTF8.GetString(postBody);
         }
         public int getPostBodyLength()
         {
-            return this.postBody.Length;
+            return postBody == null ? 0 : postBody.Length;
         }
+
         public byte[] getPostBody()
         {
             return postBody;
+        }
+
+        public void setContentType(string type)
+        {
+            req.ContentType = type;
         }
         public string ContentType
         {
@@ -308,18 +319,19 @@ namespace Pesta.Engine.gadgets.http
             }
         }
 
-        public Uri Uri
+        public WebRequest getRequest()
         {
-            get
-            {
-                return uri;
-            }
-            set
-            {
-                uri = value;
-            }
+            return req;
         }
 
+        public Uri getUri()
+        {
+            return Uri.fromJavaUri(req.RequestUri);
+        }
+        public void setUri(Uri _uri)
+        {
+            uri = _uri;
+        }
 
         public Uri Gadget
         {
@@ -347,31 +359,16 @@ namespace Pesta.Engine.gadgets.http
         }
 
 
-        public ISecurityToken SecurityToken
+        public ISecurityToken getSecurityToken()
         {
-            get
-            {
-                return securityToken;
-            }
-            set
-            {
-                securityToken = value;
-            }
+            return securityToken;
         }
 
 
-        public OAuthArguments OAuthArguments
+        public OAuthArguments getOAuthArguments()
         {
-            get
-            {
-                return oauthArguments;
-            }
-            set
-            {
-                oauthArguments = value;
-            }
+            return oauthArguments;
         }
-
 
         public bool FollowRedirects
         {
@@ -427,10 +424,7 @@ namespace Pesta.Engine.gadgets.http
                 }
             }
             buf.Append('\n');
-            using (StreamReader sr = new StreamReader(req.GetRequestStream()))
-            {
-                buf.Append(sr.ReadToEnd());
-            }
+            buf.Append(getPostBodyAsString());
             return buf.ToString();
         }
 

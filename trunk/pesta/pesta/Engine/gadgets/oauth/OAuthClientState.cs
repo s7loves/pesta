@@ -213,7 +213,15 @@ namespace Pesta.Engine.gadgets.oauth
             }
             else
             {
-                state.Add(key, value);
+                if (state.ContainsKey(key))
+                {
+                    state[key] = value;
+                }
+                else
+                {
+                    state.Add(key, value);
+                }
+                
             }
         }
     }

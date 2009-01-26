@@ -50,6 +50,11 @@ namespace Pesta.Engine.gadgets.oauth
         /**
          * The user is not the owner of the page.
          */
-        NOT_OWNER
+        NOT_OWNER,
+
+        /**
+        * The request cannot be completed because the request options were invalid.
+        */
+        INVALID_REQUEST
     }
 }

@@ -50,8 +50,8 @@ namespace Pesta.Engine.gadgets.http
             // key
             // provides some additional insurance that we aren't mixing cache
             // content.
-            set("method", request.req.Method);
-            set("url", request.req.RequestUri.ToString());
+            set("method", request.getMethod());
+            set("url", request.getUri().ToString());
             // TODO: We can go ahead and add authentication info here as well.
         }
 

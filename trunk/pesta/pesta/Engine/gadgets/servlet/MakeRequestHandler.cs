@@ -74,7 +74,7 @@ namespace Pesta.Engine.gadgets.servlet
             }
 
             // Serialize the response
-            String output = convertResponseToJson(rcr.SecurityToken, request, results);
+            String output = convertResponseToJson(rcr.getSecurityToken(), request, results);
 
             // Find and set the refresh interval
             setResponseHeaders(request, response.getResponse(), results);
@@ -134,8 +134,8 @@ namespace Pesta.Engine.gadgets.servlet
             req.AuthType = auth;
             if (auth != AuthType.NONE)
             {
-                req.SecurityToken = extractAndValidateToken(request.getContext());
-                req.OAuthArguments = new OAuthArguments(auth, request.getRequest());
+                req.setSecurityToken(extractAndValidateToken(request.getContext()));
+                req.setOAuthArguments(new OAuthArguments(auth, request.getRequest()));
             }
             return req;
         }

@@ -81,22 +81,12 @@ namespace Pesta.Engine.gadgets.oauth
                                                                 "access_token_expired"
                                                             };
 
-        private readonly String problemCode;
-        private readonly String problemText;
-
         public readonly bool canRetry;
         public readonly bool canExtend;
 
         public readonly bool startFromScratch;
 
-        internal OAuthProtocolException(bool canRetry_0)
-        {
-            this.problemCode = null;
-            this.problemText = null;
-            this.canRetry = canRetry_0;
-            this.startFromScratch = false;
-            this.canExtend = false;
-        }
+        private readonly String problemCode;
 
         public OAuthProtocolException(OAuthMessage reply)
         {
@@ -106,8 +96,7 @@ namespace Pesta.Engine.gadgets.oauth
                 throw new ArgumentException(
                     "No problem reported for OAuthProtocolException");
             }
-            this.problemCode = problem;
-            this.problemText = OAuthUtil.getParameter(reply, "oauth_problem_advice");
+            problemCode = problem;
             if (fatalProblems.Contains(problem))
             {
                 startFromScratch = true;
@@ -142,8 +131,6 @@ namespace Pesta.Engine.gadgets.oauth
         /// <param name="status"> HTTP status code, assumed to be between 400 and 499 inclusive</param>
         public OAuthProtocolException(int status)
         {
-            problemCode = status.ToString();
-            problemText = null;
             if (status == 401)
             {
                 startFromScratch = true;
@@ -155,18 +142,17 @@ namespace Pesta.Engine.gadgets.oauth
                 canRetry = false;
             }
             canExtend = false;
+            problemCode = null;
+
         }
 
-
-        public sResponse getResponseForGadget()
+        /**
+        * @return the OAuth problem code (from the problem reporting extension).
+        */
+        public String getProblemCode()
         {
-            return new HttpResponseBuilder()
-                //.setHttpStatusCode(0)
-                // Inch towards opensocial-0.8: this is very much an experiment, don't
-                // hesitate to change it if you've got something better.
-                .setMetadata("oauthError", problemCode)
-                .setMetadata("oauthErrorText", problemText)
-                .create();
+            return problemCode;
         }
+
     }
 }

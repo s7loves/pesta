@@ -49,7 +49,7 @@ namespace Pesta.Interop.oauth.signature
                 if (key == null)
                 {
                     String keyString = Rfc3986.Encode(getConsumerSecret())
-                                       + "&" + Rfc3986.Encode(getTokenSecret());
+                                         + "&" + Rfc3986.Encode(getTokenSecret());
                     key = Encoding.GetEncoding(ENCODING).GetBytes(keyString);
                 }
                 _key = key;
