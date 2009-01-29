@@ -375,7 +375,7 @@
       <Column Name="application_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="person_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="name" Type="System.String" DbType="VarChar(128) NOT NULL" CanBeNull="false" />
-      <Column Name="value" Type="System.String" DbType="NVarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="value" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
       <Association Name="application_application_setting" Member="application" ThisKey="application_id" OtherKey="id" Type="application" IsForeignKey="true" />
       <Association Name="person_application_setting" Member="person" ThisKey="person_id" OtherKey="id" Type="person" IsForeignKey="true" />
     </Type>

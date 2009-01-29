@@ -5131,7 +5131,7 @@ namespace Pesta.DataAccess
 			}
 		}
 		
-		[Column(Storage="_value", DbType="NVarChar(255) NOT NULL", CanBeNull=false)]
+		[Column(Storage="_value", DbType="NVarChar(MAX) NOT NULL", CanBeNull=false)]
 		public string value
 		{
 			get
