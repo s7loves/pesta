@@ -45,20 +45,25 @@ os.Loader.processNamespaceNode=function(B){var C=B.getAttribute("prefix");
 var A=B.getAttribute("url");
 os.createNamespace(C,A)
 };
-os.Loader.processTemplateDefNode=function(C){var A=C.getAttribute("tag");
-for(var D=C.firstChild;
-D;
-D=D.nextSibling){if(D.nodeType==DOM_ELEMENT_NODE){var B=os.Loader.getProcessorFunction_(D.tagName);
-if(B){B(D,A)
+os.Loader.processTemplateDefNode=function(D){var A=D.getAttribute("tag");
+var B=D.getAttribute("name");
+for(var E=D.firstChild;
+E;
+E=E.nextSibling){if(E.nodeType==DOM_ELEMENT_NODE){var C=os.Loader.getProcessorFunction_(E.tagName);
+if(C){C(E,A,B)
 }}}};
-os.Loader.processTemplateNode=function(E,F){var C=F||E.getAttribute("tag");
+os.Loader.processTemplateNode=function(F,H,G){var C=H||F.getAttribute("tag");
+var D=G||F.getAttribute("name");
 if(C){var B=C.split(":");
 if(B.length!=2){throw"Invalid tag name: "+C
 }var A=os.getNamespace(B[0]);
 if(!A){throw"Namespace not registered: "+B[0]+" while trying to define "+C
-}var D=os.compileXMLNode(E);
-A[B[1]]=os.createTemplateCustomTag(D)
-}};
+}var E=os.compileXMLNode(F);
+A[B[1]]=os.createTemplateCustomTag(E)
+}else{if(D){var E=os.compileXMLNode(F);
+E.id=D;
+os.registerTemplate(E)
+}}};
 os.Loader.processJavaScriptNode=function(B,C){for(var A=B.firstChild;
 A;
 A=A.nextSibling){os.Loader.injectJavaScript(A.nodeValue)

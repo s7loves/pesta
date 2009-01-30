@@ -46,7 +46,7 @@ break
 }function makeXhrRequest(realUrl,proxyUrl,callback,paramData,method,params,processResponseFunction,opt_contentType){var xhr=makeXhr();
 xhr.open(method,proxyUrl,true);
 if(callback){xhr.onreadystatechange=gadgets.util.makeClosure(null,processResponseFunction,realUrl,callback,params,xhr)
-}if(paramData!=null){xhr.setRequestHeader("Content-Type",opt_contentType||"application/x-www-form-urlencoded");
+}if(paramData!==null){xhr.setRequestHeader("Content-Type",opt_contentType||"application/x-www-form-urlencoded");
 xhr.send(paramData)
 }else{xhr.send(null)
 }}function respondWithPreload(postData,params,callback){if(gadgets.io.preloaded_&&gadgets.io.preloaded_[postData.url]){var preload=gadgets.io.preloaded_[postData.url];

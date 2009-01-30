@@ -1,3 +1,22 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 // If a gadget was written for the opensocial 0.6 apis and it wants to run in a
 // container that only supports 0.7, including this file should allow the gadget
 // to run without making any changes.
@@ -47,14 +66,14 @@ opensocial.Person.prototype.getField = function(fieldname) {
   } else {
     return this.getField_v07(fieldname);
   }
-}
+};
 
 opensocial.Person.prototype.getDisplayName_v07
     = opensocial.Person.getDisplayName;
 opensocial.Person.prototype.getDisplayName = function() {
   return this.getField_v07(opensocial.Person.Field.NAME)
       .getField(opensocial.Name.Field.UNSTRUCTURED);
-}
+};
 
 opensocial.newActivity_v07 = opensocial.newActivity;
 opensocial.newActivity = function(title, opt_params) {
@@ -95,7 +114,7 @@ opensocial.DataRequest.prototype.newUpdateInstanceAppDataRequest = function(key,
 // same.
 gadgets.views.View.prototype.isPrimaryContent = function() {
   return this.isOnlyVisibleGadget();
-}
+};
 
 // Note: The names of views may have changed in a container between 0.6 and 0.7
 // but that is container specific

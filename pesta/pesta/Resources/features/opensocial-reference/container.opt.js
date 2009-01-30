@@ -71,11 +71,11 @@ attachDocumentStub=window.attachDocumentStub;
 var A=___.copy(___.sharedImports);
 A.outers=A;
 A.console=console;
-A.$v=___.asSimpleFunc(valijaMaker)(A);
+A.$v=___.asFunc(valijaMaker)(A);
 ___.getNewModuleHandler().setImports(A);
-attachDocumentStub("-g___",uriCallback,A);
 var D=document.createElement("div");
 D.className="g___";
+attachDocumentStub("-g___",uriCallback,A,D);
 A.htmlEmitter___=new HtmlEmitter(D);
 document.body.appendChild(D);
 A.gadgets=gadgets;
@@ -84,15 +84,15 @@ var C={c_gadgets:{c_MiniMessage:{m_createDismissibleMessage:0,m_createStaticMess
 function B(I,J){if(!J){return 
 }for(var F in I){if(I.hasOwnProperty(F)){var E=F.match(/^([mcs])_(\w+)$/);
 var H=E[1],G=E[2];
-switch(H){case"c":___.allowRead(J,G);
+switch(H){case"c":___.grantRead(J,G);
 B(I[F],J[G]);
 break;
-case"m":___.allowCall(J.prototype,G);
+case"m":___.grantCall(J.prototype,G);
 break;
-case"f":___.allowRead(J.prototype,G);
+case"f":___.grantRead(J.prototype,G);
 break;
-case"s":if("function"===typeof J[G]){___.allowCall(J,G)
-}else{___.allowRead(J,G)
+case"s":if("function"===typeof J[G]){___.grantCall(J,G)
+}else{___.grantRead(J,G)
 }break
 }}}}B(C,window)
 };

@@ -201,7 +201,7 @@ gadgets.io = function() {
       xhr.onreadystatechange = gadgets.util.makeClosure(
           null, processResponseFunction, realUrl, callback, params, xhr);
     }
-    if (paramData != null) {
+    if (paramData !== null) {
       xhr.setRequestHeader('Content-Type', opt_contentType || 'application/x-www-form-urlencoded');
       xhr.send(paramData);
     } else {
@@ -241,7 +241,7 @@ gadgets.io = function() {
             oauthError: preload.oauthError,
             oauthErrorText: preload.oauthErrorText,
             errors: []
-          }
+          };
           callback(transformResponseData(params, resp));
         }
         return true;
@@ -440,7 +440,7 @@ gadgets.io = function() {
       if (refresh === undefined) {
         refresh = "3600";
       }
-      
+
       var urlParams = gadgets.util.getUrlParameters();
 
       return config.proxyUrl.replace("%url%", encodeURIComponent(url)).

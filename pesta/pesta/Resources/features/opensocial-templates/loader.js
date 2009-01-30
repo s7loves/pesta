@@ -20,13 +20,13 @@
  * @fileoverview OpenSocial Template loader. Can be used to load template
  * libraries via URL. Supports Javascript and CSS injection.
  *
- * Usage: 
+ * Usage:
  *   os.Loader.loadUrl("/path/templatelib.xml", function() { doSomething(); });
- * 
+ *
  * or
  *   os.Loader.loadContent(
  *       "<Templates><Template tag="foo:bar">...</Template></Templates>");
- * 
+ *
  * The Template Library should have the following structure:
  *
  *   <Templates xmlns:foo="http://foo.com/">
@@ -43,12 +43,12 @@
  *         function usedByFooBaz() { ... };
  *       </JavaScript>
  *     </TemplateDef>
- *   </Templates> 
- * 
+ *   </Templates>
+ *
  * TODO(levik): Implement dependency support - inject JS and CSS lazily.
  * TODO(levik): More error handling and reporting of ill-formed XML files.
  */
-  
+
 os.Loader = {};
 
 /**
@@ -97,7 +97,7 @@ os.Loader.requestUrlXHR_ = function(url, callback) {
     }
   };
   req.send(null);
-}
+};
 
 /**
  * Fetch content remotely using the gadgets.io.makeRequest API.
@@ -135,7 +135,7 @@ os.Loader.loadUrls = function(urls, callback) {
     } else {
       os.Loader.loadUrl(urls.pop(), loadOne);
     }
-  }
+  };
   loadOne();
 };
 
@@ -186,12 +186,13 @@ os.Loader.processNamespaceNode = function(node) {
  */
 os.Loader.processTemplateDefNode = function(node) {
   var tag = node.getAttribute("tag");
+  var name = node.getAttribute("name");
   for (var child = node.firstChild; child; child = child.nextSibling) {
     if (child.nodeType == DOM_ELEMENT_NODE) {
       // TODO(levik): This won't work once compiler does name mangling.
       var handler = os.Loader.getProcessorFunction_(child.tagName);
       if (handler) {
-        handler(child, tag);
+        handler(child, tag, name);
       }
     }
   }
@@ -200,28 +201,33 @@ os.Loader.processTemplateDefNode = function(node) {
 /**
  * Processes the <Template> node
  */
-os.Loader.processTemplateNode = function(node, opt_tag) {
+os.Loader.processTemplateNode = function(node, opt_tag, opt_name) {
   var tag = opt_tag || node.getAttribute("tag");
+  var name = opt_name || node.getAttribute("name");
   if (tag) {
     var tagParts = tag.split(":");
     if (tagParts.length != 2) {
-      throw "Invalid tag name: " + tag; 
+      throw "Invalid tag name: " + tag;
     }
     var nsObj = os.getNamespace(tagParts[0]);
     if (!nsObj) {
-      throw "Namespace not registered: " + tagParts[0] + 
+      throw "Namespace not registered: " + tagParts[0] +
           " while trying to define " + tag;
     }
     var template = os.compileXMLNode(node);
     nsObj[tagParts[1]] = os.createTemplateCustomTag(template);
-  } 
+  } else if (name) {
+    var template = os.compileXMLNode(node);
+    template.id = name;
+    os.registerTemplate(template);
+  }
 };
 
 /**
  * Processes the <JavaScript> node
  */
 os.Loader.processJavaScriptNode = function(node, opt_tag) {
-  for (var contentNode = node.firstChild; contentNode; 
+  for (var contentNode = node.firstChild; contentNode;
       contentNode = contentNode.nextSibling) {
     // TODO(levik): Skip empty text nodes (with whitespace and newlines)
     os.Loader.injectJavaScript(contentNode.nodeValue);
@@ -232,7 +238,7 @@ os.Loader.processJavaScriptNode = function(node, opt_tag) {
  * Processes the <Style> node
  */
 os.Loader.processStyleNode = function(node, opt_tag) {
-  for (var contentNode = node.firstChild; contentNode; 
+  for (var contentNode = node.firstChild; contentNode;
       contentNode = contentNode.nextSibling) {
     // TODO(levik): Skip empty text nodes (with whitespace and newlines)
     os.Loader.injectStyle(contentNode.nodeValue);

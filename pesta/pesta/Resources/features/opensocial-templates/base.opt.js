@@ -17,7 +17,7 @@ os.VAR_parentnode="$parentnode";
 os.VAR_uniqueId="$uniqueId";
 os.VAR_identifierresolver="$_ir";
 os.VAR_callbacks="$callbacks_";
-os.regExps_={onlyWhitespace:/^[ \t\n]*$/};
+os.regExps_={ONLY_WHITESPACE:/^[ \t\n]*$/,VARIABLE_SUBSTITUTION:/^([\w\W]*?)(\$\{[^\}]*\})([\w\W]*)$/};
 os.compileTemplate=function(B,D){if(typeof (B)=="string"){return os.compileTemplateString(B,D)
 }D=D||B.id;
 var C=B.value||B.innerHTML;

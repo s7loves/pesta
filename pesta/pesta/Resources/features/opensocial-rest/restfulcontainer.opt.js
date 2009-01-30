@@ -22,7 +22,7 @@ C.send(function(F){A(F.get("key"))
 RestfulContainer.prototype.requestData=function(E,I){I=I||function(){};
 var B=E.getRequestObjects();
 var G=B.length;
-if(G==0){window.setTimeout(function(){I(new opensocial.DataResponse({},true))
+if(G===0){window.setTimeout(function(){I(new opensocial.DataResponse({},true))
 },0);
 return 
 }var J={};
@@ -116,7 +116,7 @@ return new JsonPerson(A)
 RestfulContainer.prototype.getFieldsList=function(A){if(this.hasNoKeys(A)||this.isWildcardKey(A[0])){return""
 }else{return"fields="+A.join(",")
 }};
-RestfulContainer.prototype.hasNoKeys=function(A){return !A||A.length==0
+RestfulContainer.prototype.hasNoKeys=function(A){return !A||A.length===0
 };
 RestfulContainer.prototype.isWildcardKey=function(A){return A=="*"
 };

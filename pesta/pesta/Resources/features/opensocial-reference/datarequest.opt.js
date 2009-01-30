@@ -40,7 +40,10 @@ opensocial.DataRequest.prototype.newUpdatePersonAppDataRequest=function(C,A,B){r
 };
 opensocial.DataRequest.prototype.newRemovePersonAppDataRequest=function(B,A){return opensocial.Container.get().newRemovePersonAppDataRequest(B,A)
 };
-opensocial.DataRequest.ActivityRequestFields={APP_ID:"appId"};
-opensocial.DataRequest.prototype.newFetchActivitiesRequest=function(A,B){B=B||{};
-return opensocial.Container.get().newFetchActivitiesRequest(A,B)
+opensocial.DataRequest.ActivityRequestFields={APP_ID:"appId",FIRST:"first",MAX:"max"};
+opensocial.DataRequest.prototype.newFetchActivitiesRequest=function(B,C){C=C||{};
+var A=opensocial.DataRequest.PeopleRequestFields;
+this.addDefaultParam(C,A.FIRST,0);
+this.addDefaultParam(C,A.MAX,20);
+return opensocial.Container.get().newFetchActivitiesRequest(B,C)
 };
