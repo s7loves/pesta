@@ -134,7 +134,7 @@ namespace Pesta.Interop.oauth
             List<Parameter> list = new List<Parameter>();
             if (!isEmpty(form))
             {
-                foreach (String nvp in Regex.Split(form, "\\&"))
+                foreach (String nvp in form.Split(new[]{'&'},StringSplitOptions.RemoveEmptyEntries))
                 {
                     int equals = nvp.IndexOf('=');
                     String name;
