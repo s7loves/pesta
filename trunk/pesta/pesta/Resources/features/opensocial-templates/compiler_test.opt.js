@@ -1,4 +1,9 @@
-function testWrapIdentifiers(){assertEquals("$_ir($_ir($context, 'foo'), 'bar')",os.wrapIdentifiersInExpression("foo.bar"));
+function testSubstitution(){var A=[["hello world",null],["hello $world",null],["hello ${Cur} world","'hello '+($this)+' world'"],["${Cur} hello","($this)+' hello'"],["hello ${Cur}","'hello '+($this)"],["$ ${Cur}","'$ '+($this)"],["$${Cur}","'$'+($this)"],["${Cur} ${Index}","($this)+' '+($index)"],["a ${Cur} b ${Index} c","'a '+($this)+' b '+($index)+' c'"]];
+for(var B=0;
+B<A.length;
+B++){var C=os.parseAttribute_(A[B][0]);
+assertEquals(A[B][1],C)
+}}function testWrapIdentifiers(){assertEquals("$_ir($_ir($context, 'foo'), 'bar')",os.wrapIdentifiersInExpression("foo.bar"));
 assertEquals("$_ir($_ir($context, 'data'), 'array')()",os.wrapIdentifiersInExpression("data.array()"));
 assertEquals("$_ir($_ir($context, 'data')(), 'array')",os.wrapIdentifiersInExpression("data().array"));
 assertEquals("$_ir($context, 'os:Item')",os.wrapIdentifiersInExpression("os:Item"));

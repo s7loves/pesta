@@ -33,8 +33,10 @@ H.Summary=H.summary||H.description;
 H.Date=H.pubDate
 }}F(I.data)
 },E)
-}function _IG_GetCachedUrl(A){return gadgets.io.getProxyUrl(A)
-}function _IG_GetImageUrl(A){return gadgets.io.getProxyUrl(A)
+}function _IG_GetCachedUrl(A,B){var C={REFRESH_INTERVAL:3600};
+if(B&&B.refreshInterval){C.REFRESH_INTERVAL=B.refreshInterval
+}return gadgets.io.getProxyUrl(A,C)
+}function _IG_GetImageUrl(A,B){return _IG_GetCachedUrl(A,B)
 }function _IG_GetImage(B){var A=document.createElement("img");
 A.src=_IG_GetCachedUrl(B);
 return A

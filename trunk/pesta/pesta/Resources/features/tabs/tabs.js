@@ -229,7 +229,7 @@ gadgets.TabSet.prototype.addTab = function(tabName, opt_params) {
   }
 
   if (tabName == this.defaultTabName_ || (!this.defaultTabName_
-      && tabIndex == 0)) {
+      && tabIndex === 0)) {
     this.selectTab_(tab);
   }
 
@@ -263,7 +263,7 @@ gadgets.TabSet.prototype.removeTab = function(tabIndex) {
     this.mainContainer_.removeChild(tab.contentContainer_);
     this.tabs_.splice(tabIndex, 1);
     this.adjustNavigation_();
-    if (this.tabs_.length == 0) {
+    if (this.tabs_.length === 0) {
       this.displayTabs(false);
       this.selectedTab_ = null;
     }
@@ -494,7 +494,7 @@ gadgets.TabSet.prototype.createTabTable_ = function() {
   this.tabsContainer_ = wrapper;
 
   return table;
-}
+};
 
 /**
  * Helper method that shows or hides the navigation elements.
@@ -602,7 +602,7 @@ gadgets.TabSet.prototype.createTab_ = function(tabName, params) {
  * @return {Function} Callback function to select the tab.
  */
 gadgets.TabSet.prototype.setSelectedTabGenerator_ = function(tab) {
-  return function() { tab.handle_.selectTab_(tab); }
+  return function() { tab.handle_.selectTab_(tab); };
 };
 
 /**

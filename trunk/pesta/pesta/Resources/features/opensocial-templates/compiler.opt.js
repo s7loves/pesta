@@ -4,7 +4,7 @@ os.compileXMLNode=function(D,G){var A=[];
 for(var F=D.firstChild;
 F;
 F=F.nextSibling){if(F.nodeType==DOM_ELEMENT_NODE){A.push(os.compileNode_(F))
-}else{if(F.nodeType==DOM_TEXT_NODE){if(F!=D.firstChild||!F.nodeValue.match(os.regExps_.onlyWhitespace)){var E=os.breakTextNode_(F);
+}else{if(F.nodeType==DOM_TEXT_NODE){if(F!=D.firstChild||!F.nodeValue.match(os.regExps_.ONLY_WHITESPACE)){var E=os.breakTextNode_(F);
 for(var B=0;
 B<E.length;
 B++){A.push(E[B])
@@ -44,7 +44,8 @@ os.transformVariables_=function(A){A=os.replaceTopLevelVars_(A);
 return A
 };
 os.variableMap_={my:os.VAR_my,My:os.VAR_my,cur:VAR_this,Cur:VAR_this,"$cur":VAR_this,Top:VAR_top,Index:VAR_index,Count:VAR_count};
-os.replaceTopLevelVars_=function(E){E=" "+E;
+os.replaceTopLevelVars_=function(E){E=E.replace(/Context[.]/g,"");
+E=" "+E;
 var D=/([^.$a-zA-Z0-9])([$a-zA-Z0-9]+)/g;
 var C;
 var B="";
@@ -169,13 +170,13 @@ if(D){A=A.replace(/^\s/,"")
 }return A
 }return C
 };
-os.breakTextNode_=function(G){var A=/^([^$]*)(\$\{[^\}]*\})([\w\W]*)$/;
+os.breakTextNode_=function(G){var A=os.regExps_.VARIABLE_SUBSTITUTION;
 var F=G.data;
 var B=[];
 var C=F.match(A);
 while(C){if(C[1].length>0){os.pushTextNode(B,os.trimWhitespaceForIE_(C[1]))
 }var D=C[2].substring(2,C[2].length-1);
-if(!D){D="$this"
+if(!D){D=VAR_this
 }var E=document.createElement("span");
 E.setAttribute(ATT_content,os.transformExpression_(D));
 B.push(E);
@@ -188,14 +189,15 @@ C=F.match(A)
 os.transformLiteral_=function(A){return"'"+A.replace(/'/g,"\\'").replace(/\n/g," ").replace(/;/g,"'+os.SEMICOLON+'")+"'"
 };
 os.parseAttribute_=function(C){if(!C.length){return null
-}var A=/^([^$]*)(\$\{[^\}]*\})([\w\W]*)$/;
+}var A=os.regExps_.VARIABLE_SUBSTITUTION;
 var F=C;
 var E=[];
 var B=F.match(A);
 if(!B){return null
 }while(B){if(B[1].length>0){E.push(os.transformLiteral_(os.trimWhitespaceForIE_(B[1],E.length==0)))
 }var D=B[2].substring(2,B[2].length-1);
-E.push("("+os.transformExpression_(D)+")");
+if(!D){D=VAR_this
+}E.push("("+os.transformExpression_(D)+")");
 F=B[3];
 B=F.match(A)
 }if(F.length>0){E.push(os.transformLiteral_(os.trimWhitespaceForIE_(F,false,true)))
@@ -205,8 +207,9 @@ os.getValueFromObject_=function(B,A){if(!A){return B
 }else{if(B.nodeType==DOM_ELEMENT_NODE){return os.getValueFromNode_(B,A)
 }else{return B[A]
 }}};
-os.getValueFromNode_=function(G,C){var B=G[C]||G.getAttribute(C);
-if(!B){if(C){C=C.toLowerCase()
+os.getValueFromNode_=function(G,C){var B=G[C];
+if(typeof (B)=="undefined"||B==null){B=G.getAttribute(C)
+}if(typeof (B)=="undefined"||B==null){if(C){C=C.toLowerCase()
 }var A=("*"==C);
 B=[];
 for(var H=G.firstChild;

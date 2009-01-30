@@ -14,8 +14,9 @@ os.Container.onDomLoad_()
 }
 }};
 os.Container.onDomLoad_=function(){if(os.Container.domLoaded_){return 
-}while(os.Container.domLoadCallbacks_.length){os.Container.domLoadCallbacks_.pop()()
-}os.Container.domLoaded_=true
+}while(os.Container.domLoadCallbacks_.length){try{os.Container.domLoadCallbacks_.pop()()
+}catch(A){os.log(A)
+}}os.Container.domLoaded_=true
 };
 os.Container.executeOnDomLoad=function(A){if(os.Container.domLoaded_){setTimeout(A,0)
 }else{if(os.Container.domLoadCallbacks_==null){os.Container.domLoadCallbacks_=[];
@@ -31,7 +32,6 @@ if(os.Container.isTemplateType_(D.type)){var A=D.getAttribute("tag");
 if(A){os.Container.registerTagElement_(D,A)
 }else{if(D.getAttribute("name")){os.Container.registerTemplateElement_(D,D.getAttribute("name"))
 }}}}};
-os.Container.executeOnDomLoad(os.Container.registerDocumentTemplates);
 os.Container.compileInlineTemplates=function(A,G){var H=G||document;
 var B=H.getElementsByTagName(os.Container.TAG_script_);
 for(var D=0;
@@ -42,25 +42,34 @@ if(!C||C.length<0){var E=os.compileTemplate(F);
 if(E){os.Container.inlineTemplates_.push({template:E,node:F})
 }else{os.warn("Failed compiling inline template.")
 }}}}};
-os.Container.renderInlineTemplates=function(F,G){var I=G||document;
-var C=os.Container.inlineTemplates_;
-for(var E=0;
-E<C.length;
-++E){var J=C[E].template;
-var D=C[E].node;
-var A="_T_"+J.id;
-var B=I.getElementById(A);
-if(!B){B=I.createElement("div");
-B.setAttribute("id",A);
-D.parentNode.insertBefore(B,D)
-}var K=D.getAttribute("beforeData");
-if(K){var L=K.split(/[\, ]+/);
-os.data.DataContext.registerListener(L,os.createHideElementClosure(B))
-}var H=D.getAttribute("requireData");
-if(H){var L=H.split(/[\, ]+/);
-os.data.DataContext.registerListener(L,os.createRenderClosure(J,B,os.data.DataContext))
-}else{J.renderInto(B,F)
+os.Container.renderInlineTemplates=function(G,H){var J=H||document;
+var B=G?os.createContext(G):os.data.getDataContext().getContext();
+var D=os.Container.inlineTemplates_;
+for(var F=0;
+F<D.length;
+++F){var K=D[F].template;
+var E=D[F].node;
+var A="_T_"+K.id;
+var C=J.getElementById(A);
+if(!C){C=J.createElement("div");
+C.setAttribute("id",A);
+E.parentNode.insertBefore(C,E)
+}var L=E.getAttribute("before")||E.getAttribute("beforeData");
+if(L){var M=L.split(/[\, ]+/);
+os.data.DataContext.registerListener(M,os.Container.createHideElementClosure(C))
+}var I=E.getAttribute("require")||E.getAttribute("requireData");
+if(I){var M=I.split(/[\, ]+/);
+os.data.DataContext.registerListener(M,os.Container.createRenderClosure(K,C,null,os.data.DataContext.getContext()))
+}else{K.renderInto(C,null,B)
 }}};
+os.Container.createRenderClosure=function(C,B,A,D){var E=function(){C.renderInto(B,A,D)
+};
+return E
+};
+os.Container.createHideElementClosure=function(A){var B=function(){displayNone(A)
+};
+return B
+};
 os.Container.registerTemplate=function(A){var B=document.getElementById(A);
 return os.Container.registerTemplateElement_(B)
 };
@@ -73,27 +82,17 @@ if(C){E.renderInto(C,A)
 }else{os.warn("Element ("+B+") not found to render into.")
 }}else{os.warn("Template ("+D+") not registered.")
 }};
-os.Container.loadDataRequests=function(D){var E=D||document;
-var A=E.getElementsByTagName(os.Container.TAG_script_);
-for(var B=0;
-B<A.length;
-++B){var C=A[B];
-if(C.type==os.Container.dataType_){os.data.loadRequests(C)
-}}os.data.executeRequests()
+os.Container.processInlineTemplates=function(A,B){os.Container.compileInlineTemplates(B);
+os.Container.renderInlineTemplates(A,B)
 };
-os.Container.processInlineTemplates=function(A,C){var B=A||os.data.DataContext;
-os.Container.compileInlineTemplates(C);
-os.Container.renderInlineTemplates(B,C)
-};
-os.Container.processDocument=function(A,B){os.Container.loadDataRequests(B);
-os.Container.registerDocumentTemplates(B);
+os.Container.processDocument=function(A,B){os.Container.registerDocumentTemplates(B);
 os.Container.processInlineTemplates(A,B)
 };
+os.Container.executeOnDomLoad(os.Container.processDocument);
 os.Container.TAG_script_="script";
 os.Container.templateTypes_={};
 os.Container.templateTypes_["text/os-template"]=true;
 os.Container.templateTypes_["text/template"]=true;
-os.Container.dataType_="text/os-data";
 os.Container.isTemplateType_=function(A){return os.Container.templateTypes_[A]!=null
 };
 os.Container.registerTemplateElement_=function(A,C){var B=os.compileTemplate(A,C);

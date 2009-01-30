@@ -49,7 +49,7 @@ gadgets.flash.getMajorVersion = function() {
     // Flash detection for IE
     // This is done by trying to create an ActiveX object with the name
     // "ShockwaveFlash.ShockwaveFlash.{majorVersion}".
-    for (var version = 9; version > 0; version--) {
+    for (var version = 10; version > 0; version--) {
       try {
         new ActiveXObject("ShockwaveFlash.ShockwaveFlash." + version);
         return version;
@@ -58,7 +58,9 @@ gadgets.flash.getMajorVersion = function() {
     }
   }
   return flashMajorVersion;
-}
+};
+
+gadgets.flash.swfContainerId_ = 0;
 
 /**
  * Injects a Flash file into the DOM tree.
@@ -118,6 +120,12 @@ gadgets.flash.embedFlash = function(swfUrl, swfContainer, swfVersion,
       // on top of other html elements.
       if (typeof opt_params.wmode != 'string') {
         opt_params.wmode = 'opaque';
+      }
+      while (!opt_params.id) {
+        var newId = 'swfContainer' + gadgets.flash.swfContainerId_++;
+        if (!document.getElementById(newId)) {
+          opt_params.id = newId;
+        }
       }
       // Prepare html snippet
       var html;

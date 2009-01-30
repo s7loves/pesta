@@ -50,7 +50,7 @@ F.insertBefore(C.td_,A<0?D:B)
 }if(A<0){A=this.tabs_.length;
 this.tabs_.push(C)
 }else{this.tabs_.splice(A,0,C)
-}if(G==this.defaultTabName_||(!this.defaultTabName_&&A==0)){this.selectTab_(C)
+}if(G==this.defaultTabName_||(!this.defaultTabName_&&A===0)){this.selectTab_(C)
 }this.tabsAdded_++;
 this.displayTabs(true);
 this.adjustNavigation_();
@@ -65,7 +65,7 @@ if(this.tabs_.length>1){D.removeChild(A?C.td_.previousSibling:C.td_.nextSibling)
 this.mainContainer_.removeChild(C.contentContainer_);
 this.tabs_.splice(A,1);
 this.adjustNavigation_();
-if(this.tabs_.length==0){this.displayTabs(false);
+if(this.tabs_.length===0){this.displayTabs(false);
 this.selectedTab_=null
 }}};
 gadgets.TabSet.prototype.getSelectedTab=function(){return this.selectedTab_
