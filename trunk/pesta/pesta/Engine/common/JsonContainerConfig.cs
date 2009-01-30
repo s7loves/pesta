@@ -42,15 +42,14 @@ namespace Pesta.Engine.common
        * @param containers
        * @throws ContainerConfigException
        */
-        public static readonly JsonContainerConfig Instance =
-            new JsonContainerConfig(HttpContext.Current.Server.MapPath(HttpContext.Current.Request.ApplicationPath) + @"\config\container.js");
+        public static readonly JsonContainerConfig Instance = new JsonContainerConfig();
 
-        protected JsonContainerConfig(String containers)
+        protected JsonContainerConfig()
         {
             config = new Dictionary<String, JsonObject>();
-            if (containers != null) 
+            foreach (var container in Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory + "/config/", "*.js"))
             {
-                loadContainers(containers);
+                loadContainers(container);
             }
         }
 
@@ -133,8 +132,8 @@ namespace Pesta.Engine.common
             {
                 json = sr.ReadToEnd();
             }
-            JsonObject contents = JsonConvert.Import(json) as JsonObject;
-            JsonArray containers = contents[CONTAINER_KEY] as JsonArray;
+            JsonObject contents = (JsonObject)JsonConvert.Import(json);
+            JsonArray containers = (JsonArray)contents[CONTAINER_KEY];
             for (int i = 0; i < containers.Length; i++)
             {
                 // Copy the default object and produce a new one.
