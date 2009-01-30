@@ -337,6 +337,10 @@
     <Content Include="Interop\jayrock.json\COPYING.txt" />
     <Content Include="LICENSE.txt" />
     <Content Include="NOTICE.txt" />
+    <EmbeddedResource Include="Resources\features\opensocial-0.8\opensocial8to9.opt.js" />
+    <EmbeddedResource Include="Resources\features\opensocial-0.8\feature.xml" />
+    <EmbeddedResource Include="Resources\features\opensocial-0.7\opensocial7to8.opt.js" />
+    <EmbeddedResource Include="Resources\features\opensocial-0.8\opensocial8to9.js" />
     <EmbeddedResource Include="Resources\features\caja\domita.js" />
     <EmbeddedResource Include="Resources\features\caja\domita.opt.js" />
     <EmbeddedResource Include="Resources\features\core\html-sanitizer.js" />
@@ -361,7 +365,6 @@
     <EmbeddedResource Include="Resources\features\mocks\env.opt.js" />
     <EmbeddedResource Include="Resources\features\mocks\xhr.opt.js" />
     <EmbeddedResource Include="Resources\features\opensocial-0.6\opensocial6to7.opt.js" />
-    <EmbeddedResource Include="Resources\features\opensocial-0.7\opensocial7to8.opt.js" />
     <EmbeddedResource Include="Resources\features\opensocial-base\fieldtranslations.opt.js" />
     <EmbeddedResource Include="Resources\features\opensocial-base\jsonactivity.opt.js" />
     <EmbeddedResource Include="Resources\features\opensocial-base\jsonactivitytest.opt.js" />

@@ -59,166 +59,166 @@
 var gadgets = gadgets || {};
 
 gadgets.config = function() {
-  var components = {};
+    var components = {};
 
-  return {
-    /**
-     * Registers a configurable component and its configuration parameters.
-     *
-     * @param {String} component The name of the component to register. Should
-     *     be the same as the fully qualified name of the <Require> feature or
-     *     the fully qualified javascript object reference (e.g. gadgets.io).
-     * @param {Object} opt_validators Mapping of option name to validation
-     *     functions that take the form function(data) {return isValid(data);}
-     * @param {Function} opt_callback A function to be invoked when a
-     *     configuration is registered. If passed, this function will be invoked
-     *     immediately after a call to init has been made. Do not assume that
-     *     dependent libraries have been configured until after init is
-     *     complete. If you rely on this, it is better to defer calling
-     *     dependent libraries until you can be sure that configuration is
-     *     complete. Takes the form function(config), where config will be
-     *     all registered config data for all components. This allows your
-     *     component to read configuration from other components.
-     * @throws {Error} If the component has already been registered.
-     */
-    register: function(component, opt_validators, opt_callback) {
-      if (components[component]) {
-        throw new Error('Component "' + component + '" is already registered.');
-      }
-      components[component] = {
-        validators: opt_validators || {},
-        callback: opt_callback
-      };
-    },
+    return {
+        /**
+        * Registers a configurable component and its configuration parameters.
+        *
+        * @param {String} component The name of the component to register. Should
+        *     be the same as the fully qualified name of the <Require> feature or
+        *     the fully qualified javascript object reference (e.g. gadgets.io).
+        * @param {Object} opt_validators Mapping of option name to validation
+        *     functions that take the form function(data) {return isValid(data);}
+        * @param {Function} opt_callback A function to be invoked when a
+        *     configuration is registered. If passed, this function will be invoked
+        *     immediately after a call to init has been made. Do not assume that
+        *     dependent libraries have been configured until after init is
+        *     complete. If you rely on this, it is better to defer calling
+        *     dependent libraries until you can be sure that configuration is
+        *     complete. Takes the form function(config), where config will be
+        *     all registered config data for all components. This allows your
+        *     component to read configuration from other components.
+        * @throws {Error} If the component has already been registered.
+        */
+        register: function(component, opt_validators, opt_callback) {
+            if (components[component]) {
+                throw new Error('Component "' + component + '" is already registered.');
+            }
+            components[component] = {
+                validators: opt_validators || {},
+                callback: opt_callback
+            };
+        },
 
-    /**
-     * Retrieves configuration data on demand.
-     *
-     * @param {String} opt_component The component to fetch. If not provided
-     *     all configuration will be returned.
-     * @return {Object} The requested configuration.
-     * @throws {Error} If the given component has not been registered
-     */
-    get: function(opt_component) {
-      if (opt_component) {
-        if (!components[opt_component]) {
-          throw new Error('Component "' + opt_component + '" not registered.');
-        }
-        return configuration[opt_component] || {};
-      }
-      return configuration;
-    },
+        /**
+        * Retrieves configuration data on demand.
+        *
+        * @param {String} opt_component The component to fetch. If not provided
+        *     all configuration will be returned.
+        * @return {Object} The requested configuration.
+        * @throws {Error} If the given component has not been registered
+        */
+        get: function(opt_component) {
+            if (opt_component) {
+                if (!components[opt_component]) {
+                    throw new Error('Component "' + opt_component + '" not registered.');
+                }
+                return configuration[opt_component] || {};
+            }
+            return configuration;
+        },
 
-    /**
-     * Initializes the configuration.
-     *
-     * @param {Object} config The full set of configuration data.
-     * @param {Boolean} opt_noValidation True if you want to skip validation.
-     * @throws {Error} If there is a configuration error.
-     */
-    init: function(config, opt_noValidation) {
-      configuration = config;
-      for (var name in components) if (components.hasOwnProperty(name)) {
-        var component = components[name],
+        /**
+        * Initializes the configuration.
+        *
+        * @param {Object} config The full set of configuration data.
+        * @param {Boolean} opt_noValidation True if you want to skip validation.
+        * @throws {Error} If there is a configuration error.
+        */
+        init: function(config, opt_noValidation) {
+            configuration = config;
+            for (var name in components) if (components.hasOwnProperty(name)) {
+                var component = components[name],
             conf = config[name],
             validators = component.validators;
-        if (!opt_noValidation) {
-          for (var v in validators) if (validators.hasOwnProperty(v)) {
-            if (!validators[v](conf[v])) {
-              throw new Error('Invalid config value "' + conf[v] +
+                if (!opt_noValidation) {
+                    for (var v in validators) if (validators.hasOwnProperty(v)) {
+                        if (!validators[v](conf[v])) {
+                            throw new Error('Invalid config value "' + conf[v] +
                   '" for parameter "' + v + '" in component "' +
                   name + '"');
+                        }
+                    }
+                }
+                if (component.callback) {
+                    component.callback(config);
+                }
             }
-          }
+        },
+
+        // Standard validators go here.
+
+        /**
+        * Ensures that data is one of a fixed set of items.
+        * @param {Array.<String>} list The list of valid values.
+        * Also supports argument sytax: EnumValidator("Dog", "Cat", "Fish");
+        */
+        EnumValidator: function(list) {
+            var listItems = [];
+            if (arguments.length > 1) {
+                for (var i = 0, arg; arg = arguments[i]; ++i) {
+                    listItems.push(arg);
+                }
+            } else {
+                listItems = list;
+            }
+            return function(data) {
+                for (var i = 0, test; test = listItems[i]; ++i) {
+                    if (data === listItems[i]) {
+                        return true;
+                    }
+                }
+            };
+        },
+
+        /**
+        * Tests the value against a regular expression.
+        */
+        RegExValidator: function(re) {
+            return function(data) {
+                return re.test(data);
+            };
+        },
+
+        /**
+        * Validates that a value was provided.
+        */
+        ExistsValidator: function(data) {
+            return typeof data !== "undefined";
+        },
+
+        /**
+        * Validates that a value is a non-empty string.
+        */
+        NonEmptyStringValidator: function(data) {
+            return typeof data === "string" && data.length > 0;
+        },
+
+        /**
+        * Validates that the value is a boolean.
+        */
+        BooleanValidator: function(data) {
+            return typeof data === "boolean";
+        },
+
+        /**
+        * Similar to the ECMAScript 4 virtual typing system, ensures that
+        * whatever object was passed in is "like" the existing object.
+        * Doesn't actually do type validation though, but instead relies
+        * on other validators.
+        *
+        * example:
+        *
+        *  var validator = new gadgets.config.LikeValidator(
+        *    "booleanField" : gadgets.config.BooleanValidator,
+        *    "regexField" : new gadgets.config.RegExValidator(/foo.+/);
+        *  );
+        *
+        * This can be used recursively as well to validate sub-objects.
+        *
+        * @param {Object} test The object to test against.
+        */
+        LikeValidator: function(test) {
+            return function(data) {
+                for (var member in test) if (test.hasOwnProperty(member)) {
+                    var t = test[member];
+                    if (!t(data[member])) {
+                        return false;
+                    }
+                }
+                return true;
+            };
         }
-        if (component.callback) {
-          component.callback(config);
-        }
-      }
-    },
-
-    // Standard validators go here.
-
-    /**
-     * Ensures that data is one of a fixed set of items.
-     * @param {Array.<String>} list The list of valid values.
-     * Also supports argument sytax: EnumValidator("Dog", "Cat", "Fish");
-     */
-    EnumValidator: function(list) {
-      var listItems = [];
-      if (arguments.length > 1) {
-        for (var i = 0, arg; arg = arguments[i]; ++i) {
-          listItems.push(arg);
-        }
-      } else {
-        listItems = list;
-      }
-      return function(data) {
-        for (var i = 0, test; test = listItems[i]; ++i) {
-          if (data === listItems[i]) {
-            return true;
-          }
-        }
-      }
-    },
-
-    /**
-     * Tests the value against a regular expression.
-     */
-    RegExValidator: function(re) {
-      return function(data) {
-        return re.test(data);
-      }
-    },
-
-    /**
-     * Validates that a value was provided.
-     */
-    ExistsValidator: function(data) {
-      return typeof data !== "undefined";
-    },
-
-    /**
-     * Validates that a value is a non-empty string.
-     */
-    NonEmptyStringValidator: function(data) {
-      return typeof data === "string" && data.length > 0
-    },
-
-    /**
-     * Validates that the value is a boolean.
-     */
-    BooleanValidator: function(data) {
-      return typeof data === "boolean";
-    },
-
-    /**
-     * Similar to the ECMAScript 4 virtual typing system, ensures that
-     * whatever object was passed in is "like" the existing object.
-     * Doesn't actually do type validation though, but instead relies
-     * on other validators.
-     *
-     * example:
-     *
-     *  var validator = new gadgets.config.LikeValidator(
-     *    "booleanField" : gadgets.config.BooleanValidator,
-     *    "regexField" : new gadgets.config.RegExValidator(/foo.+/);
-     *  );
-     *
-     * This can be used recursively as well to validate sub-objects.
-     *
-     * @param {Object} test The object to test against.
-     */
-    LikeValidator : function(test) {
-      return function(data) {
-        for (var member in test) if (test.hasOwnProperty(member)) {
-          var t = test[member];
-          if (!t(data[member])) {
-            return false;
-          }
-        }
-        return true;
-      };
-    }
-  };
-}();
+    };
+} ();

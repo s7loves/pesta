@@ -11,6 +11,7 @@ features/locked_domain/feature.xml
 features/minimessage/feature.xml
 features/opensocial_0._6/feature.xml
 features/opensocial_0._7/feature.xml
+features/opensocial_0._8/feature.xml
 features/opensocial_base/feature.xml
 features/opensocial_current/feature.xml
 features/opensocial_jsonrpc/feature.xml

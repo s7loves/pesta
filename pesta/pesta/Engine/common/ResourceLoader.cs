@@ -65,13 +65,7 @@ namespace Pesta.Engine.common
             Stream s = assembly.GetManifestResourceStream(resource);
             if (s == null)
             {
-                // try shindig.dll
-                string location = "ikvm__" + resource.Replace('/', '!');
-                s = AppDomain.CurrentDomain.Load("shindig").GetManifestResourceStream(location);
-                if (s == null)
-                {
-                    throw new FileNotFoundException("Can not locate resource: " + resource);
-                }
+                throw new FileNotFoundException("Can not locate resource: " + resource);
             }
             return s;
         }
@@ -91,13 +85,7 @@ namespace Pesta.Engine.common
             Stream s = assembly.GetManifestResourceStream(resource);
             if (s == null)
             {
-                // try shindig.dll
-                location = "ikvm__" + resource.Replace('/', '!');
-                s = AppDomain.CurrentDomain.Load("shindig").GetManifestResourceStream(location);
-                if (s == null)
-                {
-                    throw new FileNotFoundException("Can not locate resource: " + resource);
-                }
+                throw new FileNotFoundException("Can not locate resource: " + resource);
             }
 
             StreamReader sr = new StreamReader(s);
