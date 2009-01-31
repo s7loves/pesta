@@ -45,7 +45,7 @@ namespace Pesta.Engine.social.spi
        * @return a response item with the list of activities.
        */
         RestfulCollection<Activity> getActivities(HashSet<UserId> userIds,
-                                                  GroupId groupId, String appId, HashSet<String> fields, ISecurityToken token);
+                                                  GroupId groupId, String appId, CollectionOptions options, HashSet<String> fields, ISecurityToken token);
 
         /**
          * Returns a set of activities for the passed in user and group that corresponds to a list of
@@ -74,7 +74,7 @@ namespace Pesta.Engine.social.spi
          * @param token      A valid SecurityToken
          * @return a response item with the list of activities.
          */
-        Activity getActivity(UserId userId, GroupId groupId, String appId,
+        Activity getActivity(UserId userId, GroupId groupId, String appId, CollectionOptions options,
                              HashSet<String> fields, String activityId, ISecurityToken token);
 
         /**

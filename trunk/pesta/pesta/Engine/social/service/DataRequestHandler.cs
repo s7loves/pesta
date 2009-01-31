@@ -34,10 +34,10 @@ namespace Pesta.Engine.social.service
     /// </remarks>
     public abstract class DataRequestHandler
     {
-        private static readonly List<String> GET_SYNONYMS = new List<string>(new string[] { "get" });
-        private static readonly List<String> CREATE_SYNONYMS = new List<string>(new string[] { "put", "create" });
-        private static readonly List<String> UPDATE_SYNONYMS = new List<string>(new string[] { "post", "update" });
-        private static readonly List<String> DELETE_SYNONYMS = new List<string>(new string[] { "delete" });
+        private static readonly List<String> GET_SYNONYMS = new List<string>(new [] { "get" });
+        private static readonly List<String> CREATE_SYNONYMS = new List<string>(new [] { "put", "create" });
+        private static readonly List<String> UPDATE_SYNONYMS = new List<string>(new [] { "post", "update" });
+        private static readonly List<String> DELETE_SYNONYMS = new List<string>(new [] { "delete" });
 
         protected abstract object handleDelete(RequestItem request);
         protected abstract object handlePut(RequestItem request);

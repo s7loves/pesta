@@ -103,45 +103,48 @@ namespace Pesta.DataAccess
         override public RestfulCollection<Person> getPeople(HashSet<UserId> _userId, GroupId _groupId,
             CollectionOptions _options, HashSet<String> _fields, ISecurityToken _token)
         {
-            HashSet<String> _ids = this.getIdSet(_userId, _groupId, _token);
+            int first = _options.getFirst();
+            int max = _options.getMax();
+            HashSet<String> _ids = getIdSet(_userId, _groupId, _token);
             var _allPeople = RayaDbFetcher.get().getPeople(_ids, _fields, _options);
             var _totalSize = _allPeople.Count;
             var result = new List<Person>();
-            foreach (var _id in _ids) 
+            if (first < _totalSize)
             {
-                if (!_allPeople.ContainsKey(_id)) 
-                    continue;
-                
-                Person _person = _allPeople[_id];
-                if (!_token.isAnonymous() && _id == _token.getViewerId()) 
+                foreach (var _id in _ids)
                 {
-                    _person.setIsViewer(true);
+                    if (!_allPeople.ContainsKey(_id))
+                        continue;
+
+                    Person _person = _allPeople[_id];
+                    if (!_token.isAnonymous() && _id == _token.getViewerId())
+                    {
+                        _person.setIsViewer(true);
+                    }
+                    if (!_token.isAnonymous() && _id == _token.getOwnerId())
+                    {
+                        _person.setIsOwner(true);
+                    }
+                    result.Add(_person);
                 }
-                if (! _token.isAnonymous() && _id == _token.getOwnerId()) 
+
+                // We can pretend that by default the people are in top friends order
+                if (_options.getSortBy().Equals(Person.Field.NAME.Value))
                 {
-                    _person.setIsOwner(true);
+                    result.Sort(new NAME_COMPARATOR());
                 }
-                result.Add(_person);
-            }
 
-            // We can pretend that by default the people are in top friends order
-            if (_options.getSortBy().Equals(Person.Field.NAME.Value))
-            {
-                result.Sort(new NAME_COMPARATOR());
+                if (_options.getSortOrder().Equals(SortOrder.descending))
+                {
+                    result.Reverse();
+                }
+                result = result.GetRange(first,
+                                             Math.Min(max,
+                                                      _totalSize - first > 0
+                                                          ? _totalSize - first
+                                                          : 1));
             }
-
-            if (_options.getSortOrder().Equals(SortOrder.descending))
-            {
-                result.Reverse();
-            }
-            if (result.Count > 1)
-            {
-                result = result.GetRange(_options.getFirst(),
-                                         Math.Min(_options.getMax(),
-                                                  _totalSize - _options.getFirst() > 0
-                                                      ? _totalSize - _options.getFirst()
-                                                      : 1));
-            }
+            
             return new RestfulCollection<Person>(result, _options.getFirst(), _totalSize);
         }
 
@@ -224,28 +227,40 @@ namespace Pesta.DataAccess
         }
 
         public RestfulCollection<Activity> getActivities(HashSet<UserId> _userIds,
-            GroupId _groupId, String _appId, HashSet<String> _fields, ISecurityToken _token)
+            GroupId _groupId, String _appId, CollectionOptions options, HashSet<String> _fields, ISecurityToken _token)
         {
-            var _ids = this.getIdSet(_userIds, _groupId, _token);
+            var _ids = getIdSet(_userIds, _groupId, _token);
             var _activities = RayaDbFetcher.get().getActivities(_ids, _appId, _fields);
-            if (_activities.Count != 0)
-            {
-                return new RestfulCollection<Activity>(_activities);
-            }
-
-            throw new SocialSpiException(ResponseError.NOT_IMPLEMENTED, "Invalid activity");
+            return new RestfulCollection<Activity>(_activities, options.getFirst(), _activities.Count);
         }
         
         public RestfulCollection<Activity> getActivities(UserId _userId, GroupId _groupId,
             String _appId, HashSet<String> _fields, HashSet<String> _activityIds, ISecurityToken _token)
         {
-            throw new SocialSpiException(ResponseError.NOT_IMPLEMENTED, "We don't support retrieving activities by activity IDs yet");
+            var _ids = getIdSet(_userId, _groupId, _token);
+            var _activities = RayaDbFetcher.get().getActivities(_ids, _appId, _fields);
+            if (_activityIds != null)
+            {
+                foreach (var activity in _activities)
+                {
+                    if (!_activityIds.Contains(activity.getId()))
+                    {
+                        _activities.Remove(activity);
+                    }
+                }
+            }
+            
+            if (_activities.Count != 0)
+            {
+                return new RestfulCollection<Activity>(_activities);
+            }
+            throw new SocialSpiException(ResponseError.NOT_FOUND, "Activity not found");
         }
-        
-        public Activity getActivity(UserId _userId, GroupId _groupId, String _appId,
+
+        public Activity getActivity(UserId _userId, GroupId _groupId, String _appId, CollectionOptions options,
             HashSet<String> _fields, String _activityId, ISecurityToken _token)
         {
-            var _activities = this.getActivities(new HashSet<UserId>{ _userId }, _groupId, _appId, _fields, _token);
+            var _activities = getActivities(new HashSet<UserId> { _userId }, _groupId, _appId, options, _fields, _token);
             var acts = _activities.getEntry();
             foreach (var _activity in acts)
             {
@@ -254,7 +269,7 @@ namespace Pesta.DataAccess
                     return _activity;
                 }
             }
-            throw new SocialSpiException(ResponseError.NOT_IMPLEMENTED, "Activity not found");
+            throw new SocialSpiException(ResponseError.NOT_FOUND, "Activity not found");
         }
 
         

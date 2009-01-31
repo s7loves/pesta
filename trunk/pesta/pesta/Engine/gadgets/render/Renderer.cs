@@ -39,10 +39,10 @@ namespace Pesta.Engine.gadgets.render
 
         public Renderer() 
         {
-            this.processor = Processor.Instance;
-            this.renderer = new HtmlRenderer();
-            this.containerConfig = JsonContainerConfig.Instance;
-            this.lockedDomainService = HashLockedDomainService.Instance;
+            processor = Processor.Instance;
+            renderer = new HtmlRenderer();
+            containerConfig = JsonContainerConfig.Instance;
+            lockedDomainService = HashLockedDomainService.Instance;
         }
 
         /**

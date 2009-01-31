@@ -53,11 +53,11 @@ namespace Pesta.Engine.social.service
         {
             if (rpc.Contains("params"))
             {
-                this.data = rpc["params"] as JsonObject;
+                data = rpc["params"] as JsonObject;
             }
             else
             {
-                this.data = new JsonObject();
+                data = new JsonObject();
             }
         }
 
@@ -65,14 +65,7 @@ namespace Pesta.Engine.social.service
         {
             try
             {
-                if (data.Contains(paramName))
-                {
-                    return data[paramName].ToString();
-                }
-                else
-                {
-                    return null;
-                }
+                return data.Contains(paramName) ? data[paramName].ToString() : null;
             }
             catch (JsonException je)
             {
@@ -84,14 +77,7 @@ namespace Pesta.Engine.social.service
         {
             try
             {
-                if (data.Contains(paramName))
-                {
-                    return data[paramName].ToString();
-                }
-                else
-                {
-                    return defaultValue;
-                }
+                return data.Contains(paramName) ? data[paramName].ToString() : defaultValue;
             }
             catch (JsonException je)
             {
@@ -107,24 +93,18 @@ namespace Pesta.Engine.social.service
                 {
                     if (data[paramName] is JsonArray)
                     {
-                        JsonArray jsonArray = data[paramName] as JsonArray;
+                        JsonArray jsonArray = (JsonArray)data[paramName];
                         List<String> returnVal = new List<string>(jsonArray.Length);
                         for (int i = 0; i < jsonArray.Length; i++)
                         {
-                            returnVal.Add(jsonArray.GetString(i));
+                            returnVal.Add(jsonArray.GetString(i,null));
                         }
                         return returnVal;
                     }
-                    else
-                    {
-                        // Allow up-conversion of non-array to array params.
-                        return new List<string>() { data[paramName].ToString() };
-                    }
+                    // Allow up-conversion of non-array to array params.
+                    return new List<string> { data[paramName].ToString() };
                 }
-                else
-                {
-                    return new List<string>();
-                }
+                return new List<string>();
             }
             catch (JsonException je)
             {
@@ -153,47 +133,6 @@ namespace Pesta.Engine.social.service
         public override void applyUrlTemplate(String urlTemplate)
         {
             // No params in the URL
-        }
-
-        /** Method used only by tests */
-        void setParameter(String paramName, String param)
-        {
-            try
-            {
-                data.Put(paramName, param);
-            }
-            catch (JsonException je)
-            {
-                throw je;
-            }
-        }
-
-        /** Method used only by tests */
-        void setJsonParameter(String paramName, JsonObject param)
-        {
-
-            try
-            {
-                data.Put(paramName, param);
-            }
-            catch (JsonException je)
-            {
-                throw je;
-            }
-        }
-
-        /** Method used only by tests */
-        void setListParameter(String paramName, List<String> parameters)
-        {
-            try
-            {
-                JsonArray arr = new JsonArray(parameters);
-                data.Put(paramName, arr);
-            }
-            catch (JsonException je)
-            {
-                throw je;
-            }
         }
     }
 }

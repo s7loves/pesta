@@ -121,6 +121,15 @@ namespace Pesta.Engine.social.service
                 throw new ArgumentException("Cannot fetch same activityIds for multiple userIds");
             }
 
+            CollectionOptions options = new CollectionOptions();
+            options.setSortBy(request.getSortBy());
+            options.setSortOrder(request.getSortOrder());
+            options.setFilter(request.getFilterBy());
+            options.setFilterOperation(request.getFilterOperation());
+            options.setFilterValue(request.getFilterValue());
+            options.setFirst(request.getStartIndex());
+            options.setMax(request.getCount());
+
             if (optionalActivityIds.Count != 0)
             {
                 if (optionalActivityIds.Count == 1)
@@ -130,7 +139,7 @@ namespace Pesta.Engine.social.service
                     IEnumerator<string> iactivity = optionalActivityIds.GetEnumerator();
                     iactivity.MoveNext();
                     return service.getActivity(iuserid.Current, request.getGroup(),
-                                               request.getAppId(), request.getFields(), iactivity.Current,
+                                               request.getAppId(), options, request.getFields(), iactivity.Current,
                                                request.getToken());
                 }
                 else
@@ -142,10 +151,8 @@ namespace Pesta.Engine.social.service
                 }
             }
 
-            return service.getActivities(userIds, request.getGroup(), request.getAppId(),
-                                         // TODO: add pagination and sorting support
-                                         // getSortBy(params), getFilterBy(params), getStartIndex(params), getCount(params),
-                                         request.getFields(), request.getToken());
+            return service.getActivities(userIds, request.getGroup(), request.getAppId(), options,
+                                      request.getFields(), request.getToken());
         }
     }
 }

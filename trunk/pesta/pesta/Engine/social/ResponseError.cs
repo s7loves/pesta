@@ -46,6 +46,7 @@ namespace Pesta.Engine.social
         public readonly static ResponseError BAD_REQUEST = new ResponseError((int)HttpStatusCode.BadRequest, "badRequest");
         public readonly static ResponseError INTERNAL_ERROR = new ResponseError((int)HttpStatusCode.InternalServerError, "internalError");
         public readonly static ResponseError LIMIT_EXCEEDED = new ResponseError((int)HttpStatusCode.ExpectationFailed, "limitExceeded");
+        public readonly static ResponseError NOT_FOUND = new ResponseError((int)HttpStatusCode.NotFound, "notFound");
 
         /**
        * The json value of the error.
