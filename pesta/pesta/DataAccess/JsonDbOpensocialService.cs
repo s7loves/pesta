@@ -105,7 +105,7 @@ namespace Pesta.DataAccess
         }
 
         public RestfulCollection<Activity> getActivities(HashSet<UserId> userIds, GroupId groupId,
-                                                         String appId, HashSet<String> fields, ISecurityToken token)
+                                                         String appId, CollectionOptions options, HashSet<String> fields, ISecurityToken token)
         {
             List<Activity> result = new List<Activity>();
             try
@@ -167,7 +167,7 @@ namespace Pesta.DataAccess
         }
 
         public Activity getActivity(UserId userId,
-                                    GroupId groupId, String appId, HashSet<String> fields, String activityId, ISecurityToken token)
+                                    GroupId groupId, String appId, CollectionOptions options, HashSet<String> fields, String activityId, ISecurityToken token)
         {
             try
             {
