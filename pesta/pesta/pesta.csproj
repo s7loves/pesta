@@ -174,7 +174,6 @@
     <Compile Include="Engine\gadgets\spec\View.cs" />
     <Compile Include="Engine\gadgets\UrlGenerator.cs" />
     <Compile Include="Engine\gadgets\variables\UserPrefSubstituter.cs" />
-    <Compile Include="Handlers\PestaHandlerFactory.cs" />
     <Compile Include="Utilities\CustomAttr.cs" />
     <Compile Include="Utilities\EnumBaseType.cs" />
     <Compile Include="Utilities\HashKey.cs" />
@@ -478,15 +477,6 @@
     <Compile Include="Engine\social\service\HandlerDispatcher.cs" />
     <Compile Include="Engine\social\service\StandardHandlerDispatcher.cs" />
     <Compile Include="Engine\social\spi\MessagesService.cs" />
-    <Compile Include="Handlers\ConcatProxyServlet.cs" />
-    <Compile Include="Handlers\DataServiceServlet.cs" />
-    <Compile Include="Handlers\GadgetRenderingServlet.cs" />
-    <Compile Include="Handlers\JsonRpcServlet.cs" />
-    <Compile Include="Handlers\JsServlet.cs" />
-    <Compile Include="Handlers\MakeRequestServlet.cs" />
-    <Compile Include="Handlers\OAuthCallbackServlet.cs" />
-    <Compile Include="Handlers\ProxyServlet.cs" />
-    <Compile Include="Handlers\RpcServlet.cs" />
     <Compile Include="Interop\HtmlAgilityPack\crc32.cs" />
     <Compile Include="Interop\HtmlAgilityPack\EncodingFoundException.cs" />
     <Compile Include="Interop\HtmlAgilityPack\HtmlAttribute.cs" />
