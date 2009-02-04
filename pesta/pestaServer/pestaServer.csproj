@@ -1,0 +1,562 @@
+﻿<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{7CDB4447-9D3C-4F82-963D-F3BDF693F123}</ProjectGuid>
+    <ProjectTypeGuids>{603c0e0b-db56-11dc-be95-000d561079b0};{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>pestaServer</RootNamespace>
+    <AssemblyName>pestaServer</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <MvcBuildViews>false</MvcBuildViews>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="IKVM.OpenJDK.ClassLibrary, Version=0.38.0.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\ikvm\ikvm-0.38.0.0\bin\IKVM.OpenJDK.ClassLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.Runtime, Version=0.38.0.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\ikvm\ikvm-0.38.0.0\bin\IKVM.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.Runtime.JNI, Version=0.38.0.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\ikvm\ikvm-0.38.0.0\bin\IKVM.Runtime.JNI.dll</HintPath>
+    </Reference>
+    <Reference Include="shindig, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\ikvm\ikvm-0.38.0.0\bin\shindig.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.ServiceModel.Web">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Web.Abstractions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\Program Files\Microsoft ASP.NET\ASP.NET MVC RC\Assemblies\System.Web.Abstractions.dll</HintPath>
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\Program Files\Microsoft ASP.NET\ASP.NET MVC RC\Assemblies\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Routing, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\Program Files\Microsoft ASP.NET\ASP.NET MVC RC\Assemblies\System.Web.Routing.dll</HintPath>
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Web.Mobile" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Controllers\apiController.cs" />
+    <Compile Include="Controllers\concatController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\ifrController.cs" />
+    <Compile Include="Controllers\jsController.cs" />
+    <Compile Include="Controllers\makeRequestController.cs" />
+    <Compile Include="Controllers\metadataController.cs" />
+    <Compile Include="Controllers\oauthcallbackController.cs" />
+    <Compile Include="Controllers\proxyController.cs" />
+    <Compile Include="Controllers\restController.cs" />
+    <Compile Include="Controllers\rpcController.cs" />
+    <Compile Include="DataAccess\JsonDbOpensocialService.cs" />
+    <Compile Include="DataAccess\LinqRaya1.designer.cs">
+      <DependentUpon>LinqRaya.dbml</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="DataAccess\RayaDbFetcher.cs" />
+    <Compile Include="DataAccess\RayaService.cs" />
+    <Compile Include="Default.aspx.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Models\common\ContainerConfig.cs" />
+    <Compile Include="Models\common\JsonContainerConfig.cs" />
+    <Compile Include="Models\gadgets\AbstractMessageBundleFactory.cs" />
+    <Compile Include="Models\gadgets\AuthType.cs" />
+    <Compile Include="Models\gadgets\BasicGadgetBlacklist.cs" />
+    <Compile Include="Models\gadgets\ChainedContentFetcher.cs" />
+    <Compile Include="Models\gadgets\DefaultGadgetSpecFactory.cs" />
+    <Compile Include="Models\gadgets\DefaultMessageBundleFactory.cs" />
+    <Compile Include="Models\gadgets\DefaultUrlGenerator.cs" />
+    <Compile Include="Models\gadgets\FeedProcessor.cs" />
+    <Compile Include="Models\gadgets\FetchResponseUtils.cs" />
+    <Compile Include="Models\gadgets\Gadget.cs" />
+    <Compile Include="Models\gadgets\GadgetBlacklist.cs" />
+    <Compile Include="Models\gadgets\GadgetContext.cs" />
+    <Compile Include="Models\gadgets\GadgetException.cs" />
+    <Compile Include="Models\gadgets\GadgetFeature.cs" />
+    <Compile Include="Models\gadgets\GadgetFeatureRegistry.cs" />
+    <Compile Include="Models\gadgets\HashLockedDomainService.cs" />
+    <Compile Include="Models\gadgets\http\AbstractHttpCache.cs" />
+    <Compile Include="Models\gadgets\http\BasicHttpFetcher.cs" />
+    <Compile Include="Models\gadgets\http\DefaultHttpCache.cs" />
+    <Compile Include="Models\gadgets\http\DefaultRequestPipeline.cs" />
+    <Compile Include="Models\gadgets\http\HttpCacheKey.cs" />
+    <Compile Include="Models\gadgets\http\HttpRequestWrapper.cs" />
+    <Compile Include="Models\gadgets\http\HttpResponseBuilder.cs" />
+    <Compile Include="Models\gadgets\http\HttpResponseWrapper.cs" />
+    <Compile Include="Models\gadgets\http\IHttpCache.cs" />
+    <Compile Include="Models\gadgets\http\IHttpFetcher.cs" />
+    <Compile Include="Models\gadgets\http\IRequestPipeline.cs" />
+    <Compile Include="Models\gadgets\http\RemoteContentFetcherFactory.cs" />
+    <Compile Include="Models\gadgets\http\sRequest.cs" />
+    <Compile Include="Models\gadgets\http\sResponse.cs" />
+    <Compile Include="Models\gadgets\IGadgetSpecFactory.cs" />
+    <Compile Include="Models\gadgets\JsFeatureLoader.cs" />
+    <Compile Include="Models\gadgets\JsLibrary.cs" />
+    <Compile Include="Models\gadgets\LockedDomainService.cs" />
+    <Compile Include="Models\gadgets\MessageBundleFactory.cs" />
+    <Compile Include="Models\gadgets\oauth\AccessorInfo.cs" />
+    <Compile Include="Models\gadgets\oauth\AccessorInfoBuilder.cs" />
+    <Compile Include="Models\gadgets\oauth\BasicOAuthStore.cs" />
+    <Compile Include="Models\gadgets\oauth\BasicOAuthStoreConsumerIndex.cs" />
+    <Compile Include="Models\gadgets\oauth\BasicOAuthStoreConsumerKeyAndSecret.cs" />
+    <Compile Include="Models\gadgets\oauth\BasicOAuthStoreTokenIndex.cs" />
+    <Compile Include="Models\gadgets\oauth\GadgetOAuthTokenStore.cs" />
+    <Compile Include="Models\gadgets\oauth\OAuthArguments.cs" />
+    <Compile Include="Models\gadgets\oauth\OAuthClientState.cs" />
+    <Compile Include="Models\gadgets\oauth\OAuthError.cs" />
+    <Compile Include="Models\gadgets\oauth\OAuthFetcherConfig.cs" />
+    <Compile Include="Models\gadgets\oauth\OAuthModule.cs" />
+    <Compile Include="Models\gadgets\oauth\OAuthProtocolException.cs" />
+    <Compile Include="Models\gadgets\oauth\OAuthRequest.cs" />
+    <Compile Include="Models\gadgets\oauth\OAuthResponseParams.cs" />
+    <Compile Include="Models\gadgets\oauth\OAuthStore.cs" />
+    <Compile Include="Models\gadgets\oauth\OAuthUtil.cs" />
+    <Compile Include="Models\gadgets\oauth\UserVisibleOAuthException.cs" />
+    <Compile Include="Models\gadgets\preload\ConcurrentPreloaderService.cs" />
+    <Compile Include="Models\gadgets\preload\ConcurrentPreloads.cs" />
+    <Compile Include="Models\gadgets\preload\HttpPreloader.cs" />
+    <Compile Include="Models\gadgets\preload\IPreloads.cs" />
+    <Compile Include="Models\gadgets\preload\PreloadedData.cs" />
+    <Compile Include="Models\gadgets\preload\Preloader.cs" />
+    <Compile Include="Models\gadgets\preload\PreloaderService.cs" />
+    <Compile Include="Models\gadgets\preload\PreloadException.cs" />
+    <Compile Include="Models\gadgets\process\ProcessingException.cs" />
+    <Compile Include="Models\gadgets\process\Processor.cs" />
+    <Compile Include="Models\gadgets\RenderingContext.cs" />
+    <Compile Include="Models\gadgets\render\HtmlRenderer.cs" />
+    <Compile Include="Models\gadgets\render\Renderer.cs" />
+    <Compile Include="Models\gadgets\render\RenderingContentRewriter.cs" />
+    <Compile Include="Models\gadgets\render\RenderingException.cs" />
+    <Compile Include="Models\gadgets\render\RenderingResults.cs" />
+    <Compile Include="Models\gadgets\RequestSigningException.cs" />
+    <Compile Include="Models\gadgets\rewrite\ContentRewriterFeature.cs" />
+    <Compile Include="Models\gadgets\rewrite\ContentRewriterFeatureFactory.cs" />
+    <Compile Include="Models\gadgets\rewrite\CssRewriter.cs" />
+    <Compile Include="Models\gadgets\rewrite\DefaultContentRewriterRegistry.cs" />
+    <Compile Include="Models\gadgets\rewrite\IContentRewriter.cs" />
+    <Compile Include="Models\gadgets\rewrite\IContentRewriterRegistry.cs" />
+    <Compile Include="Models\gadgets\rewrite\ILinkRewriter.cs" />
+    <Compile Include="Models\gadgets\rewrite\lexer\DefaultContentRewriter.cs" />
+    <Compile Include="Models\gadgets\rewrite\lexer\HtmlRewriter.cs" />
+    <Compile Include="Models\gadgets\rewrite\lexer\HtmlTagTransformer.cs" />
+    <Compile Include="Models\gadgets\rewrite\lexer\JavascriptTagMerger.cs" />
+    <Compile Include="Models\gadgets\rewrite\lexer\LinkingTagRewriter.cs" />
+    <Compile Include="Models\gadgets\rewrite\lexer\StyleTagRewriter.cs" />
+    <Compile Include="Models\gadgets\rewrite\ProxyingLinkRewriter.cs" />
+    <Compile Include="Models\gadgets\servlet\CajaContentRewriter.cs" />
+    <Compile Include="Models\gadgets\servlet\HttpGadgetContext.cs" />
+    <Compile Include="Models\gadgets\servlet\HttpUtil.cs" />
+    <Compile Include="Models\gadgets\servlet\JsonRpcGadgetContext.cs" />
+    <Compile Include="Models\gadgets\servlet\JsonRpcHandler.cs" />
+    <Compile Include="Models\gadgets\servlet\MakeRequestHandler.cs" />
+    <Compile Include="Models\gadgets\servlet\ProxyBase.cs" />
+    <Compile Include="Models\gadgets\servlet\ProxyHandler.cs" />
+    <Compile Include="Models\gadgets\servlet\ProxyRequestWrapper.cs" />
+    <Compile Include="Models\gadgets\servlet\RpcException.cs" />
+    <Compile Include="Models\gadgets\spec\Feature.cs" />
+    <Compile Include="Models\gadgets\spec\GadgetSpec.cs" />
+    <Compile Include="Models\gadgets\spec\Icon.cs" />
+    <Compile Include="Models\gadgets\spec\LinkSpec.cs" />
+    <Compile Include="Models\gadgets\spec\LocaleSpec.cs" />
+    <Compile Include="Models\gadgets\spec\MessageBundle.cs" />
+    <Compile Include="Models\gadgets\spec\ModulePrefs.cs" />
+    <Compile Include="Models\gadgets\spec\OAuthService.cs" />
+    <Compile Include="Models\gadgets\spec\OAuthSpec.cs" />
+    <Compile Include="Models\gadgets\spec\Preload.cs" />
+    <Compile Include="Models\gadgets\spec\RequestAuthenticationInfo.cs" />
+    <Compile Include="Models\gadgets\spec\SpecParserException.cs" />
+    <Compile Include="Models\gadgets\spec\UserPref.cs" />
+    <Compile Include="Models\gadgets\spec\View.cs" />
+    <Compile Include="Models\gadgets\UnsupportedFeatureException.cs" />
+    <Compile Include="Models\gadgets\UrlGenerator.cs" />
+    <Compile Include="Models\gadgets\UserPrefs.cs" />
+    <Compile Include="Models\gadgets\variables\BidiSubstituter.cs" />
+    <Compile Include="Models\gadgets\variables\Substitutions.cs" />
+    <Compile Include="Models\gadgets\variables\UserPrefSubstituter.cs" />
+    <Compile Include="Models\gadgets\variables\VariableSubstituter.cs" />
+    <Compile Include="Models\social\core\util\BeanAtomConverter.cs" />
+    <Compile Include="Models\social\core\util\BeanJsonConverter.cs" />
+    <Compile Include="Models\social\core\util\BeanXmlConverter.cs" />
+    <Compile Include="Models\social\service\ActivityHandler.cs" />
+    <Compile Include="Models\social\service\AppDataHandler.cs" />
+    <Compile Include="Models\social\service\BeanConverter.cs" />
+    <Compile Include="Models\social\service\DataRequestHandler.cs" />
+    <Compile Include="Models\social\service\IHandlerDispatcher.cs" />
+    <Compile Include="Models\social\service\PersonHandler.cs" />
+    <Compile Include="Models\social\service\RequestItem.cs" />
+    <Compile Include="Models\social\service\ResponseItem.cs" />
+    <Compile Include="Models\social\service\RestfulRequestItem.cs" />
+    <Compile Include="Models\social\service\RpcRequestItem.cs" />
+    <Compile Include="Models\social\service\SampleContainerHandler.cs" />
+    <Compile Include="Models\social\service\StandardHandlerDispatcher.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="config\container.js" />
+    <Content Include="config\raya.js" />
+    <EmbeddedResource Include="Content\features\analytics\feature.xml" />
+    <EmbeddedResource Include="Content\features\auth-refresh\auth-refresh.js" />
+    <EmbeddedResource Include="Content\features\auth-refresh\auth-refresh.opt.js" />
+    <EmbeddedResource Include="Content\features\auth-refresh\feature.xml" />
+    <EmbeddedResource Include="Content\features\caja\domita.js" />
+    <EmbeddedResource Include="Content\features\caja\domita.opt.js" />
+    <EmbeddedResource Include="Content\features\caja\feature.xml" />
+    <EmbeddedResource Include="Content\features\core\auth-init.js" />
+    <EmbeddedResource Include="Content\features\core\auth-init.opt.js" />
+    <EmbeddedResource Include="Content\features\core\auth.js" />
+    <EmbeddedResource Include="Content\features\core\auth.opt.js" />
+    <EmbeddedResource Include="Content\features\core\authtest.js" />
+    <EmbeddedResource Include="Content\features\core\authtest.opt.js" />
+    <EmbeddedResource Include="Content\features\core\config.js" />
+    <EmbeddedResource Include="Content\features\core\config.opt.js" />
+    <EmbeddedResource Include="Content\features\core\core.js" />
+    <EmbeddedResource Include="Content\features\core\core.opt.js" />
+    <EmbeddedResource Include="Content\features\core\feature.xml" />
+    <EmbeddedResource Include="Content\features\core\html-sanitizer.js" />
+    <EmbeddedResource Include="Content\features\core\html-sanitizer.opt.js" />
+    <EmbeddedResource Include="Content\features\core\json.js" />
+    <EmbeddedResource Include="Content\features\core\json.opt.js" />
+    <EmbeddedResource Include="Content\features\core\legacy.js" />
+    <EmbeddedResource Include="Content\features\core\legacy.opt.js" />
+    <EmbeddedResource Include="Content\features\core\prefs.js" />
+    <EmbeddedResource Include="Content\features\core\prefs.opt.js" />
+    <EmbeddedResource Include="Content\features\core\prefstest.js" />
+    <EmbeddedResource Include="Content\features\core\prefstest.opt.js" />
+    <EmbeddedResource Include="Content\features\core\util.js" />
+    <EmbeddedResource Include="Content\features\core\util.opt.js" />
+    <EmbeddedResource Include="Content\features\core\utiltest.js" />
+    <EmbeddedResource Include="Content\features\core\utiltest.opt.js" />
+    <EmbeddedResource Include="Content\features\core.io\feature.xml" />
+    <EmbeddedResource Include="Content\features\core.io\io.js" />
+    <EmbeddedResource Include="Content\features\core.io\io.opt.js" />
+    <EmbeddedResource Include="Content\features\core.io\iotest.js" />
+    <EmbeddedResource Include="Content\features\core.io\iotest.opt.js" />
+    <EmbeddedResource Include="Content\features\dynamic-height\dynamic-height.js" />
+    <EmbeddedResource Include="Content\features\dynamic-height\dynamic-height.opt.js" />
+    <EmbeddedResource Include="Content\features\dynamic-height\feature.xml" />
+    <EmbeddedResource Include="Content\features\features.txt" />
+    <EmbeddedResource Include="Content\features\flash\feature.xml" />
+    <EmbeddedResource Include="Content\features\flash\flash.js" />
+    <EmbeddedResource Include="Content\features\flash\flash.opt.js" />
+    <EmbeddedResource Include="Content\features\locked-domain\feature.xml" />
+    <EmbeddedResource Include="Content\features\minimessage\feature.xml" />
+    <EmbeddedResource Include="Content\features\minimessage\minimessage.js" />
+    <EmbeddedResource Include="Content\features\minimessage\minimessage.opt.js" />
+    <EmbeddedResource Include="Content\features\mocks\env.js" />
+    <EmbeddedResource Include="Content\features\mocks\env.opt.js" />
+    <EmbeddedResource Include="Content\features\mocks\xhr.js" />
+    <EmbeddedResource Include="Content\features\mocks\xhr.opt.js" />
+    <EmbeddedResource Include="Content\features\opensocial-0.6\feature.xml" />
+    <EmbeddedResource Include="Content\features\opensocial-0.6\opensocial6to7.js" />
+    <EmbeddedResource Include="Content\features\opensocial-0.6\opensocial6to7.opt.js" />
+    <EmbeddedResource Include="Content\features\opensocial-0.7\feature.xml" />
+    <EmbeddedResource Include="Content\features\opensocial-0.7\opensocial7to8.js" />
+    <EmbeddedResource Include="Content\features\opensocial-0.7\opensocial7to8.opt.js" />
+    <EmbeddedResource Include="Content\features\opensocial-0.8\feature.xml" />
+    <EmbeddedResource Include="Content\features\opensocial-0.8\opensocial8to9.js" />
+    <EmbeddedResource Include="Content\features\opensocial-0.8\opensocial8to9.opt.js" />
+    <EmbeddedResource Include="Content\features\opensocial-base\feature.xml" />
+    <EmbeddedResource Include="Content\features\opensocial-base\fieldtranslations.js" />
+    <EmbeddedResource Include="Content\features\opensocial-base\fieldtranslations.opt.js" />
+    <EmbeddedResource Include="Content\features\opensocial-base\jsonactivity.js" />
+    <EmbeddedResource Include="Content\features\opensocial-base\jsonactivity.opt.js" />
+    <EmbeddedResource Include="Content\features\opensocial-base\jsonactivitytest.js" />
+    <EmbeddedResource Include="Content\features\opensocial-base\jsonactivitytest.opt.js" />
+    <EmbeddedResource Include="Content\features\opensocial-base\jsonperson.js" />
+    <EmbeddedResource Include="Content\features\opensocial-base\jsonperson.opt.js" />
+    <EmbeddedResource Include="Content\features\opensocial-current\feature.xml" />
+    <EmbeddedResource Include="Content\features\opensocial-jsonrpc\feature.xml" />
+    <EmbeddedResource Include="Content\features\opensocial-jsonrpc\jsonrpccontainer.js" />
+    <EmbeddedResource Include="Content\features\opensocial-jsonrpc\jsonrpccontainer.opt.js" />
+    <EmbeddedResource Include="Content\features\opensocial-reference\activity.js" />
+    <EmbeddedResource Include="Content\features\opensocial-reference\activity.opt.js" />
+    <EmbeddedResource Include="Content\features\opensocial-reference\activitytest.js" />
+    <EmbeddedResource Include="Content\features\opensocial-reference\activitytest.opt.js" />
+    <EmbeddedResource Include="Content\features\opensocial-reference\address.js" />
+    <EmbeddedResource Include="Content\features\opensocial-reference\address.opt.js" />
+    <EmbeddedResource Include="Content\features\opensocial-reference\bodytype.js" />
+    <EmbeddedResource Include="Content\features\opensocial-reference\bodytype.opt.js" />
+    <EmbeddedResource Include="Content\features\opensocial-reference\collection.js" />
+    <EmbeddedResource Include="Content\features\opensocial-reference\collection.opt.js" />
+    <EmbeddedResource Include="Content\features\opensocial-reference\container.js" />
+    <EmbeddedResource Include="Content\features\opensocial-reference\container.opt.js" />
+    <EmbeddedResource Include="Content\features\opensocial-reference\datarequest.js" />
+    <EmbeddedResource Include="Content\features\opensocial-reference\datarequest.opt.js" />
+    <EmbeddedResource Include="Content\features\opensocial-reference\dataresponse.js" />
+    <EmbeddedResource Include="Content\features\opensocial-reference\dataresponse.opt.js" />
+    <EmbeddedResource Include="Content\features\opensocial-reference\email.js" />
+    <EmbeddedResource Include="Content\features\opensocial-reference\email.opt.js" />
+    <EmbeddedResource Include="Content\features\opensocial-reference\enum.js" />
+    <EmbeddedResource Include="Content\features\opensocial-reference\enum.opt.js" />
+    <EmbeddedResource Include="Content\features\opensocial-reference\environment.js" />
+    <EmbeddedResource Include="Content\features\opensocial-reference\environment.opt.js" />
+    <EmbeddedResource Include="Content\features\opensocial-reference\feature.xml" />
+    <EmbeddedResource Include="Content\features\opensocial-reference\idspec.js" />
+    <EmbeddedResource Include="Content\features\opensocial-reference\idspec.opt.js" />
+    <EmbeddedResource Include="Content\features\opensocial-reference\mediaitem.js" />
+    <EmbeddedResource Include="Content\features\opensocial-reference\mediaitem.opt.js" />
+    <EmbeddedResource Include="Content\features\opensocial-reference\message.js" />
+    <EmbeddedResource Include="Content\features\opensocial-reference\message.opt.js" />
+    <EmbeddedResource Include="Content\features\opensocial-reference\name.js" />
+    <EmbeddedResource Include="Content\features\opensocial-reference\name.opt.js" />
+    <EmbeddedResource Include="Content\features\opensocial-reference\navigationparameters.js" />
+    <EmbeddedResource Include="Content\features\opensocial-reference\navigationparameters.opt.js" />
+    <EmbeddedResource Include="Content\features\opensocial-reference\opensocial.js" />
+    <EmbeddedResource Include="Content\features\opensocial-reference\opensocial.opt.js" />
+    <EmbeddedResource Include="Content\features\opensocial-reference\organization.js" />
+    <EmbeddedResource Include="Content\features\opensocial-reference\organization.opt.js" />
+    <EmbeddedResource Include="Content\features\opensocial-reference\person.js" />
+    <EmbeddedResource Include="Content\features\opensocial-reference\person.opt.js" />
+    <EmbeddedResource Include="Content\features\opensocial-reference\phone.js" />
+    <EmbeddedResource Include="Content\features\opensocial-reference\phone.opt.js" />
+    <EmbeddedResource Include="Content\features\opensocial-reference\responseitem.js" />
+    <EmbeddedResource Include="Content\features\opensocial-reference\responseitem.opt.js" />
+    <EmbeddedResource Include="Content\features\opensocial-reference\url.js" />
+    <EmbeddedResource Include="Content\features\opensocial-reference\url.opt.js" />
+    <EmbeddedResource Include="Content\features\opensocial-rest\feature.xml" />
+    <EmbeddedResource Include="Content\features\opensocial-rest\restfulcontainer.js" />
+    <EmbeddedResource Include="Content\features\opensocial-rest\restfulcontainer.opt.js" />
+    <EmbeddedResource Include="Content\features\opensocial-templates\base.js" />
+    <EmbeddedResource Include="Content\features\opensocial-templates\base.opt.js" />
+    <EmbeddedResource Include="Content\features\opensocial-templates\compiler.js" />
+    <EmbeddedResource Include="Content\features\opensocial-templates\compiler.opt.js" />
+    <EmbeddedResource Include="Content\features\opensocial-templates\compiler_test.js" />
+    <EmbeddedResource Include="Content\features\opensocial-templates\compiler_test.opt.js" />
+    <EmbeddedResource Include="Content\features\opensocial-templates\container.js" />
+    <EmbeddedResource Include="Content\features\opensocial-templates\container.opt.js" />
+    <EmbeddedResource Include="Content\features\opensocial-templates\container_test.js" />
+    <EmbeddedResource Include="Content\features\opensocial-templates\container_test.opt.js" />
+    <EmbeddedResource Include="Content\features\opensocial-templates\data.js" />
+    <EmbeddedResource Include="Content\features\opensocial-templates\data.opt.js" />
+    <EmbeddedResource Include="Content\features\opensocial-templates\data_test.js" />
+    <EmbeddedResource Include="Content\features\opensocial-templates\data_test.opt.js" />
+    <EmbeddedResource Include="Content\features\opensocial-templates\domutil.js" />
+    <EmbeddedResource Include="Content\features\opensocial-templates\domutil.opt.js" />
+    <EmbeddedResource Include="Content\features\opensocial-templates\feature.xml" />
+    <EmbeddedResource Include="Content\features\opensocial-templates\jstemplate_debug.js" />
+    <EmbeddedResource Include="Content\features\opensocial-templates\jstemplate_debug.opt.js" />
+    <EmbeddedResource Include="Content\features\opensocial-templates\loader.js" />
+    <EmbeddedResource Include="Content\features\opensocial-templates\loader.opt.js" />
+    <EmbeddedResource Include="Content\features\opensocial-templates\loader_test.js" />
+    <EmbeddedResource Include="Content\features\opensocial-templates\loader_test.opt.js" />
+    <EmbeddedResource Include="Content\features\opensocial-templates\namespaces.js" />
+    <EmbeddedResource Include="Content\features\opensocial-templates\namespaces.opt.js" />
+    <EmbeddedResource Include="Content\features\opensocial-templates\os.js" />
+    <EmbeddedResource Include="Content\features\opensocial-templates\os.opt.js" />
+    <EmbeddedResource Include="Content\features\opensocial-templates\os_test.js" />
+    <EmbeddedResource Include="Content\features\opensocial-templates\os_test.opt.js" />
+    <EmbeddedResource Include="Content\features\opensocial-templates\ost_test.html" />
+    <EmbeddedResource Include="Content\features\opensocial-templates\template.js" />
+    <EmbeddedResource Include="Content\features\opensocial-templates\template.opt.js" />
+    <EmbeddedResource Include="Content\features\opensocial-templates\template_test.js" />
+    <EmbeddedResource Include="Content\features\opensocial-templates\template_test.opt.js" />
+    <EmbeddedResource Include="Content\features\opensocial-templates\util.js" />
+    <EmbeddedResource Include="Content\features\opensocial-templates\util.opt.js" />
+    <EmbeddedResource Include="Content\features\opensocial-templates\util_test.js" />
+    <EmbeddedResource Include="Content\features\opensocial-templates\util_test.opt.js" />
+    <EmbeddedResource Include="Content\features\pubsub\feature.xml" />
+    <EmbeddedResource Include="Content\features\pubsub\pubsub-router.js" />
+    <EmbeddedResource Include="Content\features\pubsub\pubsub-router.opt.js" />
+    <EmbeddedResource Include="Content\features\pubsub\pubsub.js" />
+    <EmbeddedResource Include="Content\features\pubsub\pubsub.opt.js" />
+    <EmbeddedResource Include="Content\features\rpc\feature.xml" />
+    <EmbeddedResource Include="Content\features\rpc\rpc.js" />
+    <EmbeddedResource Include="Content\features\rpc\rpc.opt.js" />
+    <EmbeddedResource Include="Content\features\setprefs\feature.xml" />
+    <EmbeddedResource Include="Content\features\setprefs\setprefs.js" />
+    <EmbeddedResource Include="Content\features\setprefs\setprefs.opt.js" />
+    <EmbeddedResource Include="Content\features\settitle\feature.xml" />
+    <EmbeddedResource Include="Content\features\settitle\settitle.js" />
+    <EmbeddedResource Include="Content\features\settitle\settitle.opt.js" />
+    <EmbeddedResource Include="Content\features\skins\feature.xml" />
+    <EmbeddedResource Include="Content\features\skins\skins.js" />
+    <EmbeddedResource Include="Content\features\skins\skins.opt.js" />
+    <EmbeddedResource Include="Content\features\tabs\feature.xml" />
+    <EmbeddedResource Include="Content\features\tabs\tabs.js" />
+    <EmbeddedResource Include="Content\features\tabs\tabs.opt.js" />
+    <EmbeddedResource Include="Content\features\views\feature.xml" />
+    <EmbeddedResource Include="Content\features\views\urltemplatetest.js" />
+    <EmbeddedResource Include="Content\features\views\urltemplatetest.opt.js" />
+    <EmbeddedResource Include="Content\features\views\views.js" />
+    <EmbeddedResource Include="Content\features\views\views.opt.js" />
+    <Content Include="COPYING.txt" />
+    <Content Include="Default.aspx" />
+    <Content Include="gadgets\files\container\cookiebaseduserprefstore.js" />
+    <Content Include="gadgets\files\container\cookies.js" />
+    <Content Include="gadgets\files\container\gadgets.css" />
+    <Content Include="gadgets\files\container\gadgets.js" />
+    <Content Include="gadgets\files\container\rpctest_container.html" />
+    <Content Include="gadgets\files\container\rpctest_gadget.html" />
+    <Content Include="gadgets\files\container\rpctest_perf.js" />
+    <Content Include="gadgets\files\container\rpc_relay.html" />
+    <Content Include="gadgets\files\container\rpc_relay.uncompressed.html" />
+    <Content Include="gadgets\files\container\sample-metadata.html" />
+    <Content Include="gadgets\files\container\sample-pubsub-publisher.xml" />
+    <Content Include="gadgets\files\container\sample-pubsub-subscriber.xml" />
+    <Content Include="gadgets\files\container\sample-pubsub.html" />
+    <Content Include="gadgets\files\container\sample1.html" />
+    <Content Include="gadgets\files\container\sample2.html" />
+    <Content Include="gadgets\files\container\sample3.html" />
+    <Content Include="gadgets\files\container\sample4.html" />
+    <Content Include="gadgets\files\container\sample5.html" />
+    <Content Include="gadgets\files\container\sample6.html" />
+    <Content Include="gadgets\files\container\sample7.html" />
+    <Content Include="gadgets\files\container\util.js" />
+    <Content Include="gadgets\files\samplecontainer\examples\bubble.gif" />
+    <Content Include="gadgets\files\samplecontainer\examples\getFriendsHasApp.xml" />
+    <Content Include="gadgets\files\samplecontainer\examples\new.gif" />
+    <Content Include="gadgets\files\samplecontainer\examples\nophoto.gif" />
+    <Content Include="gadgets\files\samplecontainer\examples\oauth.xml" />
+    <Content Include="gadgets\files\samplecontainer\examples\popup.js" />
+    <Content Include="gadgets\files\samplecontainer\examples\rewriter\feather.png" />
+    <Content Include="gadgets\files\samplecontainer\examples\rewriter\rewriter1.css" />
+    <Content Include="gadgets\files\samplecontainer\examples\rewriter\rewriter1.js" />
+    <Content Include="gadgets\files\samplecontainer\examples\rewriter\rewriter2.css" />
+    <Content Include="gadgets\files\samplecontainer\examples\rewriter\rewriter2.js" />
+    <Content Include="gadgets\files\samplecontainer\examples\rewriter\rewriteroff.xml" />
+    <Content Include="gadgets\files\samplecontainer\examples\rewriter\rewriteron.html" />
+    <Content Include="gadgets\files\samplecontainer\examples\rewriter\rewriteron.xml" />
+    <Content Include="gadgets\files\samplecontainer\examples\SocialActivitiesWorld.xml" />
+    <Content Include="gadgets\files\samplecontainer\examples\SocialHelloWorld.xml" />
+    <Content Include="gadgets\files\samplecontainer\getting-started.html" />
+    <Content Include="gadgets\files\samplecontainer\samplecontainer.html" />
+    <Content Include="gadgets\files\samplecontainer\samplecontainer.js" />
+    <Content Include="gadgets\files\samplecontainer\state-basicfriendlist.xml" />
+    <Content Include="gadgets\files\samplecontainer\state-smallfriendlist.xml" />
+    <Content Include="gadgets\files\testxml\horoscope.xml" />
+    <Content Include="gadgets\files\testxml\todo.xml" />
+    <Content Include="Global.asax" />
+    <Content Include="LICENSE.txt" />
+    <Content Include="NOTICE.txt" />
+    <Content Include="Views\Home\Index.aspx" />
+    <Content Include="Web.config" />
+    <Content Include="Content\Site.css" />
+    <Content Include="Scripts\jquery-1.2.6.js" />
+    <Content Include="Scripts\jquery-1.2.6.min.js" />
+    <Content Include="Scripts\jquery-1.2.6-vsdoc.js" />
+    <Content Include="Scripts\jquery-1.2.6.min-vsdoc.js" />
+    <Content Include="Scripts\MicrosoftAjax.js" />
+    <Content Include="Scripts\MicrosoftAjax.debug.js" />
+    <Content Include="Scripts\MicrosoftMvcAjax.js" />
+    <Content Include="Scripts\MicrosoftMvcAjax.debug.js" />
+    <Content Include="Views\Shared\Error.aspx" />
+    <Content Include="Views\Web.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\pesta\pesta\pesta.csproj">
+      <Project>{6CD14C34-807B-4C7B-B110-79AFCF65E49B}</Project>
+      <Name>pesta</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="config\oauth.json" />
+    <None Include="DataAccess\LinqRaya.dbml">
+      <Generator>MSLinqToSQLGenerator</Generator>
+      <LastGenOutput>LinqRaya1.designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="gadgets\files\samplecontainer\state.dtd" />
+    <None Include="gadgets\files\sampledata\canonicaldb.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Content\features\opensocial-templates\README" />
+    <None Include="Content\features\README" />
+    <None Include="DataAccess\LinqRaya.dbml.layout">
+      <DependentUpon>LinqRaya.dbml</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+    <Folder Include="Models\common\auth\" />
+    <Folder Include="Models\gadgets\parse\" />
+    <Folder Include="Utilities\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v9.0\WebApplications\Microsoft.WebApplication.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target> -->
+  <Target Name="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
+    <AspNetCompiler VirtualPath="temp" PhysicalPath="$(ProjectDir)\..\$(ProjectName)" />
+  </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>False</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>21838</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>
+          </IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>
