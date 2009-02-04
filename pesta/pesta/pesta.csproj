@@ -1,0 +1,284 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{6CD14C34-807B-4C7B-B110-79AFCF65E49B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Pesta</RootNamespace>
+    <AssemblyName>Pesta.NET</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Accessibility" />
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.XML" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Engine\auth\AnonymousSecurityToken.cs" />
+    <Compile Include="Engine\auth\IAuthenticationHandler.cs" />
+    <Compile Include="Engine\auth\AuthInfo.cs" />
+    <Compile Include="Engine\auth\BasicSecurityToken.cs" />
+    <Compile Include="Engine\auth\BasicSecurityTokenDecoder.cs" />
+    <Compile Include="Engine\auth\ISecurityToken.cs" />
+    <Compile Include="Engine\auth\SecurityTokenDecoder.cs" />
+    <Compile Include="Engine\auth\SecurityTokenException.cs" />
+    <Compile Include="Engine\auth\UrlParameterAuthenticationHandler.cs" />
+    <Compile Include="Engine\common\crypto\BasicBlobCrypter.cs" />
+    <Compile Include="Engine\common\crypto\BlobCrypter.cs" />
+    <Compile Include="Engine\common\crypto\BlobCrypterException.cs" />
+    <Compile Include="Engine\common\crypto\BlobExpiredException.cs" />
+    <Compile Include="Engine\common\crypto\Crypto.cs" />
+    <Compile Include="Engine\common\ResourceLoader.cs" />
+    <Compile Include="Engine\common\util\HashUtil.cs" />
+    <Compile Include="Engine\common\util\JsonConversionUtil.cs" />
+    <Compile Include="Engine\common\xml\XmlUtil.cs" />
+    <Compile Include="Filters\AuthenticationServletFilter.cs" />
+    <Compile Include="Utilities\CustomAttr.cs" />
+    <Compile Include="Utilities\EnumBaseType.cs" />
+    <Compile Include="Utilities\HashKey.cs" />
+    <Compile Include="Interop\jayrock.json\BooleanObject.cs" />
+    <Compile Include="Interop\jayrock.json\collections\KeyedCollection.cs" />
+    <Compile Include="Interop\jayrock.json\Compat.cs" />
+    <Compile Include="Interop\jayrock.json\configuration\DictionarySectionHandler.cs" />
+    <Compile Include="Interop\jayrock.json\configuration\ListSectionHandler.cs" />
+    <Compile Include="Interop\jayrock.json\configuration\TypeListSectionHandler.cs" />
+    <Compile Include="Interop\jayrock.json\diagnostics\DebugString.cs" />
+    <Compile Include="Interop\jayrock.json\DictionaryHelper.cs" />
+    <Compile Include="Interop\jayrock.json\json\BufferedCharReader.cs" />
+    <Compile Include="Interop\jayrock.json\json\conversion\AnyType.cs" />
+    <Compile Include="Interop\jayrock.json\json\conversion\converters\AnyImporter.cs" />
+    <Compile Include="Interop\jayrock.json\json\conversion\converters\ArrayImporter.cs" />
+    <Compile Include="Interop\jayrock.json\json\conversion\converters\BooleanExporter.cs" />
+    <Compile Include="Interop\jayrock.json\json\conversion\converters\BooleanImporter.cs" />
+    <Compile Include="Interop\jayrock.json\json\conversion\converters\ByteArrayExporter.cs" />
+    <Compile Include="Interop\jayrock.json\json\conversion\converters\ByteArrayImporter.cs" />
+    <Compile Include="Interop\jayrock.json\json\conversion\converters\ComponentExporter.cs" />
+    <Compile Include="Interop\jayrock.json\json\conversion\converters\ComponentImporter.cs" />
+    <Compile Include="Interop\jayrock.json\json\conversion\converters\ControlExporter.cs" />
+    <Compile Include="Interop\jayrock.json\json\conversion\converters\DataRowExporter.cs" />
+    <Compile Include="Interop\jayrock.json\json\conversion\converters\DataRowViewExporter.cs" />
+    <Compile Include="Interop\jayrock.json\json\conversion\converters\DataSetExporter.cs" />
+    <Compile Include="Interop\jayrock.json\json\conversion\converters\DataTableExporter.cs" />
+    <Compile Include="Interop\jayrock.json\json\conversion\converters\DataViewExporter.cs" />
+    <Compile Include="Interop\jayrock.json\json\conversion\converters\DateTimeExporter.cs" />
+    <Compile Include="Interop\jayrock.json\json\conversion\converters\DateTimeImporter.cs" />
+    <Compile Include="Interop\jayrock.json\json\conversion\converters\DbDataRecordExporter.cs" />
+    <Compile Include="Interop\jayrock.json\json\conversion\converters\DictionaryExporter.cs" />
+    <Compile Include="Interop\jayrock.json\json\conversion\converters\DictionaryImporter.cs" />
+    <Compile Include="Interop\jayrock.json\json\conversion\converters\EnumerableExporter.cs" />
+    <Compile Include="Interop\jayrock.json\json\conversion\converters\EnumImporter.cs" />
+    <Compile Include="Interop\jayrock.json\json\conversion\converters\ExportAwareExporter.cs" />
+    <Compile Include="Interop\jayrock.json\json\conversion\converters\ExporterBase.cs" />
+    <Compile Include="Interop\jayrock.json\json\conversion\converters\GuidImporter.cs" />
+    <Compile Include="Interop\jayrock.json\json\conversion\converters\ImportAwareImporter.cs" />
+    <Compile Include="Interop\jayrock.json\json\conversion\converters\ImporterBase.cs" />
+    <Compile Include="Interop\jayrock.json\json\conversion\converters\JsonNumberExporter.cs" />
+    <Compile Include="Interop\jayrock.json\json\conversion\converters\ListImporter.cs" />
+    <Compile Include="Interop\jayrock.json\json\conversion\converters\NameValueCollectionExporter.cs" />
+    <Compile Include="Interop\jayrock.json\json\conversion\converters\NameValueCollectionImporter.cs" />
+    <Compile Include="Interop\jayrock.json\json\conversion\converters\NumberExporter.cs" />
+    <Compile Include="Interop\jayrock.json\json\conversion\converters\NumberImporter.cs" />
+    <Compile Include="Interop\jayrock.json\json\conversion\converters\StringExporter.cs" />
+    <Compile Include="Interop\jayrock.json\json\conversion\converters\StringImporter.cs" />
+    <Compile Include="Interop\jayrock.json\json\conversion\converters\UriImporter.cs" />
+    <Compile Include="Interop\jayrock.json\json\conversion\CustomTypeDescriptor.cs" />
+    <Compile Include="Interop\jayrock.json\json\conversion\ExportContext.cs" />
+    <Compile Include="Interop\jayrock.json\json\conversion\ExporterCollection.cs" />
+    <Compile Include="Interop\jayrock.json\json\conversion\ExporterListSectionHandler.cs" />
+    <Compile Include="Interop\jayrock.json\json\conversion\IExporter.cs" />
+    <Compile Include="Interop\jayrock.json\json\conversion\IImporter.cs" />
+    <Compile Include="Interop\jayrock.json\json\conversion\IJsonExportable.cs" />
+    <Compile Include="Interop\jayrock.json\json\conversion\IJsonImportable.cs" />
+    <Compile Include="Interop\jayrock.json\json\conversion\ImportContext.cs" />
+    <Compile Include="Interop\jayrock.json\json\conversion\ImporterCollection.cs" />
+    <Compile Include="Interop\jayrock.json\json\conversion\ImporterListSectionHandler.cs" />
+    <Compile Include="Interop\jayrock.json\json\conversion\IObjectMemberExporter.cs" />
+    <Compile Include="Interop\jayrock.json\json\conversion\IObjectMemberImporter.cs" />
+    <Compile Include="Interop\jayrock.json\json\conversion\JsonConvert.cs" />
+    <Compile Include="Interop\jayrock.json\json\conversion\JsonDefaultValueAttribute.cs" />
+    <Compile Include="Interop\jayrock.json\json\conversion\JsonExportAttribue.cs" />
+    <Compile Include="Interop\jayrock.json\json\conversion\JsonIgnoreAttribute.cs" />
+    <Compile Include="Interop\jayrock.json\json\conversion\JsonMemberNameAttribute.cs" />
+    <Compile Include="Interop\jayrock.json\json\conversion\JsonMemberNamingConventionAttribute.cs" />
+    <Compile Include="Interop\jayrock.json\json\conversion\PropertyCustomization.cs" />
+    <Compile Include="Interop\jayrock.json\json\EmptyJsonWriter.cs" />
+    <Compile Include="Interop\jayrock.json\json\InvalidMemberException.cs" />
+    <Compile Include="Interop\jayrock.json\json\JsonArray.cs" />
+    <Compile Include="Interop\jayrock.json\json\JsonBoolean.cs" />
+    <Compile Include="Interop\jayrock.json\json\JsonException.cs" />
+    <Compile Include="Interop\jayrock.json\json\JsonNull.cs" />
+    <Compile Include="Interop\jayrock.json\json\JsonNumber.cs" />
+    <Compile Include="Interop\jayrock.json\json\JsonObject.cs" />
+    <Compile Include="Interop\jayrock.json\json\JsonReader.cs" />
+    <Compile Include="Interop\jayrock.json\json\JsonReaderBase.cs" />
+    <Compile Include="Interop\jayrock.json\json\JsonRecorder.cs" />
+    <Compile Include="Interop\jayrock.json\json\JsonString.cs" />
+    <Compile Include="Interop\jayrock.json\json\JsonTextReader.cs" />
+    <Compile Include="Interop\jayrock.json\json\JsonTextWriter.cs" />
+    <Compile Include="Interop\jayrock.json\json\JsonToken.cs" />
+    <Compile Include="Interop\jayrock.json\json\JsonTokenClass.cs" />
+    <Compile Include="Interop\jayrock.json\json\JsonWriter.cs" />
+    <Compile Include="Interop\jayrock.json\json\JsonWriterBase.cs" />
+    <Compile Include="Interop\jayrock.json\json\JsonWriterBracket.cs" />
+    <Compile Include="Interop\jayrock.json\Mask.cs" />
+    <Compile Include="Interop\jayrock.json\UnixTime.cs" />
+    <Compile Include="Interop\oauth\OAuth.cs" />
+    <Compile Include="Interop\oauth\OAuthAccessor.cs" />
+    <Compile Include="Interop\oauth\OAuthConsumer.cs" />
+    <Compile Include="Interop\oauth\OAuthException.cs" />
+    <Compile Include="Interop\oauth\OAuthMessage.cs" />
+    <Compile Include="Interop\oauth\OAuthProblemException.cs" />
+    <Compile Include="Interop\oauth\OAuthServiceProvider.cs" />
+    <Compile Include="Interop\oauth\OAuthValidator.cs" />
+    <Compile Include="Interop\oauth\server\OAuthServlet.cs" />
+    <Compile Include="Interop\oauth\signature\HMAC_SHA1.cs" />
+    <Compile Include="Interop\oauth\signature\OAuthSignatureMethod.cs" />
+    <Compile Include="Interop\oauth\signature\PLAINTEXT.cs" />
+    <Compile Include="Interop\oauth\SimpleOAuthValidator.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="COPYING.txt" />
+    <Content Include="Interop\jayrock.json\COPYING.txt" />
+    <Content Include="LICENSE.txt" />
+    <Content Include="NOTICE.txt" />
+    <Compile Include="Engine\auth\AnonymousAuthenticationHandler.cs" />
+    <Compile Include="Engine\common\uri\Uri.cs" />
+    <Compile Include="Engine\common\uri\UriBuilder.cs" />
+    <Compile Include="Engine\social\core\model\AccountImpl.cs" />
+    <Compile Include="Engine\social\core\model\ActivityImpl.cs" />
+    <Compile Include="Engine\social\core\model\AddressImpl.cs" />
+    <Compile Include="Engine\social\core\model\BodyTypeImpl.cs" />
+    <Compile Include="Engine\social\core\model\EnumImpl.cs" />
+    <Compile Include="Engine\social\core\model\ListFieldImpl.cs" />
+    <Compile Include="Engine\social\core\model\MediaItemImpl.cs" />
+    <Compile Include="Engine\social\core\model\MessageImpl.cs" />
+    <Compile Include="Engine\social\core\model\NameImpl.cs" />
+    <Compile Include="Engine\social\core\model\OrganizationImpl.cs" />
+    <Compile Include="Engine\social\core\model\PersonImpl.cs" />
+    <Compile Include="Engine\social\core\model\UrlImpl.cs" />
+    <Compile Include="Engine\social\core\oauth\OAuthConsumerRequestAuthenticationHandler.cs" />
+    <Compile Include="Engine\social\core\oauth\OAuthSecurityToken.cs" />
+    <Compile Include="Engine\social\model\Account.cs" />
+    <Compile Include="Engine\social\model\Activity.cs" />
+    <Compile Include="Engine\social\model\Address.cs" />
+    <Compile Include="Engine\social\model\BodyType.cs" />
+    <Compile Include="Engine\social\model\Enums.cs" />
+    <Compile Include="Engine\social\model\ListField.cs" />
+    <Compile Include="Engine\social\model\MediaItem.cs" />
+    <Compile Include="Engine\social\model\Message.cs" />
+    <Compile Include="Engine\social\model\Name.cs" />
+    <Compile Include="Engine\social\model\Organization.cs" />
+    <Compile Include="Engine\social\model\Person.cs" />
+    <Compile Include="Engine\social\model\Url.cs" />
+    <Compile Include="Engine\social\oauth\OAuthLookupService.cs" />
+    <Compile Include="Engine\social\oauth\SampleContainerOAuthLookupService.cs" />
+    <Compile Include="Engine\social\ResponseError.cs" />
+    <Compile Include="Engine\social\spi\ActivityService.cs" />
+    <Compile Include="Engine\social\spi\AppDataService.cs" />
+    <Compile Include="Engine\social\spi\CollectionOptions.cs" />
+    <Compile Include="Engine\social\spi\DataCollection.cs" />
+    <Compile Include="Engine\social\spi\GroupId.cs" />
+    <Compile Include="Engine\social\spi\MessagesService.cs" />
+    <Compile Include="Engine\social\spi\PersonService.cs" />
+    <Compile Include="Engine\social\spi\RestfulCollection.cs" />
+    <Compile Include="Engine\social\spi\SocialSpiException.cs" />
+    <Compile Include="Engine\social\spi\UserId.cs" />
+    <Compile Include="Interop\HtmlAgilityPack\crc32.cs" />
+    <Compile Include="Interop\HtmlAgilityPack\EncodingFoundException.cs" />
+    <Compile Include="Interop\HtmlAgilityPack\HtmlAttribute.cs" />
+    <Compile Include="Interop\HtmlAgilityPack\HtmlAttributeCollection.cs" />
+    <Compile Include="Interop\HtmlAgilityPack\HtmlCmdLine.cs" />
+    <Compile Include="Interop\HtmlAgilityPack\HtmlCommentNode.cs" />
+    <Compile Include="Interop\HtmlAgilityPack\HtmlConsoleListener.cs" />
+    <Compile Include="Interop\HtmlAgilityPack\HtmlDocument.cs" />
+    <Compile Include="Interop\HtmlAgilityPack\HtmlElementFlag.cs" />
+    <Compile Include="Interop\HtmlAgilityPack\HtmlEntity.cs" />
+    <Compile Include="Interop\HtmlAgilityPack\HtmlNameTable.cs" />
+    <Compile Include="Interop\HtmlAgilityPack\HtmlNode.cs" />
+    <Compile Include="Interop\HtmlAgilityPack\HtmlNodeCollection.cs" />
+    <Compile Include="Interop\HtmlAgilityPack\HtmlNodeNavigator.cs" />
+    <Compile Include="Interop\HtmlAgilityPack\HtmlNodeType.cs" />
+    <Compile Include="Interop\HtmlAgilityPack\HtmlParseError.cs" />
+    <Compile Include="Interop\HtmlAgilityPack\HtmlParseErrorCode.cs" />
+    <Compile Include="Interop\HtmlAgilityPack\HtmlTextNode.cs" />
+    <Compile Include="Interop\HtmlAgilityPack\HtmlWeb.cs" />
+    <Compile Include="Interop\HtmlAgilityPack\HtmlWebException.cs" />
+    <Compile Include="Interop\HtmlAgilityPack\IOLibrary.cs" />
+    <Compile Include="Interop\HtmlAgilityPack\MixedCodeDocument.cs" />
+    <Compile Include="Interop\HtmlAgilityPack\MixedCodeDocumentCodeFragment.cs" />
+    <Compile Include="Interop\HtmlAgilityPack\MixedCodeDocumentFragment.cs" />
+    <Compile Include="Interop\HtmlAgilityPack\MixedCodeDocumentFragmentList.cs" />
+    <Compile Include="Interop\HtmlAgilityPack\MixedCodeDocumentFragmentType.cs" />
+    <Compile Include="Interop\HtmlAgilityPack\MixedCodeDocumentTextFragment.cs" />
+    <Compile Include="Interop\HtmlAgilityPack\NameValuePair.cs" />
+    <Compile Include="Interop\HtmlAgilityPack\NameValuePairList.cs" />
+    <Compile Include="Interop\oauth\Constants.cs" />
+    <Compile Include="Interop\oauth\Rfc3986.cs" />
+    <Compile Include="Interop\oauth\signature\RSA_SHA1.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utilities\ASPNETMVC\HttpCompressionModule.cs" />
+    <Compile Include="Utilities\ASPNETMVC\StaticFileHandler.cs" />
+    <Compile Include="Utilities\Locale.cs" />
+    <Compile Include="Utilities\PestaSettings.cs" />
+    <Compile Include="Utilities\Provider.cs" />
+    <Compile Include="Utilities\UnixTime.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
