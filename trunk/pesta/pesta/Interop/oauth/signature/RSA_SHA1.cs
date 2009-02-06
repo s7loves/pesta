@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 using System;
+using System.Security;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 
@@ -29,15 +30,19 @@ namespace Pesta.Interop.oauth.signature
         readonly static public String PRIVATE_KEY = "RSA-SHA1.PrivateKey";
         readonly static public String PUBLIC_KEY = "RSA-SHA1.PublicKey";
         readonly static public String X509_CERTIFICATE = "RSA-SHA1.X509Certificate";
+        readonly static public String X509_CERTIFICATE_PASS = "RSA-SHA1.X509Certificate.Pass";
 
         private X509Certificate2 certificate;
 
         protected override void initialize(string name, OAuthAccessor accessor)
         {
             base.initialize(name, accessor);
+            // get pass
+            string pass = accessor.consumer.getProperty(X509_CERTIFICATE_PASS) as string;
+            // get certificate location
+            string certloc = accessor.consumer.getProperty(X509_CERTIFICATE) as string;
 
-            certificate = new X509Certificate2();
-            certificate.Import(name);
+            certificate = new X509Certificate2(AppDomain.CurrentDomain.BaseDirectory + certloc, pass);
         } 
 
         protected override String getSignature(String baseString)
@@ -63,24 +68,6 @@ namespace Pesta.Interop.oauth.signature
             {
                 throw new OAuthException(e);
             }
-        }
-
-        public override void setConsumerSecret(String consumerSecret)
-        {
-            lock (this)
-            {
-                certificate = null;
-            }
-            base.setConsumerSecret(consumerSecret);
-        }
-
-        public override void setTokenSecret(String tokenSecret)
-        {
-            lock (this)
-            {
-                certificate = null;
-            }
-            base.setTokenSecret(tokenSecret);
         }
 
         private byte[] sign(byte[] message)
