@@ -19,7 +19,9 @@
 #endregion
 using System;
 using System.Collections.Generic;
+using System.Text;
 using Pesta.Engine.common.crypto;
+using Pesta.Utilities;
 
 namespace Pesta.Engine.auth
 {
@@ -40,9 +42,7 @@ namespace Pesta.Engine.auth
         private readonly Dictionary<String, String> tokenData;
 
         /** tool to use for signing and encrypting the token */
-        private readonly BlobCrypter crypter = new BasicBlobCrypter(INSECURE_KEY);
-
-        private static readonly byte[] INSECURE_KEY = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+        private readonly BlobCrypter crypter = new BasicBlobCrypter(Encoding.UTF8.GetBytes(PestaSettings.TokenMasterKey));
 
         private const string OWNER_KEY = "o";
         private const string APP_KEY = "a";

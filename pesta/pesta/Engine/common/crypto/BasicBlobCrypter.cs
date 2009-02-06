@@ -97,7 +97,7 @@ namespace Pesta.Engine.common.crypto
         {
             if (masterKey.Length < MASTER_KEY_MIN_LEN)
             {
-                throw new Exception("Master key needs at least "
+                throw new Exception("Key too short, " + masterKey.Length + ": Master key needs at least "
                                     + MASTER_KEY_MIN_LEN + " bytes");
             }
             cipherKey = DeriveKey(CIPHER_KEY_LABEL, masterKey, Crypto.CIPHER_KEY_LEN);

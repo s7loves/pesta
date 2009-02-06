@@ -27,8 +27,6 @@ namespace Pesta.Utilities
 {
     public sealed class PestaSettings : IConfigurationSectionHandler
     {
-        internal const string AssemblyName = "Pesta";
-
         #region static methods
 
         static PestaSettings() 
@@ -62,6 +60,7 @@ namespace Pesta.Utilities
                 gadgetCacheXmlRefreshInterval = ReadSetting(settings, "gadgetCacheXmlRefreshInterval", "300000");
                 allowPlaintextToken = ReadSetting(settings, "allowPlaintextToken", "true");
                 containerUrlPrefix = ReadSetting(settings, "containerUrlPrefix", "");
+                tokenMasterKey = ReadSetting(settings, "tokenMasterKey", "INSECURE_DEFAULT_KEY");
             }
 
             return null;
@@ -92,6 +91,7 @@ namespace Pesta.Utilities
         private static string allowPlaintextToken;
         private static string tokenMaxAge;
         private static string containerUrlPrefix;
+        private static string tokenMasterKey;
 
         public static String JsonDb 
         {
@@ -128,6 +128,12 @@ namespace Pesta.Utilities
         {
             get { return containerUrlPrefix; }
             set { containerUrlPrefix = value; }
+        }
+
+        public static String TokenMasterKey
+        {
+            get { return tokenMasterKey; }
+            set { tokenMasterKey = value; }
         }
     }
 }
