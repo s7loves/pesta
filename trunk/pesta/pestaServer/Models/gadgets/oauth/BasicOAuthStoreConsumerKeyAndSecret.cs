@@ -54,19 +54,16 @@ namespace pestaServer.Models.gadgets.oauth
         ///
         public readonly KeyType keyType;
 
-        /// <summary>
-        /// Name of public key to use with xoauth_public_key parameter. May be null
-        /// </summary>
-        ///
-        private readonly String keyName;
-
+        private readonly String certName;
+        private readonly String certPass;
         public BasicOAuthStoreConsumerKeyAndSecret(String key, String secret,
-                                                   KeyType type, String name)
+                                                   KeyType type, String name, String pass)
         {
             consumerKey = key;
             consumerSecret = secret;
             keyType = type;
-            keyName = name;
+            certName = name;
+            certPass = pass;
         }
 
         public String ConsumerKey
@@ -76,8 +73,7 @@ namespace pestaServer.Models.gadgets.oauth
                 return consumerKey;
             }
         }
-
-
+        
         public String ConsumerSecret
         {
             get
@@ -86,11 +82,18 @@ namespace pestaServer.Models.gadgets.oauth
             }
         }
 
-        public String KeyName
+        public String CertName
         {
             get
             {
-                return keyName;
+                return certName;
+            }
+        }
+        public String CertPass
+        {
+            get
+            {
+                return certPass;
             }
         }
 

@@ -520,6 +520,7 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Content\features\opensocial-templates\README" />
+    <None Include="config\certs\myrsacert.pfx" />
     <None Include="Content\features\README" />
     <None Include="DataAccess\LinqRaya.dbml.layout">
       <DependentUpon>LinqRaya.dbml</DependentUpon>
@@ -546,7 +547,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>21838</DevelopmentServerPort>
+          <DevelopmentServerPort>22603</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>
           </IISUrl>

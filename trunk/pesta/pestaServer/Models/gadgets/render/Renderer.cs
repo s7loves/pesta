@@ -132,7 +132,7 @@ namespace pestaServer.Models.gadgets.render
                 // We need to check each possible parent parameter against this regex.
                 for (int i = 0, j = parents.Length; i < j; ++i) 
                 {
-                    if (Regex.IsMatch(parents[i] as string, parent))
+                    if (Regex.IsMatch(parents[i].ToString(), parent))
                     {
                         return true;
                     }
