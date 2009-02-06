@@ -95,7 +95,7 @@ namespace pestaServer.Models.gadgets.http
                 using (Stream responseStream = resp.GetResponseStream())
                 {
                     int bytes;
-                    responseStream.ReadTimeout = READ_TIMEOUT_MS;
+                    //responseStream.ReadTimeout = READ_TIMEOUT_MS;
                     while ((bytes = responseStream.Read(buffer, 0, buffer.Length)) > 0)
                     {
                         memoryStream.Write(buffer, 0, bytes);

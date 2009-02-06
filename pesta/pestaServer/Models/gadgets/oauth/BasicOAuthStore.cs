@@ -41,6 +41,8 @@ namespace pestaServer.Models.gadgets.oauth
     public class BasicOAuthStore : OAuthStore
     {
         private const string CONSUMER_SECRET_KEY = "consumer_secret";
+        private const string CERTIFICATE_LOC = "certificate";
+        private const string CERTIFICATE_PASS = "certificate_pass";
         private const string CONSUMER_KEY_KEY = "consumer_key";
         private const string KEY_TYPE_KEY = "key_type";
         private const string OAUTH_CONFIG = "config/oauth.json";
@@ -75,12 +77,11 @@ namespace pestaServer.Models.gadgets.oauth
 
         /** Number of times we removed an access token */
         private int accessTokenRemoveCount;
-        public readonly static BasicOAuthStore Instance = new BasicOAuthStore("","");
-        protected BasicOAuthStore(string signingKeyFile, string signingKeyName)
+        public readonly static BasicOAuthStore Instance = new BasicOAuthStore();
+        protected BasicOAuthStore()
         {
             consumerInfos = new Dictionary<BasicOAuthStoreConsumerIndex, BasicOAuthStoreConsumerKeyAndSecret>();
             tokens = new Dictionary<BasicOAuthStoreTokenIndex, TokenInfo>();
-            loadDefaultKey(signingKeyFile, signingKeyName);
             loadConsumers();
         }
 
@@ -122,29 +123,28 @@ namespace pestaServer.Models.gadgets.oauth
 
         private void realStoreConsumerInfo(Uri gadgetUri, String serviceName, JsonObject consumerInfo)
         {
-            String consumerSecret = consumerInfo[CONSUMER_SECRET_KEY].ToString();
             String consumerKey = consumerInfo[CONSUMER_KEY_KEY].ToString();
             String keyTypeStr = consumerInfo[KEY_TYPE_KEY].ToString();
-            BasicOAuthStoreConsumerKeyAndSecret.KeyType keyType = BasicOAuthStoreConsumerKeyAndSecret.KeyType.HMAC_SYMMETRIC;
-
+            BasicOAuthStoreConsumerKeyAndSecret.KeyType keyType;
+            BasicOAuthStoreConsumerKeyAndSecret kas;
             if (keyTypeStr.Equals("RSA_PRIVATE"))
             {
+                String certName = consumerInfo[CERTIFICATE_LOC].ToString();
+                String certPass = consumerInfo[CERTIFICATE_PASS].ToString();
                 keyType = BasicOAuthStoreConsumerKeyAndSecret.KeyType.RSA_PRIVATE;
-                consumerSecret = convertFromOpenSsl(consumerSecret);
+                kas = new BasicOAuthStoreConsumerKeyAndSecret(consumerKey, null, keyType, certName, certPass);
             }
-
-            BasicOAuthStoreConsumerKeyAndSecret kas = new BasicOAuthStoreConsumerKeyAndSecret(consumerKey, consumerSecret, keyType, null);
-
+            else
+            {
+                String consumerSecret = consumerInfo[CONSUMER_SECRET_KEY].ToString();
+                keyType = BasicOAuthStoreConsumerKeyAndSecret.KeyType.HMAC_SYMMETRIC;
+                kas = new BasicOAuthStoreConsumerKeyAndSecret(consumerKey, consumerSecret, keyType, null, null);
+            }
+            
             BasicOAuthStoreConsumerIndex index = new BasicOAuthStoreConsumerIndex();
             index.setGadgetUri(gadgetUri.ToString());
             index.setServiceName(serviceName);
             setConsumerKeyAndSecret(index, kas);
-        }
-
-        // Support standard openssl keys by stripping out the headers and blank lines
-        public static String convertFromOpenSsl(String privateKey)
-        {
-            return privateKey.Replace("-----[A-Z ]*-----", "").Replace("\n", "");
         }
 
         public void setDefaultKey(BasicOAuthStoreConsumerKeyAndSecret _defaultKey)
@@ -173,18 +173,16 @@ namespace pestaServer.Models.gadgets.oauth
             if (cks.keyType == BasicOAuthStoreConsumerKeyAndSecret.KeyType.RSA_PRIVATE)
             {
                 consumer = new OAuthConsumer(null, cks.ConsumerKey, null, provider);
-                // The oauth.net java code has lots of magic.  By setting this property here, code thousands
-                // of lines away knows that the consumerSecret value in the consumer should be treated as
-                // an RSA private key and not an HMAC key.
                 consumer.setProperty(OAuth.OAUTH_SIGNATURE_METHOD, OAuth.RSA_SHA1);
-                consumer.setProperty(RSA_SHA1.PRIVATE_KEY, cks.ConsumerSecret);
+                consumer.setProperty(RSA_SHA1.X509_CERTIFICATE, cks.CertName);
+                consumer.setProperty(RSA_SHA1.X509_CERTIFICATE_PASS, cks.CertPass);
             }
             else
             {
                 consumer = new OAuthConsumer(null, cks.ConsumerKey, cks.ConsumerSecret, provider);
                 consumer.setProperty(OAuth.OAUTH_SIGNATURE_METHOD, OAuth.HMAC_SHA1);
             }
-            return new ConsumerInfo(consumer, cks.KeyName);
+            return new ConsumerInfo(consumer, cks.ConsumerKey);
         }
 
         private static BasicOAuthStoreTokenIndex makeBasicOAuthStoreTokenIndex(ISecurityToken securityToken, String serviceName, String tokenName)
@@ -239,26 +237,6 @@ namespace pestaServer.Models.gadgets.oauth
         public int getAccessTokenRemoveCount()
         {
             return accessTokenRemoveCount;
-        }
-
-        private void loadDefaultKey(String signingKeyFile, String signingKeyName)
-        {
-            BasicOAuthStoreConsumerKeyAndSecret key = null;
-            if (!String.IsNullOrEmpty(signingKeyFile))
-            {
-                using (StreamReader reader = new StreamReader(ResourceLoader.open(signingKeyFile)))
-                {
-                    String privateKey = reader.ReadToEnd();
-                    privateKey = convertFromOpenSsl(privateKey);
-                    key = new BasicOAuthStoreConsumerKeyAndSecret(null, privateKey,
-                                                                  BasicOAuthStoreConsumerKeyAndSecret.KeyType.RSA_PRIVATE,
-                                                                  signingKeyName);
-                }
-            }
-            if (key != null)
-            {
-                setDefaultKey(key);
-            }
         }
 
         private void loadConsumers()

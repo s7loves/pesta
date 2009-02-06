@@ -25,12 +25,20 @@
       "key_type" : "HMAC_SYMMETRIC"
     }
   },
-  
+ /* 
   "http://dirk.balfanz.googlepages.com/contacts.xml" : {
     "google" : {
       "consumer_key" : "my6solutions.com",
       "consumer_secret" : "WjbzTy7PK3eZpoTDiROOmzAO",
       "key_type" : "HMAC_SYMMETRIC"
+    }
+  }, */
+  "http://dirk.balfanz.googlepages.com/contacts.xml" : {
+    "google" : {
+      "consumer_key" : "my6solutions.com",
+      "certificate" : "/config/certs/myrsacert.pfx",
+      "certificate_pass" : "1234",
+      "key_type" : "RSA_PRIVATE"
     }
   },
   "http://natbro.garageband.com/gadget/ilike/partuza" : {
