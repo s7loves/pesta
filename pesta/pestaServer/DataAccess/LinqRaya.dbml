@@ -54,6 +54,8 @@
       <Association Name="person_authenticated" Member="authenticateds" ThisKey="id" OtherKey="person_id" Type="authenticated" />
       <Association Name="person_friend_request" Member="friend_request" ThisKey="id" OtherKey="person_id" Type="friend_request" Cardinality="One" />
       <Association Name="person_friend" Member="friend" ThisKey="id" OtherKey="person_id" Type="friend" Cardinality="One" />
+      <Association Name="person_message" Member="messages" ThisKey="id" OtherKey="from" Type="message" />
+      <Association Name="person_message1" Member="messages1" ThisKey="id" OtherKey="to" Type="message" />
       <Association Name="person_person_activity" Member="person_activities" ThisKey="id" OtherKey="person_id" Type="person_activity" />
       <Association Name="person_person_address" Member="person_addresses" ThisKey="id" OtherKey="person_id" Type="person_address" />
       <Association Name="person_person_application" Member="person_applications" ThisKey="id" OtherKey="person_id" Type="person_application" />
@@ -171,9 +173,26 @@
       <Association Name="language_person_languages_spoken" Member="person_languages_spokens" ThisKey="id" OtherKey="language_id" Type="person_languages_spoken" />
     </Type>
   </Table>
+  <Table Name="dbo.messages" Member="messages">
+    <Type Name="message">
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="[from]" Member="from" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="[to]" Member="to" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="title" Type="System.String" DbType="NVarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="body" Type="System.String" DbType="Text NOT NULL" CanBeNull="false" UpdateCheck="Never" />
+      <Column Name="[read]" Member="read" Type="System.String" DbType="NVarChar(3) NOT NULL" CanBeNull="false" />
+      <Column Name="to_deleted" Type="System.String" DbType="NVarChar(3) NOT NULL" CanBeNull="false" />
+      <Column Name="from_deleted" Type="System.String" DbType="NVarChar(3)" CanBeNull="true" />
+      <Column Name="created" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Association Name="person_message" Member="person" ThisKey="from" OtherKey="id" Type="person" IsForeignKey="true" />
+      <Association Name="person_message1" Member="person1" ThisKey="to" OtherKey="id" Type="person" IsForeignKey="true" />
+    </Type>
+  </Table>
   <Table Name="dbo.oauth_consumer" Member="oauth_consumers">
     <Type Name="oauth_consumer">
-      <Column Name="user_id" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="user_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="app_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="consumer_key" Type="System.String" DbType="VarChar(64) NOT NULL" CanBeNull="false" />
       <Column Name="consumer_secret" Type="System.String" DbType="VarChar(64) NOT NULL" CanBeNull="false" />
     </Type>

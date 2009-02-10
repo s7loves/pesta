@@ -58,7 +58,7 @@ namespace pestaServer.Models.gadgets.oauth
             // dance is just beginning
             accessor.requestToken = requestToken;
             accessor.accessToken = accessToken;
-            accessor.tokenSecret = tokenSecret;
+            accessor.TokenSecret = tokenSecret;
             return new AccessorInfo(accessor, consumer, method, location, sessionHandle, tokenExpireMillis);
         }
 

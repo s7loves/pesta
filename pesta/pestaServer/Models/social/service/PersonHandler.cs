@@ -36,7 +36,7 @@ namespace pestaServer.Models.social.service
     /// </remarks>
     public class PersonHandler : DataRequestHandler
     {
-        private readonly PersonService personService;
+        private readonly IPersonService personService;
 
         private const string PEOPLE_PATH = "/people/{userId}+/{groupId}/{personId}+";
 

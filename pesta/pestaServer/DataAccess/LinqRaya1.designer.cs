@@ -60,6 +60,9 @@ namespace pestaServer.DataAccess
     partial void Insertlanguage(language instance);
     partial void Updatelanguage(language instance);
     partial void Deletelanguage(language instance);
+    partial void Insertmessage(message instance);
+    partial void Updatemessage(message instance);
+    partial void Deletemessage(message instance);
     partial void Insertoauth_consumer(oauth_consumer instance);
     partial void Updateoauth_consumer(oauth_consumer instance);
     partial void Deleteoauth_consumer(oauth_consumer instance);
@@ -184,6 +187,14 @@ namespace pestaServer.DataAccess
 			get
 			{
 				return this.GetTable<language>();
+			}
+		}
+		
+		public System.Data.Linq.Table<message> messages
+		{
+			get
+			{
+				return this.GetTable<message>();
 			}
 		}
 		
@@ -786,6 +797,10 @@ namespace pestaServer.DataAccess
 		
 		private EntityRef<friend> _friend;
 		
+		private EntitySet<message> _messages;
+		
+		private EntitySet<message> _messages1;
+		
 		private EntitySet<person_application> _person_applications;
 		
     #region Extensibility Method Definitions
@@ -867,6 +882,8 @@ namespace pestaServer.DataAccess
 			this._authenticateds = new EntitySet<authenticated>(new Action<authenticated>(this.attach_authenticateds), new Action<authenticated>(this.detach_authenticateds));
 			this._friend_request = default(EntityRef<friend_request>);
 			this._friend = default(EntityRef<friend>);
+			this._messages = new EntitySet<message>(new Action<message>(this.attach_messages), new Action<message>(this.detach_messages));
+			this._messages1 = new EntitySet<message>(new Action<message>(this.attach_messages1), new Action<message>(this.detach_messages1));
 			this._person_applications = new EntitySet<person_application>(new Action<person_application>(this.attach_person_applications), new Action<person_application>(this.detach_person_applications));
 			OnCreated();
 		}
@@ -1628,6 +1645,32 @@ namespace pestaServer.DataAccess
 			}
 		}
 		
+		[Association(Name="person_message", Storage="_messages", ThisKey="id", OtherKey="from")]
+		public EntitySet<message> messages
+		{
+			get
+			{
+				return this._messages;
+			}
+			set
+			{
+				this._messages.Assign(value);
+			}
+		}
+		
+		[Association(Name="person_message1", Storage="_messages1", ThisKey="id", OtherKey="to")]
+		public EntitySet<message> messages1
+		{
+			get
+			{
+				return this._messages1;
+			}
+			set
+			{
+				this._messages1.Assign(value);
+			}
+		}
+		
 		[Association(Name="person_person_application", Storage="_person_applications", ThisKey="id", OtherKey="person_id")]
 		public EntitySet<person_application> person_applications
 		{
@@ -1695,6 +1738,30 @@ namespace pestaServer.DataAccess
 		{
 			this.SendPropertyChanging();
 			entity.person = null;
+		}
+		
+		private void attach_messages(message entity)
+		{
+			this.SendPropertyChanging();
+			entity.person = this;
+		}
+		
+		private void detach_messages(message entity)
+		{
+			this.SendPropertyChanging();
+			entity.person = null;
+		}
+		
+		private void attach_messages1(message entity)
+		{
+			this.SendPropertyChanging();
+			entity.person1 = this;
+		}
+		
+		private void detach_messages1(message entity)
+		{
+			this.SendPropertyChanging();
+			entity.person1 = null;
 		}
 		
 		private void attach_person_applications(person_application entity)
@@ -3476,13 +3543,345 @@ namespace pestaServer.DataAccess
 		}
 	}
 	
+	[Table(Name="dbo.messages")]
+	public partial class message : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _id;
+		
+		private int _from;
+		
+		private int _to;
+		
+		private string _title;
+		
+		private string _body;
+		
+		private string _read;
+		
+		private string _to_deleted;
+		
+		private string _from_deleted;
+		
+		private long _created;
+		
+		private EntityRef<person> _person;
+		
+		private EntityRef<person> _person1;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnidChanging(int value);
+    partial void OnidChanged();
+    partial void OnfromChanging(int value);
+    partial void OnfromChanged();
+    partial void OntoChanging(int value);
+    partial void OntoChanged();
+    partial void OntitleChanging(string value);
+    partial void OntitleChanged();
+    partial void OnbodyChanging(string value);
+    partial void OnbodyChanged();
+    partial void OnreadChanging(string value);
+    partial void OnreadChanged();
+    partial void Onto_deletedChanging(string value);
+    partial void Onto_deletedChanged();
+    partial void Onfrom_deletedChanging(string value);
+    partial void Onfrom_deletedChanged();
+    partial void OncreatedChanging(long value);
+    partial void OncreatedChanged();
+    #endregion
+		
+		public message()
+		{
+			this._person = default(EntityRef<person>);
+			this._person1 = default(EntityRef<person>);
+			OnCreated();
+		}
+		
+		[Column(Storage="_id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int id
+		{
+			get
+			{
+				return this._id;
+			}
+			set
+			{
+				if ((this._id != value))
+				{
+					this.OnidChanging(value);
+					this.SendPropertyChanging();
+					this._id = value;
+					this.SendPropertyChanged("id");
+					this.OnidChanged();
+				}
+			}
+		}
+		
+		[Column(Name="[from]", Storage="_from", DbType="Int NOT NULL")]
+		public int from
+		{
+			get
+			{
+				return this._from;
+			}
+			set
+			{
+				if ((this._from != value))
+				{
+					this.OnfromChanging(value);
+					this.SendPropertyChanging();
+					this._from = value;
+					this.SendPropertyChanged("from");
+					this.OnfromChanged();
+				}
+			}
+		}
+		
+		[Column(Name="[to]", Storage="_to", DbType="Int NOT NULL")]
+		public int to
+		{
+			get
+			{
+				return this._to;
+			}
+			set
+			{
+				if ((this._to != value))
+				{
+					this.OntoChanging(value);
+					this.SendPropertyChanging();
+					this._to = value;
+					this.SendPropertyChanged("to");
+					this.OntoChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_title", DbType="NVarChar(255) NOT NULL", CanBeNull=false)]
+		public string title
+		{
+			get
+			{
+				return this._title;
+			}
+			set
+			{
+				if ((this._title != value))
+				{
+					this.OntitleChanging(value);
+					this.SendPropertyChanging();
+					this._title = value;
+					this.SendPropertyChanged("title");
+					this.OntitleChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_body", DbType="Text NOT NULL", CanBeNull=false, UpdateCheck=UpdateCheck.Never)]
+		public string body
+		{
+			get
+			{
+				return this._body;
+			}
+			set
+			{
+				if ((this._body != value))
+				{
+					this.OnbodyChanging(value);
+					this.SendPropertyChanging();
+					this._body = value;
+					this.SendPropertyChanged("body");
+					this.OnbodyChanged();
+				}
+			}
+		}
+		
+		[Column(Name="[read]", Storage="_read", DbType="NVarChar(3) NOT NULL", CanBeNull=false)]
+		public string read
+		{
+			get
+			{
+				return this._read;
+			}
+			set
+			{
+				if ((this._read != value))
+				{
+					this.OnreadChanging(value);
+					this.SendPropertyChanging();
+					this._read = value;
+					this.SendPropertyChanged("read");
+					this.OnreadChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_to_deleted", DbType="NVarChar(3) NOT NULL", CanBeNull=false)]
+		public string to_deleted
+		{
+			get
+			{
+				return this._to_deleted;
+			}
+			set
+			{
+				if ((this._to_deleted != value))
+				{
+					this.Onto_deletedChanging(value);
+					this.SendPropertyChanging();
+					this._to_deleted = value;
+					this.SendPropertyChanged("to_deleted");
+					this.Onto_deletedChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_from_deleted", DbType="NVarChar(3)")]
+		public string from_deleted
+		{
+			get
+			{
+				return this._from_deleted;
+			}
+			set
+			{
+				if ((this._from_deleted != value))
+				{
+					this.Onfrom_deletedChanging(value);
+					this.SendPropertyChanging();
+					this._from_deleted = value;
+					this.SendPropertyChanged("from_deleted");
+					this.Onfrom_deletedChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_created", DbType="BigInt NOT NULL")]
+		public long created
+		{
+			get
+			{
+				return this._created;
+			}
+			set
+			{
+				if ((this._created != value))
+				{
+					this.OncreatedChanging(value);
+					this.SendPropertyChanging();
+					this._created = value;
+					this.SendPropertyChanged("created");
+					this.OncreatedChanged();
+				}
+			}
+		}
+		
+		[Association(Name="person_message", Storage="_person", ThisKey="from", OtherKey="id", IsForeignKey=true)]
+		public person person
+		{
+			get
+			{
+				return this._person.Entity;
+			}
+			set
+			{
+				person previousValue = this._person.Entity;
+				if (((previousValue != value) 
+							|| (this._person.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._person.Entity = null;
+						previousValue.messages.Remove(this);
+					}
+					this._person.Entity = value;
+					if ((value != null))
+					{
+						value.messages.Add(this);
+						this._from = value.id;
+					}
+					else
+					{
+						this._from = default(int);
+					}
+					this.SendPropertyChanged("person");
+				}
+			}
+		}
+		
+		[Association(Name="person_message1", Storage="_person1", ThisKey="to", OtherKey="id", IsForeignKey=true)]
+		public person person1
+		{
+			get
+			{
+				return this._person1.Entity;
+			}
+			set
+			{
+				person previousValue = this._person1.Entity;
+				if (((previousValue != value) 
+							|| (this._person1.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._person1.Entity = null;
+						previousValue.messages1.Remove(this);
+					}
+					this._person1.Entity = value;
+					if ((value != null))
+					{
+						value.messages1.Add(this);
+						this._to = value.id;
+					}
+					else
+					{
+						this._to = default(int);
+					}
+					this.SendPropertyChanged("person1");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
 	[Table(Name="dbo.oauth_consumer")]
 	public partial class oauth_consumer : INotifyPropertyChanging, INotifyPropertyChanged
 	{
 		
 		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
 		
-		private long _user_id;
+		private int _id;
+		
+		private int _user_id;
+		
+		private int _app_id;
 		
 		private string _consumer_key;
 		
@@ -3492,8 +3891,12 @@ namespace pestaServer.DataAccess
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
     partial void OnCreated();
-    partial void Onuser_idChanging(long value);
+    partial void OnidChanging(int value);
+    partial void OnidChanged();
+    partial void Onuser_idChanging(int value);
     partial void Onuser_idChanged();
+    partial void Onapp_idChanging(int value);
+    partial void Onapp_idChanged();
     partial void Onconsumer_keyChanging(string value);
     partial void Onconsumer_keyChanged();
     partial void Onconsumer_secretChanging(string value);
@@ -3505,8 +3908,28 @@ namespace pestaServer.DataAccess
 			OnCreated();
 		}
 		
-		[Column(Storage="_user_id", AutoSync=AutoSync.OnInsert, DbType="BigInt NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public long user_id
+		[Column(Storage="_id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int id
+		{
+			get
+			{
+				return this._id;
+			}
+			set
+			{
+				if ((this._id != value))
+				{
+					this.OnidChanging(value);
+					this.SendPropertyChanging();
+					this._id = value;
+					this.SendPropertyChanged("id");
+					this.OnidChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_user_id", DbType="Int NOT NULL")]
+		public int user_id
 		{
 			get
 			{
@@ -3521,6 +3944,26 @@ namespace pestaServer.DataAccess
 					this._user_id = value;
 					this.SendPropertyChanged("user_id");
 					this.Onuser_idChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_app_id", DbType="Int NOT NULL")]
+		public int app_id
+		{
+			get
+			{
+				return this._app_id;
+			}
+			set
+			{
+				if ((this._app_id != value))
+				{
+					this.Onapp_idChanging(value);
+					this.SendPropertyChanging();
+					this._app_id = value;
+					this.SendPropertyChanged("app_id");
+					this.Onapp_idChanged();
 				}
 			}
 		}

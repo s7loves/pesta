@@ -16,7 +16,7 @@ namespace pestaServer.Controllers
         protected static readonly String XML_FORMAT = "xml";
         protected static readonly String JSON_BATCH_ROUTE = "jsonBatch";
 
-        public void Index(string service, string type)
+        public void Index(string id1, string id2, string id3)
         {
             HttpRequest request = System.Web.HttpContext.Current.Request;
             HttpResponse response = System.Web.HttpContext.Current.Response;
@@ -27,7 +27,7 @@ namespace pestaServer.Controllers
                 return;
             }
             BeanConverter converter = getConverterForRequest(request);
-            if (service == JSON_BATCH_ROUTE)
+            if (id1 == JSON_BATCH_ROUTE)
             {
                 handleBatchRequest(request, response, token, converter);
             }

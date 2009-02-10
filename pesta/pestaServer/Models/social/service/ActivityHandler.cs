@@ -35,7 +35,7 @@ namespace pestaServer.Models.social.service
     /// </remarks>
     public class ActivityHandler : DataRequestHandler
     {
-        private readonly ActivityService service;
+        private readonly IActivityService service;
 
         private const String ACTIVITY_ID_PATH = "/activities/{userId}+/{groupId}/{appId}/{activityId}+";
 
