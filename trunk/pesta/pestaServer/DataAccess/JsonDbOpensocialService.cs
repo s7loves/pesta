@@ -41,7 +41,7 @@ namespace pestaServer.DataAccess
     ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
     /// </para>
     /// </remarks>
-    public class JsonDbOpensocialService : PersonService, ActivityService, AppDataService
+    public class JsonDbOpensocialService : IPersonService, IActivityService, IAppDataService
     {
         public readonly static string dbLocation = HttpContext.Current.Server.MapPath(HttpContext.Current.Request.ApplicationPath) + PestaSettings.JsonDb;
         public readonly static JsonDbOpensocialService Instance = new JsonDbOpensocialService();

@@ -36,7 +36,7 @@ namespace pestaServer.Models.social.service
     /// </remarks>
     public class AppDataHandler : DataRequestHandler
     {
-        private readonly AppDataService service;
+        private readonly IAppDataService service;
 
         private const string APP_DATA_PATH = "/appdata/{userId}+/{groupId}/{appId}";
 

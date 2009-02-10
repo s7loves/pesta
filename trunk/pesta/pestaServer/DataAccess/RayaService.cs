@@ -31,7 +31,7 @@ using pestaServer.Models.social.service;
 namespace pestaServer.DataAccess
 {
     ///  Apache Software License 2.0 2008 Partuza! ported to Pesta by Sean Lin M.T. (my6solutions.com)
-    public class RayaService : PersonService, ActivityService, AppDataService, MessagesService
+    public class RayaService : IPersonService, IActivityService, IAppDataService, IMessagesService
     {
         public readonly static RayaService Instance = new RayaService();
         protected RayaService()

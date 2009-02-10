@@ -27,7 +27,6 @@ using Jayrock.Json;
 using Pesta.Interop.oauth;
 using Pesta.Utilities;
 using pestaServer.Models.gadgets.http;
-using pestaServer.Models.gadgets.oauth;
 using String=System.String;
 using Uri=Pesta.Engine.common.uri.Uri;
 using UriBuilder=Pesta.Engine.common.uri.UriBuilder;
@@ -262,7 +261,7 @@ namespace pestaServer.Models.gadgets.oauth
                     accessorInfo.getConsumer(), realRequest.getOAuthArguments(), responseParams);
                 accessorInfo.getAccessor().accessToken = null;
                 accessorInfo.getAccessor().requestToken = null;
-                accessorInfo.getAccessor().tokenSecret = null;
+                accessorInfo.getAccessor().TokenSecret = null;
                 accessorInfo.setSessionHandle(null);
                 accessorInfo.setTokenExpireMillis(ACCESS_TOKEN_EXPIRE_UNKNOWN);
             }
@@ -350,7 +349,7 @@ namespace pestaServer.Models.gadgets.oauth
             OAuthMessage reply = sendOAuthMessage(signed);
 
             accessor.requestToken = reply.getParameter(OAuth.OAUTH_TOKEN);
-            accessor.tokenSecret = reply.getParameter(OAuth.OAUTH_TOKEN_SECRET);
+            accessor.TokenSecret = reply.getParameter(OAuth.OAUTH_TOKEN_SECRET);
         }
 
         /**
@@ -626,7 +625,7 @@ namespace pestaServer.Models.gadgets.oauth
         {
             OAuthAccessor accessor = accessorInfo.getAccessor();
             responseParams.getNewClientState().setRequestToken(accessor.requestToken);
-            responseParams.getNewClientState().setRequestTokenSecret(accessor.tokenSecret);
+            responseParams.getNewClientState().setRequestTokenSecret(accessor.TokenSecret);
             responseParams.getNewClientState().setOwner(realRequest.getSecurityToken().getOwnerId());
         }
 
@@ -707,7 +706,7 @@ namespace pestaServer.Models.gadgets.oauth
             OAuthMessage reply = sendOAuthMessage(signed);
 
             accessor.accessToken = OAuthUtil.getParameter(reply, OAuth.OAUTH_TOKEN);
-            accessor.tokenSecret = OAuthUtil.getParameter(reply, OAuth.OAUTH_TOKEN_SECRET);
+            accessor.TokenSecret = OAuthUtil.getParameter(reply, OAuth.OAUTH_TOKEN_SECRET);
             accessorInfo.setSessionHandle(OAuthUtil.getParameter(reply, OAUTH_SESSION_HANDLE));
             accessorInfo.setTokenExpireMillis(ACCESS_TOKEN_EXPIRE_UNKNOWN);
             if (OAuthUtil.getParameter(reply, OAUTH_EXPIRES_IN) != null) 
@@ -759,7 +758,7 @@ namespace pestaServer.Models.gadgets.oauth
         private void saveAccessToken()
         {
             OAuthAccessor accessor = accessorInfo.getAccessor();
-            OAuthStore.TokenInfo tokenInfo = new OAuthStore.TokenInfo(accessor.accessToken, accessor.tokenSecret,
+            OAuthStore.TokenInfo tokenInfo = new OAuthStore.TokenInfo(accessor.accessToken, accessor.TokenSecret,
                                     accessorInfo.getSessionHandle(), accessorInfo.getTokenExpireMillis());
             fetcherConfig.getTokenStore().storeTokenKeyAndSecret(realRequest.getSecurityToken(),
                                                                  accessorInfo.getConsumer(), realRequest.getOAuthArguments(), tokenInfo, responseParams);
@@ -772,7 +771,7 @@ namespace pestaServer.Models.gadgets.oauth
         {
             OAuthAccessor accessor = accessorInfo.getAccessor();
             responseParams.getNewClientState().setAccessToken(accessor.accessToken);
-            responseParams.getNewClientState().setAccessTokenSecret(accessor.tokenSecret);
+            responseParams.getNewClientState().setAccessTokenSecret(accessor.TokenSecret);
             responseParams.getNewClientState().setOwner(realRequest.getSecurityToken().getOwnerId());
             responseParams.getNewClientState().setSessionHandle(accessorInfo.getSessionHandle());
             responseParams.getNewClientState().setTokenExpireMillis(accessorInfo.getTokenExpireMillis());

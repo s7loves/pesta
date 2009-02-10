@@ -47,6 +47,13 @@
       "consumer_secret" : "WjbzTy7PK3eZpoTDiROOmzAO",
       "key_type" : "HMAC_SYMMETRIC"
     }
+  },
+  "http://localhost:58628/html/gadgets/files/oauthtest.xml" : {
+    "raya" : {
+      "consumer_key" : "CBF0F8F6-C7F0-C4F1-92D6-F9E2C7FFC9E2",
+      "consumer_secret" : "a84ea7d977aa31dc7cfb3f1ee1c77e10",
+      "key_type" : "HMAC_SYMMETRIC"
+    }
   }
 }
   

@@ -151,17 +151,17 @@ namespace pestaServer.Models.social.service
         public String getSortBy()
         {
             String sortBy = getParameter(SORT_BY);
-            return sortBy == null ? PersonService.TOP_FRIENDS_SORT : sortBy;
+            return sortBy == null ? IPersonService.TOP_FRIENDS_SORT : sortBy;
         }
 
-        public PersonService.SortOrder getSortOrder()
+        public IPersonService.SortOrder getSortOrder()
         {
             String sortOrder = getParameter(SORT_ORDER);
             try
             {
                 return sortOrder == null
-                           ? PersonService.SortOrder.ascending
-                           : (PersonService.SortOrder)Enum.Parse(typeof(PersonService.SortOrder), sortOrder, true);
+                           ? IPersonService.SortOrder.ascending
+                           : (IPersonService.SortOrder)Enum.Parse(typeof(IPersonService.SortOrder), sortOrder, true);
             }
             catch
             {
@@ -175,14 +175,14 @@ namespace pestaServer.Models.social.service
             return getParameter(FILTER_BY);
         }
 
-        public PersonService.FilterOperation getFilterOperation()
+        public IPersonService.FilterOperation getFilterOperation()
         {
             String filterOp = getParameter(FILTER_OPERATION);
             try
             {
                 return filterOp == null
-                           ? PersonService.FilterOperation.contains
-                           : (PersonService.FilterOperation)Enum.Parse(typeof(PersonService.FilterOperation), filterOp, true);
+                           ? IPersonService.FilterOperation.contains
+                           : (IPersonService.FilterOperation)Enum.Parse(typeof(IPersonService.FilterOperation), filterOp, true);
             }
             catch
             {
