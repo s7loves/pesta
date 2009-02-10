@@ -207,13 +207,13 @@
     <Compile Include="Engine\social\oauth\OAuthLookupService.cs" />
     <Compile Include="Engine\social\oauth\SampleContainerOAuthLookupService.cs" />
     <Compile Include="Engine\social\ResponseError.cs" />
-    <Compile Include="Engine\social\spi\ActivityService.cs" />
-    <Compile Include="Engine\social\spi\AppDataService.cs" />
+    <Compile Include="Engine\social\spi\IActivityService.cs" />
+    <Compile Include="Engine\social\spi\IAppDataService.cs" />
     <Compile Include="Engine\social\spi\CollectionOptions.cs" />
     <Compile Include="Engine\social\spi\DataCollection.cs" />
     <Compile Include="Engine\social\spi\GroupId.cs" />
-    <Compile Include="Engine\social\spi\MessagesService.cs" />
-    <Compile Include="Engine\social\spi\PersonService.cs" />
+    <Compile Include="Engine\social\spi\IMessagesService.cs" />
+    <Compile Include="Engine\social\spi\IPersonService.cs" />
     <Compile Include="Engine\social\spi\RestfulCollection.cs" />
     <Compile Include="Engine\social\spi\SocialSpiException.cs" />
     <Compile Include="Engine\social\spi\UserId.cs" />

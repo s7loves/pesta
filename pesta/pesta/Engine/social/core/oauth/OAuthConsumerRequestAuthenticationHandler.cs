@@ -64,17 +64,14 @@ namespace Pesta.Engine.social.core.oauth
                 return null;
             }
 
-            try 
+            try
             {
                 if (service.thirdPartyHasAccessToUser(requestMessage, containerKey, userId)) 
                 {
                     return service.getSecurityToken(containerKey, userId);
-                } 
-                else 
-                {
-                    throw new InvalidAuthenticationException("Access for app not allowed",null);
                 }
-            } 
+                throw new InvalidAuthenticationException("Access for app not allowed",null);
+            }
             catch (OAuthException oae) 
             {
                 throw new InvalidAuthenticationException(oae.Message, oae);

@@ -308,7 +308,7 @@ namespace Pesta.Interop.oauth
                 Match m = AUTHORIZATION.Match(authorization);
                 if (m.Success)
                 {
-                    if (m.Groups[1].Value.ToLower().Equals(AUTH_SCHEME))
+                    if (m.Groups[1].Value.Equals(AUTH_SCHEME))
                     {
                         foreach (String nvp in Regex.Split(m.Groups[2].Value, "\\s*,\\s*"))
                         {

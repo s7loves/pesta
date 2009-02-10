@@ -37,7 +37,7 @@ namespace Pesta.Filters
     /// </remarks>
     public class AuthenticationServletFilter : IHttpModule
     {
-        private List<IAuthenticationHandler> handlers = new List<IAuthenticationHandler> 
+        private readonly List<IAuthenticationHandler> handlers = new List<IAuthenticationHandler> 
                                                            { 
                                                                new UrlParameterAuthenticationHandler(),
                                                                new AnonymousAuthenticationHandler(),

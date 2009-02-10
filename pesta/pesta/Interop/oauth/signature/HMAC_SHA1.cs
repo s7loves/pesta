@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -33,7 +34,7 @@ namespace Pesta.Interop.oauth.signature
             {
                 byte[] expected = computeSignature(baseString);
                 byte[] actual = decodeBase64(signature);
-                return Equals(expected, actual);
+                return Enumerable.SequenceEqual(expected, actual);
             }
             catch (Exception e)
             {

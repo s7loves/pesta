@@ -32,9 +32,9 @@ namespace Pesta.Engine.social.spi
     public class CollectionOptions
     {
         private String sortBy = "";
-        private PersonService.SortOrder sortOrder;
+        private IPersonService.SortOrder sortOrder;
         private String filter = "";
-        private PersonService.FilterOperation filterOperation;
+        private IPersonService.FilterOperation filterOperation;
         private String filterValue = "";
         private int first;
         private int max = 1;
@@ -53,12 +53,12 @@ namespace Pesta.Engine.social.spi
             this.sortBy = _sortBy;
         }
 
-        public PersonService.SortOrder getSortOrder()
+        public IPersonService.SortOrder getSortOrder()
         {
             return sortOrder;
         }
 
-        public void setSortOrder(PersonService.SortOrder sortOrder)
+        public void setSortOrder(IPersonService.SortOrder sortOrder)
         {
             this.sortOrder = sortOrder;
         }
@@ -95,12 +95,12 @@ namespace Pesta.Engine.social.spi
             this.filter = filter;
         }
 
-        public PersonService.FilterOperation getFilterOperation()
+        public IPersonService.FilterOperation getFilterOperation()
         {
             return filterOperation;
         }
 
-        public void setFilterOperation(PersonService.FilterOperation filterOperation)
+        public void setFilterOperation(IPersonService.FilterOperation filterOperation)
         {
             this.filterOperation = filterOperation;
         }

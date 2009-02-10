@@ -37,20 +37,20 @@ namespace Pesta.Engine.social.oauth
     public class SampleContainerOAuthLookupService : OAuthLookupService
     {
         // If we were a real social network this would probably be a function
-        private static Dictionary<String, String> sampleContainerUrlToAppIdMap = new Dictionary<string, string>()
+        private static readonly Dictionary<String, String> sampleContainerUrlToAppIdMap = new Dictionary<string, string>
                                                                                      {
                                                                                          {"http://localhost/gadgets/files/samplecontainer/examples/SocialHelloWorld.xml","7810"},
                                                                                          {"http://localhost/gadgets/files/samplecontainer/examples/SocialActivitiesWorld.xml","8355"}
                                                                                      };
 
         // If we were a real social network we would probably be keeping track of this in a db somewhere
-        private static Dictionary<String, List<String>> sampleContainerAppInstalls = new Dictionary<string, List<string>>()
-                                                                                         {
-                                                                                             {"john.doe", new List<String>(){"7810", "8355"}}
+        private static readonly Dictionary<String, List<String>> sampleContainerAppInstalls = new Dictionary<string, List<string>>
+                                                                                                  {
+                                                                                             {"john.doe", new List<String> {"7810", "8355"}}
                                                                                          };
 
         // If we were a real social network we would establish shared secrets with each of our gadgets
-        private static Dictionary<String, String> sampleContainerSharedSecrets = new Dictionary<string, string>()
+        private static readonly Dictionary<String, String> sampleContainerSharedSecrets = new Dictionary<string, string>
                                                                                      {
                                                                                          {"7810", "SocialHelloWorldSharedSecret"},
                                                                                          {"8355", "SocialActivitiesWorldSharedSecret"}
@@ -63,7 +63,7 @@ namespace Pesta.Engine.social.oauth
                    && userHasAppInstalled(userId, appId);
         }
 
-        private bool hasValidSignature(OAuthMessage message, String appUrl, String appId)
+        private static bool hasValidSignature(OAuthMessage message, String appUrl, String appId)
         {
             String sharedSecret = sampleContainerSharedSecrets[appId];
             if (sharedSecret == null)
@@ -80,15 +80,15 @@ namespace Pesta.Engine.social.oauth
             {
                 validator.validateMessage(message, accessor);
             }
-            catch (OAuthException e)
+            catch (OAuthException)
             {
                 return false;
             }
-            catch (IOException e)
+            catch (IOException)
             {
                 return false;
             }
-            catch (UriFormatException e)
+            catch (UriFormatException)
             {
                 return false;
             }

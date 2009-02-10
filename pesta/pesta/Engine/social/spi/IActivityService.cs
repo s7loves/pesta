@@ -32,7 +32,7 @@ namespace Pesta.Engine.social.spi
     ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
     /// </para>
     /// </remarks>
-    public interface ActivityService
+    public interface IActivityService
     {
         /**
        * Returns a list of activities that correspond to the passed in users and group.

@@ -67,8 +67,8 @@ namespace Pesta.Engine.auth
         public class InvalidAuthenticationException : Exception
         {
 
-            private Dictionary<String, String> additionalHeaders;
-            private String redirect;
+            private readonly Dictionary<String, String> additionalHeaders;
+            private readonly String redirect;
 
             /**
             * @param message Message to output in error response
