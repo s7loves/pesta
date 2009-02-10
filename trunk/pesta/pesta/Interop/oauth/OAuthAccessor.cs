@@ -36,14 +36,14 @@ namespace Pesta.Interop.oauth
         public readonly OAuthConsumer consumer;
         public String requestToken;
         public String accessToken;
-        public String tokenSecret;
+        public String TokenSecret { get; set; }
 
         public OAuthAccessor(OAuthConsumer consumer)
         {
             this.consumer = consumer;
             requestToken = null;
             accessToken = null;
-            tokenSecret = null;
+            TokenSecret = null;
         }
 
         private readonly Dictionary<String, Object> properties = new Dictionary<String, Object>();

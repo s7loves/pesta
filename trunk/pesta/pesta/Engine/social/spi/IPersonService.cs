@@ -33,7 +33,7 @@ namespace Pesta.Engine.social.spi
     ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
     /// </para>
     /// </remarks>
-    public abstract class PersonService
+    public abstract class IPersonService
     {
         /**
        * When used will sort people by the container's definition of top friends. Note that both the

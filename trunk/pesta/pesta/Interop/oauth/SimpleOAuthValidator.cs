@@ -15,6 +15,7 @@
  */
 using System;
 using Pesta.Interop.oauth.signature;
+using Pesta.Utilities;
 
 namespace Pesta.Interop.oauth
 {
@@ -38,8 +39,8 @@ namespace Pesta.Interop.oauth
          */
         public SimpleOAuthValidator()
         {
-            this.timestampWindow = DEFAULT_TIMESTAMP_WINDOW;
-            this.maxVersion = double.Parse(OAuth.VERSION_1_0);
+            timestampWindow = DEFAULT_TIMESTAMP_WINDOW;
+            maxVersion = double.Parse(OAuth.VERSION_1_0);
         }
 
         /**
@@ -53,7 +54,7 @@ namespace Pesta.Interop.oauth
          */
         public SimpleOAuthValidator(long timestampWindowMsec, double maxVersion)
         {
-            this.timestampWindow = timestampWindowMsec;
+            timestampWindow = timestampWindowMsec;
             this.maxVersion = maxVersion;
         }
 
@@ -88,11 +89,11 @@ namespace Pesta.Interop.oauth
         /** This implementation doesn't check the nonce value. */
         protected void validateTimestampAndNonce(OAuthMessage message)
         {
-            message.requireParameters(new string[] { OAuth.OAUTH_TIMESTAMP, OAuth.OAUTH_NONCE });
-            long timestamp = long.Parse(message.getParameter(OAuth.OAUTH_TIMESTAMP)) * 1000L;
-            long now = currentTimeMsec();
-            long min = now - timestampWindow;
-            long max = now + timestampWindow;
+            message.requireParameters(new[] { OAuth.OAUTH_TIMESTAMP, OAuth.OAUTH_NONCE });
+            DateTime timestamp = UnixTime.ConvertFromUnixTimestamp(double.Parse(message.getParameter(OAuth.OAUTH_TIMESTAMP)));
+            DateTime now = DateTime.UtcNow;
+            DateTime min = now.AddSeconds(0 - timestampWindow);
+            DateTime max = now.AddSeconds(timestampWindow);
             if (timestamp < min || max < timestamp)
             {
                 OAuthProblemException problem = new OAuthProblemException("timestamp_refused");
@@ -103,14 +104,9 @@ namespace Pesta.Interop.oauth
 
         protected void validateSignature(OAuthMessage message, OAuthAccessor accessor)
         {
-            message.requireParameters(new string[]{OAuth.OAUTH_CONSUMER_KEY,
+            message.requireParameters(new[]{OAuth.OAUTH_CONSUMER_KEY,
                                                    OAuth.OAUTH_SIGNATURE_METHOD, OAuth.OAUTH_SIGNATURE});
             OAuthSignatureMethod.newSigner(message, accessor).validate(message);
-        }
-
-        protected long currentTimeMsec()
-        {
-            return DateTime.UtcNow.Ticks / 10000;
         }
     }
 }

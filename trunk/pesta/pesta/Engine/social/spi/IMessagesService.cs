@@ -25,7 +25,7 @@ using System.Text;
 namespace Pesta.Engine.social.spi
 {
     ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
-    public interface MessagesService
+    public interface IMessagesService
     {
     }
 }

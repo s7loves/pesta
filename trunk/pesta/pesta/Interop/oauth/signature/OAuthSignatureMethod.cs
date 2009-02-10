@@ -200,7 +200,7 @@ namespace Pesta.Interop.oauth.signature
             message.requireParameters(new[] { OAuth.OAUTH_SIGNATURE_METHOD });
             OAuthSignatureMethod signer = newMethod(message.getSignatureMethod(),
                                                     accessor);
-            signer.setTokenSecret(accessor.tokenSecret);
+            signer.setTokenSecret(accessor.TokenSecret);
             return signer;
         }
 

@@ -73,10 +73,18 @@ namespace Pesta.Interop.oauth.server
                     }
                 }
             }
-            for (int i = 0; i < request.Params.Count; i++)
+            for (int i = 0; i < request.QueryString.Count; i++)
             {
-                String name = request.Params.GetKey(i);
-                foreach (String value in request.Params.GetValues(i))
+                String name = request.QueryString.GetKey(i);
+                foreach (String value in request.QueryString.GetValues(i))
+                {
+                    list.Add(new OAuth.Parameter(name, value));
+                }
+            }
+            for (int i = 0; i < request.Form.Count; i++)
+            {
+                String name = request.Form.GetKey(i);
+                foreach (String value in request.Form.GetValues(i))
                 {
                     list.Add(new OAuth.Parameter(name, value));
                 }

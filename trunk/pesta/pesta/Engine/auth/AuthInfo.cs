@@ -35,8 +35,8 @@ namespace Pesta.Engine.auth
     /// </remarks>
     public class AuthInfo
     {
-        HttpContext context;
-        string url;
+        readonly HttpContext context;
+        readonly string url;
         /**
         * Create AuthInfo from a given HttpServletRequest
         * @param req
@@ -67,7 +67,7 @@ namespace Pesta.Engine.auth
         */
         public ISecurityToken getSecurityToken()
         {
-            return context.Items[url + Attribute.SECURITY_TOKEN.ToString()] as ISecurityToken;
+            return context.Items[url + Attribute.SECURITY_TOKEN] as ISecurityToken;
         }
 
         /**
@@ -77,7 +77,7 @@ namespace Pesta.Engine.auth
         */
         public String getAuthType()
         {
-            return context.Items[url + Attribute.AUTH_TYPE.ToString()] as String;
+            return context.Items[url + Attribute.AUTH_TYPE] as String;
         }
 
         /**
@@ -88,7 +88,7 @@ namespace Pesta.Engine.auth
         */
         public AuthInfo setSecurityToken(ISecurityToken token)
         {
-            context.Items[url + Attribute.SECURITY_TOKEN.ToString()] = token;
+            context.Items[url + Attribute.SECURITY_TOKEN] = token;
             return this;
         }
 
@@ -100,7 +100,7 @@ namespace Pesta.Engine.auth
         */
         public AuthInfo setAuthType(String authType)
         {
-            context.Items[url + Attribute.AUTH_TYPE.ToString()] = authType;
+            context.Items[url + Attribute.AUTH_TYPE] = authType;
             return this;
         }
 
