@@ -204,7 +204,7 @@
     <Compile Include="Engine\social\model\Organization.cs" />
     <Compile Include="Engine\social\model\Person.cs" />
     <Compile Include="Engine\social\model\Url.cs" />
-    <Compile Include="Engine\social\oauth\OAuthLookupService.cs" />
+    <Compile Include="Engine\social\oauth\IOAuthLookupService.cs" />
     <Compile Include="Engine\social\oauth\SampleContainerOAuthLookupService.cs" />
     <Compile Include="Engine\social\ResponseError.cs" />
     <Compile Include="Engine\social\spi\IActivityService.cs" />
@@ -214,6 +214,7 @@
     <Compile Include="Engine\social\spi\GroupId.cs" />
     <Compile Include="Engine\social\spi\IMessagesService.cs" />
     <Compile Include="Engine\social\spi\IPersonService.cs" />
+    <Compile Include="Engine\social\spi\IRestfulCollection.cs" />
     <Compile Include="Engine\social\spi\RestfulCollection.cs" />
     <Compile Include="Engine\social\spi\SocialSpiException.cs" />
     <Compile Include="Engine\social\spi\UserId.cs" />
@@ -253,6 +254,7 @@
     </Compile>
     <Compile Include="Utilities\ASPNETMVC\HttpCompressionModule.cs" />
     <Compile Include="Utilities\ASPNETMVC\StaticFileHandler.cs" />
+    <Compile Include="Utilities\Dynamic.cs" />
     <Compile Include="Utilities\Locale.cs" />
     <Compile Include="Utilities\PestaSettings.cs" />
     <Compile Include="Utilities\Provider.cs" />

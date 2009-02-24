@@ -34,7 +34,7 @@ namespace Pesta.Engine.social.oauth
     ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
     /// </para>
     /// </remarks>
-    public class SampleContainerOAuthLookupService : OAuthLookupService
+    public class SampleContainerOAuthLookupService : IOAuthLookupService
     {
         // If we were a real social network this would probably be a function
         private static readonly Dictionary<String, String> sampleContainerUrlToAppIdMap = new Dictionary<string, string>

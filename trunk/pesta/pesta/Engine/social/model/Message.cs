@@ -54,6 +54,7 @@ namespace Pesta.Engine.social.model
             public static readonly Field BODY = new Field(1, "body");
             public static readonly Field TITLE = new Field(2, "title");
             public static readonly Field TYPE = new Field(3, "type");
+            public static readonly Field ID = new Field(4, "id");
 
             /**
             * the name of the field.
@@ -64,7 +65,7 @@ namespace Pesta.Engine.social.model
             * Create a field based on a name.
             * @param jsonString the name of the field
             */
-            private Field(String jsonString)
+            protected Field(String jsonString)
             {
                 this.jsonString = jsonString;
             }
@@ -72,7 +73,7 @@ namespace Pesta.Engine.social.model
 
             public override String ToString()
             {
-                return this.jsonString;
+                return jsonString;
             }
         }
 
@@ -100,14 +101,14 @@ namespace Pesta.Engine.social.model
             * Create a message type based on a string token.
             * @param jsonString the type of message
             */
-            private Type(String jsonString)
+            public Type(String jsonString)
             {
                 this.jsonString = jsonString;
             }
 
             public override String ToString()
             {
-                return this.jsonString;
+                return jsonString;
             }
         }
 
@@ -123,6 +124,10 @@ namespace Pesta.Engine.social.model
         * @param newBody the main text of the message
         */
         public abstract void setBody(String newBody);
+
+
+        public abstract String getId();
+        public abstract void setId(String newId);
 
         /**
         * Gets the title of the message.

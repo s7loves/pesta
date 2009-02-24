@@ -18,6 +18,8 @@
  */
 #endregion
 using System;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using Pesta.Engine.social.model;
 
 namespace Pesta.Engine.social.core.model
@@ -35,6 +37,8 @@ namespace Pesta.Engine.social.core.model
         private String body;
         private String title;
         private Type type;
+        private String id;
+        private List<Person> recipients;
 
         public MessageImpl()
         {
@@ -42,29 +46,38 @@ namespace Pesta.Engine.social.core.model
 
         public MessageImpl(String initBody, String initTitle, Type initType)
         {
-            this.body = initBody;
-            this.title = initTitle;
-            this.type = initType;
+            body = initBody;
+            title = initTitle;
+            type = initType;
         }
 
         public override String getBody()
         {
-            return this.body;
+            return body;
         }
 
         public override void setBody(String newBody)
         {
-            this.body = newBody;
+            body = newBody;
+        }
+
+        public override String getId()
+        {
+            return id;
+        }
+        public override void setId(String newId)
+        {
+            id = newId;
         }
 
         public override String getTitle()
         {
-            return this.title;
+            return title;
         }
 
         public override void setTitle(String newTitle)
         {
-            this.title = newTitle;
+            title = newTitle;
         }
 
         public override Type getType()
@@ -74,12 +87,22 @@ namespace Pesta.Engine.social.core.model
 
         public override void setType(Type newType)
         {
-            this.type = newType;
+            type = newType;
+        }
+
+        public List<Person> getRecipients()
+        {
+            return recipients;
+        }
+
+        public void setRecipients(List<Person> newRecipients)
+        {
+            recipients = newRecipients;
         }
 
         public override String sanitizeHTML(String htmlStr)
         {
-            return htmlStr;
+            return Regex.Replace(htmlStr, @"<(.|\n)*?>", string.Empty);
         }
     }
 }

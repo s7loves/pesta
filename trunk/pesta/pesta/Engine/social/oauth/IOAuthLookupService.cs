@@ -31,7 +31,7 @@ namespace Pesta.Engine.social.oauth
     ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
     /// </para>
     /// </remarks>
-    public interface OAuthLookupService
+    public interface IOAuthLookupService
     {
         bool thirdPartyHasAccessToUser(OAuthMessage message, String appUrl, String userId);
         ISecurityToken getSecurityToken(String appUrl, String userId);

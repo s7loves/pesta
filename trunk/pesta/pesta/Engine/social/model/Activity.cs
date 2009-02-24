@@ -95,7 +95,7 @@ namespace Pesta.Engine.social.model
             *
             * @param jsonString the name of the element
             */
-            private Field(String jsonString)
+            protected Field(String jsonString)
             {
                 this.jsonString = jsonString;
             }

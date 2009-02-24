@@ -71,7 +71,7 @@ namespace Pesta.Engine.social.model
             *
             * @param jsonString the name of the element
             */
-            private Field(String jsonString)
+            protected Field(String jsonString)
             {
                 this.jsonString = jsonString;
             }
@@ -83,7 +83,7 @@ namespace Pesta.Engine.social.model
             */
             public override String ToString()
             {
-                return this.jsonString;
+                return jsonString;
             }
         }
 

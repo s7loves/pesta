@@ -98,14 +98,14 @@ namespace Pesta.Engine.social.model
             *
             * @param jsonString the name of the field
             */
-            private Field(String jsonString)
+            protected Field(String jsonString)
             {
                 this.jsonString = jsonString;
             }
 
             public override String ToString()
             {
-                return this.jsonString;
+                return jsonString;
             }
         }
 

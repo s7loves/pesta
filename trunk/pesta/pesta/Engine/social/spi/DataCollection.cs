@@ -39,14 +39,19 @@ namespace Pesta.Engine.social.spi
             this.entry = entry;
         }
 
+        public DataCollection()
+        {
+            entry = new Dictionary<string, Dictionary<string, string>>();
+        }
+
         public Dictionary<String, Dictionary<String, String>> getEntry()
         {
             return entry;
         }
 
-        public void setEntry(Dictionary<String, Dictionary<String, String>> entry)
+        public void setEntry(Dictionary<String, Dictionary<String, String>> _entry)
         {
-            this.entry = entry;
+            entry = _entry;
         }
     }
 }

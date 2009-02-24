@@ -18,8 +18,6 @@
  */
 #endregion
 using System;
-using System.Data;
-using System.Configuration;
 using Pesta.Utilities;
 
 namespace Pesta.Engine.social.model
@@ -58,14 +56,14 @@ namespace Pesta.Engine.social.model
 
             private readonly String jsonString;
 
-            private Field(String jsonString)
+            protected Field(String jsonString)
             {
                 this.jsonString = jsonString;
             }
 
             public override String ToString()
             {
-                return this.jsonString;
+                return jsonString;
             }
         }
 
@@ -140,7 +138,7 @@ namespace Pesta.Engine.social.model
 
             public override String ToString()
             {
-                return this.jsonString;
+                return jsonString;
             }
 
             public String getDisplayValue()
@@ -184,7 +182,7 @@ namespace Pesta.Engine.social.model
 
             public override String ToString()
             {
-                return this.jsonString;
+                return jsonString;
             }
 
             public String getDisplayValue()
@@ -227,7 +225,7 @@ namespace Pesta.Engine.social.model
 
             public override String ToString()
             {
-                return this.jsonString;
+                return jsonString;
             }
 
             public String getDisplayValue()
@@ -269,7 +267,7 @@ namespace Pesta.Engine.social.model
 
             public override String ToString()
             {
-                return this.jsonString;
+                return jsonString;
             }
 
             public String getDisplayValue()

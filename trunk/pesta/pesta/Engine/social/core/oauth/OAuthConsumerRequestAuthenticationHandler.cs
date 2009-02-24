@@ -38,9 +38,9 @@ namespace Pesta.Engine.social.core.oauth
     {
         public static readonly String AUTH_OAUTH_CONSUMER_REQUEST = "OAuth-ConsumerRequest";
         public static readonly String REQUESTOR_ID_PARAM = "xoauth_requestor_id";
-        private readonly OAuthLookupService service;
+        private readonly IOAuthLookupService service;
 
-        public OAuthConsumerRequestAuthenticationHandler(OAuthLookupService service)
+        public OAuthConsumerRequestAuthenticationHandler(IOAuthLookupService service)
         {
             this.service = service;
         }

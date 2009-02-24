@@ -65,14 +65,14 @@ namespace Pesta.Engine.social.model
             *
             * @param jsonString the name of the element
             */
-            private Field(String jsonString)
+            public Field(String jsonString)
             {
                 this.jsonString = jsonString;
             }
 
             public override String ToString()
             {
-                return this.jsonString;
+                return jsonString;
             }
         }
 
@@ -106,14 +106,14 @@ namespace Pesta.Engine.social.model
             *
             * @param jsonString
             */
-            private Type(String jsonString)
+            public Type(String jsonString)
             {
                 this.jsonString = jsonString;
             }
 
             public override String ToString()
             {
-                return this.jsonString;
+                return jsonString;
             }
         }
 
@@ -136,14 +136,14 @@ namespace Pesta.Engine.social.model
         *
         * @return the Type of this media item
         */
-        public abstract MediaItem.Type getType();
+        public abstract Type getType();
 
         /**
         * Get the Type of this media item, either audio, image or video.
         *
         * @param the type of this media item
         */
-        public abstract void setType(MediaItem.Type type);
+        public abstract void setType(Type type);
 
         /**
         * Get a URL for the media item.
