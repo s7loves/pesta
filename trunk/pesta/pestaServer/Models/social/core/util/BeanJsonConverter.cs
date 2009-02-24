@@ -40,16 +40,7 @@ namespace pestaServer.Models.social.core.util
     /// </remarks>
     public class BeanJsonConverter : BeanConverter
     {
-        private static readonly Object[] EMPTY_OBJECT = { };
-        private static readonly HashSet<String> EXCLUDED_FIELDS = new HashSet<String>() { "class", "declaringclass" };
-        private static readonly String GETTER_PREFIX = "get";
-        private static readonly String SETTER_PREFIX = "set";
-
-        // Only compute the filtered getters/setters once per-class
-        private static readonly Dictionary<Type, List<MethodPair>> GETTER_METHODS = new Dictionary<Type, List<MethodPair>>();
-        private static readonly Dictionary<Type, List<MethodPair>> SETTER_METHODS = new Dictionary<Type, List<MethodPair>>();
-
-        public String getContentType()
+        public override String getContentType()
         {
             return "application/json";
         }
@@ -60,11 +51,15 @@ namespace pestaServer.Models.social.core.util
          * @param pojo The object to convert
          * @return An object whos toString method will return json
          */
-        public String convertToString(Object pojo)
+        public override String convertToString(Object pojo)
         {
             return convertToJson(pojo).ToString();
         }
 
+        public override String convertToString(Object pojo, RequestItem request)
+        {
+            return convertToJson(pojo).ToString();
+        }
         /**
          * Convert the passed in object to a json object.
          *
@@ -83,145 +78,7 @@ namespace pestaServer.Models.social.core.util
             }
         }
 
-        private Object translateObjectToJson(Object val)
-        {
-            if (val is Object[])
-            {
-                JsonArray array = new JsonArray();
-                foreach (Object asd in (Object[])val)
-                {
-                    array.Put(translateObjectToJson(asd));
-                }
-                return array;
-            }
-
-            if (val != null && val.GetType().GetInterface("IList") != null)
-            {
-                JsonArray list = new JsonArray();
-                foreach (Object item in (IList)val)
-                {
-                    list.Add(translateObjectToJson(item));
-                }
-                return list;
-            }
-
-            if (val != null && val.GetType().GetInterface("IDictionary") != null)
-            {
-                JsonObject map = new JsonObject();
-                IDictionary originalMap = (IDictionary)val;
-
-                foreach (DictionaryEntry item in originalMap)
-                {
-                    map.Put(item.Key.ToString(), translateObjectToJson(item.Value));
-                }
-                return map;
-
-            }
-
-            if (val != null && val.GetType().IsEnum)
-            {
-                return val.ToString();
-            }
-
-            if (val is String
-                || val is Boolean
-                || val is int
-                || val is DateTime
-                || val is long
-                || val is float
-                || val is JsonObject
-                || val is JsonArray
-                || val == null)
-            {
-                return val;
-            }
-
-            return convertMethodsToJson(val);
-        }
-
-        /**
-         * Convert the object to {@link JsonObject} reading Pojo properties
-         *
-         * @param pojo The object to convert
-         * @return A JsonObject representing this pojo
-         */
-        private JsonObject convertMethodsToJson(object pojo)
-        {
-            List<MethodPair> availableGetters;
-            if (!GETTER_METHODS.TryGetValue(pojo.GetType(), out availableGetters))
-            {
-                availableGetters = getMatchingMethods(pojo.GetType(), GETTER_PREFIX);
-                if (!GETTER_METHODS.ContainsKey(pojo.GetType()))
-                {
-                    GETTER_METHODS.Add(pojo.GetType(), availableGetters);
-                }
-
-            }
-
-            JsonObject toReturn = new JsonObject();
-            foreach (MethodPair getter in availableGetters)
-            {
-                String errorMessage = "Could not encode the " + getter.method + " method on "
-                                      + pojo.GetType().Name;
-                try
-                {
-                    Object val = getter.method.Invoke(pojo, EMPTY_OBJECT);
-                    if (val != null && val.ToString() != "")
-                    {
-                        toReturn.Put(getter.fieldName, translateObjectToJson(val));
-                    }
-                }
-                catch (JsonException e)
-                {
-                    throw new Exception(errorMessage, e);
-                }
-                catch (Exception e)
-                {
-                    throw new Exception(errorMessage, e);
-                }
-            }
-            return toReturn;
-        }
-
-        private class MethodPair
-        {
-            public readonly MethodInfo method;
-            public readonly String fieldName;
-
-            public MethodPair(MethodInfo method, String fieldName)
-            {
-                this.method = method;
-                this.fieldName = fieldName;
-            }
-        }
-
-        private List<MethodPair> getMatchingMethods(Type pojo, String prefix)
-        {
-            List<MethodPair> availableGetters = new List<MethodPair>();
-
-            MethodInfo[] methods = pojo.GetMethods();
-            foreach (MethodInfo method in methods)
-            {
-                String name = method.Name;
-                if (!method.Name.StartsWith(prefix))
-                {
-                    continue;
-                }
-                int prefixlen = prefix.Length;
-
-                String fieldName = name.Substring(prefixlen, 1).ToLower() +
-                                   name.Substring(prefixlen + 1);
-
-                if (EXCLUDED_FIELDS.Contains(fieldName.ToLower()))
-                {
-                    continue;
-                }
-                availableGetters.Add(new MethodPair(method, fieldName));
-            }
-            return availableGetters;
-        }
-
-        public Object convertToObject(String json, Type className)
+        public override Object convertToObject(String json, Type className)
         {
             // ignore strings
             if (className == typeof(String))
@@ -245,7 +102,7 @@ namespace pestaServer.Models.social.core.util
             try
             {
                 Object pojo = Activator.CreateInstance(className);
-                return convertToObject(json, pojo);
+                return convertToObj(json, pojo);
             }
             catch (JsonException e)
             {
@@ -257,7 +114,7 @@ namespace pestaServer.Models.social.core.util
             }
         }
 
-        public Object convertToObject(String json, Object pojo)
+        public Object convertToObj(String json, Object pojo)
         {
             if (pojo.GetType() == typeof(String))
             {
@@ -349,13 +206,11 @@ namespace pestaServer.Models.social.core.util
                 Type[] types = expectedType.GetGenericArguments();
                 Type valueClass = types[1];
 
-                // We only support keys being typed as Strings.
-                // Nothing else really makes sense in json.
                 Dictionary<String, String> map = new Dictionary<String, String>();
                 JsonObject jsonMap = JsonObject.getJSONObject(fieldName);
                 foreach (String keyName in jsonMap.Names)
                 {
-                    map.Add(keyName, convertToObject(jsonMap[keyName] as String, valueClass) as String);
+                    map.Add(keyName, convertToObject(jsonMap[keyName].ToString(), valueClass) as String);
                 }
 
                 value = map;

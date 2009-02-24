@@ -36,7 +36,7 @@ namespace pestaServer.Models.gadgets.rewrite.lexer
     ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
     /// </para>
     /// </remarks>
-    public class JavascriptTagMerger : HtmlTagTransformer
+    public class JavascriptTagMerger : IHtmlTagTransformer
     {
         private readonly static int MAX_URL_LENGTH = 1500;
         private readonly List<Object> scripts = new List<Object>();

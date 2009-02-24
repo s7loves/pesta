@@ -19,10 +19,12 @@
 #endregion
 using System;
 using System.Collections.Generic;
+using Jayrock.Json;
 using Pesta.Engine.social;
 using Pesta.Engine.social.model;
 using Pesta.Engine.social.spi;
 using pestaServer.DataAccess;
+using pestaServer.Models.common;
 
 namespace pestaServer.Models.social.service
 {
@@ -80,6 +82,13 @@ namespace pestaServer.Models.social.service
             if (userIds.Count > 1 && optionalPersonId.Count != 0)
             {
                 throw new ArgumentException("Cannot fetch personIds for multiple userIds");
+            }
+            if (userIds.Contains(new UserId(UserId.Type.userId,"@supportedFields")))
+            {
+                JsonArray supported = JsonContainerConfig.Instance.getJsonObject(request.getToken().getContainer() ?? "default", "gadgets.features")
+                                            .getJSONObject("opensocial-0.8")
+                                            .getJSONObject("supportedFields")["person"] as JsonArray;
+                return supported;
             }
 
             CollectionOptions options = new CollectionOptions();

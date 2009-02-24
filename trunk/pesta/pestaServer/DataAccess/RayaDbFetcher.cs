@@ -63,14 +63,14 @@ namespace pestaServer.DataAccess
                 throw new Exception("Invalid activity: empty title");
             }
             string _body = (_activity.getBody() ?? "").Trim();
-            var _time = DateTime.UtcNow.Ticks;
+            var _time = UnixTime.ConvertToUnixTimestamp(DateTime.UtcNow);
             var act = new activity
                           {
                               person_id = int.Parse(_person_id),
                               app_id = int.Parse(_app_id),
                               title = _title,
                               body = _body,
-                              created = _time
+                              created = (long)_time
                           };
             _db.activities.InsertOnSubmit(act);
             _db.SubmitChanges();
@@ -85,12 +85,11 @@ namespace pestaServer.DataAccess
                     var actm = new activity_media_item
                                    {
                                        activity_id = act.id,
-                                       media_type = Convert.ToByte(_mediaItem.getType().Key),
+                                       media_type = _mediaItem.getType().Value,
                                        mime_type = _mediaItem.getMimeType(),
                                        url = _mediaItem.getUrl()
                                    };
                     if (!string.IsNullOrEmpty(actm.mime_type) && 
-                        actm.media_type != null && 
                         !string.IsNullOrEmpty(actm.url)) 
                     {
                         _db.activity_media_items.InsertOnSubmit(actm);
@@ -109,24 +108,12 @@ namespace pestaServer.DataAccess
             return true;
         }
 
-        public List<Activity> getActivities(HashSet<string> _ids, string _appId, HashSet<String> _fields) 
+        public IQueryable<activity> getActivities(HashSet<string> _ids, string _appId, HashSet<String> _fields) 
         {
-            var _activities = new List<Activity>();
-            var _res2 = _db.activities
-                .Where(x => _ids.AsEnumerable().Contains(x.person_id.ToString()))
-                .OrderByDescending(x => x.created)
-                .Select(x => new {x.person_id, x.id, x.title, x.body, x.created});
-            foreach (var _row in _res2)
-            {
-                var _activity = new ActivityImpl(_row.id.ToString(), _row.person_id.ToString());
-                _activity.setStreamTitle("activities");
-                _activity.setTitle(_row.title);
-                _activity.setBody(_row.body);
-                _activity.setPostedTime(_row.created);
-                _activity.setMediaItems(getMediaItems(_row.id));
-                _activities.Add(_activity);
-            }
-            return _activities;
+            var activities = _db.activities
+                .Where(x => _ids.AsEnumerable().Contains(x.person_id.ToString()));
+            
+            return activities;
         }
 
         public bool deleteActivities(string _userId, string _appId, HashSet<string> _activityIds) 
@@ -139,7 +126,7 @@ namespace pestaServer.DataAccess
             return (_db.GetChangeSet().Deletes.Count == 0);
         }
 
-        private List<MediaItem> getMediaItems(int _activity_id) 
+        public List<MediaItem> getMediaItems(int _activity_id) 
         {
             var _media = new List<MediaItem>();
             var _res = _db.activity_media_items.Where(x=>x.activity_id == _activity_id).Select(x=> new{x.mime_type,x.media_type,x.url});
@@ -223,7 +210,7 @@ namespace pestaServer.DataAccess
         {
             var _data = new Dictionary<string, Dictionary<string, string>>();
             var _res = _db.application_settings
-                .Where(x => x.application_id.ToString() == _app_id && _ids.AsEnumerable().Contains(x.person_id.ToString()) && (_keys.Count == 0?true:_keys.AsEnumerable().Contains(x.name)) )
+                .Where(x => (!String.IsNullOrEmpty(_app_id)?x.application_id.ToString() == _app_id : true) && _ids.AsEnumerable().Contains(x.person_id.ToString()) && (_keys.Count == 0 ? true : _keys.AsEnumerable().Contains(x.name)))
                 .Select(x => new { x.person_id, x.name, x.value });
             
             foreach (var _re in _res)
@@ -247,74 +234,163 @@ namespace pestaServer.DataAccess
             foreach (var p in persons)
             {
                 int _person_id = p.id;
-                var _name = new NameImpl(p.first_name + " " + p.last_name);
+                var _name = new NameImpl();
+                var _person = new PersonImpl();
+                
                 _name.setGivenName(p.first_name);
                 _name.setFamilyName(p.last_name);
-                var _person = new PersonImpl(_person_id.ToString(), p.nickname, _name);
+                _name.setFormatted(p.first_name + " " + p.last_name);
                 _person.setDisplayName(_name.getFormatted());
-                _person.setAboutMe(p.about_me);
-                _person.setAge(p.age);
-                _person.setChildren(p.children);
-                if (p.date_of_birth.HasValue)
-                    _person.setBirthday(new DateTime(p.date_of_birth.Value));
-                _person.setEthnicity(p.ethnicity);
-                _person.setFashion(p.fashion);
-                _person.setHappiestWhen(p.happiest_when);
-                _person.setHumor(p.humor);
-                _person.setJobInterests(p.job_interests);
-                _person.setLivingArrangement(p.living_arrangement);
-                if (!string.IsNullOrEmpty(p.looking_for))
+                _person.setName(_name);
+                _person.setId(_person_id.ToString());
+                if (_fields.Contains("about_me") || _fields.Contains("@all"))
                 {
-                    string[] lookingfors = p.looking_for.Split(',');
-                    var lfs = new List<EnumTypes.LookingFor>();
-                    foreach (var s in lookingfors)
+                    _person.setAboutMe(p.about_me);
+                }
+                if (_fields.Contains("age") || _fields.Contains("@all"))
+                {
+                    _person.setAge(p.age);
+                }
+                if (_fields.Contains("children") || _fields.Contains("@all"))
+                {
+                    _person.setChildren(p.children);
+                }
+                if (_fields.Contains("date_of_birth") || _fields.Contains("@all"))
+                {
+                    if (p.date_of_birth.HasValue)
+                        _person.setBirthday(new DateTime(p.date_of_birth.Value));
+                }
+                if (_fields.Contains("ethnicity") || _fields.Contains("@all"))
+                {
+                    _person.setEthnicity(p.ethnicity);
+                }
+                if (_fields.Contains("fashion") || _fields.Contains("@all"))
+                {
+                    _person.setFashion(p.fashion);
+                }
+                if (_fields.Contains("happiest_when") || _fields.Contains("@all"))
+                {
+                    _person.setHappiestWhen(p.happiest_when);
+                }
+                if (_fields.Contains("humor") || _fields.Contains("@all"))
+                {
+                    _person.setHumor(p.humor);
+                }
+                if (_fields.Contains("job_interests") || _fields.Contains("@all"))
+                {
+                    _person.setJobInterests(p.job_interests);
+                }
+                if (_fields.Contains("living_arrangement") || _fields.Contains("@all"))
+                {
+                    _person.setLivingArrangement(p.living_arrangement);
+                }
+                if (_fields.Contains("looking_for") || _fields.Contains("@all"))
+                {
+                    if (!string.IsNullOrEmpty(p.looking_for))
                     {
-                        lfs.Add(EnumBaseType<EnumTypes.LookingFor>.GetBaseByKey(s));
+                        string[] lookingfors = p.looking_for.Split(',');
+                        var lfs = new List<EnumTypes.LookingFor>();
+                        foreach (var s in lookingfors)
+                        {
+                            lfs.Add(EnumBaseType<EnumTypes.LookingFor>.GetBaseByKey(s));
+                        }
+                        _person.setLookingFor(lfs);
                     }
-                    _person.setLookingFor(lfs);
                 }
-                _person.setNickname(p.nickname);
-                _person.setPets(p.pets);
-                _person.setPoliticalViews(p.political_views);
-                if (!string.IsNullOrEmpty(p.profile_song))
+                if (_fields.Contains("nickname") || _fields.Contains("@all"))
                 {
-                	_person.setProfileSong(new UrlImpl(p.profile_song, "", ""));
+                    _person.setNickname(p.nickname);
                 }
-                
-                _person.setProfileUrl(url_prefix + "/profile/" + _person_id);
-                if (!string.IsNullOrEmpty(p.profile_video))
+                if (_fields.Contains("pets") || _fields.Contains("@all"))
                 {
-                	_person.setProfileVideo(new UrlImpl(p.profile_video, "", ""));
+                    _person.setPets(p.pets);
                 }
-                _person.setRelationshipStatus(p.relationship_status);
-                _person.setReligion(p.religion);
-                _person.setRomance(p.romance);
-                _person.setScaredOf(p.scared_of);
-                _person.setSexualOrientation(p.sexual_orientation);
-                _person.setStatus(p.status);
-
-                _person.setThumbnailUrl(!string.IsNullOrEmpty(p.thumbnail_url) ? url_prefix + p.thumbnail_url : "");
-                if (!string.IsNullOrEmpty(p.thumbnail_url))
+                if (_fields.Contains("political_views") || _fields.Contains("@all"))
                 {
-                    _person.setThumbnailUrl(url_prefix + p.thumbnail_url);
-                    // also report thumbnail_url in standard photos field (this is the only photo supported by partuza)
-                    _person.setPhotos(new List<ListField>{
-                        new UrlImpl(url_prefix + p.thumbnail_url, "thumbnail", "thumbnail")});
+                    _person.setPoliticalViews(p.political_views);
                 }
-                _person.setUtcOffset(p.time_zone); // force "-00:00" utc-offset format
-                if (!String.IsNullOrEmpty(p.drinker))
+                if (_fields.Contains("profile_song") || _fields.Contains("@all"))
                 {
-                    _person.setDrinker(EnumBaseType<EnumTypes.Drinker>.GetBaseByKey(p.drinker));
+                    if (!string.IsNullOrEmpty(p.profile_song))
+                    {
+                        _person.setProfileSong(new UrlImpl(p.profile_song, "", ""));
+                    }
                 }
-                if (!String.IsNullOrEmpty(p.gender))
+                if (_fields.Contains("profile_url") || _fields.Contains("@all"))
                 {
-                    _person.setGender(p.gender.ToLower() == Person.Gender.male.ToString() ? Person.Gender.male: Person.Gender.female);
+                    _person.setProfileUrl(url_prefix + "/profile/" + _person_id);
                 }
-                if (!String.IsNullOrEmpty(p.smoker))
+                if (_fields.Contains("profile_video") || _fields.Contains("@all"))
                 {
-                    _person.setSmoker(EnumBaseType<EnumTypes.Smoker>.GetBaseByKey(p.smoker));
+                    if (!string.IsNullOrEmpty(p.profile_video))
+                    {
+                        _person.setProfileVideo(new UrlImpl(p.profile_video, "", ""));
+                    }
                 }
-
+                if (_fields.Contains("relationship_status") || _fields.Contains("@all"))
+                {
+                    _person.setRelationshipStatus(p.relationship_status);
+                }
+                if (_fields.Contains("religion") || _fields.Contains("@all"))
+                {
+                    _person.setReligion(p.religion);
+                }
+                if (_fields.Contains("romance") || _fields.Contains("@all"))
+                {
+                    _person.setRomance(p.romance);
+                }
+                if (_fields.Contains("scared_of") || _fields.Contains("@all"))
+                {
+                    _person.setScaredOf(p.scared_of);
+                }
+                if (_fields.Contains("sexual_orientation") || _fields.Contains("@all"))
+                {
+                    _person.setSexualOrientation(p.sexual_orientation);
+                }
+                if (_fields.Contains("status") || _fields.Contains("@all"))
+                {
+                    _person.setStatus(p.status);
+                }
+                if (_fields.Contains("thumbnail_url") || _fields.Contains("@all"))
+                {
+                    _person.setThumbnailUrl(!string.IsNullOrEmpty(p.thumbnail_url) ? url_prefix + p.thumbnail_url : "");
+                    if (!string.IsNullOrEmpty(p.thumbnail_url))
+                    {
+                        _person.setThumbnailUrl(url_prefix + p.thumbnail_url);
+                        // also report thumbnail_url in standard photos field (this is the only photo supported by partuza)
+                        _person.setPhotos(new List<ListField>
+                                              {
+                                                  new UrlImpl(url_prefix + p.thumbnail_url, "thumbnail", "thumbnail")
+                                              });
+                    }
+                }
+                if (_fields.Contains("time_zone") || _fields.Contains("@all"))
+                {
+                    _person.setUtcOffset(p.time_zone); // force "-00:00" utc-offset format
+                }
+                if (_fields.Contains("drinker") || _fields.Contains("@all"))
+                {
+                    if (!String.IsNullOrEmpty(p.drinker))
+                    {
+                        _person.setDrinker(EnumBaseType<EnumTypes.Drinker>.GetBaseByKey(p.drinker));
+                    }
+                }
+                if (_fields.Contains("gender") || _fields.Contains("@all"))
+                {
+                    if (!String.IsNullOrEmpty(p.gender))
+                    {
+                        _person.setGender(p.gender.ToLower() == Person.Gender.male.ToString()
+                                              ? Person.Gender.male
+                                              : Person.Gender.female);
+                    }
+                }
+                if (_fields.Contains("smoker") || _fields.Contains("@all"))
+                {
+                    if (!String.IsNullOrEmpty(p.smoker))
+                    {
+                        _person.setSmoker(EnumBaseType<EnumTypes.Smoker>.GetBaseByKey(p.smoker));
+                    }
+                }
                 if (_fields.Contains("activities") || _fields.Contains("@all"))
                 {
                     var activities = _db.person_activities.Where(a => a.person_id == _person_id).Select(a => a.activity);

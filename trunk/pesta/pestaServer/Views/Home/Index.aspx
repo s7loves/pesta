@@ -7,6 +7,9 @@
     <title></title>
 </head>
 <body>
+<h1>pesta: A .NET OpenSocial container</h1> 
+<p>You have arrived at pesta. The code for this open-source project can be downloaded from <a href='http://code.google.com/p/pesta/'>http://code.google.com/p/pesta/</a>.</p>
+<p>raya is a sample site which uses pesta. The code for this project is available at <a href='http://www.codeplex.com/raya'>http://www.codeplex.com/raya</a></p>
     <div>
     <p>The following are some useful samples</p>
     <ul>

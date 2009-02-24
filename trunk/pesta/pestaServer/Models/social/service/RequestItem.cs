@@ -93,13 +93,13 @@ namespace pestaServer.Models.social.service
 
         public HashSet<UserId> getUsers()
         {
-            List<String> ids = getListParameter(USER_ID);
+            HashSet<String> ids = getListParameter(USER_ID);
             if (ids.Count == 0)
             {
                 if (token.getViewerId() != null)
                 {
                     // Assume @me
-                    ids = new List<string>() { "@me" };
+                    ids = new HashSet<string> { "@me" };
                 }
                 else
                 {
@@ -151,7 +151,7 @@ namespace pestaServer.Models.social.service
         public String getSortBy()
         {
             String sortBy = getParameter(SORT_BY);
-            return sortBy == null ? IPersonService.TOP_FRIENDS_SORT : sortBy;
+            return sortBy ?? IPersonService.TOP_FRIENDS_SORT;
         }
 
         public IPersonService.SortOrder getSortOrder()
@@ -194,7 +194,7 @@ namespace pestaServer.Models.social.service
         public String getFilterValue()
         {
             String filterValue = getParameter(FILTER_VALUE);
-            return filterValue == null ? "" : filterValue;
+            return filterValue ?? "";
         }
 
         public HashSet<String> getFields()
@@ -238,6 +238,6 @@ namespace pestaServer.Models.social.service
 
         public abstract String getParameter(String paramName, String defaultValue);
 
-        public abstract List<String> getListParameter(String paramName);
+        public abstract HashSet<String> getListParameter(String paramName);
     }
 }

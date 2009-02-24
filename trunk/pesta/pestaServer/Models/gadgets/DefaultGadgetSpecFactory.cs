@@ -43,6 +43,7 @@ namespace pestaServer.Models.gadgets
         static readonly Uri RAW_GADGET_URI = Uri.parse("http://localhost/raw.xml");
         private const string ERROR_SPEC = "<Module><ModulePrefs title='Error'/><Content/></Module>";
         private const string ERROR_KEY = "parse.exception";
+        private const int ERROR_DELAY = 60; // seconds
 
         private readonly IHttpFetcher fetcher;
         //private readonly SoftExpiringCache<Uri, GadgetSpec> cache;
@@ -90,7 +91,7 @@ namespace pestaServer.Models.gadgets
                         // We create this dummy spec to avoid the cost of re-parsing when a remote site is out.
                         spec = new GadgetSpec(uri, ERROR_SPEC);
                         spec.setAttribute(ERROR_KEY, e);
-                    HttpRuntime.Cache.Insert(uri.ToString(), spec, null, System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromSeconds(refresh));
+                        HttpRuntime.Cache.Insert(uri.ToString(), spec, null, System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromSeconds(ERROR_DELAY));
                 }
             }
             else

@@ -50,24 +50,21 @@ namespace pestaServer.Models.gadgets.servlet
         public static readonly String REWRITE_MIME_TYPE_PARAM = "rewriteMime";
         protected String getContainer(HttpRequestWrapper request)
         {
-            String container = getParameter(request, CONTAINER_PARAM, null);
-            if (container == null)
-            {
-                container = getParameter(request, SYND_PARAM, ContainerConfig.DEFAULT_CONTAINER);
-            }
+            String container = getParameter(request, CONTAINER_PARAM, null) ??
+                               getParameter(request, SYND_PARAM, ContainerConfig.DEFAULT_CONTAINER);
             return container;
         }
 
         protected String getParameter(HttpRequestWrapper request, String name, String defaultValue)
         {
             String ret = request.getParameter(name);
-            return ret == null ? defaultValue : ret;
+            return ret ?? defaultValue;
         }
 
 
         protected void setResponseHeaders(HttpRequestWrapper request, HttpResponse response, sResponse results)
         {
-            int refreshInterval = 0;
+            int refreshInterval;
             if (results.isStrictNoCache())
             {
                 refreshInterval = 0;
@@ -105,7 +102,7 @@ namespace pestaServer.Models.gadgets.servlet
                                               "Invalid request url scheme in url: " + HttpUtility.UrlEncode(urlToValidate) +
                                               "; only \"http\" and \"https\" supported.");
                 }
-                if (url.getPath() == null || url.getPath().Length == 0)
+                if (string.IsNullOrEmpty(url.getPath()))
                 {
                     url.setPath("/");
                 }

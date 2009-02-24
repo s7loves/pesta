@@ -45,13 +45,13 @@ namespace pestaServer.Models.gadgets.http
         private Uri uri;
         private readonly HttpWebRequest req;
         
-        // TODO: It might be useful to refactor these into a simple map of objects
-        // and use sub classes
-        // for more detailed data.
-
         // Cache control.
         private bool ignoreCache;
         private int cacheTtl;
+
+        // Sanitization
+        private bool sanitizationRequested;
+
         // this becoming redundant
         private byte[] postBody;
         // Whether to follow redirects
@@ -117,7 +117,7 @@ namespace pestaServer.Models.gadgets.http
         /// <param name="_ignoreCache">Whether to ignore all caching for this request.</param>
         public sRequest setIgnoreCache(bool _ignoreCache)
         {
-            this.ignoreCache = ignoreCache;
+            ignoreCache = _ignoreCache;
             if (ignoreCache)
             {
                 // Bypass any proxy caches as well.
@@ -140,6 +140,20 @@ namespace pestaServer.Models.gadgets.http
         {
             req.Method = _method;
             return this;
+        }
+
+        /**
+ * Should content fetched in response to this request
+ * be sanitized based on the specified mime-type
+ */
+        public bool isSanitizationRequested()
+        {
+            return sanitizationRequested;
+        }
+
+        public void setSanitizationRequested(bool _sanitizationRequested)
+        {
+            sanitizationRequested = _sanitizationRequested;
         }
 
 
@@ -201,7 +215,7 @@ namespace pestaServer.Models.gadgets.http
         /// <param name="_authType">The type of authentication being used for this request.</param>
         public sRequest setAuthType(AuthType _authType)
         {
-            this.authType = _authType;
+            authType = _authType;
             return this;
         }
 
@@ -209,7 +223,7 @@ namespace pestaServer.Models.gadgets.http
         /// <param name="_rewriteMimeType">The assumed content type of the response to be rewritten.</param>
         public sRequest setRewriteMimeType(String _rewriteMimeType)
         {
-            this.rewriteMimeType = _rewriteMimeType;
+            rewriteMimeType = _rewriteMimeType;
             return this;
         }
 

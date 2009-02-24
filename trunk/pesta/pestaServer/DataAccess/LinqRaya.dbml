@@ -10,86 +10,8 @@
       <Column Name="body" Type="System.String" DbType="VarChar(MAX) NOT NULL" CanBeNull="false" />
       <Column Name="created" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
       <Association Name="activity_activity_media_item" Member="activity_media_items" ThisKey="id" OtherKey="activity_id" Type="activity_media_item" />
-      <Association Name="person_activity" Member="person" ThisKey="person_id" OtherKey="id" Type="person" IsForeignKey="true" />
       <Association Name="application_activity" Member="application" ThisKey="app_id" OtherKey="id" Type="application" IsForeignKey="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.persons" Member="persons">
-    <Type Name="person">
-      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="email" Type="System.String" DbType="VarChar(128) NOT NULL" CanBeNull="false" />
-      <Column Name="password" Type="System.String" DbType="VarChar(128) NOT NULL" CanBeNull="false" />
-      <Column Name="about_me" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
-      <Column Name="age" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="children" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
-      <Column Name="date_of_birth" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
-      <Column Name="drinker" Type="System.String" DbType="VarChar(16)" CanBeNull="true" />
-      <Column Name="ethnicity" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
-      <Column Name="fashion" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
-      <Column Name="gender" Type="System.String" DbType="VarChar(8)" CanBeNull="true" />
-      <Column Name="happiest_when" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
-      <Column Name="humor" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
-      <Column Name="job_interests" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
-      <Column Name="living_arrangement" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
-      <Column Name="looking_for" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
-      <Column Name="nickname" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
-      <Column Name="pets" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
-      <Column Name="political_views" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
-      <Column Name="profile_song" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
-      <Column Name="profile_url" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
-      <Column Name="profile_video" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
-      <Column Name="relationship_status" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
-      <Column Name="religion" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
-      <Column Name="romance" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
-      <Column Name="scared_of" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
-      <Column Name="sexual_orientation" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
-      <Column Name="smoker" Type="System.String" DbType="VarChar(16)" CanBeNull="true" />
-      <Column Name="status" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
-      <Column Name="thumbnail_url" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
-      <Column Name="time_zone" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
-      <Column Name="first_name" Type="System.String" DbType="VarChar(64) NOT NULL" CanBeNull="false" />
-      <Column Name="last_name" Type="System.String" DbType="VarChar(64) NOT NULL" CanBeNull="false" />
-      <Association Name="person_activity" Member="activities" ThisKey="id" OtherKey="person_id" Type="activity" />
-      <Association Name="person_application_setting" Member="application_settings" ThisKey="id" OtherKey="person_id" Type="application_setting" />
-      <Association Name="person_authenticated" Member="authenticateds" ThisKey="id" OtherKey="person_id" Type="authenticated" />
-      <Association Name="person_friend_request" Member="friend_request" ThisKey="id" OtherKey="person_id" Type="friend_request" Cardinality="One" />
-      <Association Name="person_friend" Member="friend" ThisKey="id" OtherKey="person_id" Type="friend" Cardinality="One" />
-      <Association Name="person_message" Member="messages" ThisKey="id" OtherKey="from" Type="message" />
-      <Association Name="person_message1" Member="messages1" ThisKey="id" OtherKey="to" Type="message" />
-      <Association Name="person_person_activity" Member="person_activities" ThisKey="id" OtherKey="person_id" Type="person_activity" />
-      <Association Name="person_person_address" Member="person_addresses" ThisKey="id" OtherKey="person_id" Type="person_address" />
-      <Association Name="person_person_application" Member="person_applications" ThisKey="id" OtherKey="person_id" Type="person_application" />
-      <Association Name="person_person_body_type" Member="person_body_types" ThisKey="id" OtherKey="person_id" Type="person_body_type" />
-      <Association Name="person_person_book" Member="person_books" ThisKey="id" OtherKey="person_id" Type="person_book" />
-      <Association Name="person_person_car" Member="person_cars" ThisKey="id" OtherKey="person_id" Type="person_car" />
-      <Association Name="person_person_current_location" Member="person_current_locations" ThisKey="id" OtherKey="person_id" Type="person_current_location" />
-      <Association Name="person_person_email" Member="person_emails" ThisKey="id" OtherKey="person_id" Type="person_email" />
-      <Association Name="person_person_food" Member="person_foods" ThisKey="id" OtherKey="person_id" Type="person_food" />
-      <Association Name="person_person_heroe" Member="person_heroes" ThisKey="id" OtherKey="person_id" Type="person_heroe" />
-      <Association Name="person_person_interest" Member="person_interests" ThisKey="id" OtherKey="person_id" Type="person_interest" />
-      <Association Name="person_person_job" Member="person_jobs" ThisKey="id" OtherKey="person_id" Type="person_job" />
-      <Association Name="person_person_languages_spoken" Member="person_languages_spokens" ThisKey="id" OtherKey="person_id" Type="person_languages_spoken" />
-      <Association Name="person_person_movy" Member="person_movies" ThisKey="id" OtherKey="person_id" Type="person_movy" />
-      <Association Name="person_person_music" Member="person_musics" ThisKey="id" OtherKey="person_id" Type="person_music" />
-      <Association Name="person_person_phone_number" Member="person_phone_numbers" ThisKey="id" OtherKey="person_id" Type="person_phone_number" />
-      <Association Name="person_person_quote" Member="person_quotes" ThisKey="id" OtherKey="person_id" Type="person_quote" />
-      <Association Name="person_person_school" Member="person_schools" ThisKey="id" OtherKey="person_id" Type="person_school" />
-      <Association Name="person_person_sport" Member="person_sports" ThisKey="id" OtherKey="person_id" Type="person_sport" />
-      <Association Name="person_person_tag" Member="person_tags" ThisKey="id" OtherKey="person_id" Type="person_tag" />
-      <Association Name="person_person_turn_off" Member="person_turn_offs" ThisKey="id" OtherKey="person_id" Type="person_turn_off" />
-      <Association Name="person_person_turn_on" Member="person_turn_ons" ThisKey="id" OtherKey="person_id" Type="person_turn_on" />
-      <Association Name="person_person_tv_show" Member="person_tv_shows" ThisKey="id" OtherKey="person_id" Type="person_tv_show" />
-      <Association Name="person_person_url" Member="person_urls" ThisKey="id" OtherKey="person_id" Type="person_url" />
-    </Type>
-  </Table>
-  <Table Name="dbo.activity_media_items" Member="activity_media_items">
-    <Type Name="activity_media_item">
-      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="activity_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="mime_type" Type="System.String" DbType="VarChar(64) NOT NULL" CanBeNull="false" />
-      <Column Name="media_type" Type="System.Byte" DbType="TinyInt NOT NULL" CanBeNull="false" />
-      <Column Name="url" Type="System.String" DbType="VarChar(128) NOT NULL" CanBeNull="false" />
-      <Association Name="activity_activity_media_item" Member="activity" ThisKey="activity_id" OtherKey="id" Type="activity" IsForeignKey="true" />
+      <Association Name="person_activity" Member="person" ThisKey="person_id" OtherKey="id" Type="person" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.addresses" Member="addresses">
@@ -118,8 +40,8 @@
       <Column Name="person_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="name" Type="System.String" DbType="VarChar(128) NOT NULL" CanBeNull="false" />
       <Column Name="value" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
-      <Association Name="person_application_setting" Member="person" ThisKey="person_id" OtherKey="id" Type="person" IsForeignKey="true" />
       <Association Name="application_application_setting" Member="application" ThisKey="application_id" OtherKey="id" Type="application" IsForeignKey="true" />
+      <Association Name="person_application_setting" Member="person" ThisKey="person_id" OtherKey="id" Type="person" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.applications" Member="applications">
@@ -156,13 +78,6 @@
       <Column Name="person_id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="friend_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Association Name="person_friend_request" Member="person" ThisKey="person_id" OtherKey="id" Type="person" IsForeignKey="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.friends" Member="friends">
-    <Type Name="friend">
-      <Column Name="person_id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="friend_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Association Name="person_friend" Member="person" ThisKey="person_id" OtherKey="id" Type="person" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.languages" Member="languages">
@@ -410,6 +325,90 @@
       <Column Name="person_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="url" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
       <Association Name="person_person_url" Member="person" ThisKey="person_id" OtherKey="id" Type="person" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.friends" Member="friends">
+    <Type Name="friend">
+      <Column Name="fid" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="person_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="friend_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="dbo.persons" Member="persons">
+    <Type Name="person">
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="email" Type="System.String" DbType="VarChar(128) NOT NULL" CanBeNull="false" />
+      <Column Name="password" Type="System.String" DbType="VarChar(128) NOT NULL" CanBeNull="false" />
+      <Column Name="about_me" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Column Name="age" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="children" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
+      <Column Name="date_of_birth" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="drinker" Type="System.String" DbType="VarChar(16)" CanBeNull="true" />
+      <Column Name="ethnicity" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
+      <Column Name="fashion" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Column Name="gender" Type="System.String" DbType="VarChar(8)" CanBeNull="true" />
+      <Column Name="happiest_when" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Column Name="humor" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Column Name="job_interests" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Column Name="living_arrangement" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
+      <Column Name="looking_for" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
+      <Column Name="nickname" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
+      <Column Name="pets" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
+      <Column Name="political_views" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Column Name="profile_song" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
+      <Column Name="profile_url" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
+      <Column Name="profile_video" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
+      <Column Name="relationship_status" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
+      <Column Name="religion" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
+      <Column Name="romance" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
+      <Column Name="scared_of" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Column Name="sexual_orientation" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
+      <Column Name="smoker" Type="System.String" DbType="VarChar(16)" CanBeNull="true" />
+      <Column Name="status" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
+      <Column Name="thumbnail_url" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
+      <Column Name="time_zone" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="first_name" Type="System.String" DbType="VarChar(64) NOT NULL" CanBeNull="false" />
+      <Column Name="last_name" Type="System.String" DbType="VarChar(64) NOT NULL" CanBeNull="false" />
+      <Association Name="person_activity" Member="activities" ThisKey="id" OtherKey="person_id" Type="activity" />
+      <Association Name="person_application_setting" Member="application_settings" ThisKey="id" OtherKey="person_id" Type="application_setting" />
+      <Association Name="person_authenticated" Member="authenticateds" ThisKey="id" OtherKey="person_id" Type="authenticated" />
+      <Association Name="person_friend_request" Member="friend_request" ThisKey="id" OtherKey="person_id" Type="friend_request" Cardinality="One" />
+      <Association Name="person_message" Member="messages" ThisKey="id" OtherKey="from" Type="message" />
+      <Association Name="person_message1" Member="messages1" ThisKey="id" OtherKey="to" Type="message" />
+      <Association Name="person_person_activity" Member="person_activities" ThisKey="id" OtherKey="person_id" Type="person_activity" />
+      <Association Name="person_person_address" Member="person_addresses" ThisKey="id" OtherKey="person_id" Type="person_address" />
+      <Association Name="person_person_application" Member="person_applications" ThisKey="id" OtherKey="person_id" Type="person_application" />
+      <Association Name="person_person_body_type" Member="person_body_types" ThisKey="id" OtherKey="person_id" Type="person_body_type" />
+      <Association Name="person_person_book" Member="person_books" ThisKey="id" OtherKey="person_id" Type="person_book" />
+      <Association Name="person_person_car" Member="person_cars" ThisKey="id" OtherKey="person_id" Type="person_car" />
+      <Association Name="person_person_current_location" Member="person_current_locations" ThisKey="id" OtherKey="person_id" Type="person_current_location" />
+      <Association Name="person_person_email" Member="person_emails" ThisKey="id" OtherKey="person_id" Type="person_email" />
+      <Association Name="person_person_food" Member="person_foods" ThisKey="id" OtherKey="person_id" Type="person_food" />
+      <Association Name="person_person_heroe" Member="person_heroes" ThisKey="id" OtherKey="person_id" Type="person_heroe" />
+      <Association Name="person_person_interest" Member="person_interests" ThisKey="id" OtherKey="person_id" Type="person_interest" />
+      <Association Name="person_person_job" Member="person_jobs" ThisKey="id" OtherKey="person_id" Type="person_job" />
+      <Association Name="person_person_languages_spoken" Member="person_languages_spokens" ThisKey="id" OtherKey="person_id" Type="person_languages_spoken" />
+      <Association Name="person_person_movy" Member="person_movies" ThisKey="id" OtherKey="person_id" Type="person_movy" />
+      <Association Name="person_person_music" Member="person_musics" ThisKey="id" OtherKey="person_id" Type="person_music" />
+      <Association Name="person_person_phone_number" Member="person_phone_numbers" ThisKey="id" OtherKey="person_id" Type="person_phone_number" />
+      <Association Name="person_person_quote" Member="person_quotes" ThisKey="id" OtherKey="person_id" Type="person_quote" />
+      <Association Name="person_person_school" Member="person_schools" ThisKey="id" OtherKey="person_id" Type="person_school" />
+      <Association Name="person_person_sport" Member="person_sports" ThisKey="id" OtherKey="person_id" Type="person_sport" />
+      <Association Name="person_person_tag" Member="person_tags" ThisKey="id" OtherKey="person_id" Type="person_tag" />
+      <Association Name="person_person_turn_off" Member="person_turn_offs" ThisKey="id" OtherKey="person_id" Type="person_turn_off" />
+      <Association Name="person_person_turn_on" Member="person_turn_ons" ThisKey="id" OtherKey="person_id" Type="person_turn_on" />
+      <Association Name="person_person_tv_show" Member="person_tv_shows" ThisKey="id" OtherKey="person_id" Type="person_tv_show" />
+      <Association Name="person_person_url" Member="person_urls" ThisKey="id" OtherKey="person_id" Type="person_url" />
+    </Type>
+  </Table>
+  <Table Name="dbo.activity_media_items" Member="activity_media_items">
+    <Type Name="activity_media_item">
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="activity_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="mime_type" Type="System.String" DbType="VarChar(64) NOT NULL" CanBeNull="false" />
+      <Column Name="media_type" Type="System.String" DbType="VarChar(16) NOT NULL" CanBeNull="false" />
+      <Column Name="url" Type="System.String" DbType="VarChar(128) NOT NULL" CanBeNull="false" />
+      <Association Name="activity_activity_media_item" Member="activity" ThisKey="activity_id" OtherKey="id" Type="activity" IsForeignKey="true" />
     </Type>
   </Table>
 </Database>

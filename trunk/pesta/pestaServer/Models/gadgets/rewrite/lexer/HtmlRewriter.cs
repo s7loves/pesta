@@ -38,7 +38,7 @@ namespace pestaServer.Models.gadgets.rewrite.lexer
         {
         }
 
-        public static String rewrite(String content, Uri source, Dictionary<String, HtmlTagTransformer> transformers)
+        public static String rewrite(String content, Uri source, Dictionary<String, IHtmlTagTransformer> transformers)
         {
             java.io.StringWriter sw = new java.io.StringWriter((content.Length * 110) / 100);
             rewrite(new java.io.StringReader(content), source, transformers, sw);
@@ -46,7 +46,7 @@ namespace pestaServer.Models.gadgets.rewrite.lexer
         }
 
         public static void rewrite(java.io.Reader content, Uri source,
-                                   Dictionary<String, HtmlTagTransformer> transformers, java.io.Writer writer)
+                                   Dictionary<String, IHtmlTagTransformer> transformers, java.io.Writer writer)
         {
             CharProducer producer = CharProducer.Factory.create(content, new InputSource(new java.net.URI(source.ToString())));
             HtmlLexer lexer = new HtmlLexer(producer);
@@ -54,7 +54,7 @@ namespace pestaServer.Models.gadgets.rewrite.lexer
             {
                 Token lastToken = null;
                 Token currentTag = null;
-                HtmlTagTransformer currentTransformer = null;
+                IHtmlTagTransformer currentTransformer = null;
                 bool tagChanged;
                 while (lexer.hasNext())
                 {

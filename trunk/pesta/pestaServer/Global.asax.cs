@@ -60,8 +60,8 @@ namespace pestaServer
 
             routes.MapRoute(
                "rest",                                              // Route name
-               "social/rest/{id1}/{id2}/{id3}",                           // URL with parameters
-               new { controller = "rest", action = "Index", id1 = "", id2 = "", id3 = "" }  // Parameter defaults
+               "social/rest/{id1}/{id2}/{id3}/{id4}",                           // URL with parameters
+               new { controller = "rest", action = "Index", id1 = "", id2 = "", id3 = "", id4 = "" }  // Parameter defaults
            );
 
 

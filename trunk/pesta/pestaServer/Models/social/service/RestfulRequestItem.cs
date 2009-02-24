@@ -18,7 +18,6 @@
  */
 #endregion
 using System;
-using System.Collections.Specialized;
 using System.IO;
 using System.Collections.Generic;
 using System.Web;
@@ -40,7 +39,7 @@ namespace pestaServer.Models.social.service
         protected static String SOCIAL_RESTFUL_PATH = HttpRuntime.AppDomainAppVirtualPath.Equals("/") ? "/social/rest/" : HttpRuntime.AppDomainAppVirtualPath + "/social/rest/";
         private String url;
 
-        private Dictionary<String, List<String>> parameters;
+        private Dictionary<String, HashSet<String>> parameters;
 
         private readonly String postData;
 
@@ -110,14 +109,14 @@ namespace pestaServer.Models.social.service
             return request.HttpMethod;
         }
 
-        private Dictionary<String, List<String>> createParameterMap(HttpRequest servletRequest)
+        private static Dictionary<String, HashSet<String>> createParameterMap(HttpRequest servletRequest)
         {
-            Dictionary<String, List<string>> parameters = new Dictionary<string, List<string>>();
+            Dictionary<String, HashSet<string>> _parameters = new Dictionary<string, HashSet<string>>();
             for (int i = 0; i < servletRequest.Params.Count; i++)
             {
-                parameters.Add(servletRequest.Params.GetKey(i), new List<string>(servletRequest.Params.GetValues(i)));
+                _parameters.Add(servletRequest.Params.GetKey(i), new HashSet<string>(servletRequest.Params.GetValues(i)));
             }
-            return parameters;
+            return _parameters;
         }
 
         /*
@@ -129,7 +128,7 @@ namespace pestaServer.Models.social.service
         {
             if (parameters == null)
             {
-                parameters = new Dictionary<String, List<String>>();
+                parameters = new Dictionary<String, HashSet<String>>();
             }
 
             String fullUrl = url;
@@ -143,10 +142,10 @@ namespace pestaServer.Models.social.service
                 foreach (String param in queryParams.Split('&'))
                 {
                     String[] paramPieces = param.Split('=');
-                    List<string> paramList;
+                    HashSet<string> paramList;
                     if (!parameters.TryGetValue(paramPieces[0], out paramList))
                     {
-                        paramList = new List<string>();
+                        paramList = new HashSet<string>();
                         parameters.Add(paramPieces[0], paramList);
                     }
                     if (paramPieces.Length == 2)
@@ -183,7 +182,7 @@ namespace pestaServer.Models.social.service
                     if (expectedPart.EndsWith("}+"))
                     {
                         // The param can be a repeated field. Use ',' as default separator
-                        parameters.Add(expectedPart.Substring(1, expectedPart.Length - 2), new List<string>(actualPart.Split(',')));
+                        parameters.Add(expectedPart.Substring(1, expectedPart.Length - 3), new HashSet<string>(actualPart.Split(',')));
                     }
                     else
                     {
@@ -192,7 +191,10 @@ namespace pestaServer.Models.social.service
                             throw new ArgumentException("Cannot expect plural value " + actualPart
                                                         + " for singular field " + expectedPart + " in " + url);
                         }
-                        parameters.Add(expectedPart.Substring(1, expectedPart.Length - 2), new List<string>(new[] { actualPart }));
+                        if (!String.IsNullOrEmpty(actualPart))
+                        {
+                            parameters.Add(expectedPart.Substring(1, expectedPart.Length - 2), new HashSet<string>(new[] { actualPart }));
+                        }
                     }
                 }
             }
@@ -212,7 +214,7 @@ namespace pestaServer.Models.social.service
 
 
 
-        public Dictionary<String, List<String>> getParameters()
+        public Dictionary<String, HashSet<String>> getParameters()
         {
             return parameters;
         }
@@ -224,10 +226,10 @@ namespace pestaServer.Models.social.service
             {
                 return;
             }
-            parameters.Add(paramName, new List<String>() { paramValue });
+            parameters.Add(paramName, new HashSet<String> { paramValue });
         }
 
-        public void setListParameter(String paramName, List<String> paramValue)
+        public void setListParameter(String paramName, HashSet<String> paramValue)
         {
             parameters.Add(paramName, paramValue);
         }
@@ -237,10 +239,12 @@ namespace pestaServer.Models.social.service
         */
         public override String getParameter(String paramName)
         {
-            List<String> paramValue = null;
+            HashSet<String> paramValue;
             if (parameters.TryGetValue(paramName, out paramValue) && paramValue.Count != 0)
             {
-                return paramValue[0];
+                IEnumerator<String> item = paramValue.GetEnumerator();
+                item.MoveNext();
+                return item.Current;
             }
             return null;
         }
@@ -258,17 +262,22 @@ namespace pestaServer.Models.social.service
         /**
         * Return a list param value
         */
-        public override List<String> getListParameter(String paramName)
+        public override HashSet<String> getListParameter(String paramName)
         {
-            List<String> stringList = null;
+            HashSet<String> stringList;
             if (!parameters.TryGetValue(paramName, out stringList))
             {
-                return new List<string>();
+                return new HashSet<string>();
             }
-            if (stringList.Count == 1 && stringList[0].IndexOf(',') != -1)
+            if (stringList.Count == 1)
             {
-                stringList = new List<string>(stringList[0].Split(','));
-                parameters[paramName] = stringList;
+                IEnumerator<String> item = stringList.GetEnumerator();
+                item.MoveNext();
+                if (item.Current.IndexOf(',') != -1)
+                {
+                    stringList = new HashSet<string>(item.Current.Split(new[]{','},StringSplitOptions.RemoveEmptyEntries));
+                    parameters[paramName] = stringList;
+                }
             }
             return stringList;
         }

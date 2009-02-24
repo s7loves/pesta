@@ -76,6 +76,15 @@ namespace pestaServer.Models.gadgets.http
         {
             HttpWebResponse resp;
             //fetcher.Timeout = CONNECT_TIMEOUT_MS;
+            /*
+            WebProxy proxy = new WebProxy
+                                 {
+                                     Address = new Uri("http://219.93.178.162:3128"),
+                                     UseDefaultCredentials = true
+                                 };
+            fetcher.Proxy = proxy;
+            ServicePointManager.Expect100Continue = false;
+             * */
             try
             {
                 resp = (HttpWebResponse)fetcher.GetResponse();

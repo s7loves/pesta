@@ -211,37 +211,36 @@ namespace pestaServer.Models.gadgets.spec
                     continue;
                 }
                 XmlElement element = (XmlElement)child;
-                String name = element.Name;
-                if ("ModulePrefs".Equals(name))
+                switch (element.Name)
                 {
-                    if (modulePrefs == null)
-                    {
-                        modulePrefs = new ModulePrefs(element, url);
-                    }
-                    else
-                    {
-                        throw new SpecParserException("Only 1 ModulePrefs is allowed.");
-                    }
-                }
-                if ("UserPref".Equals(name))
-                {
-                    UserPref pref = new UserPref(element);
-                    userPrefs.Add(pref);
-                }
-                if ("Content".Equals(name))
-                {
-                    String viewNames = XmlUtil.getAttribute(element, "view", "default");
-                    foreach (String _view in viewNames.Split(','))
-                    {
-                        String view = _view.Trim();
-                        List<XmlElement> viewElements = null;
-                        if (!views.TryGetValue(view, out viewElements))
+                    case "ModulePrefs":
+                        if (modulePrefs == null)
                         {
-                            viewElements = new List<XmlElement>();
-                            views.Add(view, viewElements);
+                            modulePrefs = new ModulePrefs(element, url);
                         }
-                        viewElements.Add(element);
-                    }
+                        else
+                        {
+                            throw new SpecParserException("Only 1 ModulePrefs is allowed.");
+                        }
+                        break;
+                    case "UserPref":
+                        UserPref pref = new UserPref(element);
+                        userPrefs.Add(pref);
+                        break;
+                    case "Content":
+                        String viewNames = XmlUtil.getAttribute(element, "view", "default");
+                        foreach (String _view in viewNames.Split(','))
+                        {
+                            String view = _view.Trim();
+                            List<XmlElement> viewElements;
+                            if (!views.TryGetValue(view, out viewElements))
+                            {
+                                viewElements = new List<XmlElement>();
+                                views.Add(view, viewElements);
+                            }
+                            viewElements.Add(element);
+                        }
+                        break;
                 }
             }
 

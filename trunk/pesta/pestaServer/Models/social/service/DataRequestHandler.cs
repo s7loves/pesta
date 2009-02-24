@@ -87,7 +87,7 @@ namespace pestaServer.Models.social.service
         {
             public static T checkNotNull(T coll, T message)
             {
-                if (coll == null)
+                if (Equals(coll, default(T)))
                 {
                     return message;
                 }

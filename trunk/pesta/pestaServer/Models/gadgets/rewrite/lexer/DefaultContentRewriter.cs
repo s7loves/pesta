@@ -134,7 +134,7 @@ namespace pestaServer.Models.gadgets.rewrite.lexer
             }
             if (isHTML(mimeType))
             {
-                Dictionary<String, HtmlTagTransformer> transformerMap = new Dictionary<string, HtmlTagTransformer>();
+                Dictionary<String, IHtmlTagTransformer> transformerMap = new Dictionary<string, IHtmlTagTransformer>();
 
                 if (ProxyUrl != null)
                 {
