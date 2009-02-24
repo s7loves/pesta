@@ -33,7 +33,7 @@ namespace pestaServer.Models.gadgets.rewrite.lexer
     ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
     /// </para>
     /// </remarks>
-    public class LinkingTagRewriter : HtmlTagTransformer
+    public class LinkingTagRewriter : IHtmlTagTransformer
     {
         private readonly Uri relativeBase;
         private readonly ILinkRewriter linkRewriter;

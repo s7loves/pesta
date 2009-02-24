@@ -1,9 +1,29 @@
+#region License, Terms and Conditions
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
+#endregion
 using System;
 using System.Collections.Generic;
 using System.Web;
 using Jayrock.Json;
 using Jayrock.Json.Conversion;
 using Pesta.Engine.auth;
+using Pesta.Engine.social.model;
 using pestaServer.Models.social.service;
 using Pesta.Engine.social.spi;
 
@@ -16,7 +36,7 @@ namespace pestaServer.Controllers
         protected static readonly String XML_FORMAT = "xml";
         protected static readonly String JSON_BATCH_ROUTE = "jsonBatch";
 
-        public void Index(string id1, string id2, string id3)
+        public void Index(string id1, string id2, string id3, string id4)
         {
             HttpRequest request = System.Web.HttpContext.Current.Request;
             HttpResponse response = System.Web.HttpContext.Current.Response;
@@ -45,12 +65,30 @@ namespace pestaServer.Controllers
             if (responseItem != null && responseItem.getError() == null)
             {
                 Object resp = responseItem.getResponse();
-                // TODO: ugliness resulting from not using RestfulItem
-                if (!(resp is DataCollection) && !(resp is RestfulCollection<object>))
+                // put single object responses into restfulcollection
+                if (!(resp is DataCollection) && !(resp is IRestfulCollection))
                 {
-                    resp = new Dictionary<string, object> { { "entry", resp } };
+                    switch (requestItem.getService())
+                    {
+                        case IHandlerDispatcher.ACTIVITY_ROUTE:
+                            if(resp is Activity)
+                            {
+                                resp = new RestfulCollection<Activity>((Activity)resp);
+                            }
+                            
+                            break;
+                        case IHandlerDispatcher.PEOPLE_ROUTE:
+                            if (resp is Person)
+                            {
+                                resp = new RestfulCollection<Person>((Person)resp);
+                            }
+                            break;
+                        case IHandlerDispatcher.APPDATA_ROUTE:
+                            resp = new DataCollection(new Dictionary<string, Dictionary<string,string>>{{"entry",(Dictionary<string,string>)resp}});
+                            break;
+                    }
                 }
-                response.Output.Write(converter.convertToString(resp));
+                response.Output.Write(converter.convertToString(resp, requestItem));
             }
             else
             {
@@ -70,7 +108,7 @@ namespace pestaServer.Controllers
                 RestfulRequestItem requestItem = new RestfulRequestItem(req["url"].ToString(), req["method"].ToString(),"", token, converter);
                 responses.Add(key, getResponseItem(handleRequestItem(requestItem)).getResponse());
             }
-            response.Output.Write(converter.convertToString(new Dictionary<string, object> { { "error", false }, { "responses", responses } }));
+            response.Output.Write(converter.convertToString(new Dictionary<string, object> { { "error", false }, { "responses", responses } }, mainRequest));
         }
 
         BeanConverter getConverterForRequest(HttpRequest servletRequest)
@@ -82,13 +120,6 @@ namespace pestaServer.Controllers
             try
             {
                 formatString = servletRequest.Params[FORMAT_PARAM];
-            }
-            catch (Exception t)
-            {
-                // this happens while testing
-            }
-            try
-            {
                 contentType = servletRequest.Headers[IHandlerDispatcher.CONTENT_TYPE];
             }
             catch (Exception t)

@@ -1,3 +1,22 @@
+#region License, Terms and Conditions
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
+#endregion
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -129,6 +148,7 @@ namespace pestaServer.Controllers
             // TODO: should use shared deadline across each request
             ResponseItem response = getResponseItem(handleRequestItem(requestItem));
             JsonObject result = getJSONResponse(key, response);
+
             servletResponse.Output.Write(result.ToString());
         }
 
@@ -148,20 +168,23 @@ namespace pestaServer.Controllers
                 Object response = responseItem.getResponse();
                 JsonObject converted = (JsonObject)jsonConverter.convertToJson(response);
 
-                if (response != null &&
-                    response.GetType().IsGenericType &&
-                    response.GetType().GetGenericTypeDefinition() == typeof(RestfulCollection<>))
-                {
-                    // FIXME this is a little hacky because of the field names in the RestfulCollection
-                    converted.Put("list", converted.Remove("entry"));
-                    result.Put("data", converted);
-                }
-                else if (response is DataCollection)
+                if (response is DataCollection)
                 {
                     if (converted.Contains("entry"))
                     {
                         result.Put("data", converted["entry"]);
                     }
+                }
+                else if (response != null &&
+                    response.GetType().IsGenericType &&
+                    response.GetType().GetGenericTypeDefinition() == typeof(RestfulCollection<>))
+                {
+                    JsonObject map = new JsonObject();
+                    IRestfulCollection collection = (IRestfulCollection) response;
+                    map.Put("startIndex", collection.getStartIndex());
+                    map.Put("totalResults", collection.getTotalResults());
+                    map.Put("list", converted["entry"]);
+                    result.Put("data", map);
                 }
                 else
                 {

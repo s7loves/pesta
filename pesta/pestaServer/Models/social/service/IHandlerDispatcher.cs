@@ -33,10 +33,10 @@ namespace pestaServer.Models.social.service
     /// </remarks>
     public abstract class IHandlerDispatcher
     {
-        public static readonly String PEOPLE_ROUTE = "people";
-        public static readonly String ACTIVITY_ROUTE = "activities";
-        public static readonly String APPDATA_ROUTE = "appdata";
-        public static readonly String CONTENT_TYPE = "CONTENT_TYPE";
+        public const String PEOPLE_ROUTE = "people";
+        public const String ACTIVITY_ROUTE = "activities";
+        public const String APPDATA_ROUTE = "appdata";
+        public const String CONTENT_TYPE = "CONTENT_TYPE";
         /**
         * @param service a service name
         * @return the handler, or null if no handler is registered for that service

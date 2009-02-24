@@ -20,13 +20,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Jayrock.Json;
 using Pesta.Engine.auth;
 using Pesta.Engine.social;
+using Pesta.Engine.social.core.model;
 using Pesta.Engine.social.model;
 using Pesta.Engine.social.spi;
-using pestaServer.Models.social.core.util;
-using pestaServer.Models.social.service;
 
 namespace pestaServer.DataAccess
 {
@@ -36,9 +34,7 @@ namespace pestaServer.DataAccess
         public readonly static RayaService Instance = new RayaService();
         protected RayaService()
         {
-            this.converter = new BeanJsonConverter();
         }
-        private readonly BeanConverter converter;
 
         private class NAME_COMPARATOR : IComparer<Person>
         {
@@ -50,19 +46,7 @@ namespace pestaServer.DataAccess
             }
         }
 
-        private Person convertToPerson(JsonObject inobject, HashSet<String> fields)
-        {
-            if (fields.Count != 0)
-            {
-                // Create a copy with just the specified fields
-                string[] datafields = new string[fields.Count];
-                fields.CopyTo(datafields);
-                inobject = new JsonObject(inobject, datafields);
-            }
-            return converter.convertToObject(inobject.ToString(), typeof(Person)) as Person;
-        }
-
-        private HashSet<String> getIdSet(UserId user, GroupId group, ISecurityToken token)
+        private static HashSet<String> getIdSet(UserId user, GroupId group, ISecurityToken token)
         {
             String userId = user.getUserId(token);
 
@@ -90,7 +74,7 @@ namespace pestaServer.DataAccess
             return returnVal;
         }
 
-        private HashSet<String> getIdSet(HashSet<UserId> users, GroupId group, ISecurityToken _token)
+        private static HashSet<String> getIdSet(IEnumerable<UserId> users, GroupId group, ISecurityToken _token)
         {
             HashSet<String> ids = new HashSet<string>();
             foreach (UserId user in users)
@@ -106,17 +90,17 @@ namespace pestaServer.DataAccess
             int first = _options.getFirst();
             int max = _options.getMax();
             HashSet<String> _ids = getIdSet(_userId, _groupId, _token);
-            var _allPeople = RayaDbFetcher.get().getPeople(_ids, _fields, _options);
-            var _totalSize = _allPeople.Count;
+            var allPeople = RayaDbFetcher.get().getPeople(_ids, _fields, _options);
+            var totalSize = allPeople.Count;
             var result = new List<Person>();
-            if (first < _totalSize)
+            if (first < totalSize)
             {
                 foreach (var _id in _ids)
                 {
-                    if (!_allPeople.ContainsKey(_id))
+                    if (!allPeople.ContainsKey(_id))
                         continue;
 
-                    Person _person = _allPeople[_id];
+                    Person _person = allPeople[_id];
                     if (!_token.isAnonymous() && _id == _token.getViewerId())
                     {
                         _person.setIsViewer(true);
@@ -140,12 +124,12 @@ namespace pestaServer.DataAccess
                 }
                 result = result.GetRange(first,
                                          Math.Min(max,
-                                                  _totalSize - first > 0
-                                                      ? _totalSize - first
+                                                  totalSize - first > 0
+                                                      ? totalSize - first
                                                       : 1));
             }
             
-            return new RestfulCollection<Person>(result, _options.getFirst(), _totalSize);
+            return new RestfulCollection<Person>(result, _options.getFirst(), totalSize);
         }
 
 
@@ -154,10 +138,10 @@ namespace pestaServer.DataAccess
             try
             {
                 var _groupId = new GroupId(GroupId.Type.self, "all");
-                var _person = this.getPeople(new HashSet<UserId> {_userId}, _groupId, new CollectionOptions(), _fields,
+                var _person = getPeople(new HashSet<UserId> {_userId}, _groupId, new CollectionOptions(), _fields,
                                              _token);
                 if (_person.getEntry().Count == 1)
-                    return _person.getEntry()[0];
+                    return (Person)_person.getEntry()[0];
 
                 throw new SocialSpiException(ResponseError.BAD_REQUEST, "Person not found");
             }
@@ -170,7 +154,7 @@ namespace pestaServer.DataAccess
         public DataCollection getPersonData(HashSet<UserId> _userId, GroupId _groupId,
                                             String _appId, HashSet<String> _fields, ISecurityToken _token)
         {
-            var _ids = this.getIdSet(_userId, _groupId, _token);
+            var _ids = getIdSet(_userId, _groupId, _token);
             var _data = RayaDbFetcher.get().getAppData(_ids, _fields, _appId);
             
             return _data;
@@ -180,7 +164,7 @@ namespace pestaServer.DataAccess
         public void deletePersonData(UserId _userId, GroupId _groupId,
                                      String _appId, HashSet<String> _fields, ISecurityToken _token)
         {
-            var _ids = this.getIdSet(_userId, _groupId, _token);
+            var _ids = getIdSet(_userId, _groupId, _token);
             if (_ids.Count < 1)
             {
                 throw new SocialSpiException(ResponseError.BAD_REQUEST, "No _userId specified");
@@ -192,7 +176,6 @@ namespace pestaServer.DataAccess
             IEnumerator<string> iuserid = _ids.GetEnumerator();
             iuserid.MoveNext();
             string userId = iuserid.Current;
-            _appId = _token.getAppId();
             foreach (var _key in _fields)
             {
                 if (!RayaDbFetcher.get().deleteAppData(userId, _key, _appId)) 
@@ -207,14 +190,14 @@ namespace pestaServer.DataAccess
         {
             if (_userId.getUserId(_token) == null) 
             {
-                throw new SocialSpiException(ResponseError.NOT_IMPLEMENTED, "Unknown person id.");
+                throw new SocialSpiException(ResponseError.NOT_FOUND, "Unknown person id.");
             }
             switch (_groupId.getType()) 
             {
                 case GroupId.Type.self:
                     foreach (var _key in _fields) 
                     {
-                        var _value = _values[_key] ?? null;
+                        var _value = _values[_key];
                         if (! RayaDbFetcher.get().setAppData(_userId.getUserId(_token), _key, _value, _token.getAppId())) 
                         {
                             throw new SocialSpiException(ResponseError.INTERNAL_ERROR, "Internal server error");
@@ -230,29 +213,59 @@ namespace pestaServer.DataAccess
                                                          GroupId _groupId, String _appId, CollectionOptions options, HashSet<String> _fields, ISecurityToken _token)
         {
             var _ids = getIdSet(_userIds, _groupId, _token);
-            var _activities = RayaDbFetcher.get().getActivities(_ids, _appId, _fields);
-            return new RestfulCollection<Activity>(_activities, options.getFirst(), _activities.Count);
+            var activities = RayaDbFetcher.get().getActivities(_ids, _appId, _fields);
+            int totalCount = activities.Count();
+            int first = options.getFirst();
+            int max = options.getMax();
+            if (first != 0)
+            {
+                activities = activities.Skip(first);
+            }
+            if (max != 0)
+            {
+                activities = activities.Take(max);
+            }
+            List<Activity> Activities = new List<Activity>();
+            foreach (var row in activities)
+            {
+                var _activity = new ActivityImpl(row.id.ToString(), row.person_id.ToString());
+                _activity.setStreamTitle("activities");
+                _activity.setTitle(row.title);
+                _activity.setBody(row.body);
+                _activity.setPostedTime(row.created);
+                _activity.setMediaItems(RayaDbFetcher.get().getMediaItems(row.id));
+                Activities.Add(_activity);
+            }
+
+            return new RestfulCollection<Activity>(Activities, options.getFirst(), totalCount);
         }
         
         public RestfulCollection<Activity> getActivities(UserId _userId, GroupId _groupId,
-                                                         String _appId, HashSet<String> _fields, HashSet<String> _activityIds, ISecurityToken _token)
+                                                         String _appId, HashSet<String> _fields, HashSet<String> activityIds, ISecurityToken _token)
         {
             var _ids = getIdSet(_userId, _groupId, _token);
             var _activities = RayaDbFetcher.get().getActivities(_ids, _appId, _fields);
-            if (_activityIds != null)
+            List<Activity> Activities = new List<Activity>();
+            if (activityIds != null)
             {
-                foreach (var activity in _activities)
+                foreach (var row in _activities)
                 {
-                    if (!_activityIds.Contains(activity.getId()))
+                    if (activityIds.Contains(row.id.ToString()))
                     {
-                        _activities.Remove(activity);
+                        var _activity = new ActivityImpl(row.id.ToString(), row.person_id.ToString());
+                        _activity.setStreamTitle("activities");
+                        _activity.setTitle(row.title);
+                        _activity.setBody(row.body);
+                        _activity.setPostedTime(row.created);
+                        _activity.setMediaItems(RayaDbFetcher.get().getMediaItems(row.id));
+                        Activities.Add(_activity);
                     }
                 }
             }
-            
-            if (_activities.Count != 0)
+
+            if (Activities.Count != 0)
             {
-                return new RestfulCollection<Activity>(_activities);
+                return new RestfulCollection<Activity>(Activities);
             }
             throw new SocialSpiException(ResponseError.NOT_FOUND, "Activity not found");
         }
@@ -262,7 +275,7 @@ namespace pestaServer.DataAccess
         {
             var _activities = getActivities(new HashSet<UserId> { _userId }, _groupId, _appId, options, _fields, _token);
             var acts = _activities.getEntry();
-            foreach (var _activity in acts)
+            foreach (Activity _activity in acts)
             {
                 if (_activity.getId() == _activityId)
                 {
@@ -276,7 +289,7 @@ namespace pestaServer.DataAccess
         public void deleteActivities(UserId _userId, GroupId _groupId, String _appId,
                                      HashSet<String> _activityIds, ISecurityToken _token)
         {
-            var _ids = this.getIdSet(_userId, _groupId, _token);
+            var _ids = getIdSet(_userId, _groupId, _token);
             if (_ids.Count < 1 || _ids.Count > 1)
             {
                 throw new SocialSpiException(ResponseError.BAD_REQUEST, "Invalid user id or count");
@@ -289,7 +302,6 @@ namespace pestaServer.DataAccess
             }
         }
 
-        
         public void createActivity(UserId _userId, GroupId _groupId, String _appId,
                                    HashSet<String> _fields, Activity _activity, ISecurityToken _token)
         {

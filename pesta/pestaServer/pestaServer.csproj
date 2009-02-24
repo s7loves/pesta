@@ -101,9 +101,9 @@
     <Compile Include="Controllers\rpcController.cs" />
     <Compile Include="DataAccess\JsonDbOpensocialService.cs" />
     <Compile Include="DataAccess\LinqRaya1.designer.cs">
-      <DependentUpon>LinqRaya.dbml</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+      <DependentUpon>LinqRaya.dbml</DependentUpon>
     </Compile>
     <Compile Include="DataAccess\RayaDbFetcher.cs" />
     <Compile Include="DataAccess\RayaService.cs" />
@@ -195,7 +195,7 @@
     <Compile Include="Models\gadgets\rewrite\ILinkRewriter.cs" />
     <Compile Include="Models\gadgets\rewrite\lexer\DefaultContentRewriter.cs" />
     <Compile Include="Models\gadgets\rewrite\lexer\HtmlRewriter.cs" />
-    <Compile Include="Models\gadgets\rewrite\lexer\HtmlTagTransformer.cs" />
+    <Compile Include="Models\gadgets\rewrite\lexer\IHtmlTagTransformer.cs" />
     <Compile Include="Models\gadgets\rewrite\lexer\JavascriptTagMerger.cs" />
     <Compile Include="Models\gadgets\rewrite\lexer\LinkingTagRewriter.cs" />
     <Compile Include="Models\gadgets\rewrite\lexer\StyleTagRewriter.cs" />
@@ -506,11 +506,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="config\oauth.json" />
-    <None Include="DataAccess\LinqRaya.dbml">
-      <Generator>MSLinqToSQLGenerator</Generator>
-      <LastGenOutput>LinqRaya1.designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </None>
     <None Include="gadgets\files\samplecontainer\state.dtd" />
     <None Include="gadgets\files\sampledata\canonicaldb.json" />
   </ItemGroup>
@@ -519,10 +514,15 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Content\features\opensocial-templates\README" />
-    <None Include="config\certs\myrsacert.pfx" />
-    <None Include="Content\features\README" />
     <None Include="DataAccess\LinqRaya.dbml.layout">
       <DependentUpon>LinqRaya.dbml</DependentUpon>
+    </None>
+    <None Include="config\certs\myrsacert.pfx" />
+    <None Include="Content\features\README" />
+    <None Include="DataAccess\LinqRaya.dbml">
+      <Generator>MSLinqToSQLGenerator</Generator>
+      <LastGenOutput>LinqRaya1.designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -547,7 +547,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>22603</DevelopmentServerPort>
+          <DevelopmentServerPort>9695</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>
           </IISUrl>

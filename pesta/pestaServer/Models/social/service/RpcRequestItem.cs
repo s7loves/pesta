@@ -86,7 +86,7 @@ namespace pestaServer.Models.social.service
             }
         }
 
-        public override List<String> getListParameter(String paramName)
+        public override HashSet<String> getListParameter(String paramName)
         {
             try
             {
@@ -95,7 +95,7 @@ namespace pestaServer.Models.social.service
                     if (data[paramName] is JsonArray)
                     {
                         JsonArray jsonArray = (JsonArray)data[paramName];
-                        List<String> returnVal = new List<string>(jsonArray.Length);
+                        HashSet<String> returnVal = new HashSet<string>();
                         for (int i = 0; i < jsonArray.Length; i++)
                         {
                             returnVal.Add(jsonArray.GetString(i,null));
@@ -103,9 +103,9 @@ namespace pestaServer.Models.social.service
                         return returnVal;
                     }
                     // Allow up-conversion of non-array to array params.
-                    return new List<string> { data[paramName].ToString() };
+                    return new HashSet<string> { data[paramName].ToString() };
                 }
-                return new List<string>();
+                return new HashSet<string>();
             }
             catch (JsonException je)
             {
