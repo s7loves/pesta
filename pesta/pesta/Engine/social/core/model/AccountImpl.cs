@@ -51,9 +51,9 @@ namespace Pesta.Engine.social.core.model
             return domain;
         }
 
-        public override void setDomain(String domain)
+        public override void setDomain(String newdomain)
         {
-            this.domain = domain;
+            domain = newdomain;
         }
 
         public override String getUserId()
@@ -61,9 +61,9 @@ namespace Pesta.Engine.social.core.model
             return userId;
         }
 
-        public override void setUserId(String userId)
+        public override void setUserId(String newuserId)
         {
-            this.userId = userId;
+            userId = newuserId;
         }
 
         public override String getUsername()
@@ -71,9 +71,9 @@ namespace Pesta.Engine.social.core.model
             return username;
         }
 
-        public override void setUsername(String username)
+        public override void setUsername(String newusername)
         {
-            this.username = username;
+            username = newusername;
         }
     }
 }

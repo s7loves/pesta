@@ -43,14 +43,19 @@ namespace Pesta.Engine.social.spi
 
         /** A map of JSON strings to Type objects */
         private static readonly Dictionary<String, Type> jsonTypeMap =
-            new Dictionary<string, Type>(){{"@all", Type.all},{"@friends", Type.friends},
+            new Dictionary<string, Type>
+                {{"@all", Type.all},{"@friends", Type.friends},
                                            {"@self", Type.self},{"@deleted", Type.deleted},{"@groupId", Type.groupId}};
 
 
         /** Return the Type enum value given a specific jsonType **/
         public static Type? jsonValueOf(String jsonType)
         {
-            return jsonTypeMap[jsonType] as Type?;
+            if (!jsonTypeMap.ContainsKey(jsonType))
+            {
+                return null;
+            }
+            return jsonTypeMap[jsonType];
         }
 
 
@@ -76,7 +81,7 @@ namespace Pesta.Engine.social.spi
 
         public static GroupId fromJson(String jsonId)
         {
-            Type? idSpecEnum = GroupId.jsonValueOf(jsonId);
+            Type? idSpecEnum = jsonValueOf(jsonId);
             if (idSpecEnum != null)
             {
                 return new GroupId(idSpecEnum.Value, null);
@@ -94,18 +99,18 @@ namespace Pesta.Engine.social.spi
             }
 
             GroupId actual = (GroupId)o;
-            return this.type == actual.type
-                   && this.groupId.Equals(actual.groupId);
+            return type == actual.type
+                   && groupId.Equals(actual.groupId);
         }
 
         public override int GetHashCode()
         {
             int groupHashCode = 0;
-            if (this.groupId != null)
+            if (groupId != null)
             {
-                groupHashCode = this.groupId.GetHashCode();
+                groupHashCode = groupId.GetHashCode();
             }
-            return this.type.GetHashCode() + groupHashCode;
+            return type.GetHashCode() + groupHashCode;
         }
     }
 }

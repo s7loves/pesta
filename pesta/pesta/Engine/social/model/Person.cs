@@ -170,13 +170,14 @@ namespace Pesta.Engine.social.model
             /**
              * The set of required fields.
              */
-            public static readonly HashSet<String> DEFAULT_FIELDS = new HashSet<string>(){ID.ToString(),
+            public static readonly HashSet<String> DEFAULT_FIELDS = new HashSet<string>
+                                                                        {ID.ToString(),
             NAME.ToString(),THUMBNAIL_URL.ToString()};
 
             /**
              * The set of all fields.
              */
-            public static readonly ReadOnlyCollection<Field> ALL_FIELDS = Field.GetBaseValues();
+            public static readonly ReadOnlyCollection<Field> ALL_FIELDS = GetBaseValues();
 
             /**
              * a Map to convert json string to Field representations.
@@ -188,7 +189,7 @@ namespace Pesta.Engine.social.model
              *
              * @param urlString the name of the element
              */
-            private Field(String urlString)
+            protected Field(String urlString)
             {
                 this.urlString = urlString;
             }
@@ -209,12 +210,12 @@ namespace Pesta.Engine.social.model
              * @param urlString The string to translate.
              * @return The corresponding person field.
              */
-            public static Person.Field fromUrlString(String urlString)
+            public static Field fromUrlString(String urlString)
             {
                 if (URL_STRING_TO_FIELD_MAP == null)
                 {
                     URL_STRING_TO_FIELD_MAP = new Dictionary<string, Field>();
-                    foreach (Person.Field field in Person.Field.GetBaseValues())
+                    foreach (Field field in GetBaseValues())
                     {
                         URL_STRING_TO_FIELD_MAP.Add(field.ToString(), field);
                     }

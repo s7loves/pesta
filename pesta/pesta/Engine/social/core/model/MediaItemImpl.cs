@@ -33,14 +33,14 @@ namespace Pesta.Engine.social.core.model
     public class MediaItemImpl : MediaItem
     {
         private String mimeType;
-        private MediaItem.Type type;
+        private Type type;
         private String url;
 
         public MediaItemImpl()
         {
         }
 
-        public MediaItemImpl(String mimeType, MediaItem.Type type, String url)
+        public MediaItemImpl(String mimeType, Type type, String url)
         {
             this.mimeType = mimeType;
             this.type = type;
@@ -57,12 +57,12 @@ namespace Pesta.Engine.social.core.model
             this.mimeType = mimeType;
         }
 
-        public override MediaItem.Type getType()
+        public override Type getType()
         {
             return type;
         }
 
-        public override void setType(MediaItem.Type type)
+        public override void setType(Type type)
         {
             this.type = type;
         }

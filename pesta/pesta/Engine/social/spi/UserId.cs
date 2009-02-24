@@ -50,17 +50,21 @@ namespace Pesta.Engine.social.spi
             public readonly static Type userId = new Type(4, "userId");
 
             /** A map of JSON strings to Type objects */
-            private static readonly Dictionary<String, Type> jsonTypeMap = new Dictionary<string, Type>()
+            private static readonly Dictionary<String, Type> jsonTypeMap = new Dictionary<string, Type>
                                                                                {
-                                                                                   {"@me", Type.me},
-                                                                                   {"@viewer", Type.viewer},
-                                                                                   {"@owner", Type.owner},
-                                                                                   {"@userId", Type.userId}
+                                                                                   {"@me", me},
+                                                                                   {"@viewer", viewer},
+                                                                                   {"@owner", owner},
+                                                                                   {"@userId", userId}
                                                                                };
             /** Return the Type enum value given a specific jsonType **/
             public static Type jsonValueOf(String jsonType)
             {
-                Type retType = null;
+                if (string.IsNullOrEmpty(jsonType))
+                {
+                    return null;
+                }
+                Type retType;
                 jsonTypeMap.TryGetValue(jsonType, out retType);
                 return retType;
             }
@@ -91,11 +95,11 @@ namespace Pesta.Engine.social.spi
             {
                 return token.getOwnerId();
             }
-            else if (type == Type.viewer || type == Type.me)
+            if (type == Type.viewer || type == Type.me)
             {
                 return token.getViewerId();
             }
-            else if (type == Type.userId)
+            if (type == Type.userId)
             {
                 return userId;
             }
@@ -123,14 +127,14 @@ namespace Pesta.Engine.social.spi
             }
 
             UserId actual = (UserId)o;
-            return this.type == actual.type
-                   && this.userId.Equals(actual.userId);
+            return type == actual.type
+                   && userId.Equals(actual.userId);
         }
 
         public override int GetHashCode()
         {
-            int userHashCode = this.userId == null ? 0 : this.userId.GetHashCode();
-            return this.type.GetHashCode() + userHashCode;
+            int userHashCode = userId == null ? 0 : userId.GetHashCode();
+            return type.GetHashCode() + userHashCode;
         }
     }
 }

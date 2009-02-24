@@ -51,7 +51,7 @@ namespace Pesta.Engine.common.xml
         /// </returns>
         public static String getAttribute(XmlNode node, String attr, String def)
         {
-            XmlNamedNodeMap attrs = (XmlAttributeCollection)node.Attributes;
+            XmlNamedNodeMap attrs = node.Attributes;
             XmlNode val = attrs.GetNamedItem(attr);
             if (val != null)
             {
@@ -72,10 +72,6 @@ namespace Pesta.Engine.common.xml
         }
 
         /// <summary> Retrieves an attribute as a Uri.</summary>
-        /// <param name="node">
-        /// </param>
-        /// <param name="attr">
-        /// </param>
         /// <returns> The parsed uri, or def if the attribute doesn't exist or can not
         /// be parsed as a Uri.
         /// </returns>
@@ -194,7 +190,7 @@ namespace Pesta.Engine.common.xml
             }
             try
             {
-                return System.Int32.Parse(value_Renamed);
+                return int.Parse(value_Renamed);
             }
             catch
             {

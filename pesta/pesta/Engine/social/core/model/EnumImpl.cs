@@ -33,7 +33,7 @@ namespace Pesta.Engine.social.core.model
     public class EnumImpl<E> : Enums<E> where E : EnumKey
     {
         private String displayValue;
-        private E value = default(E);
+        private E value;
 
         /**
          * Constructs a Enum object.
@@ -51,10 +51,10 @@ namespace Pesta.Engine.social.core.model
          * @param value The key to use. Will use the value from getDisplayValue() as
          *     the display value.
          */
-        public EnumImpl(E value)
+        public EnumImpl(E newvalue)
         {
-            this.value = value;
-            this.displayValue = value.getDisplayValue();
+            value = newvalue;
+            displayValue = newvalue.getDisplayValue();
         }
 
         public override String getDisplayValue()
@@ -62,9 +62,9 @@ namespace Pesta.Engine.social.core.model
             return displayValue;
         }
 
-        public override void setDisplayValue(String displayValue)
+        public override void setDisplayValue(String newdisplayValue)
         {
-            this.displayValue = displayValue;
+            displayValue = newdisplayValue;
         }
 
         public override E getValue()
@@ -72,9 +72,9 @@ namespace Pesta.Engine.social.core.model
             return value;
         }
 
-        public override void setValue(E value)
+        public override void setValue(E newvalue)
         {
-            this.value = value;
+            value = newvalue;
         }
     }
 }

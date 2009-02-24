@@ -18,6 +18,7 @@
  */
 #endregion
 
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Pesta.Engine.social.spi
@@ -30,7 +31,7 @@ namespace Pesta.Engine.social.spi
     ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
     /// </para>
     /// </remarks>
-    public class RestfulCollection<T>
+    public class RestfulCollection<T> : IRestfulCollection
     {
         private List<T> entry;
         private int startIndex;
@@ -45,6 +46,11 @@ namespace Pesta.Engine.social.spi
         {
         }
 
+        public RestfulCollection(T entry)
+            : this(new List<T> { entry }, 0, 1)
+        {
+        }
+
         public RestfulCollection(List<T> entry, int startIndex, int totalResults)
         {
             this.entry = entry;
@@ -52,14 +58,14 @@ namespace Pesta.Engine.social.spi
             this.totalResults = totalResults;
         }
 
-        public List<T> getEntry()
+        public IList getEntry()
         {
             return entry;
         }
 
-        public void setEntry(List<T> entry)
+        public void setEntry(List<T> _entry)
         {
-            this.entry = entry;
+            entry = _entry;
         }
 
         public int getStartIndex()
@@ -67,9 +73,9 @@ namespace Pesta.Engine.social.spi
             return startIndex;
         }
 
-        public void setStartIndex(int startIndex)
+        public void setStartIndex(int _startIndex)
         {
-            this.startIndex = startIndex;
+            startIndex = _startIndex;
         }
 
         public int getTotalResults()
@@ -77,9 +83,9 @@ namespace Pesta.Engine.social.spi
             return totalResults;
         }
 
-        public void setTotalResults(int totalResults)
+        public void setTotalResults(int _totalResults)
         {
-            this.totalResults = totalResults;
+            totalResults = _totalResults;
         }
 
         public bool isFiltered()
@@ -87,9 +93,9 @@ namespace Pesta.Engine.social.spi
             return filtered;
         }
 
-        public void setFiltered(bool filtered)
+        public void setFiltered(bool _filtered)
         {
-            this.filtered = filtered;
+            filtered = _filtered;
         }
 
         public bool isSorted()
@@ -97,9 +103,9 @@ namespace Pesta.Engine.social.spi
             return sorted;
         }
 
-        public void setSorted(bool sorted)
+        public void setSorted(bool _sorted)
         {
-            this.sorted = sorted;
+            sorted = _sorted;
         }
 
         public bool isUpdatedSince()
@@ -107,9 +113,9 @@ namespace Pesta.Engine.social.spi
             return updatedSince;
         }
 
-        public void setUpdatedSince(bool updatedSince)
+        public void setUpdatedSince(bool _updatedSince)
         {
-            this.updatedSince = updatedSince;
+            updatedSince = _updatedSince;
         }
     }
 }
