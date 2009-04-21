@@ -53,7 +53,7 @@ namespace Pesta.Utilities
 
             if (settings != null) 
             {
-                jsonDb = ReadSetting(settings, "jsonDb", "");
+                dbServiceName = ReadSetting(settings, "dbServiceName", "JsonDbOpensocialService");
                 allowUnauthenticated = ReadSetting(settings, "allowUnauthenticated", "true");
                 gadgetDebug = ReadSetting(settings, "gadgetDebug", "true");
                 tokenMaxAge = ReadSetting(settings, "tokenMaxAge", "3600");
@@ -84,7 +84,7 @@ namespace Pesta.Utilities
             }
         }
 
-        private static string jsonDb;
+        private static string dbServiceName;
         private static string allowUnauthenticated;
         private static string gadgetDebug;
         private static string gadgetCacheXmlRefreshInterval;
@@ -93,10 +93,10 @@ namespace Pesta.Utilities
         private static string containerUrlPrefix;
         private static string tokenMasterKey;
 
-        public static String JsonDb 
+        public static String DbServiceName 
         {
-            get { return jsonDb; }
-            set { jsonDb = value; }
+            get { return dbServiceName; }
+            set { dbServiceName = value; }
         }
         public static String AllowPlaintextToken
         {

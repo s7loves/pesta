@@ -206,7 +206,7 @@ namespace Pesta.Engine.common.crypto
             }
         }
 
-        private Dictionary<string, string> Deserialize(byte[] plain)
+        private static Dictionary<string, string> Deserialize(byte[] plain)
         {
             String bs = Encoding.UTF8.GetString(plain);
             String[] items = bs.Split("[&=]".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
