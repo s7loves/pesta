@@ -21,37 +21,38 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using Pesta.DataAccess;
 using Pesta.Engine.social.core.model;
 using Pesta.Engine.social.model;
 using Pesta.Engine.social.spi;
 using Pesta.Utilities;
-using pestaServer.DataAccess;
 
 namespace pestaServer.DataAccess
 {
     ///  Apache Software License 2.0 2008 Partuza! ported to Pesta by Sean Lin M.T. (my6solutions.com)
     public class RayaDbFetcher : IDisposable
     {
-        protected readonly LinqRayaDataContext _db;
-        protected string url_prefix;
-        protected RayaDbFetcher()
+        private readonly LinqRayaDataContext Db;
+        private readonly string url_prefix;
+
+        private RayaDbFetcher()
         {
-            _db = new LinqRayaDataContext(ConfigurationManager.ConnectionStrings["rayaConnectionString"].ConnectionString);
+            Db = new LinqRayaDataContext(ConfigurationManager.ConnectionStrings["rayaConnectionString"].ConnectionString);
             url_prefix = PestaSettings.ContainerUrlPrefix;
         }
-        public static RayaDbFetcher get()
+        public static RayaDbFetcher Get()
         {
             return new RayaDbFetcher();
         }
-        public static LinqRayaDataContext getDB()
+        public static LinqRayaDataContext GetDb()
         {
             return new LinqRayaDataContext(ConfigurationManager.ConnectionStrings["rayaConnectionString"].ConnectionString);
         }
         public void Dispose()
         {
-            if (_db != null)
+            if (Db != null)
             {
-                _db.Dispose();
+                Db.Dispose();
             }
         }
 
@@ -72,9 +73,9 @@ namespace pestaServer.DataAccess
                               body = _body,
                               created = (long)_time
                           };
-            _db.activities.InsertOnSubmit(act);
-            _db.SubmitChanges();
-            if (_db.GetChangeSet().Inserts.Count != 0)
+            Db.activities.InsertOnSubmit(act);
+            Db.SubmitChanges();
+            if (Db.GetChangeSet().Inserts.Count != 0)
                 return false;
         
             var _mediaItems = _activity.getMediaItems();
@@ -92,8 +93,8 @@ namespace pestaServer.DataAccess
                     if (!string.IsNullOrEmpty(actm.mime_type) && 
                         !string.IsNullOrEmpty(actm.url)) 
                     {
-                        _db.activity_media_items.InsertOnSubmit(actm);
-                        _db.SubmitChanges();
+                        Db.activity_media_items.InsertOnSubmit(actm);
+                        Db.SubmitChanges();
                         if (actm.id == 0) 
                         {
                             return false;
@@ -110,7 +111,7 @@ namespace pestaServer.DataAccess
 
         public IQueryable<activity> getActivities(HashSet<string> _ids, string _appId, HashSet<String> _fields) 
         {
-            var activities = _db.activities
+            var activities = Db.activities
                 .Where(x => _ids.AsEnumerable().Contains(x.person_id.ToString()));
             
             return activities;
@@ -119,17 +120,17 @@ namespace pestaServer.DataAccess
         public bool deleteActivities(string _userId, string _appId, HashSet<string> _activityIds) 
         {
             var res =
-                _db.activities.Where(
+                Db.activities.Where(
                     x => _activityIds.AsEnumerable().Contains(x.id.ToString()) && x.person_id.ToString() == _userId && x.app_id.ToString() == _appId);
-            _db.activities.DeleteAllOnSubmit(res);
-            _db.SubmitChanges();
-            return (_db.GetChangeSet().Deletes.Count == 0);
+            Db.activities.DeleteAllOnSubmit(res);
+            Db.SubmitChanges();
+            return (Db.GetChangeSet().Deletes.Count == 0);
         }
 
         public List<MediaItem> getMediaItems(int _activity_id) 
         {
             var _media = new List<MediaItem>();
-            var _res = _db.activity_media_items.Where(x=>x.activity_id == _activity_id).Select(x=> new{x.mime_type,x.media_type,x.url});
+            var _res = Db.activity_media_items.Where(x=>x.activity_id == _activity_id).Select(x=> new{x.mime_type,x.media_type,x.url});
             foreach (var _re in _res)
             {
                 _media.Add(new MediaItemImpl(_re.mime_type, EnumBaseType<MediaItem.Type>.GetBaseByKey(Convert.ToInt32(_re.media_type)),_re.url));
@@ -141,7 +142,7 @@ namespace pestaServer.DataAccess
         {
             HashSet<int> _ret = new HashSet<int>();
             var _res =
-                _db.friends.Where(x => x.person_id == _person_id || x.friend_id == _person_id)
+                Db.friends.Where(x => x.person_id == _person_id || x.friend_id == _person_id)
                             .Select(x =>  new {x.person_id, x.friend_id});
 
             foreach (var _re in _res)
@@ -163,14 +164,14 @@ namespace pestaServer.DataAccess
                                   person_id = int.Parse(_person_id),
                                   name = _key
                               };
-                _db.application_settings.DeleteOnSubmit(ret);
-                _db.SubmitChanges();
-                if (_db.GetChangeSet().Deletes.Count != 0)
+                Db.application_settings.DeleteOnSubmit(ret);
+                Db.SubmitChanges();
+                if (Db.GetChangeSet().Deletes.Count != 0)
                     return false;
             } 
             else 
             {
-                var ret = _db.application_settings
+                var ret = Db.application_settings
                     .Where(x => x.application_id.ToString() == _app_id && x.person_id.ToString() == _person_id && x.name == _key).SingleOrDefault();
                 if (ret == null)
                 {
@@ -181,16 +182,16 @@ namespace pestaServer.DataAccess
                                   name = _key,
                                   value = _value
                               };
-                    _db.application_settings.InsertOnSubmit(ret);
-                    _db.SubmitChanges();
-                    if (_db.GetChangeSet().Inserts.Count != 0)
+                    Db.application_settings.InsertOnSubmit(ret);
+                    Db.SubmitChanges();
+                    if (Db.GetChangeSet().Inserts.Count != 0)
                         return false;
                 }
                 else
                 {
                     ret.value = _value;
-                    _db.SubmitChanges();
-                    if (_db.GetChangeSet().Updates.Count != 0)
+                    Db.SubmitChanges();
+                    if (Db.GetChangeSet().Updates.Count != 0)
                         return false;
                 }
             }
@@ -199,17 +200,17 @@ namespace pestaServer.DataAccess
 
         public bool deleteAppData(string _person_id, string _key, string _app_id) 
         {
-            var ret = _db.application_settings.Where(
+            var ret = Db.application_settings.Where(
                 x => x.application_id.ToString() == _app_id && x.person_id.ToString() == _person_id && x.name == _key).Single();
-            _db.application_settings.DeleteOnSubmit(ret);
-            _db.SubmitChanges();
-            return _db.GetChangeSet().Deletes.Count == 0;
+            Db.application_settings.DeleteOnSubmit(ret);
+            Db.SubmitChanges();
+            return Db.GetChangeSet().Deletes.Count == 0;
         }
 
         public DataCollection getAppData(HashSet<String> _ids, HashSet<String> _keys, String _app_id) 
         {
             var _data = new Dictionary<string, Dictionary<string, string>>();
-            var _res = _db.application_settings
+            var _res = Db.application_settings
                 .Where(x => (!String.IsNullOrEmpty(_app_id)?x.application_id.ToString() == _app_id : true) && _ids.AsEnumerable().Contains(x.person_id.ToString()) && (_keys.Count == 0 ? true : _keys.AsEnumerable().Contains(x.name)))
                 .Select(x => new { x.person_id, x.name, x.value });
             
@@ -227,7 +228,7 @@ namespace pestaServer.DataAccess
         public Dictionary<string,Person> getPeople(HashSet<String> _ids, HashSet<String> _fields, CollectionOptions _options)
         {
             var _ret = new Dictionary<string, Person>();
-            var persons = _db.persons.Where(x => _ids.AsEnumerable().Contains(x.id.ToString()));
+            var persons = Db.persons.Where(x => _ids.AsEnumerable().Contains(x.id.ToString()));
 
             // TODO filter first then fill dictionary
 
@@ -393,14 +394,14 @@ namespace pestaServer.DataAccess
                 }
                 if (_fields.Contains("activities") || _fields.Contains("@all"))
                 {
-                    var activities = _db.person_activities.Where(a => a.person_id == _person_id).Select(a => a.activity);
+                    var activities = Db.person_activities.Where(a => a.person_id == _person_id).Select(a => a.activity);
                     _person.setActivities(activities.ToList());
                 }
 
                 if (_fields.Contains("addresses") || _fields.Contains("@all"))
                 {
-                    var person_addresses = _db.addresses.
-                        Join(_db.person_addresses, a => a.id, b => b.address_id, (a, b) => new { a, b }).
+                    var person_addresses = Db.addresses.
+                        Join(Db.person_addresses, a => a.id, b => b.address_id, (a, b) => new { a, b }).
                         Where(x => x.b.person_id == _person_id).
                         Select(x => x.a);
                     List<Address> _addresses = new List<Address>();
@@ -428,7 +429,7 @@ namespace pestaServer.DataAccess
 
                 if (_fields.Contains("bodyType") || _fields.Contains("@all"))
                 {
-                    var _row = _db.person_body_types.Where(x => x.person_id == _person_id).SingleOrDefault();
+                    var _row = Db.person_body_types.Where(x => x.person_id == _person_id).SingleOrDefault();
                     if (_row != null)
                     {
                         BodyTypeImpl _bodyType = new BodyTypeImpl();
@@ -445,20 +446,20 @@ namespace pestaServer.DataAccess
 
                 if (_fields.Contains("books") || _fields.Contains("@all"))
                 {
-                    var _books = _db.person_books.Where(x => x.person_id == _person_id).Select(x => x.book);
+                    var _books = Db.person_books.Where(x => x.person_id == _person_id).Select(x => x.book);
                     _person.setBooks(_books.ToList());
                 }
 
                 if (_fields.Contains("cars") || _fields.Contains("@all"))
                 {
-                    var _cars = _db.person_cars.Where(x => x.person_id == _person_id).Select(x => x.car);
+                    var _cars = Db.person_cars.Where(x => x.person_id == _person_id).Select(x => x.car);
                     _person.setCars(_cars.ToList());
                 }
 
                 if (_fields.Contains("currentLocation") || _fields.Contains("@all"))
                 {
-                    var _row = _db.addresses.
-                            Join(_db.person_current_locations, a => a.id, b => b.address_id, (a, b) => new { a, b }).
+                    var _row = Db.addresses.
+                            Join(Db.person_current_locations, a => a.id, b => b.address_id, (a, b) => new { a, b }).
                             Where(x => x.b.person_id == _person_id).Select(x => x.a).SingleOrDefault();
                     if (_row != null)
                     {
@@ -481,7 +482,7 @@ namespace pestaServer.DataAccess
 
                 if (_fields.Contains("emails") || _fields.Contains("@all"))
                 {
-                    var _emails = _db.person_emails.Where(x => x.person_id == _person_id);
+                    var _emails = Db.person_emails.Where(x => x.person_id == _person_id);
                     List<ListField> _emailList = new List<ListField>();
                     foreach (person_email _email in _emails)
                     {
@@ -492,27 +493,27 @@ namespace pestaServer.DataAccess
 
                 if (_fields.Contains("food") || _fields.Contains("@all"))
                 {
-                    var _foods = _db.person_foods.Where(x => x.person_id == _person_id).Select(x => x.food);
+                    var _foods = Db.person_foods.Where(x => x.person_id == _person_id).Select(x => x.food);
                     _person.setFood(_foods.ToList());
                 }
 
                 if (_fields.Contains("heroes") || _fields.Contains("@all"))
                 {
-                    var _strings = _db.person_heroes.Where(x => x.person_id == _person_id).Select(x => x.hero);
+                    var _strings = Db.person_heroes.Where(x => x.person_id == _person_id).Select(x => x.hero);
                     _person.setHeroes(_strings.ToList());
                 }
 
                 if (_fields.Contains("interests") || _fields.Contains("@all"))
                 {
-                    var _strings = _db.person_interests.Where(x => x.person_id == _person_id).Select(x => x.interest);
+                    var _strings = Db.person_interests.Where(x => x.person_id == _person_id).Select(x => x.interest);
                     _person.setInterests(_strings.ToList());
                 }
                 List<Organization> _organizations = new List<Organization>();
                 bool _fetchedOrg = false;
                 if (_fields.Contains("jobs") || _fields.Contains("@all"))
                 {
-                    var _org = _db.organizations.
-                        Join(_db.person_jobs, a => a.id, b => b.organization_id, (a, b) => new { a, b }).
+                    var _org = Db.organizations.
+                        Join(Db.person_jobs, a => a.id, b => b.organization_id, (a, b) => new { a, b }).
                         Where(x => x.b.person_id == _person_id).
                         Select(x => x.a);
                     foreach (var _row in _org)
@@ -533,7 +534,7 @@ namespace pestaServer.DataAccess
                         if (_row.address_id.HasValue)
                         {
                             int addressid = _row.address_id.Value;
-                            var _res3 = _db.addresses.Where(x => x.id == addressid).Single();
+                            var _res3 = Db.addresses.Where(x => x.id == addressid).Single();
                             if (string.IsNullOrEmpty(_res3.unstructured_address))
                             {
                                 _res3.unstructured_address = (_res3.street_address + " " + _res3.region + " " + _res3.country).Trim();
@@ -556,8 +557,8 @@ namespace pestaServer.DataAccess
 
                 if (_fields.Contains("schools") || _fields.Contains("@all"))
                 {
-                    var _res2 = _db.organizations.
-                        Join(_db.person_schools, a => a.id, b => b.organization_id, (a, b) => new { a, b }).
+                    var _res2 = Db.organizations.
+                        Join(Db.person_schools, a => a.id, b => b.organization_id, (a, b) => new { a, b }).
                         Where(x => x.b.person_id == _person_id).
                         Select(x => x.a);
                     foreach (var _row in _res2)
@@ -578,7 +579,7 @@ namespace pestaServer.DataAccess
                         if (_row.address_id.HasValue)
                         {
                             int addressid = _row.address_id.Value;
-                            var _res3 = _db.addresses.Where(x => x.id == addressid).Single();
+                            var _res3 = Db.addresses.Where(x => x.id == addressid).Single();
                             if (string.IsNullOrEmpty(_res3.unstructured_address))
                             {
                                 _res3.unstructured_address = (_res3.street_address + " " + _res3.region + " " + _res3.country).Trim();
@@ -606,18 +607,18 @@ namespace pestaServer.DataAccess
 
                 if (_fields.Contains("movies") || _fields.Contains("@all"))
                 {
-                    var _strings = _db.person_movies.Where(x => x.person_id == _person_id).Select(x => x.movie);
+                    var _strings = Db.person_movies.Where(x => x.person_id == _person_id).Select(x => x.movie);
                     _person.setMovies(_strings.ToList());
                 }
                 if (_fields.Contains("music") || _fields.Contains("@all"))
                 {
-                    var _strings = _db.person_musics.Where(x => x.person_id == _person_id).Select(x => x.music);
+                    var _strings = Db.person_musics.Where(x => x.person_id == _person_id).Select(x => x.music);
                     _person.setMusic(_strings.ToList());
                 }
                 if (_fields.Contains("phoneNumbers") || _fields.Contains("@all"))
                 {
                     List<ListField> numList = new List<ListField>();
-                    var _numbers = _db.person_phone_numbers.Where(x => x.person_id == _person_id);
+                    var _numbers = Db.person_phone_numbers.Where(x => x.person_id == _person_id);
                     foreach (var _number in _numbers)
                     {
                         numList.Add(new ListFieldImpl(_number.number_type, _number.number));
@@ -645,33 +646,33 @@ namespace pestaServer.DataAccess
                 }*/
                 if (_fields.Contains("quotes") || _fields.Contains("@all"))
                 {
-                    var _strings = _db.person_quotes.Where(x => x.person_id == _person_id).Select(x => x.quote);
+                    var _strings = Db.person_quotes.Where(x => x.person_id == _person_id).Select(x => x.quote);
                     _person.setQuotes(_strings.ToList());
                 }
                 if (_fields.Contains("sports") || _fields.Contains("@all"))
                 {
-                    var _strings = _db.person_sports.Where(x => x.person_id == _person_id).Select(x => x.sport);
+                    var _strings = Db.person_sports.Where(x => x.person_id == _person_id).Select(x => x.sport);
                     _person.setSports(_strings.ToList());
                 }
                 if (_fields.Contains("tags") || _fields.Contains("@all"))
                 {
-                    var _strings = _db.person_tags.Where(x => x.person_id == _person_id).Select(x => x.tag);
+                    var _strings = Db.person_tags.Where(x => x.person_id == _person_id).Select(x => x.tag);
                     _person.setTags(_strings.ToList());
                 }
 
                 if (_fields.Contains("turnOns") || _fields.Contains("@all"))
                 {
-                    var _strings = _db.person_turn_ons.Where(x => x.person_id == _person_id).Select(x => x.turn_on);
+                    var _strings = Db.person_turn_ons.Where(x => x.person_id == _person_id).Select(x => x.turn_on);
                     _person.setTurnOns(_strings.ToList());
                 }
                 if (_fields.Contains("turnOffs") || _fields.Contains("@all"))
                 {
-                    var _strings = _db.person_turn_offs.Where(x => x.person_id == _person_id).Select(x => x.turn_off);
+                    var _strings = Db.person_turn_offs.Where(x => x.person_id == _person_id).Select(x => x.turn_off);
                     _person.setTurnOffs(_strings.ToList());
                 }
                 if (_fields.Contains("urls") || _fields.Contains("@all"))
                 {
-                    var _strings = _db.person_urls.Where(x => x.person_id == _person_id).Select(x => x.url);
+                    var _strings = Db.person_urls.Where(x => x.person_id == _person_id).Select(x => x.url);
                     List<ListField> urllist = new List<ListField>();
                     foreach (string s in _strings)
                     {

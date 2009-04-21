@@ -25,10 +25,9 @@ using Pesta.Engine.social;
 using Pesta.Engine.social.core.model;
 using Pesta.Engine.social.model;
 using Pesta.Engine.social.spi;
+using pestaServer.DataAccess;
 
-namespace pestaServer.DataAccess
-{
-    ///  Apache Software License 2.0 2008 Partuza! ported to Pesta by Sean Lin M.T. (my6solutions.com)
+///  Apache Software License 2.0 2008 Partuza! ported to Pesta by Sean Lin M.T. (my6solutions.com)
     public class RayaService : IPersonService, IActivityService, IAppDataService, IMessagesService
     {
         public readonly static RayaService Instance = new RayaService();
@@ -61,7 +60,7 @@ namespace pestaServer.DataAccess
                 case GroupId.Type.all:
                 case GroupId.Type.friends:
                 case GroupId.Type.groupId:
-                    var friendIds = RayaDbFetcher.get().getFriendIds(int.Parse(userId)).ToArray();
+                    var friendIds = RayaDbFetcher.Get().getFriendIds(int.Parse(userId)).ToArray();
                     for (int i = 0; i < friendIds.Length; i++)
                     {
                         returnVal.Add(friendIds[i].ToString());
@@ -90,7 +89,7 @@ namespace pestaServer.DataAccess
             int first = _options.getFirst();
             int max = _options.getMax();
             HashSet<String> _ids = getIdSet(_userId, _groupId, _token);
-            var allPeople = RayaDbFetcher.get().getPeople(_ids, _fields, _options);
+            var allPeople = RayaDbFetcher.Get().getPeople(_ids, _fields, _options);
             var totalSize = allPeople.Count;
             var result = new List<Person>();
             if (first < totalSize)
@@ -155,7 +154,7 @@ namespace pestaServer.DataAccess
                                             String _appId, HashSet<String> _fields, ISecurityToken _token)
         {
             var _ids = getIdSet(_userId, _groupId, _token);
-            var _data = RayaDbFetcher.get().getAppData(_ids, _fields, _appId);
+            var _data = RayaDbFetcher.Get().getAppData(_ids, _fields, _appId);
             
             return _data;
         }
@@ -178,7 +177,7 @@ namespace pestaServer.DataAccess
             string userId = iuserid.Current;
             foreach (var _key in _fields)
             {
-                if (!RayaDbFetcher.get().deleteAppData(userId, _key, _appId)) 
+                if (!RayaDbFetcher.Get().deleteAppData(userId, _key, _appId)) 
                 {
                     throw new SocialSpiException(ResponseError.INTERNAL_ERROR, "Internal server error");
                 }
@@ -198,7 +197,7 @@ namespace pestaServer.DataAccess
                     foreach (var _key in _fields) 
                     {
                         var _value = _values[_key];
-                        if (! RayaDbFetcher.get().setAppData(_userId.getUserId(_token), _key, _value, _token.getAppId())) 
+                        if (! RayaDbFetcher.Get().setAppData(_userId.getUserId(_token), _key, _value, _token.getAppId())) 
                         {
                             throw new SocialSpiException(ResponseError.INTERNAL_ERROR, "Internal server error");
                         }
@@ -213,7 +212,7 @@ namespace pestaServer.DataAccess
                                                          GroupId _groupId, String _appId, CollectionOptions options, HashSet<String> _fields, ISecurityToken _token)
         {
             var _ids = getIdSet(_userIds, _groupId, _token);
-            var activities = RayaDbFetcher.get().getActivities(_ids, _appId, _fields);
+            var activities = RayaDbFetcher.Get().getActivities(_ids, _appId, _fields);
             int totalCount = activities.Count();
             int first = options.getFirst();
             int max = options.getMax();
@@ -233,7 +232,7 @@ namespace pestaServer.DataAccess
                 _activity.setTitle(row.title);
                 _activity.setBody(row.body);
                 _activity.setPostedTime(row.created);
-                _activity.setMediaItems(RayaDbFetcher.get().getMediaItems(row.id));
+                _activity.setMediaItems(RayaDbFetcher.Get().getMediaItems(row.id));
                 Activities.Add(_activity);
             }
 
@@ -244,7 +243,7 @@ namespace pestaServer.DataAccess
                                                          String _appId, HashSet<String> _fields, HashSet<String> activityIds, ISecurityToken _token)
         {
             var _ids = getIdSet(_userId, _groupId, _token);
-            var _activities = RayaDbFetcher.get().getActivities(_ids, _appId, _fields);
+            var _activities = RayaDbFetcher.Get().getActivities(_ids, _appId, _fields);
             List<Activity> Activities = new List<Activity>();
             if (activityIds != null)
             {
@@ -257,7 +256,7 @@ namespace pestaServer.DataAccess
                         _activity.setTitle(row.title);
                         _activity.setBody(row.body);
                         _activity.setPostedTime(row.created);
-                        _activity.setMediaItems(RayaDbFetcher.get().getMediaItems(row.id));
+                        _activity.setMediaItems(RayaDbFetcher.Get().getMediaItems(row.id));
                         Activities.Add(_activity);
                     }
                 }
@@ -296,7 +295,7 @@ namespace pestaServer.DataAccess
             }
             IEnumerator<string> iuserid = _ids.GetEnumerator();
             iuserid.MoveNext();
-            if (!RayaDbFetcher.get().deleteActivities(iuserid.Current, _appId, _activityIds)) 
+            if (!RayaDbFetcher.Get().deleteActivities(iuserid.Current, _appId, _activityIds)) 
             {
                 throw new SocialSpiException(ResponseError.NOT_IMPLEMENTED, "Invalid activity id(s)");
             }
@@ -311,7 +310,7 @@ namespace pestaServer.DataAccess
                 {
                     throw new SocialSpiException(ResponseError.UNAUTHORIZED, "unauthorized: Create activity permission denied.");
                 }
-                RayaDbFetcher.get().createActivity(_userId.getUserId(_token), _activity, _token.getAppId());
+                RayaDbFetcher.Get().createActivity(_userId.getUserId(_token), _activity, _token.getAppId());
             } 
             catch (Exception _e) 
             {
@@ -322,4 +321,3 @@ namespace pestaServer.DataAccess
         
     
     }
-}

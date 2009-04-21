@@ -35,7 +35,7 @@ namespace pestaServer.Models.gadgets.oauth
     {
         private BlobCrypter stateCrypter;
         private GadgetOAuthTokenStore tokenStore;
-        public static readonly OAuthFetcherConfig Instace = new OAuthFetcherConfig();
+        public static readonly OAuthFetcherConfig Instance = new OAuthFetcherConfig();
         protected OAuthFetcherConfig()
         {
             byte[] masterKey = Crypto.getRandomBytes(BasicBlobCrypter.MASTER_KEY_MIN_LEN);

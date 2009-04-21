@@ -19,6 +19,7 @@
 #endregion
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using Pesta.Engine.social.model;
 using Pesta.Engine.social.spi;
 using pestaServer.DataAccess;
@@ -41,8 +42,8 @@ namespace pestaServer.Models.social.service
 
         public ActivityHandler()
         {
-            //service = JsonDbOpensocialService.Instance;
-            service = RayaService.Instance;
+            Type serviceType = Type.GetType(Pesta.Utilities.PestaSettings.DbServiceName);
+            service = serviceType.GetField("Instance", BindingFlags.Static | BindingFlags.Public).GetValue(null) as IActivityService;
         }
 
         /**

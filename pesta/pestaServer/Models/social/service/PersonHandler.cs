@@ -19,12 +19,13 @@
 #endregion
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using Jayrock.Json;
 using Pesta.Engine.social;
 using Pesta.Engine.social.model;
 using Pesta.Engine.social.spi;
-using pestaServer.DataAccess;
 using pestaServer.Models.common;
+using pestaServer.DataAccess;
 
 namespace pestaServer.Models.social.service
 {
@@ -44,8 +45,8 @@ namespace pestaServer.Models.social.service
 
         public PersonHandler()
         {
-            //personService = JsonDbOpensocialService.Instance;
-            personService = RayaService.Instance;
+            Type serviceType = Type.GetType(Pesta.Utilities.PestaSettings.DbServiceName, true);
+            personService = serviceType.GetField("Instance", BindingFlags.Static | BindingFlags.Public).GetValue(null) as IPersonService;
         }
 
         protected override object handleDelete(RequestItem request)

@@ -26,7 +26,10 @@ using pestaServer.Models.gadgets.spec;
 namespace pestaServer.Models.gadgets.oauth
 {
     /// <summary>
-    /// Summary description for GadgetOAuthTokenStore
+    /// Higher-level interface that allows callers to store and retrieve
+    /// OAuth-related data directly from {@code GadgetSpec}s, {@code GadgetContext}s,
+    /// etc. See {@link OAuthStore} for a more detailed explanation of the OAuth
+    /// Data Store.
     /// </summary>
     /// <remarks>
     /// <para>
