@@ -175,6 +175,11 @@
     <Content Include="Interop\jayrock.json\COPYING.txt" />
     <Content Include="LICENSE.txt" />
     <Content Include="NOTICE.txt" />
+    <Compile Include="DataAccess\LinqRaya.designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>LinqRaya.dbml</DependentUpon>
+    </Compile>
     <Compile Include="Engine\auth\AnonymousAuthenticationHandler.cs" />
     <Compile Include="Engine\common\uri\Uri.cs" />
     <Compile Include="Engine\common\uri\UriBuilder.cs" />
@@ -268,6 +273,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="DataAccess\LinqRaya.dbml">
+      <Generator>MSLinqToSQLGenerator</Generator>
+      <LastGenOutput>LinqRaya.designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -275,6 +285,11 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="DataAccess\LinqRaya.dbml.layout">
+      <DependentUpon>LinqRaya.dbml</DependentUpon>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Engine\gadgets\http\" />

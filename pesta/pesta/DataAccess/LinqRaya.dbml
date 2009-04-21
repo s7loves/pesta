@@ -1,0 +1,423 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Database Name="raya" Class="LinqRayaDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="AppSettings" ConnectionString="Data Source=SEANLAPTOP;Initial Catalog=raya;Integrated Security=True" SettingsObjectName="Pesta.Properties.Settings" SettingsPropertyName="rayaConnectionString" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.activities" Member="activities">
+    <Type Name="activity">
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="person_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="app_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="title" Type="System.String" DbType="VarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Column Name="body" Type="System.String" DbType="VarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Column Name="created" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Association Name="activity_activity_media_item" Member="activity_media_items" ThisKey="id" OtherKey="activity_id" Type="activity_media_item" />
+      <Association Name="person_activity" Member="person" ThisKey="person_id" OtherKey="id" Type="person" IsForeignKey="true" />
+      <Association Name="application_activity" Member="application" ThisKey="app_id" OtherKey="id" Type="application" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.persons" Member="persons">
+    <Type Name="person">
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="email" Type="System.String" DbType="VarChar(128) NOT NULL" CanBeNull="false" />
+      <Column Name="email_hash" Type="System.String" DbType="VarChar(128) NOT NULL" CanBeNull="false" />
+      <Column Name="password" Type="System.String" DbType="VarChar(128) NOT NULL" CanBeNull="false" />
+      <Column Name="about_me" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Column Name="age" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="children" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
+      <Column Name="date_of_birth" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="drinker" Type="System.String" DbType="VarChar(16)" CanBeNull="true" />
+      <Column Name="ethnicity" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
+      <Column Name="fashion" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Column Name="gender" Type="System.String" DbType="VarChar(8)" CanBeNull="true" />
+      <Column Name="happiest_when" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Column Name="humor" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Column Name="job_interests" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Column Name="living_arrangement" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
+      <Column Name="looking_for" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
+      <Column Name="nickname" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
+      <Column Name="pets" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
+      <Column Name="political_views" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Column Name="profile_song" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
+      <Column Name="profile_url" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
+      <Column Name="profile_video" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
+      <Column Name="relationship_status" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
+      <Column Name="religion" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
+      <Column Name="romance" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
+      <Column Name="scared_of" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Column Name="sexual_orientation" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
+      <Column Name="smoker" Type="System.String" DbType="VarChar(16)" CanBeNull="true" />
+      <Column Name="status" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
+      <Column Name="thumbnail_url" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
+      <Column Name="time_zone" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="first_name" Type="System.String" DbType="VarChar(64) NOT NULL" CanBeNull="false" />
+      <Column Name="last_name" Type="System.String" DbType="VarChar(64) NOT NULL" CanBeNull="false" />
+      <Association Name="person_activity" Member="activities" ThisKey="id" OtherKey="person_id" Type="activity" />
+      <Association Name="person_application_setting" Member="application_settings" ThisKey="id" OtherKey="person_id" Type="application_setting" />
+      <Association Name="person_authenticated" Member="authenticated" ThisKey="id" OtherKey="person_id" Type="authenticated" Cardinality="One" />
+      <Association Name="person_fb_user" Member="fb_user" ThisKey="id" OtherKey="personid" Type="fb_user" Cardinality="One" />
+      <Association Name="person_friend_request" Member="friend_request" ThisKey="id" OtherKey="person_id" Type="friend_request" Cardinality="One" />
+      <Association Name="person_message" Member="messages" ThisKey="id" OtherKey="from" Type="message" />
+      <Association Name="person_message1" Member="messages1" ThisKey="id" OtherKey="to" Type="message" />
+      <Association Name="person_person_activity" Member="person_activities" ThisKey="id" OtherKey="person_id" Type="person_activity" />
+      <Association Name="person_person_address" Member="person_addresses" ThisKey="id" OtherKey="person_id" Type="person_address" />
+      <Association Name="person_person_application" Member="person_applications" ThisKey="id" OtherKey="person_id" Type="person_application" />
+      <Association Name="person_person_body_type" Member="person_body_types" ThisKey="id" OtherKey="person_id" Type="person_body_type" />
+      <Association Name="person_person_book" Member="person_books" ThisKey="id" OtherKey="person_id" Type="person_book" />
+      <Association Name="person_person_car" Member="person_cars" ThisKey="id" OtherKey="person_id" Type="person_car" />
+      <Association Name="person_person_current_location" Member="person_current_locations" ThisKey="id" OtherKey="person_id" Type="person_current_location" />
+      <Association Name="person_person_email" Member="person_emails" ThisKey="id" OtherKey="person_id" Type="person_email" />
+      <Association Name="person_person_food" Member="person_foods" ThisKey="id" OtherKey="person_id" Type="person_food" />
+      <Association Name="person_person_heroe" Member="person_heroes" ThisKey="id" OtherKey="person_id" Type="person_heroe" />
+      <Association Name="person_person_interest" Member="person_interests" ThisKey="id" OtherKey="person_id" Type="person_interest" />
+      <Association Name="person_person_job" Member="person_jobs" ThisKey="id" OtherKey="person_id" Type="person_job" />
+      <Association Name="person_person_languages_spoken" Member="person_languages_spokens" ThisKey="id" OtherKey="person_id" Type="person_languages_spoken" />
+      <Association Name="person_person_movy" Member="person_movies" ThisKey="id" OtherKey="person_id" Type="person_movy" />
+      <Association Name="person_person_music" Member="person_musics" ThisKey="id" OtherKey="person_id" Type="person_music" />
+      <Association Name="person_person_phone_number" Member="person_phone_numbers" ThisKey="id" OtherKey="person_id" Type="person_phone_number" />
+      <Association Name="person_person_quote" Member="person_quotes" ThisKey="id" OtherKey="person_id" Type="person_quote" />
+      <Association Name="person_person_school" Member="person_schools" ThisKey="id" OtherKey="person_id" Type="person_school" />
+      <Association Name="person_person_sport" Member="person_sports" ThisKey="id" OtherKey="person_id" Type="person_sport" />
+      <Association Name="person_person_tag" Member="person_tags" ThisKey="id" OtherKey="person_id" Type="person_tag" />
+      <Association Name="person_person_turn_off" Member="person_turn_offs" ThisKey="id" OtherKey="person_id" Type="person_turn_off" />
+      <Association Name="person_person_turn_on" Member="person_turn_ons" ThisKey="id" OtherKey="person_id" Type="person_turn_on" />
+      <Association Name="person_person_tv_show" Member="person_tv_shows" ThisKey="id" OtherKey="person_id" Type="person_tv_show" />
+      <Association Name="person_person_url" Member="person_urls" ThisKey="id" OtherKey="person_id" Type="person_url" />
+    </Type>
+  </Table>
+  <Table Name="dbo.activity_media_items" Member="activity_media_items">
+    <Type Name="activity_media_item">
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="activity_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="mime_type" Type="System.String" DbType="VarChar(64) NOT NULL" CanBeNull="false" />
+      <Column Name="media_type" Type="System.String" DbType="VarChar(16) NOT NULL" CanBeNull="false" />
+      <Column Name="url" Type="System.String" DbType="VarChar(128) NOT NULL" CanBeNull="false" />
+      <Association Name="activity_activity_media_item" Member="activity" ThisKey="activity_id" OtherKey="id" Type="activity" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.addresses" Member="addresses">
+    <Type Name="address">
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="country" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
+      <Column Name="extended_address" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
+      <Column Name="latitude" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="locality" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
+      <Column Name="longitude" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="po_box" Type="System.String" DbType="VarChar(32)" CanBeNull="true" />
+      <Column Name="postal_code" Type="System.String" DbType="VarChar(32)" CanBeNull="true" />
+      <Column Name="region" Type="System.String" DbType="VarChar(64)" CanBeNull="true" />
+      <Column Name="street_address" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
+      <Column Name="address_type" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
+      <Column Name="unstructured_address" Type="System.String" DbType="VarChar(255)" CanBeNull="true" />
+      <Association Name="address_organization" Member="organizations" ThisKey="id" OtherKey="address_id" Type="organization" />
+      <Association Name="address_person_address" Member="person_addresses" ThisKey="id" OtherKey="address_id" Type="person_address" />
+      <Association Name="address_person_current_location" Member="person_current_locations" ThisKey="id" OtherKey="address_id" Type="person_current_location" />
+    </Type>
+  </Table>
+  <Table Name="dbo.application_settings" Member="application_settings">
+    <Type Name="application_setting">
+      <Column Name="asid" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="application_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="person_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="name" Type="System.String" DbType="VarChar(128) NOT NULL" CanBeNull="false" />
+      <Column Name="value" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Association Name="person_application_setting" Member="person" ThisKey="person_id" OtherKey="id" Type="person" IsForeignKey="true" />
+      <Association Name="application_application_setting" Member="application" ThisKey="application_id" OtherKey="id" Type="application" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.applications" Member="applications">
+    <Type Name="application">
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="url" Type="System.String" DbType="VarChar(128) NOT NULL" CanBeNull="false" />
+      <Column Name="title" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
+      <Column Name="directory_title" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
+      <Column Name="screenshot" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
+      <Column Name="thumbnail" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
+      <Column Name="author" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
+      <Column Name="author_email" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
+      <Column Name="description" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Column Name="settings" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Column Name="views" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Column Name="version" Type="System.String" DbType="VarChar(64) NOT NULL" CanBeNull="false" />
+      <Column Name="height" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="scrolling" Type="System.String" DbType="VarChar(8) NOT NULL" CanBeNull="false" />
+      <Column Name="modified" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Association Name="application_activity" Member="activities" ThisKey="id" OtherKey="app_id" Type="activity" />
+      <Association Name="application_application_setting" Member="application_settings" ThisKey="id" OtherKey="application_id" Type="application_setting" />
+      <Association Name="application_person_application" Member="person_applications" ThisKey="id" OtherKey="application_id" Type="person_application" />
+    </Type>
+  </Table>
+  <Table Name="dbo.authenticated" Member="authenticateds">
+    <Type Name="authenticated">
+      <Column Name="person_id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="hash" Type="System.String" DbType="VarChar(41) NOT NULL" CanBeNull="false" />
+      <Association Name="person_authenticated" Member="person" ThisKey="person_id" OtherKey="id" Type="person" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.fb_users" Member="fb_users">
+    <Type Name="fb_user">
+      <Column Name="fb_userid" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="personid" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Association Name="person_fb_user" Member="person" ThisKey="personid" OtherKey="id" Type="person" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.friend_requests" Member="friend_requests">
+    <Type Name="friend_request">
+      <Column Name="person_id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="friend_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="person_friend_request" Member="person" ThisKey="person_id" OtherKey="id" Type="person" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.friends" Member="friends">
+    <Type Name="friend">
+      <Column Name="fid" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="person_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="friend_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="dbo.languages" Member="languages">
+    <Type Name="language">
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="code" Type="System.String" DbType="VarChar(4)" CanBeNull="true" />
+      <Column Name="name" Type="System.String" DbType="VarChar(32)" CanBeNull="true" />
+      <Association Name="language_person_languages_spoken" Member="person_languages_spokens" ThisKey="id" OtherKey="language_id" Type="person_languages_spoken" />
+    </Type>
+  </Table>
+  <Table Name="dbo.messages" Member="messages">
+    <Type Name="message">
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="[from]" Member="from" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="[to]" Member="to" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="title" Type="System.String" DbType="NVarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="body" Type="System.String" DbType="Text NOT NULL" CanBeNull="false" UpdateCheck="Never" />
+      <Column Name="[read]" Member="read" Type="System.String" DbType="NVarChar(3) NOT NULL" CanBeNull="false" />
+      <Column Name="to_deleted" Type="System.String" DbType="NVarChar(3) NOT NULL" CanBeNull="false" />
+      <Column Name="from_deleted" Type="System.String" DbType="NVarChar(3)" CanBeNull="true" />
+      <Column Name="created" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Association Name="person_message" Member="person" ThisKey="from" OtherKey="id" Type="person" IsForeignKey="true" />
+      <Association Name="person_message1" Member="person1" ThisKey="to" OtherKey="id" Type="person" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.oauth_consumer" Member="oauth_consumers">
+    <Type Name="oauth_consumer">
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="user_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="app_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="consumer_key" Type="System.String" DbType="VarChar(64) NOT NULL" CanBeNull="false" />
+      <Column Name="consumer_secret" Type="System.String" DbType="VarChar(64) NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="dbo.oauth_nonce" Member="oauth_nonces">
+    <Type Name="oauth_nonce">
+      <Column Name="nonce" Type="System.String" DbType="VarChar(64) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="nonce_timestamp" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="dbo.oauth_token" Member="oauth_tokens">
+    <Type Name="oauth_token">
+      <Column Name="user_id" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="consumer_key" Type="System.String" DbType="VarChar(64) NOT NULL" CanBeNull="false" />
+      <Column Name="type" Type="System.String" DbType="VarChar(7) NOT NULL" CanBeNull="false" />
+      <Column Name="token_key" Type="System.String" DbType="VarChar(64) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="token_secret" Type="System.String" DbType="VarChar(64) NOT NULL" CanBeNull="false" />
+      <Column Name="authorized" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="dbo.organizations" Member="organizations">
+    <Type Name="organization">
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="address_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="description" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Column Name="end_date" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="field" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
+      <Column Name="name" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
+      <Column Name="salary" Type="System.String" DbType="VarChar(64)" CanBeNull="true" />
+      <Column Name="start_date" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="sub_field" Type="System.String" DbType="VarChar(64)" CanBeNull="true" />
+      <Column Name="title" Type="System.String" DbType="VarChar(64)" CanBeNull="true" />
+      <Column Name="webpage" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
+      <Association Name="organization_person_job" Member="person_jobs" ThisKey="id" OtherKey="organization_id" Type="person_job" />
+      <Association Name="organization_person_school" Member="person_schools" ThisKey="id" OtherKey="organization_id" Type="person_school" />
+      <Association Name="address_organization" Member="address" ThisKey="address_id" OtherKey="id" Type="address" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.person_activities" Member="person_activities">
+    <Type Name="person_activity">
+      <Column Name="person_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="activity" Type="System.String" DbType="VarChar(128) NOT NULL" CanBeNull="false" />
+      <Association Name="person_person_activity" Member="person" ThisKey="person_id" OtherKey="id" Type="person" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.person_addresses" Member="person_addresses">
+    <Type Name="person_address">
+      <Column Name="person_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="address_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="address_person_address" Member="address" ThisKey="address_id" OtherKey="id" Type="address" IsForeignKey="true" />
+      <Association Name="person_person_address" Member="person" ThisKey="person_id" OtherKey="id" Type="person" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.person_applications" Member="person_applications">
+    <Type Name="person_application">
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="person_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="application_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="application_person_application" Member="application" ThisKey="application_id" OtherKey="id" Type="application" IsForeignKey="true" />
+      <Association Name="person_person_application" Member="person" ThisKey="person_id" OtherKey="id" Type="person" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.person_body_type" Member="person_body_types">
+    <Type Name="person_body_type">
+      <Column Name="person_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="build" Type="System.String" DbType="VarChar(64)" CanBeNull="true" />
+      <Column Name="eye_color" Type="System.String" DbType="VarChar(64)" CanBeNull="true" />
+      <Column Name="hair_color" Type="System.String" DbType="VarChar(64)" CanBeNull="true" />
+      <Column Name="height" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="weight" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="person_person_body_type" Member="person" ThisKey="person_id" OtherKey="id" Type="person" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.person_books" Member="person_books">
+    <Type Name="person_book">
+      <Column Name="person_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="book" Type="System.String" DbType="VarChar(128) NOT NULL" CanBeNull="false" />
+      <Association Name="person_person_book" Member="person" ThisKey="person_id" OtherKey="id" Type="person" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.person_cars" Member="person_cars">
+    <Type Name="person_car">
+      <Column Name="person_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="car" Type="System.String" DbType="VarChar(128) NOT NULL" CanBeNull="false" />
+      <Association Name="person_person_car" Member="person" ThisKey="person_id" OtherKey="id" Type="person" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.person_current_location" Member="person_current_locations">
+    <Type Name="person_current_location">
+      <Column Name="person_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="address_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="address_person_current_location" Member="address" ThisKey="address_id" OtherKey="id" Type="address" IsForeignKey="true" />
+      <Association Name="person_person_current_location" Member="person" ThisKey="person_id" OtherKey="id" Type="person" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.person_emails" Member="person_emails">
+    <Type Name="person_email">
+      <Column Name="person_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="address" Type="System.String" DbType="VarChar(128) NOT NULL" CanBeNull="false" />
+      <Column Name="email_type" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
+      <Association Name="person_person_email" Member="person" ThisKey="person_id" OtherKey="id" Type="person" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.person_food" Member="person_foods">
+    <Type Name="person_food">
+      <Column Name="person_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="food" Type="System.String" DbType="VarChar(128) NOT NULL" CanBeNull="false" />
+      <Association Name="person_person_food" Member="person" ThisKey="person_id" OtherKey="id" Type="person" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.person_heroes" Member="person_heroes">
+    <Type Name="person_heroe">
+      <Column Name="person_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="hero" Type="System.String" DbType="VarChar(128) NOT NULL" CanBeNull="false" />
+      <Association Name="person_person_heroe" Member="person" ThisKey="person_id" OtherKey="id" Type="person" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.person_interests" Member="person_interests">
+    <Type Name="person_interest">
+      <Column Name="person_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="interest" Type="System.String" DbType="VarChar(128) NOT NULL" CanBeNull="false" />
+      <Association Name="person_person_interest" Member="person" ThisKey="person_id" OtherKey="id" Type="person" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.person_jobs" Member="person_jobs">
+    <Type Name="person_job">
+      <Column Name="person_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="organization_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="organization_person_job" Member="organization" ThisKey="organization_id" OtherKey="id" Type="organization" IsForeignKey="true" />
+      <Association Name="person_person_job" Member="person" ThisKey="person_id" OtherKey="id" Type="person" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.person_languages_spoken" Member="person_languages_spokens">
+    <Type Name="person_languages_spoken">
+      <Column Name="person_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="language_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="language_person_languages_spoken" Member="language" ThisKey="language_id" OtherKey="id" Type="language" IsForeignKey="true" />
+      <Association Name="person_person_languages_spoken" Member="person" ThisKey="person_id" OtherKey="id" Type="person" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.person_movies" Member="person_movies">
+    <Type Name="person_movy">
+      <Column Name="person_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="movie" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
+      <Association Name="person_person_movy" Member="person" ThisKey="person_id" OtherKey="id" Type="person" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.person_music" Member="person_musics">
+    <Type Name="person_music">
+      <Column Name="person_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="music" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
+      <Association Name="person_person_music" Member="person" ThisKey="person_id" OtherKey="id" Type="person" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.person_phone_numbers" Member="person_phone_numbers">
+    <Type Name="person_phone_number">
+      <Column Name="person_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="number" Type="System.String" DbType="VarChar(64)" CanBeNull="true" />
+      <Column Name="number_type" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
+      <Association Name="person_person_phone_number" Member="person" ThisKey="person_id" OtherKey="id" Type="person" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.person_quotes" Member="person_quotes">
+    <Type Name="person_quote">
+      <Column Name="person_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="quote" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Association Name="person_person_quote" Member="person" ThisKey="person_id" OtherKey="id" Type="person" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.person_schools" Member="person_schools">
+    <Type Name="person_school">
+      <Column Name="person_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="organization_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="organization_person_school" Member="organization" ThisKey="organization_id" OtherKey="id" Type="organization" IsForeignKey="true" />
+      <Association Name="person_person_school" Member="person" ThisKey="person_id" OtherKey="id" Type="person" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.person_sports" Member="person_sports">
+    <Type Name="person_sport">
+      <Column Name="person_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="sport" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
+      <Association Name="person_person_sport" Member="person" ThisKey="person_id" OtherKey="id" Type="person" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.person_tags" Member="person_tags">
+    <Type Name="person_tag">
+      <Column Name="person_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="tag" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
+      <Association Name="person_person_tag" Member="person" ThisKey="person_id" OtherKey="id" Type="person" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.person_turn_offs" Member="person_turn_offs">
+    <Type Name="person_turn_off">
+      <Column Name="person_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="turn_off" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
+      <Association Name="person_person_turn_off" Member="person" ThisKey="person_id" OtherKey="id" Type="person" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.person_turn_ons" Member="person_turn_ons">
+    <Type Name="person_turn_on">
+      <Column Name="person_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="turn_on" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
+      <Association Name="person_person_turn_on" Member="person" ThisKey="person_id" OtherKey="id" Type="person" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.person_tv_shows" Member="person_tv_shows">
+    <Type Name="person_tv_show">
+      <Column Name="person_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="tv_show" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
+      <Association Name="person_person_tv_show" Member="person" ThisKey="person_id" OtherKey="id" Type="person" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.person_urls" Member="person_urls">
+    <Type Name="person_url">
+      <Column Name="person_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="url" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
+      <Association Name="person_person_url" Member="person" ThisKey="person_id" OtherKey="id" Type="person" IsForeignKey="true" />
+    </Type>
+  </Table>
+</Database>
