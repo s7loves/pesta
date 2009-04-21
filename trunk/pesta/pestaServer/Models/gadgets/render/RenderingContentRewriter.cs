@@ -26,6 +26,7 @@ using org.apache.shindig.gadgets.rewrite;
 using org.apache.shindig.common.xml;
 using org.w3c.dom;
 using Pesta.Engine.auth;
+using Pesta.Engine.common;
 using Pesta.Utilities;
 using pestaServer.Models.common;
 using pestaServer.Models.gadgets.http;
@@ -135,7 +136,7 @@ namespace pestaServer.Models.gadgets.render
             {
                 // TODO: Rewriter interface needs to be modified to handle GadgetException or
                 // RewriterException or something along those lines.
-                throw ex;
+                throw;
             }
 
         }

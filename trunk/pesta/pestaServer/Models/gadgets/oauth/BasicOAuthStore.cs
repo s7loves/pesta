@@ -31,7 +31,10 @@ using Pesta.Interop.oauth.signature;
 namespace pestaServer.Models.gadgets.oauth
 {
     /// <summary>
-    /// Summary description for BasicOAuthStore
+    /// Simple implementation of the {@link OAuthStore} interface. We use a
+    /// in-memory hash map. If initialized with a private key, then the store will
+    /// return an OAuthAccessor in {@code getOAuthAccessor} that uses that private
+    /// key if no consumer key and secret could be found.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -78,7 +81,8 @@ namespace pestaServer.Models.gadgets.oauth
         /** Number of times we removed an access token */
         private int accessTokenRemoveCount;
         public readonly static BasicOAuthStore Instance = new BasicOAuthStore();
-        protected BasicOAuthStore()
+
+        private BasicOAuthStore()
         {
             consumerInfos = new Dictionary<BasicOAuthStoreConsumerIndex, BasicOAuthStoreConsumerKeyAndSecret>();
             tokens = new Dictionary<BasicOAuthStoreTokenIndex, TokenInfo>();

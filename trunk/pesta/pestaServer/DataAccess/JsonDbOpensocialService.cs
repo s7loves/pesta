@@ -31,8 +31,6 @@ using Pesta.Utilities;
 using pestaServer.Models.social.core.util;
 using pestaServer.Models.social.service;
 
-namespace pestaServer.DataAccess
-{
     /// <summary>
     /// Summary description for JsonDbOpensocialService
     /// </summary>
@@ -43,11 +41,12 @@ namespace pestaServer.DataAccess
     /// </remarks>
     public class JsonDbOpensocialService : IPersonService, IActivityService, IAppDataService
     {
-        public readonly static string dbLocation = HttpContext.Current.Server.MapPath(HttpContext.Current.Request.ApplicationPath) + PestaSettings.JsonDb;
+        private const string Jsondb = "gadgets/files/sampledata/canonicaldb.json";
+        public readonly static string DbLocation = HttpContext.Current.Server.MapPath(HttpContext.Current.Request.ApplicationPath) + Jsondb;
         public readonly static JsonDbOpensocialService Instance = new JsonDbOpensocialService();
         protected JsonDbOpensocialService()
         {
-            using (StreamReader reader = new StreamReader(dbLocation))
+            using (StreamReader reader = new StreamReader(DbLocation))
             {
                 String content = reader.ReadToEnd();
                 this.db = JsonConvert.Import(content) as JsonObject;
@@ -496,4 +495,3 @@ namespace pestaServer.DataAccess
             return converter.convertToObject(inobject.ToString(), typeof(Person)) as Person;
         }
     }
-}

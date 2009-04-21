@@ -32,7 +32,7 @@ namespace pestaServer.Controllers
 {
     public abstract class apiController : Controller
     {
-        protected static String DEFAULT_ENCODING = "UTF-8";
+        private static String DEFAULT_ENCODING = "UTF-8";
         private readonly IHandlerDispatcher dispatcher;
         protected BeanJsonConverter jsonConverter;
         protected BeanConverter xmlConverter;

@@ -86,6 +86,9 @@ namespace pestaServer.Controllers
                         case IHandlerDispatcher.APPDATA_ROUTE:
                             resp = new DataCollection(new Dictionary<string, Dictionary<string,string>>{{"entry",(Dictionary<string,string>)resp}});
                             break;
+                        default:
+                            resp = new Dictionary<string, object>() {{"entry", resp}};
+                            break;
                     }
                 }
                 response.Output.Write(converter.convertToString(resp, requestItem));

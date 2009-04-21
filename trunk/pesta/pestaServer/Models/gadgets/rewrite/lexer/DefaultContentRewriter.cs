@@ -94,7 +94,7 @@ namespace pestaServer.Models.gadgets.rewrite.lexer
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw;
             }
 
             return null;

@@ -125,8 +125,8 @@ namespace pestaServer.Models.gadgets.oauth
        * @param fetcherConfig configuration options for the fetcher
        * @param fetcher fetcher to use for actually making requests
        */
-        public OAuthRequest() 
-        : this(OAuthFetcherConfig.Instace, BasicHttpFetcher.Instance, null)
+        public OAuthRequest()
+            : this(OAuthFetcherConfig.Instance, BasicHttpFetcher.Instance, null)
         {
         }
 
@@ -136,7 +136,8 @@ namespace pestaServer.Models.gadgets.oauth
         * @param trustedParams additional parameters to include in all outgoing OAuth requests, useful
         *     for client data that can't be pulled from the security token but is still trustworthy.
         */
-        public OAuthRequest(OAuthFetcherConfig fetcherConfig, IHttpFetcher fetcher,
+
+        private OAuthRequest(OAuthFetcherConfig fetcherConfig, IHttpFetcher fetcher,
                 List<OAuth.Parameter> trustedParams) 
         {
             this.fetcherConfig = fetcherConfig;
