@@ -91,22 +91,18 @@ namespace pestaServer.Models.social.core.util
             // if abstract class or interface, try go get implementer
             if (className.IsInterface || className.IsAbstract)
             {
-                object[] attrs = className.GetCustomAttributes(typeof(ImplementedByAttribute), false);
+                object[] attrs = className.GetCustomAttributes(typeof(ImplementedBy), false);
                 if (attrs == null)
                 {
                     throw new Exception(errorMessage);
                 }
-                className = ((ImplementedByAttribute)attrs[0]).Implementer;
+                className = ((ImplementedBy)attrs[0]).Implementer;
             }
 
             try
             {
                 Object pojo = Activator.CreateInstance(className);
                 return convertToObj(json, pojo);
-            }
-            catch (JsonException e)
-            {
-                throw new Exception(errorMessage, e);
             }
             catch (Exception e)
             {
@@ -220,15 +216,16 @@ namespace pestaServer.Models.social.core.util
             {
                 value = convertEnum(method.GetGenericArguments()[0], JsonObject[fieldName] as JsonObject);
             }
-            else if (expectedType.IsEnum)
+            else if (expectedType.IsEnum || 
+                expectedType.GetCustomAttributes(typeof(IsJavaEnum), true).Length != 0)
             {
                 if (JsonObject[fieldName] != null)
                 {
                     foreach (FieldInfo v in expectedType.GetFields(BindingFlags.Static | BindingFlags.Public))
                     {
-                        if (v.Name.Equals(JsonObject[fieldName]))
+                        if (string.Compare(v.Name, JsonObject[fieldName].ToString(), StringComparison.CurrentCultureIgnoreCase) == 0)
                         {
-                            value = Enum.Parse(expectedType, v.GetRawConstantValue().ToString());
+                            value = expectedType.IsEnum ? Enum.Parse(expectedType, v.GetRawConstantValue().ToString()) : v.GetValue(null);
                             break;
                         }
                     }
