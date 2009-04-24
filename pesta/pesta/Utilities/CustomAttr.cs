@@ -31,16 +31,17 @@ namespace Pesta.Utilities
     /// </para>
     /// </remarks>
 
-    public class ImplementedByAttribute : Attribute
+    public class ImplementedBy : Attribute
     {
         /// <summary>
-        /// Initializes a new instance of the ImplementedByAttribute class.
+        /// Initializes a new instance of the ImplementedBy class.
         /// </summary>
-        public ImplementedByAttribute(Type type)
+        public ImplementedBy(Type type)
         {
             implementer = type;
         }
-        protected Type implementer;
+
+        private readonly Type implementer;
         public Type Implementer
         {
             get
@@ -48,5 +49,14 @@ namespace Pesta.Utilities
                 return implementer;
             }
         }
+    }
+
+    /// <summary>
+    /// IsJavaEnum - marks a class as an "enum" as java enums are actually a class
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Class, Inherited = true, AllowMultiple = true)]
+    public class IsJavaEnum : Attribute
+    {
+        
     }
 }

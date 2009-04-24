@@ -74,8 +74,6 @@ namespace Pesta.Engine.social.core.model
 
         private String linkText;
 
-        public UrlImpl() { }
-
         public UrlImpl(String value, String linkText, String type)
             : base(type, value)
         {

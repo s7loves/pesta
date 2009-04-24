@@ -43,9 +43,6 @@ namespace Pesta.Engine.social.model
             /// <summary>
             /// Initializes a new instance of the Field class.
             /// </summary>
-            public Field()
-            {
-            }
             public Field(int key, string value)
                 : base(key, value)
             {
@@ -108,9 +105,6 @@ namespace Pesta.Engine.social.model
             /// <summary>
             /// Initializes a new instance of the Drinker class.
             /// </summary>
-            public Drinker()
-            {
-            }
             public Drinker(int key, string value)
                 : base(key, value)
             {
@@ -152,9 +146,6 @@ namespace Pesta.Engine.social.model
             /// <summary>
             /// Initializes a new instance of the Smoker class.
             /// </summary>
-            public Smoker()
-            {
-            }
             public Smoker(int key, string value)
                 : base(key, value)
             {
@@ -197,9 +188,6 @@ namespace Pesta.Engine.social.model
             /// <summary>
             /// Initializes a new instance of the NetworkPresence class.
             /// </summary>
-            public NetworkPresence()
-            {
-            }
             public NetworkPresence(int key, string value)
                 : base(key, value)
             {
@@ -239,9 +227,6 @@ namespace Pesta.Engine.social.model
             /// <summary>
             /// Initializes a new instance of the LookingFor class.
             /// </summary>
-            public LookingFor()
-            {
-            }
             public LookingFor(int key, string value)
                 : base(key, value)
             {
