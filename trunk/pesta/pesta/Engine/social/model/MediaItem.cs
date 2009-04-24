@@ -40,9 +40,6 @@ namespace Pesta.Engine.social.model
             /// <summary>
             /// Initializes a new instance of the Field class.
             /// </summary>
-            public Field()
-            {
-            }
             public Field(int key, string value)
                 : base(key, value)
             {
@@ -81,12 +78,10 @@ namespace Pesta.Engine.social.model
         */
         public class Type : EnumBaseType<Type>
         {
-            public Type() { }
-
             public Type(int key, string value)
                 : base(key, value)
             {
-
+                jsonString = value;
             }
 
             /** the constant for audio types. */

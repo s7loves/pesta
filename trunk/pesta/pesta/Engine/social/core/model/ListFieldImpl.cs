@@ -42,9 +42,6 @@ namespace Pesta.Engine.social.core.model
             /// <summary>
             /// Initializes a new instance of the Field class.
             /// </summary>
-            public Field()
-            {
-            }
             public Field(int key, string value)
                 : base(key, value)
             {
@@ -77,8 +74,6 @@ namespace Pesta.Engine.social.core.model
                 return this.jsonString;
             }
         }
-
-        public ListFieldImpl() { }
 
         public ListFieldImpl(String type, String value)
         {

@@ -23,6 +23,7 @@ using System.Collections.Generic;
 
 namespace Pesta.Utilities
 {
+    [IsJavaEnum]
     public abstract class EnumBaseType<T> where T : EnumBaseType<T>
     {
         protected static List<T> enumValues = new List<T>();
@@ -31,16 +32,18 @@ namespace Pesta.Utilities
         public readonly string JsonValue;
         public readonly string Value;
 
-        public EnumBaseType()
+        protected EnumBaseType()
         {
         }
-        public EnumBaseType(int key, string value)
+
+        protected EnumBaseType(int key, string value)
         {
             Key = key;
             Value = value;
             enumValues.Add((T)this);
         }
-        public EnumBaseType(string key, string value)
+
+        protected EnumBaseType(string key, string value)
         {
             JsonValue = key;
             Value = value;
