@@ -40,7 +40,8 @@ namespace ASPNETMVC.Utilities
             public CachedContent(byte[] bytes, DateTime lastModified)
             {
                 this.ResponseBytes = bytes;
-                this.LastModified = lastModified;
+                // milliseconds in If-Modified-Since header is always 0
+                this.LastModified = new DateTime(lastModified.Year,lastModified.Month,lastModified.Day,lastModified.Hour,lastModified.Minute,lastModified.Second);
             }
         }
 
@@ -127,7 +128,6 @@ namespace ASPNETMVC.Utilities
                 }
                 return new HttpAsyncResult(callback, state, true, null, x);
             }
-            
         }
 
         public virtual void EndProcessRequest(IAsyncResult result)
@@ -161,20 +161,35 @@ namespace ASPNETMVC.Utilities
             CachedContent cachedContent = context.Cache[cacheKey] as CachedContent;
             if (null != cachedContent)
             {
+                if (request.Headers["If-Modified-Since"] != null)
+                {
+                    string modSince = request.Headers["If-Modified-Since"];
+                    if (modSince.IndexOf(";") > 0)
+                    {
+                        modSince = modSince.Split(';')[0];
+                    }
+                    DateTime modSinced = Convert.ToDateTime(modSince).ToUniversalTime();
+                    //
+                    if (DateTime.Compare(modSinced, cachedContent.LastModified.ToUniversalTime()) >= 0)
+                    {
+                        context.Response.StatusCode = (int)HttpStatusCode.NotModified;
+                        return true;
+                    }
+                    // unreachable as cache would be invalidated if file was modified but added just in case
+                    return false;
+                }
+
                 byte[] cachedBytes = cachedContent.ResponseBytes;
 
                 // We have it cached
-                this.ProduceResponseHeader(response, cachedBytes.Length, compressionType, 
-                    physicalFilePath, cachedContent.LastModified);
+                this.ProduceResponseHeader(response, cachedBytes.Length, compressionType,
+                    physicalFilePath, cachedContent.LastModified, cacheKey);
                 this.WriteResponse(response, cachedBytes, compressionType, physicalFilePath);
 
                 Debug.WriteLine("StaticFileHandler: Cached: " + request.FilePath);
                 return true;
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
         private void CacheAndDeliver(HttpContext context,
@@ -188,8 +203,8 @@ namespace ASPNETMVC.Utilities
                 new CacheDependency(physicalFilePath),
                 DateTime.Now.Add(DEFAULT_CACHE_DURATION), Cache.NoSlidingExpiration);
 
-            this.ProduceResponseHeader(response, responseBytes.Length, compressionType, 
-                physicalFilePath, file.LastWriteTimeUtc);
+            this.ProduceResponseHeader(response, responseBytes.Length, compressionType,
+                physicalFilePath, file.LastWriteTimeUtc, cacheKey);
             this.WriteResponse(response, responseBytes, compressionType, physicalFilePath);
 
             Debug.WriteLine("StaticFileHandler: NonCached: " + request.FilePath);
@@ -242,7 +257,7 @@ namespace ASPNETMVC.Utilities
                 // We don't cache/compress such file types. Must be some binary file that's better
                 // to let IIS handle
                 this.ProduceResponseHeader(response, Convert.ToInt32(file.Length), compressionType, 
-                    physicalFilePath, file.LastWriteTimeUtc);
+                    physicalFilePath, file.LastWriteTimeUtc, null);
                 response.TransmitFile(physicalFilePath);
 
                 Debug.WriteLine("TransmitFile: " + request.FilePath);
@@ -262,7 +277,7 @@ namespace ASPNETMVC.Utilities
 
         private void ProduceResponseHeader(HttpResponse response, int count,
             ResponseCompressionType mode, string physicalFilePath,
-            DateTime lastModified)
+            DateTime lastModified, string key)
         {
             response.Buffer = false;
             response.BufferOutput = false;
