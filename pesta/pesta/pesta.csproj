@@ -261,6 +261,7 @@
     <Compile Include="Utilities\ASPNETMVC\StaticFileHandler.cs" />
     <Compile Include="Utilities\Dynamic.cs" />
     <Compile Include="Utilities\Locale.cs" />
+    <Compile Include="Utilities\MD5Helper.cs" />
     <Compile Include="Utilities\PestaSettings.cs" />
     <Compile Include="Utilities\Provider.cs" />
     <Compile Include="Utilities\Singleton.cs" />
