@@ -24,6 +24,7 @@ using Jayrock.Json;
 using Jayrock.Json.Conversion;
 using Pesta.Engine.auth;
 using Pesta.Engine.social.model;
+using pestaServer.ActionFilters;
 using pestaServer.Models.social.service;
 using Pesta.Engine.social.spi;
 
@@ -36,6 +37,7 @@ namespace pestaServer.Controllers
         protected static readonly String XML_FORMAT = "xml";
         protected static readonly String JSON_BATCH_ROUTE = "jsonBatch";
 
+        [CompressFilter]
         public void Index(string id1, string id2, string id3, string id4)
         {
             HttpRequest request = System.Web.HttpContext.Current.Request;

@@ -64,7 +64,7 @@ namespace pestaServer.Models.gadgets.servlet
             return !ignoreCache.Equals("0");
         }
 
-        public override void fetch(HttpRequestWrapper request, HttpResponseWrapper response)
+        public override void Fetch(HttpRequestWrapper request, HttpResponseWrapper response)
         {
             if (request.getHeaders("If-Modified-Since") != null)
             {
@@ -90,7 +90,7 @@ namespace pestaServer.Models.gadgets.servlet
 
             if (!request.isConcat)
             {
-                setResponseHeaders(request, response.getResponse(), results);
+                SetResponseHeaders(request, response.getResponse(), results);
                 for (int i = 0; i < results.getHeaders().Count; i++)
                 {
                     String name = results.getHeaders().GetKey(i);
@@ -123,7 +123,7 @@ namespace pestaServer.Models.gadgets.servlet
 
         private sRequest buildHttpRequest(HttpRequestWrapper request)
         {
-            Uri url = validateUrl(request.getParameter(URL_PARAM));
+            Uri url = ValidateUrl(request.getParameter(URL_PARAM));
 
             sRequest req = new sRequest(url);
 

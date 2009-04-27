@@ -23,8 +23,8 @@ using System.Net;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
-using Pesta.Engine.common;
 using Pesta.Utilities;
+using pestaServer.ActionFilters;
 using pestaServer.Models.common;
 using pestaServer.Models.gadgets;
 using pestaServer.Models.gadgets.servlet;
@@ -35,6 +35,7 @@ namespace pestaServer.Controllers
     {
         private readonly GadgetFeatureRegistry registry = GadgetFeatureRegistry.Instance;
 
+        [CompressFilter]
         public void Index(string resourceName)
         {
             HttpRequest req = System.Web.HttpContext.Current.Request;
@@ -112,12 +113,12 @@ namespace pestaServer.Controllers
             if (req.Params["v"] != null)
             {
                 // Versioned files get cached indefinitely
-                HttpUtil.setCachingHeaders(resp);
+                HttpUtil.SetCachingHeaders(resp);
             }
             else
             {
                 // Unversioned files get cached for 1 hour.
-                HttpUtil.setCachingHeaders(resp, 60 * 60);
+                HttpUtil.SetCachingHeaders(resp, 60 * 60);
             }
             resp.ContentType = "text/javascript; charset=utf-8";
             resp.ContentEncoding = Encoding.UTF8;

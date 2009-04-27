@@ -26,6 +26,7 @@ using System.Web;
 using System.Web.Mvc;
 using Jayrock.Json;
 using Jayrock.Json.Conversion;
+using pestaServer.ActionFilters;
 using pestaServer.Models.gadgets.servlet;
 
 namespace pestaServer.Controllers
@@ -38,7 +39,7 @@ namespace pestaServer.Controllers
         private static readonly Regex GET_REQUEST_CALLBACK_PATTERN = new Regex("[A-Za-z_\\.]+", RegexOptions.Compiled);
         private readonly JsonRpcHandler jsonHandler = JsonRpcHandler.Instance;
 
-
+        [CompressFilter]
         public void Index()
         {
             HttpRequest request = System.Web.HttpContext.Current.Request;

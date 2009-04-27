@@ -21,6 +21,7 @@ using System;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using pestaServer.ActionFilters;
 using pestaServer.Models.gadgets.servlet;
 using HttpRequestWrapper = pestaServer.Models.gadgets.http.HttpRequestWrapper;
 using HttpResponseWrapper = pestaServer.Models.gadgets.http.HttpResponseWrapper;
@@ -31,21 +32,22 @@ namespace pestaServer.Controllers
     {
         private static readonly MakeRequestHandler makeRequestHandler = MakeRequestHandler.Instance;
 
+        [CompressFilter]
         public void Index()
         {
             HttpRequestWrapper request = new HttpRequestWrapper(System.Web.HttpContext.Current);
             HttpResponseWrapper response = new HttpResponseWrapper(System.Web.HttpContext.Current.Response);
             try
             {
-                makeRequestHandler.fetch(request, response);
+                makeRequestHandler.Fetch(request, response);
             }
             catch (Exception e)
             {
-                outputError(e, response.getResponse());
+                OutputError(e, response.getResponse());
             }
         }
 
-        private static void outputError(Exception e, HttpResponse resp)
+        private static void OutputError(Exception e, HttpResponse resp)
         {
             resp.StatusCode = (int)HttpStatusCode.BadRequest;
             resp.StatusDescription = e.Message;

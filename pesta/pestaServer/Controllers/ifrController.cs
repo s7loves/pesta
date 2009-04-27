@@ -21,6 +21,7 @@ using System;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using pestaServer.ActionFilters;
 using pestaServer.Models.gadgets;
 using pestaServer.Models.gadgets.http;
 using pestaServer.Models.gadgets.render;
@@ -33,6 +34,7 @@ namespace pestaServer.Controllers
         const int DEFAULT_CACHE_TTL = 300;  // seconds
         private HttpContext _context;
 
+        [CompressFilter]
         public void Index()
         {
             HttpRequest req = System.Web.HttpContext.Current.Request;
@@ -75,18 +77,18 @@ namespace pestaServer.Controllers
                 case RenderingResults.Status.OK:
                     if (context.getIgnoreCache())
                     {
-                        HttpUtil.setCachingHeaders(resp, 0);
+                        HttpUtil.SetCachingHeaders(resp, 0);
                     }
                     else if (req.Params["v"] != null)
                     {
                         // Versioned files get cached indefinitely
-                        HttpUtil.setCachingHeaders(resp, true);
+                        HttpUtil.SetCachingHeaders(resp, true);
                     }
                     else
                     {
                         // Unversioned files get cached for 5 minutes.
                         // TODO: This should be configurable
-                        HttpUtil.setCachingHeaders(resp, DEFAULT_CACHE_TTL, true);
+                        HttpUtil.SetCachingHeaders(resp, DEFAULT_CACHE_TTL, true);
                     }
                     resp.Output.Write(results.getContent());
                     break;

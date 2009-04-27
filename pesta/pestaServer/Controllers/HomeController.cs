@@ -27,13 +27,6 @@ namespace pestaServer.Controllers
     {
         public ActionResult Index()
         {
-            ViewData["Message"] = "Pesta server: Refer to http://code.google.com/p/pesta for more information";
-
-            return View();
-        }
-
-        public ActionResult About()
-        {
             return View();
         }
     }
