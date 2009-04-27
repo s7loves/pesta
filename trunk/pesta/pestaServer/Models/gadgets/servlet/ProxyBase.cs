@@ -38,31 +38,31 @@ namespace pestaServer.Models.gadgets.servlet
     /// </remarks>
     public abstract class ProxyBase
     {
-        public static readonly String URL_PARAM = "url";
-        public static readonly String REFRESH_PARAM = "refresh";
-        public static readonly String IGNORE_CACHE_PARAM = "nocache";
-        public static readonly String GADGET_PARAM = "gadget";
-        public static readonly String CONTAINER_PARAM = "container";
+        public const String URL_PARAM = "url";
+        public const String REFRESH_PARAM = "refresh";
+        public const String IGNORE_CACHE_PARAM = "nocache";
+        public const String GADGET_PARAM = "gadget";
+        public const String CONTAINER_PARAM = "container";
         // Old form container name, retained for legacy compatibility.
-        public static readonly String SYND_PARAM = "synd";
+        public const String SYND_PARAM = "synd";
 
         // Public because of rewriter. Rewriter should be cleaned up.
-        public static readonly String REWRITE_MIME_TYPE_PARAM = "rewriteMime";
+        public const String REWRITE_MIME_TYPE_PARAM = "rewriteMime";
         protected String getContainer(HttpRequestWrapper request)
         {
-            String container = getParameter(request, CONTAINER_PARAM, null) ??
-                               getParameter(request, SYND_PARAM, ContainerConfig.DEFAULT_CONTAINER);
+            String container = GetParameter(request, CONTAINER_PARAM, null) ??
+                               GetParameter(request, SYND_PARAM, ContainerConfig.DEFAULT_CONTAINER);
             return container;
         }
 
-        protected String getParameter(HttpRequestWrapper request, String name, String defaultValue)
+        protected static String GetParameter(HttpRequestWrapper request, String name, String defaultValue)
         {
             String ret = request.getParameter(name);
             return ret ?? defaultValue;
         }
 
 
-        protected void setResponseHeaders(HttpRequestWrapper request, HttpResponse response, sResponse results)
+        protected static void SetResponseHeaders(HttpRequestWrapper request, HttpResponse response, sResponse results)
         {
             int refreshInterval;
             if (results.isStrictNoCache())
@@ -77,7 +77,7 @@ namespace pestaServer.Models.gadgets.servlet
             {
                 refreshInterval = Math.Max(60 * 60, (int)(results.getCacheTtl() / 1000L));
             }
-            HttpUtil.setCachingHeaders(response, refreshInterval);
+            HttpUtil.SetCachingHeaders(response, refreshInterval);
             // We're skipping the content disposition header for flash due to an issue with Flash player 10
             // This does make some sites a higher value phishing target, but this can be mitigated by
             // additional referer checks.
@@ -87,7 +87,7 @@ namespace pestaServer.Models.gadgets.servlet
             }
         }
 
-        protected Uri validateUrl(String urlToValidate)
+        protected static Uri ValidateUrl(String urlToValidate)
         {
             if (urlToValidate == null)
             {
@@ -117,7 +117,7 @@ namespace pestaServer.Models.gadgets.servlet
         /**
            * Processes the given request.
            */
-        abstract public void fetch(HttpRequestWrapper request, HttpResponseWrapper response);
+        abstract public void Fetch(HttpRequestWrapper request, HttpResponseWrapper response);
 
     }
 }

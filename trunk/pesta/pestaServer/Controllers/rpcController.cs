@@ -28,6 +28,7 @@ using Pesta.Engine.auth;
 using Pesta.Engine.common.util;
 using Pesta.Engine.social;
 using Pesta.Engine.social.spi;
+using pestaServer.ActionFilters;
 using pestaServer.Models.social.service;
 
 namespace pestaServer.Controllers
@@ -36,7 +37,7 @@ namespace pestaServer.Controllers
     {
         //
         // GET: /rpc/
-
+        [CompressFilter]
         public void Index()
         {
             HttpRequest request = System.Web.HttpContext.Current.Request;

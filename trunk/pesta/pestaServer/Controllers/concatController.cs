@@ -22,6 +22,7 @@ using System.Net;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
+using pestaServer.ActionFilters;
 using pestaServer.Models.gadgets;
 using pestaServer.Models.gadgets.servlet;
 using HttpRequestWrapper=pestaServer.Models.gadgets.http.HttpRequestWrapper;
@@ -33,7 +34,7 @@ namespace pestaServer.Controllers
     {
         private ProxyHandler proxyHandler = ProxyHandler.Instance;
 
-
+        [CompressFilter]
         public void Index()
         {
             HttpRequest request = System.Web.HttpContext.Current.Request;
@@ -51,7 +52,7 @@ namespace pestaServer.Controllers
             {
                 int ttl = 0;
                 int.TryParse(request.Params[ProxyBase.REFRESH_PARAM], out ttl);
-                HttpUtil.setCachingHeaders(response, ttl);
+                HttpUtil.SetCachingHeaders(response, ttl);
             }
             response.AddHeader("Content-Disposition", "attachment;filename=p.txt");
             HttpResponseWrapper wrapper = new HttpResponseWrapper(response);
@@ -64,7 +65,7 @@ namespace pestaServer.Controllers
                 try
                 {
                     wrapper.Write(Encoding.UTF8.GetBytes("/* ---- Start " + url + " ---- */"));
-                    proxyHandler.fetch(new RequestWrapper(System.Web.HttpContext.Current, url, true), wrapper);
+                    proxyHandler.Fetch(new RequestWrapper(System.Web.HttpContext.Current, url, true), wrapper);
                     if (wrapper.getStatus() != (int)HttpStatusCode.OK)
                     {
                         wrapper.Write(Encoding.UTF8.GetBytes(

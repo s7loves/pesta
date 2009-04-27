@@ -3,6 +3,7 @@ using System.Net;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
+using pestaServer.ActionFilters;
 using pestaServer.Models.gadgets.servlet;
 using HttpResponseWrapper = pestaServer.Models.gadgets.http.HttpResponseWrapper;
 
@@ -12,13 +13,14 @@ namespace pestaServer.Controllers
     {
         private ProxyHandler proxyHandler = ProxyHandler.Instance;
 
+        [CompressFilter]
         public void Index()
         {
             HttpResponse response = System.Web.HttpContext.Current.Response;
             HttpResponseWrapper wrapper = new HttpResponseWrapper(response);
             try
             {
-                proxyHandler.fetch(new ProxyRequestWrapper(System.Web.HttpContext.Current), wrapper);
+                proxyHandler.Fetch(new ProxyRequestWrapper(System.Web.HttpContext.Current), wrapper);
             }
             catch (Exception ex)
             {

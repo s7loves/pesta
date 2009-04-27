@@ -23,7 +23,6 @@ using System.Collections.Generic;
 using Jayrock.Json;
 using pestaServer.Models.common;
 
-
 namespace pestaServer.Models.gadgets.servlet
 {
     /// <summary>
@@ -34,10 +33,9 @@ namespace pestaServer.Models.gadgets.servlet
     ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
     /// </para>
     /// </remarks>
-    public class HttpUtil
+    public static class HttpUtil
     {
-        // 1 year.
-        public static int DEFAULT_TTL = 365 * 24 * 60 * 60;
+        private const int DefaultTtl = 31536000; // 1 year = 365 * 24 * 60 * 60
 
         /**
         * Sets HTTP headers that instruct the browser to cache content. Implementations should take care
@@ -45,9 +43,9 @@ namespace pestaServer.Models.gadgets.servlet
         *
         * @param response The HTTP response
         */
-        public static void setCachingHeaders(HttpResponse response)
+        public static void SetCachingHeaders(HttpResponse response)
         {
-            setCachingHeaders(response, DEFAULT_TTL, false);
+            SetCachingHeaders(response, DefaultTtl, false);
         }
 
         /**
@@ -57,9 +55,9 @@ namespace pestaServer.Models.gadgets.servlet
         * @param response The HTTP response
         * @param noProxy True if you don't want the response to be cacheable by proxies.
         */
-        public static void setCachingHeaders(HttpResponse response, bool noProxy)
+        public static void SetCachingHeaders(HttpResponse response, bool noProxy)
         {
-            setCachingHeaders(response, DEFAULT_TTL, noProxy);
+            SetCachingHeaders(response, DefaultTtl, noProxy);
         }
 
         /**
@@ -70,9 +68,9 @@ namespace pestaServer.Models.gadgets.servlet
         * @param ttl The time to cache for, in seconds. If 0, then insure that
         *            this object is not cached.
         */
-        public static void setCachingHeaders(HttpResponse response, int ttl)
+        public static void SetCachingHeaders(HttpResponse response, int ttl)
         {
-            setCachingHeaders(response, ttl, false);
+            SetCachingHeaders(response, ttl, false);
         }
 
         /**
@@ -84,10 +82,9 @@ namespace pestaServer.Models.gadgets.servlet
         *            this object is not cached.
         * @param noProxy True if you don't want the response to be cacheable by proxies.
         */
-        public static void setCachingHeaders(HttpResponse response, int ttl, bool noProxy)
+        public static void SetCachingHeaders(HttpResponse response, int ttl, bool noProxy)
         {
-            response.Cache.SetExpires(DateTime.Now.AddSeconds(ttl));
-
+            
             if (ttl == 0)
             {
                 response.Cache.SetCacheability(HttpCacheability.NoCache);
@@ -97,13 +94,15 @@ namespace pestaServer.Models.gadgets.servlet
             {
                 if (noProxy)
                 {
-                    response.Cache.SetCacheability(HttpCacheability.Private);
+                    response.Cache.SetCacheability(HttpCacheability.ServerAndPrivate);
                 }
                 else
                 {
                     response.Cache.SetCacheability(HttpCacheability.Public);
                 }
-                response.Cache.SetMaxAge(new TimeSpan(ttl / 86400, 0, 0, 0));
+                response.Cache.SetMaxAge(TimeSpan.FromSeconds(ttl));
+                response.Cache.SetExpires(DateTime.Now.AddSeconds(ttl));
+                response.Cache.AppendCacheExtension("must-revalidate, proxy-revalidate");
             }
         }
 
@@ -114,7 +113,7 @@ namespace pestaServer.Models.gadgets.servlet
         * @param context The request context.
         * @param features A set of all features needed.
         */
-        public static JsonObject getJsConfig(ContainerConfig config, GadgetContext context, HashSet<string> features)
+        public static JsonObject GetJsConfig(ContainerConfig config, GadgetContext context, HashSet<string> features)
         {
             JsonObject containerFeatures = config.getJsonObject(context.getContainer(),
                                                                 "gadgets.features");

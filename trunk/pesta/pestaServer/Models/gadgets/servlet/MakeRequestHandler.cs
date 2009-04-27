@@ -62,7 +62,7 @@ namespace pestaServer.Models.gadgets.servlet
             this.requestPipeline = DefaultRequestPipeline.Instance;
         }
 
-        public override void fetch(HttpRequestWrapper request, HttpResponseWrapper response)
+        public override void Fetch(HttpRequestWrapper request, HttpResponseWrapper response)
         {
             sRequest rcr = buildHttpRequest(request);
 
@@ -79,7 +79,7 @@ namespace pestaServer.Models.gadgets.servlet
             String output = convertResponseToJson(rcr.getSecurityToken(), request, results);
 
             // Find and set the refresh interval
-            setResponseHeaders(request, response.getResponse(), results);
+            SetResponseHeaders(request, response.getResponse(), results);
 
             response.setStatus((int)HttpStatusCode.OK);
             response.setContentType("application/json");
@@ -94,14 +94,14 @@ namespace pestaServer.Models.gadgets.servlet
         */
         private sRequest buildHttpRequest(HttpRequestWrapper request)
         {
-            Uri url = validateUrl(request.getParameter(URL_PARAM));
+            Uri url = ValidateUrl(request.getParameter(URL_PARAM));
 
             sRequest req = new sRequest(url)
-                .setMethod(getParameter(request, METHOD_PARAM, "GET"))
-                .setPostBody(request.getRequest().ContentEncoding.GetBytes(getParameter(request, POST_DATA_PARAM, "")))
+                .setMethod(GetParameter(request, METHOD_PARAM, "GET"))
+                .setPostBody(request.getRequest().ContentEncoding.GetBytes(GetParameter(request, POST_DATA_PARAM, "")))
                 .setContainer(getContainer(request));
 
-            String headerData = getParameter(request, HEADERS_PARAM, "");
+            String headerData = GetParameter(request, HEADERS_PARAM, "");
             if (headerData.Length > 0)
             {
                 String[] headerList = headerData.Split('&');
@@ -132,7 +132,7 @@ namespace pestaServer.Models.gadgets.servlet
             req.setRewriteMimeType(request.getParameter(REWRITE_MIME_TYPE_PARAM));
 
             // Figure out whether authentication is required
-            AuthType auth = AuthType.Parse(getParameter(request, AUTHZ_PARAM, null));
+            AuthType auth = AuthType.Parse(GetParameter(request, AUTHZ_PARAM, null));
             req.AuthType = auth;
             if (auth != AuthType.NONE)
             {
@@ -209,8 +209,8 @@ namespace pestaServer.Models.gadgets.servlet
 
         private String processFeed(String url, HttpRequestWrapper req, String xml)
         {
-            bool getSummaries = Boolean.Parse(getParameter(req, GET_SUMMARIES_PARAM, "false"));
-            int numEntries = int.Parse(getParameter(req, NUM_ENTRIES_PARAM, DEFAULT_NUM_ENTRIES));
+            bool getSummaries = Boolean.Parse(GetParameter(req, GET_SUMMARIES_PARAM, "false"));
+            int numEntries = int.Parse(GetParameter(req, NUM_ENTRIES_PARAM, DEFAULT_NUM_ENTRIES));
             return new FeedProcessor().process(url, xml, getSummaries, numEntries).ToString();
         }
     }
