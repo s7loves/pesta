@@ -38,9 +38,9 @@ namespace Pesta.Engine.common.util
     {
         private static readonly Regex ARRAY_MATCH = new Regex("(\\w+)\\((\\d+)\\)", RegexOptions.Compiled);
 
-        private static readonly HashKey<String> RESERVED_PARAMS = new HashKey<string>() { "method", "id", "st" };
+        private static readonly HashKey<String> RESERVED_PARAMS = new HashKey<string> { "method", "id", "st" };
 
-        public static JsonObject fromRequest(HttpRequest request)
+        public static JsonObject FromRequest(HttpRequest request)
         {
             //String methodName = request.getPathInfo().replaceAll("/", "");
             JsonObject root = new JsonObject();
@@ -56,8 +56,8 @@ namespace Pesta.Engine.common.util
                 if (!RESERVED_PARAMS.Contains(parameters.GetKey(i).ToLower()))
                 {
                     String[] path = parameters.GetKey(i).Split('\\');
-                    JsonObject holder = buildHolder(paramsRoot, path, 0);
-                    holder.Put(path[path.Length - 1], convertToJsonValue(parameters.GetValues(i)[0]));
+                    JsonObject holder = BuildHolder(paramsRoot, path, 0);
+                    holder.Put(path[path.Length - 1], ConvertToJsonValue(parameters.GetValues(i)[0]));
                 }
             }
 
@@ -71,80 +71,74 @@ namespace Pesta.Engine.common.util
         /**
        * Parse the steps in the path into JSON Objects.
        */
-        static JsonObject buildHolder(JsonObject root, String[] steps, int currentStep)
+        static JsonObject BuildHolder(JsonObject root, String[] steps, int currentStep)
         {
             if (currentStep > steps.Length - 2)
             {
                 return root;
             }
-            else
+            Match matcher = ARRAY_MATCH.Match(steps[currentStep]);
+            if (matcher.Success)
             {
-                Match matcher = ARRAY_MATCH.Match(steps[currentStep]);
-                if (matcher.Success)
+                // Handle as array
+                String fieldName = matcher.Groups[1].Value;
+                int index = int.Parse(matcher.Groups[2].Value);
+                JsonArray newArrayStep;
+                if (root.Contains(fieldName))
                 {
-                    // Handle as array
-                    String fieldName = matcher.Groups[1].Value;
-                    int index = int.Parse(matcher.Groups[2].Value);
-                    JsonArray newArrayStep;
-                    if (root.Contains(fieldName))
-                    {
-                        newArrayStep = root[fieldName] as JsonArray;
-                    }
-                    else
-                    {
-                        newArrayStep = new JsonArray();
-                        root.Put(fieldName, newArrayStep);
-                    }
-                    JsonObject newStep = new JsonObject();
-                    newArrayStep[index] = newStep;
-                    return buildHolder(newStep, steps, ++currentStep);
+                    newArrayStep = root[fieldName] as JsonArray;
                 }
                 else
                 {
-                    JsonObject newStep;
-                    if (root.Contains(steps[currentStep]))
-                    {
-                        newStep = root[steps[currentStep]] as JsonObject;
-                    }
-                    else
-                    {
-                        newStep = new JsonObject();
-                        root.Put(steps[currentStep], newStep);
-                    }
-                    return buildHolder(newStep, steps, ++currentStep);
+                    newArrayStep = new JsonArray();
+                    root.Put(fieldName, newArrayStep);
                 }
+                JsonObject newStep = new JsonObject();
+                newArrayStep[index] = newStep;
+                return BuildHolder(newStep, steps, ++currentStep);
+            }
+            else
+            {
+                JsonObject newStep;
+                if (root.Contains(steps[currentStep]))
+                {
+                    newStep = root[steps[currentStep]] as JsonObject;
+                }
+                else
+                {
+                    newStep = new JsonObject();
+                    root.Put(steps[currentStep], newStep);
+                }
+                return BuildHolder(newStep, steps, ++currentStep);
             }
         }
 
-        static Object convertToJsonValue(String value)
+        static Object ConvertToJsonValue(String value)
         {
             if (value == null)
             {
                 return null;
             }
-            else if (value.StartsWith("(") && value.EndsWith(")"))
+            if (value.StartsWith("(") && value.EndsWith(")"))
             {
                 // explicit form of literal array
                 return new JsonArray("[" + value.Substring(1, value.Length - 1) + "]");
             }
-            else
+            try
             {
-                try
+                // inferred parsing of literal array
+                // Attempt to parse as an array of literals
+                JsonArray parsedArray = new JsonArray("[" + value + "]");
+                if (parsedArray.Length == 1)
                 {
-                    // inferred parsing of literal array
-                    // Attempt to parse as an array of literals
-                    JsonArray parsedArray = new JsonArray("[" + value + "]");
-                    if (parsedArray.Length == 1)
-                    {
-                        // Not an array
-                        return parsedArray[0];
-                    }
-                    return parsedArray;
+                    // Not an array
+                    return parsedArray[0];
                 }
-                catch (JsonException)
-                {
-                    return value;
-                }
+                return parsedArray;
+            }
+            catch (JsonException)
+            {
+                return value;
             }
         }
     }
