@@ -20,7 +20,6 @@
 using System;
 using System.IO;
 using System.Reflection;
-using System.Text;
 
 namespace Pesta.Engine.common
 {
@@ -30,57 +29,10 @@ namespace Pesta.Engine.common
     ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
     /// </para>
     /// </remarks>
-    public class ResourceLoader
+    public static class ResourceLoader
     {
-
-        /// <summary> Opens a given path as either a resource or a file, depending on the path
-        /// name.
-        /// 
-        /// If path starts with res://, we interpret it as a resource.
-        /// Otherwise we attempt to load it as a file.
-        /// </summary>
-        /// <param name="path">
-        /// </param>
-        /// <returns> The opened input stream
-        /// </returns>
-        public static Stream open(String path)
+        public static String GetContent(String resource)
         {
-            return openResource(path);
-            /* if (path.StartsWith("res://"))
-             {
-                 return openResource(path.Substring(6));
-             }
-             FileInfo file = new FileInfo(path);
-             return file.OpenRead();*/
-        }
-
-        /// <param name="resource">
-        /// </param>
-        /// <returns> An input stream for the given named resource
-        /// </returns>
-        /// <throws>  FileNotFoundException </throws>
-        public static Stream openResource(String resource)
-        {
-            Assembly assembly = Assembly.GetExecutingAssembly();
-            Stream s = assembly.GetManifestResourceStream(resource);
-            if (s == null)
-            {
-                throw new FileNotFoundException("Can not locate resource: " + resource);
-            }
-            return s;
-        }
-
-        /// <summary> Reads the contents of a resource as a string.
-        /// 
-        /// </summary>
-        /// <param name="resource">
-        /// </param>
-        /// <returns> Contents of the resource.
-        /// </returns>
-        /// <throws>  IOException </throws>
-        public static String getContent(String resource)
-        {
-            string location = "";
             Assembly assembly = Assembly.GetExecutingAssembly();
             Stream s = assembly.GetManifestResourceStream(resource);
             if (s == null)
@@ -90,21 +42,10 @@ namespace Pesta.Engine.common
 
             StreamReader sr = new StreamReader(s);
             String retval = sr.ReadToEnd();
-            if (location != "")
-            {
-                return retval.Substring(retval.IndexOf("var"));
-            }
-
             return retval;
-            
         }
 
-        /// <param name="file">
-        /// </param>
-        /// <returns> The contents of the file (assumed to be UTF-8).
-        /// </returns>
-        /// <throws>  IOException </throws>
-        public static String getContent(FileInfo file)
+        public static String GetContent(FileInfo file)
         {
             return file.OpenText().ReadToEnd();
         }

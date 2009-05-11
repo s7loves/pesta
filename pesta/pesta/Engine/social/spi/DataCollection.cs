@@ -35,14 +35,19 @@ namespace Pesta.Engine.social.spi
         private Dictionary<String, Dictionary<String, String>> entry;
 
         public DataCollection(Dictionary<String, Dictionary<String, String>> entry)
+            :this()
         {
-            this.entry = entry;
+            if (entry != null)
+            {
+                this.entry = entry;
+            }
         }
 
         public DataCollection()
         {
             entry = new Dictionary<string, Dictionary<string, string>>();
         }
+
 
         public Dictionary<String, Dictionary<String, String>> getEntry()
         {

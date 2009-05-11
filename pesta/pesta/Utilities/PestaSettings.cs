@@ -61,6 +61,7 @@ namespace Pesta.Utilities
                 allowPlaintextToken = ReadSetting(settings, "allowPlaintextToken", "true");
                 containerUrlPrefix = ReadSetting(settings, "containerUrlPrefix", "");
                 tokenMasterKey = ReadSetting(settings, "tokenMasterKey", "INSECURE_DEFAULT_KEY");
+                javaPath = ReadSetting(settings, "javaPath", @"c:\program files\java\jdk1.6.0_12\bin\java.exe");
             }
 
             return null;
@@ -92,48 +93,47 @@ namespace Pesta.Utilities
         private static string tokenMaxAge;
         private static string containerUrlPrefix;
         private static string tokenMasterKey;
+        private static string javaPath;
 
         public static String DbServiceName 
         {
             get { return dbServiceName; }
-            set { dbServiceName = value; }
         }
         public static String AllowPlaintextToken
         {
             get { return allowPlaintextToken; }
-            set { allowPlaintextToken = value; }
         }
         public static String TokenMaxAge
         {
             get { return tokenMaxAge; }
-            set { tokenMaxAge = value; }
         }
         public static String AllowUnauthenticated
         {
             get { return allowUnauthenticated; }
-            set { allowUnauthenticated = value; }
         }
         public static String GadgetDebug
         {
             get { return gadgetDebug; }
-            set { gadgetDebug = value; }
         }
         public static String GadgetCacheXmlRefreshInterval
         {
             get { return gadgetCacheXmlRefreshInterval; }
-            set { gadgetCacheXmlRefreshInterval = value; }
         }
 
         public static String ContainerUrlPrefix
         {
             get { return containerUrlPrefix; }
-            set { containerUrlPrefix = value; }
         }
 
         public static String TokenMasterKey
         {
             get { return tokenMasterKey; }
-            set { tokenMasterKey = value; }
         }
+
+        public static String JavaPath
+        {
+            get { return javaPath; }
+        }
+        
     }
 }
