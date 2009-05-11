@@ -71,11 +71,11 @@ namespace pestaServer.Models.gadgets
                 {
                     bundle = getNestedBundle(spec, locale, ignoreCache);
                 }
-                catch (GadgetException e)
+                catch (GadgetException)
                 {
                     // Enforce negative caching.
                     bundle = cached ?? MessageBundle.EMPTY;
-                    }
+                }
                 HttpRuntime.Cache.Insert(key, bundle, null, System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromSeconds(refresh));
             }
             else

@@ -18,6 +18,7 @@
  */
 #endregion
 using System;
+using System.Diagnostics;
 using System.Xml;
 using System.Collections.Generic;
 using System.IO;
@@ -41,7 +42,7 @@ namespace pestaServer.Models.gadgets
         {
             fetcher = BasicHttpFetcher.Instance;
         }
-        public void loadFeatures(string path, GadgetFeatureRegistry registry)
+        public void LoadFeatures(string path, GadgetFeatureRegistry registry)
         {
             // read features.txt
             List<string> resources = new List<string>();
@@ -69,42 +70,34 @@ namespace pestaServer.Models.gadgets
             }
             foreach (ParsedFeature item in features)
             {
-                GadgetFeature gadgetFeature = new GadgetFeature(item.name, item.libraries, item.deps);
-                registry.register(gadgetFeature);
+                GadgetFeature gadgetFeature = new GadgetFeature(item.Name, item.libraries, item.deps);
+                registry.Register(gadgetFeature);
             }
         }
 
         private ParsedFeature Parse(String xml, String path, bool isResource)
         {
-            XmlElement doc;
-            try
-            {
-                doc = XmlUtil.Parse(xml);
-            }
-            catch (XmlException e)
-            {
-                throw e;
-            }
+            XmlElement doc = XmlUtil.Parse(xml);
 
-            ParsedFeature feature = new ParsedFeature {basePath = path, isResource = isResource};
+            ParsedFeature feature = new ParsedFeature {BasePath = path, IsResource = isResource};
 
             XmlNodeList nameNode = doc.GetElementsByTagName("name");
             if (nameNode.Count != 1)
             {
                 throw new Exception("No name provided");
             }
-            feature.name = nameNode.Item(0).InnerText;
+            feature.Name = nameNode.Item(0).InnerText;
 
             XmlNodeList gadgets = doc.GetElementsByTagName("gadget");
             foreach (XmlElement gadget in gadgets)
             {
-                processContext(feature, gadget, RenderingContext.GADGET);
+                ProcessContext(feature, gadget, RenderingContext.GADGET);
             }
 
             XmlNodeList containers = doc.GetElementsByTagName("container");
             foreach (XmlElement container in containers)
             {
-                processContext(feature, container, RenderingContext.CONTAINER);
+                ProcessContext(feature, container, RenderingContext.CONTAINER);
             }
             XmlNodeList dependencies = doc.GetElementsByTagName("dependency");
             foreach (XmlElement dependency in dependencies)
@@ -115,7 +108,7 @@ namespace pestaServer.Models.gadgets
             return feature;
         }
 
-        private void processContext(ParsedFeature feature, XmlElement context, RenderingContext renderingContext)
+        private void ProcessContext(ParsedFeature feature, XmlElement context, RenderingContext renderingContext)
         {
             String container = XmlUtil.getAttribute(context, "container", ContainerConfig.DEFAULT_CONTAINER);
             XmlNodeList libraries = context.GetElementsByTagName("script");
@@ -144,16 +137,17 @@ namespace pestaServer.Models.gadgets
                     }
                     else if (content.StartsWith("res://"))
                     {
+                        Debug.Assert(true); // should never reach here
                         content = content.Substring(6);
                         type = JsLibrary.Type.RESOURCE;
                     }
                     else
                     {
-                        content = feature.basePath + content;
+                        content = feature.BasePath + content;
                         type = JsLibrary.Type.FILE;
                     }
                 }
-                JsLibrary library = JsLibrary.create(type, content, feature.name, inlineOk ? fetcher : null);
+                JsLibrary library = JsLibrary.Create(type, content, feature.Name, inlineOk ? fetcher : null);
                 foreach (String cont in container.Split(','))
                 {
                     feature.AddLibrary(renderingContext, cont.Trim(), library);
@@ -164,24 +158,24 @@ namespace pestaServer.Models.gadgets
 
     public class ParsedFeature
     {
-        public String name;
-        public String basePath;
-        public bool isResource;
+        public String Name;
+        public String BasePath;
+        public bool IsResource;
         internal readonly Dictionary<RenderingContext, Dictionary<String, List<JsLibrary>>> libraries;
         internal readonly HashSet<String> deps;
 
         public ParsedFeature()
         {
-            isResource = false;
-            basePath = "";
-            name = "";
+            IsResource = false;
+            BasePath = "";
+            Name = "";
             libraries = new Dictionary<RenderingContext, Dictionary<String, List<JsLibrary>>>();
             deps = new HashSet<string>();
         }
 
         public void AddLibrary(RenderingContext ctx, String cont, JsLibrary library)
         {
-            Dictionary<String, List<JsLibrary>> ctxLibs = null;
+            Dictionary<String, List<JsLibrary>> ctxLibs;
             if (!libraries.TryGetValue(ctx, out ctxLibs))
             {
                 ctxLibs = new Dictionary<String, List<JsLibrary>>();

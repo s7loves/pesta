@@ -21,25 +21,44 @@
  // Gadget authors are explicitly discouraged from using any of them.
 
 var JSON = gadgets.json;
-var _IG_Prefs = gadgets.Prefs;
 
-// Yes, these technically modifiy gadget.Prefs as well. Unfortunately,
-// simply setting IG_Prefs.prototype to a new gadgets.Prefs object means
-// that we'd have to duplicate the gadgets.Prefs constructor.
-_IG_Prefs._parseURL = gadgets.Prefs.parseUrl;
+var _IG_Prefs = (function() {
+
+var instance = null;
+
+var _IG_Prefs = function() {
+  if (!instance) {
+    instance = new gadgets.Prefs();
+    instance.setDontEscape_();
+  }
+  return instance;
+};
+
+ _IG_Prefs._parseURL = gadgets.Prefs.parseUrl;
+
+return _IG_Prefs;
+})();
 
 function _IG_Fetch_wrapper(callback, obj) {
-  callback(obj.data);
+  callback(obj.data ? obj.data : "");
 }
 
 function _IG_FetchContent(url, callback, opt_params) {
   var params = opt_params || {};
-  // this is really the only legacy parameter documented
+  // This is really the only legacy parameter documented
   // at http://code.google.com/apis/gadgets/docs/remote-content.html#Params
   if (params.refreshInterval) {
     params['REFRESH_INTERVAL'] = params.refreshInterval;
   } else {
     params['REFRESH_INTERVAL'] = 3600;
+  }
+  // Other params, such as POST_DATA, were supported in lower case.
+  // Upper-case all param keys as a convenience, since all valid values
+  // are uppercased.
+  for (var param in params) {
+    var pvalue = params[param];
+    delete params[param];
+    params[param.toUpperCase()] = pvalue;
   }
   var cb = gadgets.util.makeClosure(null, _IG_Fetch_wrapper, callback);
   gadgets.io.makeRequest(url, cb, params);
@@ -99,16 +118,15 @@ function _IG_FetchFeedAsJSON(url, callback, numItems, getDescriptions,
 }
 
 function _IG_GetCachedUrl(url, opt_params) {
-    var params = { 'REFRESH_INTERVAL': 3600 };
-    if (opt_params && opt_params.refreshInterval) {
-        params['REFRESH_INTERVAL'] = opt_params.refreshInterval;
-    }
-    return gadgets.io.getProxyUrl(url, params);
+  var params = { 'REFRESH_INTERVAL': 3600 };
+  if (opt_params && opt_params.refreshInterval) {
+    params['REFRESH_INTERVAL'] = opt_params.refreshInterval;
+  }
+  return gadgets.io.getProxyUrl(url, params);
 }
 function _IG_GetImageUrl(url, opt_params) {
-    return _IG_GetCachedUrl(url, opt_params);
+  return _IG_GetCachedUrl(url, opt_params);
 }
-
 function _IG_GetImage(url) {
   var img = document.createElement('img');
   img.src = _IG_GetCachedUrl(url);

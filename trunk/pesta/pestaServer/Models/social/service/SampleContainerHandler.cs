@@ -24,7 +24,6 @@ using Jayrock.Json;
 using Jayrock.Json.Conversion;
 using Pesta.Engine.social;
 using Pesta.Engine.social.spi;
-using pestaServer.DataAccess;
 
 
 namespace pestaServer.Models.social.service
@@ -41,11 +40,11 @@ namespace pestaServer.Models.social.service
     {
         private readonly JsonDbOpensocialService service;
 
-        private static readonly String POST_PATH = "/samplecontainer/{type}/{doevil}";
+        private const String POST_PATH = "/samplecontainer/{type}/{doevil}";
 
         public SampleContainerHandler()
         {
-            this.service = JsonDbOpensocialService.Instance;
+            service = JsonDbOpensocialService.Instance;
         }
 
         /**
@@ -77,7 +76,7 @@ namespace pestaServer.Models.social.service
                 try
                 {
                     String stateFile = request.getParameter("fileurl");
-                    service.setDb(JsonConvert.Import(fetchStateDocument(stateFile)) as JsonObject);
+                    service.SetDb(JsonConvert.Import(FetchStateDocument(stateFile)) as JsonObject);
                 }
                 catch (JsonException e)
                 {
@@ -90,7 +89,7 @@ namespace pestaServer.Models.social.service
                 throw new SocialSpiException(ResponseError.NOT_IMPLEMENTED,
                                              "evil data has not been implemented yet");
             }
-            return null;
+            return new JsonObject();
         }
 
         /**
@@ -101,7 +100,7 @@ namespace pestaServer.Models.social.service
             return service.getDb();
         }
 
-        private String fetchStateDocument(String stateFileLocation)
+        private static String FetchStateDocument(String stateFileLocation)
         {
             String errorMessage = "The json state file " + stateFileLocation
                                   + " could not be fetched and parsed.";

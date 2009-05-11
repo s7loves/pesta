@@ -86,10 +86,10 @@ namespace pestaServer.Models.gadgets.oauth
         {
             consumerInfos = new Dictionary<BasicOAuthStoreConsumerIndex, BasicOAuthStoreConsumerKeyAndSecret>();
             tokens = new Dictionary<BasicOAuthStoreTokenIndex, TokenInfo>();
-            loadConsumers();
+            LoadConsumers();
         }
 
-        public void initFromConfigString(String oauthConfigStr)
+        private void InitFromConfigString(String oauthConfigStr)
         {
             try
             {
@@ -98,34 +98,30 @@ namespace pestaServer.Models.gadgets.oauth
                 {
                     Uri gadgetUri = new Uri(url.Key.ToString());
                     JsonObject oauthConfig = (JsonObject)url.Value;
-                    storeConsumerInfos(gadgetUri, oauthConfig);
+                    StoreConsumerInfos(gadgetUri, oauthConfig);
                 }
             }
-            catch (JsonException e)
-            {
-                throw new GadgetException(GadgetException.Code.OAUTH_STORAGE_ERROR, e);
-            }
-            catch (UriFormatException e)
+            catch (Exception e)
             {
                 throw new GadgetException(GadgetException.Code.OAUTH_STORAGE_ERROR, e);
             }
         }
 
-        private void storeConsumerInfos(Uri gadgetUri, JsonObject oauthConfig)
+        private void StoreConsumerInfos(Uri gadgetUri, JsonObject oauthConfig)
         {
             foreach (String serviceName in oauthConfig.Names)
             {
                 JsonObject consumerInfo = (JsonObject)oauthConfig[serviceName];
-                storeConsumerInfo(gadgetUri, serviceName, consumerInfo);
+                StoreConsumerInfo(gadgetUri, serviceName, consumerInfo);
             }
         }
 
-        private void storeConsumerInfo(Uri gadgetUri, String serviceName, JsonObject consumerInfo)
+        private void StoreConsumerInfo(Uri gadgetUri, String serviceName, JsonObject consumerInfo)
         {
-            realStoreConsumerInfo(gadgetUri, serviceName, consumerInfo);
+            RealStoreConsumerInfo(gadgetUri, serviceName, consumerInfo);
         }
 
-        private void realStoreConsumerInfo(Uri gadgetUri, String serviceName, JsonObject consumerInfo)
+        private void RealStoreConsumerInfo(Uri gadgetUri, String serviceName, JsonObject consumerInfo)
         {
             String consumerKey = consumerInfo[CONSUMER_KEY_KEY].ToString();
             String keyTypeStr = consumerInfo[KEY_TYPE_KEY].ToString();
@@ -148,15 +144,15 @@ namespace pestaServer.Models.gadgets.oauth
             BasicOAuthStoreConsumerIndex index = new BasicOAuthStoreConsumerIndex();
             index.setGadgetUri(gadgetUri.ToString());
             index.setServiceName(serviceName);
-            setConsumerKeyAndSecret(index, kas);
+            SetConsumerKeyAndSecret(index, kas);
         }
 
-        public void setDefaultKey(BasicOAuthStoreConsumerKeyAndSecret _defaultKey)
+        public void SetDefaultKey(BasicOAuthStoreConsumerKeyAndSecret key)
         {
-            defaultKey = _defaultKey;
+            defaultKey = key;
         }
 
-        public void setConsumerKeyAndSecret(BasicOAuthStoreConsumerIndex providerKey, BasicOAuthStoreConsumerKeyAndSecret keyAndSecret)
+        public void SetConsumerKeyAndSecret(BasicOAuthStoreConsumerIndex providerKey, BasicOAuthStoreConsumerKeyAndSecret keyAndSecret)
         {
             consumerInfos.Add(providerKey, keyAndSecret);
         }
@@ -189,7 +185,7 @@ namespace pestaServer.Models.gadgets.oauth
             return new ConsumerInfo(consumer, cks.ConsumerKey);
         }
 
-        private static BasicOAuthStoreTokenIndex makeBasicOAuthStoreTokenIndex(ISecurityToken securityToken, String serviceName, String tokenName)
+        private static BasicOAuthStoreTokenIndex MakeBasicOAuthStoreTokenIndex(ISecurityToken securityToken, String serviceName, String tokenName)
         {
             BasicOAuthStoreTokenIndex tokenKey = new BasicOAuthStoreTokenIndex();
             tokenKey.setGadgetUri(securityToken.getAppUrl());
@@ -204,7 +200,7 @@ namespace pestaServer.Models.gadgets.oauth
                                                String serviceName, String tokenName)
         {
             ++accessTokenLookupCount;
-            BasicOAuthStoreTokenIndex tokenKey = makeBasicOAuthStoreTokenIndex(securityToken, serviceName, tokenName);
+            BasicOAuthStoreTokenIndex tokenKey = MakeBasicOAuthStoreTokenIndex(securityToken, serviceName, tokenName);
             return tokens.ContainsKey(tokenKey)?tokens[tokenKey]:null;
         }
 
@@ -212,41 +208,41 @@ namespace pestaServer.Models.gadgets.oauth
                                           String serviceName, String tokenName, TokenInfo tokenInfo)
         {
             ++accessTokenAddCount;
-            BasicOAuthStoreTokenIndex tokenKey = makeBasicOAuthStoreTokenIndex(securityToken, serviceName, tokenName);
+            BasicOAuthStoreTokenIndex tokenKey = MakeBasicOAuthStoreTokenIndex(securityToken, serviceName, tokenName);
             tokens.Add(tokenKey, tokenInfo);
         }
 
         public override void removeToken(ISecurityToken securityToken, ConsumerInfo consumerInfo, String serviceName, String tokenName)
         {
             ++accessTokenRemoveCount;
-            BasicOAuthStoreTokenIndex tokenKey = makeBasicOAuthStoreTokenIndex(securityToken, serviceName, tokenName);
+            BasicOAuthStoreTokenIndex tokenKey = MakeBasicOAuthStoreTokenIndex(securityToken, serviceName, tokenName);
             tokens.Remove(tokenKey);
         }
 
-        public int getConsumerKeyLookupCount()
+        public int GetConsumerKeyLookupCount()
         {
             return consumerKeyLookupCount;
         }
 
-        public int getAccessTokenLookupCount()
+        public int GetAccessTokenLookupCount()
         {
             return accessTokenLookupCount;
         }
 
-        public int getAccessTokenAddCount()
+        public int GetAccessTokenAddCount()
         {
             return accessTokenAddCount;
         }
 
-        public int getAccessTokenRemoveCount()
+        public int GetAccessTokenRemoveCount()
         {
             return accessTokenRemoveCount;
         }
 
-        private void loadConsumers()
+        private void LoadConsumers()
         {
-            String oauthConfigString = ResourceLoader.getContent(new FileInfo(AppDomain.CurrentDomain.BaseDirectory + OAUTH_CONFIG));
-            initFromConfigString(oauthConfigString);
+            String oauthConfigString = ResourceLoader.GetContent(new FileInfo(AppDomain.CurrentDomain.BaseDirectory + OAUTH_CONFIG));
+            InitFromConfigString(oauthConfigString);
         }
     }
 }

@@ -45,27 +45,27 @@ namespace pestaServer.Models.social.service
         protected static readonly Dictionary<Type, List<MethodPair>> SETTER_METHODS = new Dictionary<Type, List<MethodPair>>();
 
 
-        protected const string xmlVersion = "1.0";
-        protected const string charSet = "UTF-8";
+        protected const string XMLVERSION = "1.0";
+        protected const string CHARSET = "UTF-8";
         protected const string osNameSpace = "http://ns.opensocial.org/2008/opensocial";
 
         protected XmlDocument xmlDoc;
 
-        public abstract Object convertToObject(String str, Type className);
-        public abstract String convertToString(Object pojo);
-        public abstract String convertToString(Object pojo, RequestItem request);
-        public abstract String getContentType();
+        public abstract Object ConvertToObject(String str, Type className);
+        public abstract String ConvertToString(Object pojo);
+        public abstract String ConvertToString(Object pojo, RequestItem request);
+        public abstract String GetContentType();
 
-        protected XmlNode addNode(XmlNode node, string name, string value)
+        protected XmlNode AddNode(XmlNode node, string name, string value)
         {
-            return addNode(xmlDoc, node, name, value, null, "");
+            return AddNode(xmlDoc, node, name, value, null, "");
         }
-        protected XmlNode addNode(XmlNode node, string name, string value, object attributes, string nameSpace)
+        protected XmlNode AddNode(XmlNode node, string name, string value, object attributes, string nameSpace)
         {
-            return addNode(xmlDoc, node, name, value, attributes, nameSpace);
+            return AddNode(xmlDoc, node, name, value, attributes, nameSpace);
         }
 
-        protected static XmlNode addNode(XmlDocument doc, XmlNode node, string name, string value, object attributes, string nameSpace)
+        protected static XmlNode AddNode(XmlDocument doc, XmlNode node, string name, string value, object attributes, string nameSpace)
         {
             XmlNode childNode;
             if (!string.IsNullOrEmpty(nameSpace))
@@ -100,15 +100,15 @@ namespace pestaServer.Models.social.service
             return childNode;
         }
 
-        protected XmlNode addData(XmlNode element, string name, object data)
+        protected XmlNode AddData(XmlNode element, string name, object data)
         {
-            return addData(xmlDoc, element, name, data, "");
+            return AddData(xmlDoc, element, name, data, "");
         }
-        protected XmlNode addData(XmlNode element, string name, object data, string nameSpace)
+        protected XmlNode AddData(XmlNode element, string name, object data, string nameSpace)
         {
-            return addData(xmlDoc, element, name, data, nameSpace);
+            return AddData(xmlDoc, element, name, data, nameSpace);
         }
-        private XmlNode addData(XmlDocument doc, XmlNode element, string name, object data, string nameSpace)
+        private XmlNode AddData(XmlDocument doc, XmlNode element, string name, object data, string nameSpace)
         {
             XmlNode newElement = element;
             int dummy;
@@ -139,7 +139,7 @@ namespace pestaServer.Models.social.service
                         {
                             key = entry.Value != null ? entry.Value.GetType().Name : name;
                         }
-                        addData(newElement, key.ToString(), entry.Value);
+                        AddData(newElement, key.ToString(), entry.Value);
                     }
                     else
                     {
@@ -149,7 +149,7 @@ namespace pestaServer.Models.social.service
                         }
                         if (entry.Value != null)
                         {
-                            addNode(newElement, key.ToString(), entry.Value.ToString());
+                            AddNode(newElement, key.ToString(), entry.Value.ToString());
                         }
                     }
                 }
@@ -158,7 +158,7 @@ namespace pestaServer.Models.social.service
             {
                 foreach (var dataEntry in (JsonArray)data)
                 {
-                    addData(element, name, dataEntry);
+                    AddData(element, name, dataEntry);
                 }
             }
             else
@@ -172,17 +172,17 @@ namespace pestaServer.Models.social.service
                     if (val is JsonObject ||
                         val is JsonArray)
                     {
-                        addData(newElement, key, val);
+                        AddData(newElement, key, val);
                     }
                     else
                     {
-                        addNode(newElement, key, val.ToString());
+                        AddNode(newElement, key, val.ToString());
                     }
                 }
             }
             return newElement;
         }
-        protected static string getRequestType(RequestItem requestItem, Dictionary<string, string> entryTypes)
+        protected static string GetRequestType(RequestItem requestItem, Dictionary<string, string> entryTypes)
         {
             // map the Request URL to the content type to use  
             string service = requestItem.getService();
@@ -198,14 +198,14 @@ namespace pestaServer.Models.social.service
             return type;
         }
 
-        protected void createXmlDoc(string _xmlVersion, string _charSet)
+        protected void CreateXmlDoc(string xmlVersion, string charSet)
         {
             xmlDoc = new XmlDocument();
-            XmlDeclaration declare = xmlDoc.CreateXmlDeclaration(_xmlVersion, _charSet, "");
+            XmlDeclaration declare = xmlDoc.CreateXmlDeclaration(xmlVersion, charSet, "");
             xmlDoc.AppendChild(declare);
         }
 
-        protected static List<Activity> convertActivities(XmlDocument xml)
+        protected static List<Activity> ConvertActivities(XmlDocument xml)
         {
             List<Activity> actlist = new List<Activity>();
             XmlNodeList actnodelist = xml.GetElementsByTagName("activity");
@@ -275,7 +275,7 @@ namespace pestaServer.Models.social.service
             return actlist;
         }
 
-        protected static DataCollection convertAppData(XmlDocument xml)
+        protected static DataCollection ConvertAppData(XmlDocument xml)
         {
             XmlNodeList entrylist = xml.GetElementsByTagName("entry");
             if (entrylist.Count == 0)
@@ -311,7 +311,7 @@ namespace pestaServer.Models.social.service
             return new DataCollection(new Dictionary<string, Dictionary<string, string>> { { "", data } });
         }
 
-        protected static List<Message> convertMessages(XmlDocument xml)
+        protected static List<Message> ConvertMessages(XmlDocument xml)
         {
             List<Message> messages = new List<Message>();
 
@@ -354,7 +354,7 @@ namespace pestaServer.Models.social.service
             return messages;
         }
 
-        protected static Dictionary<string, Person> convertPeople(XmlDocument xml)
+        protected static Dictionary<string, Person> ConvertPeople(XmlDocument xml)
         {
             throw new SocialSpiException(ResponseError.NOT_IMPLEMENTED, "Operation not supported");
         }
@@ -371,7 +371,7 @@ namespace pestaServer.Models.social.service
             List<MethodPair> availableGetters;
             if (!GETTER_METHODS.TryGetValue(pojo.GetType(), out availableGetters))
             {
-                availableGetters = getMatchingMethods(pojo.GetType(), GETTER_PREFIX);
+                availableGetters = GetMatchingMethods(pojo.GetType(), GETTER_PREFIX);
                 if (!GETTER_METHODS.ContainsKey(pojo.GetType()))
                 {
                     GETTER_METHODS.Add(pojo.GetType(), availableGetters);
@@ -382,14 +382,14 @@ namespace pestaServer.Models.social.service
             JsonObject toReturn = new JsonObject();
             foreach (MethodPair getter in availableGetters)
             {
-                String errorMessage = "Could not encode the " + getter.method + " method on "
+                String errorMessage = "Could not encode the " + getter.Method + " method on "
                                       + pojo.GetType().Name;
                 try
                 {
-                    Object val = getter.method.Invoke(pojo, EMPTY_OBJECT);
+                    Object val = getter.Method.Invoke(pojo, EMPTY_OBJECT);
                     if (val != null && val.ToString() != "")
                     {
-                        toReturn.Put(getter.fieldName, translateObjectToJson(val));
+                        toReturn.Put(getter.FieldName, TranslateObjectToJson(val));
                     }
                 }
                 catch (Exception e)
@@ -401,14 +401,14 @@ namespace pestaServer.Models.social.service
         }
 
 
-        protected static Object translateObjectToJson(Object val)
+        protected static Object TranslateObjectToJson(Object val)
         {
             if (val is Object[])
             {
                 JsonArray array = new JsonArray();
                 foreach (Object asd in (Object[])val)
                 {
-                    array.Put(translateObjectToJson(asd));
+                    array.Put(TranslateObjectToJson(asd));
                 }
                 return array;
             }
@@ -418,7 +418,7 @@ namespace pestaServer.Models.social.service
                 JsonArray list = new JsonArray();
                 foreach (Object item in (IList)val)
                 {
-                    list.Add(translateObjectToJson(item));
+                    list.Add(TranslateObjectToJson(item));
                 }
                 return list;
             }
@@ -430,7 +430,7 @@ namespace pestaServer.Models.social.service
 
                 foreach (DictionaryEntry item in originalMap)
                 {
-                    map.Put(item.Key.ToString(), translateObjectToJson(item.Value));
+                    map.Put(item.Key.ToString(), TranslateObjectToJson(item.Value));
                 }
                 return map;
 
@@ -441,18 +441,19 @@ namespace pestaServer.Models.social.service
                 return val.ToString();
             }
 
-            if (val is String
+            if (val == null 
+                || val is String
                 || val is Boolean
                 || val is int
                 || val is DateTime
                 || val is long
                 || val is float
                 || val is JsonObject
-                || val is JsonArray
-                || val == null)
+                || val is JsonArray)
             {
                 return val;
             }
+
 
             return convertMethodsToJson(val);
         }
@@ -460,17 +461,17 @@ namespace pestaServer.Models.social.service
 
         protected class MethodPair
         {
-            public readonly MethodInfo method;
-            public readonly String fieldName;
+            public readonly MethodInfo Method;
+            public readonly String FieldName;
 
             public MethodPair(MethodInfo method, String fieldName)
             {
-                this.method = method;
-                this.fieldName = fieldName;
+                Method = method;
+                FieldName = fieldName;
             }
         }
 
-        protected static List<MethodPair> getMatchingMethods(Type pojo, String prefix)
+        protected static List<MethodPair> GetMatchingMethods(Type pojo, String prefix)
         {
             List<MethodPair> availableGetters = new List<MethodPair>();
 

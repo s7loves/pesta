@@ -134,12 +134,18 @@
     // Must be on the same domain as the gadget rendering server
     "impl" : "rpc",  //Use "rpc" to enable JSON-RPC, "rest" for REST
     "path" : "http://%host%/social",
-    "domain" : "shindig",
+    "domain" : "my6solutions.com",
     "enableCaja" : false,
     "supportedFields" : {
-       "person" : ["id", {"name" : ["familyName", "givenName", "unstructured"]}, "thumbnailUrl", "profileUrl"],
+       "person" : ["id", {"name" : ["familyName", "givenName", "unstructured"]}, 
+                    "thumbnailUrl", "profileUrl","gender","addresses","urls","currentLocation","bodyType",
+                    "schools","addresses"],
        "activity" : ["id", "title"]
     }
+  },
+  "osapi.base" : {
+    // Use EL when available.
+    "rpcUrl" : "http://%host%/social"
   }
 
 }}

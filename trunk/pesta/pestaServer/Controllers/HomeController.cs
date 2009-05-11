@@ -19,10 +19,12 @@
 #endregion
 
 using System.Web.Mvc;
+using pestaServer.ActionFilters;
 
 namespace pestaServer.Controllers
 {
     [HandleError]
+    [CompressFilter]
     public class HomeController : Controller
     {
         public ActionResult Index()

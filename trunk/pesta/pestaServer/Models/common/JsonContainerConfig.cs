@@ -28,11 +28,7 @@ namespace pestaServer.Models.common
     ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
     class JsonContainerConfig : ContainerConfig
     {
-        
-        public static readonly char FILE_SEPARATOR = ',';
-        public static readonly String PARENT_KEY = "parent";
-        // TODO: Rename this to simply "container", gadgets.container is unnecessary.
-        public static readonly String CONTAINER_KEY = "gadgets.container";
+        private const String CONTAINER_KEY = "gadgets.container";
 
         private readonly Dictionary<String, JsonObject> config;
 
@@ -48,16 +44,16 @@ namespace pestaServer.Models.common
             config = new Dictionary<String, JsonObject>();
             foreach (var container in Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory + "/config/", "*.js"))
             {
-                loadContainers(container);
+                LoadContainers(container);
             }
         }
 
-        public override ICollection<String> getContainers()
+        public override ICollection<String> GetContainers()
         {
             return config.Keys;
         }
 
-        public override Object getJson(String container, String parameter) 
+        public override Object GetJson(String container, String parameter) 
         {
             JsonObject data = config[container];
             if (data == null)
@@ -68,38 +64,31 @@ namespace pestaServer.Models.common
             {
                 return data;
             }
-
-            try
+            
+            foreach (String param in parameter.Split('/'))
             {
-                foreach (String param in parameter.Split('/'))
+                Object next = data.Opt(param);
+                if (next is JsonObject)
                 {
-                    Object next = data[param];
-                    if (next is JsonObject)
-                    {
-                        data = (JsonObject)next;
-                    }
-                    else
-                    {
-                        return next;
-                    }
+                    data = (JsonObject)next;
                 }
-                return data;
+                else
+                {
+                    return next;
+                }
             }
-            catch (JsonException e)
-            {
-                return null;
-            }
+            return data;
         }
 
-        public override String get(String container, String parameter) 
+        public override String Get(String container, String parameter) 
         {
-            Object data = getJson(container, parameter);
+            Object data = GetJson(container, parameter);
             return data == null ? null : data.ToString();
         }
 
-        public override JsonObject getJsonObject(String container, String parameter)
+        public override JsonObject GetJsonObject(String container, String parameter)
         {
-            Object data = getJson(container, parameter);
+            Object data = GetJson(container, parameter);
             if (data is JsonObject)
             {
                 return (JsonObject)data;
@@ -107,9 +96,9 @@ namespace pestaServer.Models.common
             return null;
         }
 
-        public override JsonArray getJsonArray(String container, String parameter) 
+        public override JsonArray GetJsonArray(String container, String parameter) 
         {
-            Object data = getJson(container, parameter);
+            Object data = GetJson(container, parameter);
             if (data is JsonArray)
             {
                 return (JsonArray)data;
@@ -124,7 +113,7 @@ namespace pestaServer.Models.common
        * @param path
        * @throws ContainerConfigException
        */
-        private void loadContainers(string path)
+        private void LoadContainers(string path)
         {
             string json;
             using (StreamReader sr = new StreamReader(path))

@@ -33,20 +33,16 @@ namespace pestaServer.DataAccess
     public class RayaDbFetcher : IDisposable
     {
         private readonly LinqRayaDataContext Db;
-        private readonly string url_prefix;
+        private readonly string urlPrefix;
 
         private RayaDbFetcher()
         {
             Db = new LinqRayaDataContext(ConfigurationManager.ConnectionStrings["rayaConnectionString"].ConnectionString);
-            url_prefix = PestaSettings.ContainerUrlPrefix;
+            urlPrefix = PestaSettings.ContainerUrlPrefix;
         }
         public static RayaDbFetcher Get()
         {
             return new RayaDbFetcher();
-        }
-        public static LinqRayaDataContext GetDb()
-        {
-            return new LinqRayaDataContext(ConfigurationManager.ConnectionStrings["rayaConnectionString"].ConnectionString);
         }
         public void Dispose()
         {
@@ -56,19 +52,19 @@ namespace pestaServer.DataAccess
             }
         }
 
-        public bool createActivity(string _person_id, Activity _activity, string _app_id) 
+        public bool CreateActivity(string personId, Activity activity, string appId) 
         {
-            string _title = (_activity.getTitle() ?? "").Trim();
+            string _title = (activity.getTitle() ?? "").Trim();
             if (string.IsNullOrEmpty(_title)) 
             {
                 throw new Exception("Invalid activity: empty title");
             }
-            string _body = (_activity.getBody() ?? "").Trim();
+            string _body = (activity.getBody() ?? "").Trim();
             var _time = UnixTime.ConvertToUnixTimestamp(DateTime.UtcNow);
             var act = new activity
                           {
-                              person_id = int.Parse(_person_id),
-                              app_id = int.Parse(_app_id),
+                              person_id = int.Parse(personId),
+                              app_id = int.Parse(appId),
                               title = _title,
                               body = _body,
                               created = (long)_time
@@ -78,7 +74,7 @@ namespace pestaServer.DataAccess
             if (Db.GetChangeSet().Inserts.Count != 0)
                 return false;
         
-            var _mediaItems = _activity.getMediaItems();
+            var _mediaItems = activity.getMediaItems();
             if (_mediaItems.Count != 0)
             {
                 foreach (var _mediaItem in _mediaItems) 
@@ -109,28 +105,29 @@ namespace pestaServer.DataAccess
             return true;
         }
 
-        public IQueryable<activity> getActivities(HashSet<string> _ids, string _appId, HashSet<String> _fields) 
+        public IQueryable<activity> GetActivities(HashSet<string> ids, string appId, HashSet<String> fields) 
         {
             var activities = Db.activities
-                .Where(x => _ids.AsEnumerable().Contains(x.person_id.ToString()));
+                .OrderByDescending(x => x.id)
+                .Where(x => ids.AsEnumerable().Contains(x.person_id.ToString()) && (string.IsNullOrEmpty(appId)?true:x.app_id.ToString() == appId));
             
             return activities;
         }
 
-        public bool deleteActivities(string _userId, string _appId, HashSet<string> _activityIds) 
+        public bool DeleteActivities(string userId, string appId, HashSet<string> activityIds) 
         {
             var res =
                 Db.activities.Where(
-                    x => _activityIds.AsEnumerable().Contains(x.id.ToString()) && x.person_id.ToString() == _userId && x.app_id.ToString() == _appId);
+                x => activityIds.AsEnumerable().Contains(x.id.ToString()) && x.person_id.ToString() == userId && x.app_id.ToString() == appId);
             Db.activities.DeleteAllOnSubmit(res);
             Db.SubmitChanges();
             return (Db.GetChangeSet().Deletes.Count == 0);
         }
 
-        public List<MediaItem> getMediaItems(int _activity_id) 
+        public List<MediaItem> GetMediaItems(int activityId) 
         {
             var _media = new List<MediaItem>();
-            var _res = Db.activity_media_items.Where(x=>x.activity_id == _activity_id).Select(x=> new{x.mime_type,x.media_type,x.url});
+            var _res = Db.activity_media_items.Where(x=>x.activity_id == activityId).Select(x=> new{x.mime_type,x.media_type,x.url});
             foreach (var _re in _res)
             {
                 _media.Add(new MediaItemImpl(_re.mime_type, EnumBaseType<MediaItem.Type>.GetBaseByKey(Convert.ToInt32(_re.media_type)),_re.url));
@@ -138,31 +135,31 @@ namespace pestaServer.DataAccess
             return _media;
         }
 
-        public HashSet<int> getFriendIds(int _person_id) 
+        public HashSet<int> GetFriendIds(int personId) 
         {
             HashSet<int> _ret = new HashSet<int>();
             var _res =
-                Db.friends.Where(x => x.person_id == _person_id || x.friend_id == _person_id)
+                Db.friends.Where(x => x.person_id == personId || x.friend_id == personId)
                             .Select(x =>  new {x.person_id, x.friend_id});
 
             foreach (var _re in _res)
             {
-                int _id = (_re.person_id == _person_id) ? _re.friend_id : _re.person_id;
+                int _id = (_re.person_id == personId) ? _re.friend_id : _re.person_id;
                 _ret.Add(_id);
             }
             return _ret;
         }
 
-        public bool setAppData(string _person_id, string _key, string _value, string _app_id) 
+        public bool SetAppData(string personId, string key, string value, string appId) 
         {
-            if (string.IsNullOrEmpty(_value))
+            if (string.IsNullOrEmpty(value))
             {
                 // empty key kind of became to mean "delete data" (was an old orkut hack that became part of the spec spec)
                 var ret = new application_setting
                               {
-                                  application_id = int.Parse(_app_id),
-                                  person_id = int.Parse(_person_id),
-                                  name = _key
+                                  application_id = int.Parse(appId),
+                                  person_id = int.Parse(personId),
+                                  name = key
                               };
                 Db.application_settings.DeleteOnSubmit(ret);
                 Db.SubmitChanges();
@@ -172,15 +169,15 @@ namespace pestaServer.DataAccess
             else 
             {
                 var ret = Db.application_settings
-                    .Where(x => x.application_id.ToString() == _app_id && x.person_id.ToString() == _person_id && x.name == _key).SingleOrDefault();
+                    .Where(x => x.application_id.ToString() == appId && x.person_id.ToString() == personId && x.name == key).SingleOrDefault();
                 if (ret == null)
                 {
                     ret = new application_setting
                               {
-                                  application_id = int.Parse(_app_id),
-                                  person_id = int.Parse(_person_id),
-                                  name = _key,
-                                  value = _value
+                                  application_id = int.Parse(appId),
+                                  person_id = int.Parse(personId),
+                                  name = key,
+                                  value = value
                               };
                     Db.application_settings.InsertOnSubmit(ret);
                     Db.SubmitChanges();
@@ -189,7 +186,7 @@ namespace pestaServer.DataAccess
                 }
                 else
                 {
-                    ret.value = _value;
+                    ret.value = value;
                     Db.SubmitChanges();
                     if (Db.GetChangeSet().Updates.Count != 0)
                         return false;
@@ -198,94 +195,94 @@ namespace pestaServer.DataAccess
             return true;
         }
 
-        public bool deleteAppData(string _person_id, string _key, string _app_id) 
+        public bool DeleteAppData(string personId, HashSet<string> key, string appId) 
         {
             var ret = Db.application_settings.Where(
-                x => x.application_id.ToString() == _app_id && x.person_id.ToString() == _person_id && x.name == _key).Single();
-            Db.application_settings.DeleteOnSubmit(ret);
+                x => x.application_id.ToString() == appId && x.person_id.ToString() == personId && (key.Count==0?true:key.Contains(x.name)));
+            Db.application_settings.DeleteAllOnSubmit(ret);
             Db.SubmitChanges();
             return Db.GetChangeSet().Deletes.Count == 0;
         }
 
-        public DataCollection getAppData(HashSet<String> _ids, HashSet<String> _keys, String _app_id) 
+        public DataCollection GetAppData(HashSet<String> ids, HashSet<String> keys, String appId) 
         {
-            var _data = new Dictionary<string, Dictionary<string, string>>();
-            var _res = Db.application_settings
-                .Where(x => (!String.IsNullOrEmpty(_app_id)?x.application_id.ToString() == _app_id : true) && _ids.AsEnumerable().Contains(x.person_id.ToString()) && (_keys.Count == 0 ? true : _keys.AsEnumerable().Contains(x.name)))
+            var data = new Dictionary<string, Dictionary<string, string>>();
+            var res = Db.application_settings
+                .Where(x => (!String.IsNullOrEmpty(appId)?x.application_id.ToString() == appId : true) && ids.AsEnumerable().Contains(x.person_id.ToString()) && (keys.Count == 0 ? true : keys.AsEnumerable().Contains(x.name)))
                 .Select(x => new { x.person_id, x.name, x.value });
             
-            foreach (var _re in _res)
+            foreach (var re in res)
             {
-                if (!_data.ContainsKey(_re.person_id.ToString()))
+                if (!data.ContainsKey(re.person_id.ToString()))
                 {
-                    _data.Add(_re.person_id.ToString(), new Dictionary<string, string>());
+                    data.Add(re.person_id.ToString(), new Dictionary<string, string>());
                 }
-                _data[_re.person_id.ToString()].Add(_re.name, _re.value);
+                data[re.person_id.ToString()].Add(re.name, re.value);
             }
-            return new DataCollection(_data);
+            return new DataCollection(data);
         }
 
-        public Dictionary<string,Person> getPeople(HashSet<String> _ids, HashSet<String> _fields, CollectionOptions _options)
+        public Dictionary<string,Person> GetPeople(HashSet<String> ids, HashSet<String> fields, CollectionOptions options)
         {
             var _ret = new Dictionary<string, Person>();
-            var persons = Db.persons.Where(x => _ids.AsEnumerable().Contains(x.id.ToString()));
+            var persons = Db.persons.Where(x => ids.AsEnumerable().Contains(x.id.ToString()));
 
             // TODO filter first then fill dictionary
 
             foreach (var p in persons)
             {
-                int _person_id = p.id;
-                var _name = new NameImpl();
-                var _person = new PersonImpl();
+                int personId = p.id;
+                var name = new NameImpl();
+                var person = new PersonImpl();
                 
-                _name.setGivenName(p.first_name);
-                _name.setFamilyName(p.last_name);
-                _name.setFormatted(p.first_name + " " + p.last_name);
-                _person.setDisplayName(_name.getFormatted());
-                _person.setName(_name);
-                _person.setId(_person_id.ToString());
-                if (_fields.Contains("about_me") || _fields.Contains("@all"))
+                name.setGivenName(p.first_name);
+                name.setFamilyName(p.last_name);
+                name.setFormatted(p.first_name + " " + p.last_name);
+                person.setDisplayName(name.getFormatted());
+                person.setName(name);
+                person.setId(personId.ToString());
+                if (fields.Contains("about_me") || fields.Contains("@all"))
                 {
-                    _person.setAboutMe(p.about_me);
+                    person.setAboutMe(p.about_me);
                 }
-                if (_fields.Contains("age") || _fields.Contains("@all"))
+                if (fields.Contains("age") || fields.Contains("@all"))
                 {
-                    _person.setAge(p.age);
+                    person.setAge(p.age);
                 }
-                if (_fields.Contains("children") || _fields.Contains("@all"))
+                if (fields.Contains("children") || fields.Contains("@all"))
                 {
-                    _person.setChildren(p.children);
+                    person.setChildren(p.children);
                 }
-                if (_fields.Contains("date_of_birth") || _fields.Contains("@all"))
+                if (fields.Contains("date_of_birth") || fields.Contains("@all"))
                 {
                     if (p.date_of_birth.HasValue)
-                        _person.setBirthday(new DateTime(p.date_of_birth.Value));
+                        person.setBirthday(new DateTime(p.date_of_birth.Value));
                 }
-                if (_fields.Contains("ethnicity") || _fields.Contains("@all"))
+                if (fields.Contains("ethnicity") || fields.Contains("@all"))
                 {
-                    _person.setEthnicity(p.ethnicity);
+                    person.setEthnicity(p.ethnicity);
                 }
-                if (_fields.Contains("fashion") || _fields.Contains("@all"))
+                if (fields.Contains("fashion") || fields.Contains("@all"))
                 {
-                    _person.setFashion(p.fashion);
+                    person.setFashion(p.fashion);
                 }
-                if (_fields.Contains("happiest_when") || _fields.Contains("@all"))
+                if (fields.Contains("happiest_when") || fields.Contains("@all"))
                 {
-                    _person.setHappiestWhen(p.happiest_when);
+                    person.setHappiestWhen(p.happiest_when);
                 }
-                if (_fields.Contains("humor") || _fields.Contains("@all"))
+                if (fields.Contains("humor") || fields.Contains("@all"))
                 {
-                    _person.setHumor(p.humor);
+                    person.setHumor(p.humor);
                 }
-                if (_fields.Contains("job_interests") || _fields.Contains("@all"))
+                if (fields.Contains("job_interests") || fields.Contains("@all"))
                 {
-                    _person.setJobInterests(p.job_interests);
+                    person.setJobInterests(p.job_interests);
                 }
-                if (_fields.Contains("living_arrangement") || _fields.Contains("@all"))
+                if (fields.Contains("living_arrangement") || fields.Contains("@all"))
                 {
-                    _person.setLivingArrangement(p.living_arrangement);
+                    person.setLivingArrangement(p.living_arrangement);
                 }
-                if (_fields.Contains("looking_for") || _fields.Contains("@all"))
+                if (fields.Contains("looking_for") || fields.Contains("@all"))
                 {
                     if (!string.IsNullOrEmpty(p.looking_for))
                     {
@@ -295,114 +292,112 @@ namespace pestaServer.DataAccess
                         {
                             lfs.Add(EnumBaseType<EnumTypes.LookingFor>.GetBaseByKey(s));
                         }
-                        _person.setLookingFor(lfs);
+                        person.setLookingFor(lfs);
                     }
                 }
-                if (_fields.Contains("nickname") || _fields.Contains("@all"))
+                if (fields.Contains("nickname") || fields.Contains("@all"))
                 {
-                    _person.setNickname(p.nickname);
+                    person.setNickname(p.nickname);
                 }
-                if (_fields.Contains("pets") || _fields.Contains("@all"))
+                if (fields.Contains("pets") || fields.Contains("@all"))
                 {
-                    _person.setPets(p.pets);
+                    person.setPets(p.pets);
                 }
-                if (_fields.Contains("political_views") || _fields.Contains("@all"))
+                if (fields.Contains("political_views") || fields.Contains("@all"))
                 {
-                    _person.setPoliticalViews(p.political_views);
+                    person.setPoliticalViews(p.political_views);
                 }
-                if (_fields.Contains("profile_song") || _fields.Contains("@all"))
+                if (fields.Contains("profile_song") || fields.Contains("@all"))
                 {
                     if (!string.IsNullOrEmpty(p.profile_song))
                     {
-                        _person.setProfileSong(new UrlImpl(p.profile_song, "", ""));
+                        person.setProfileSong(new UrlImpl(p.profile_song, "", ""));
                     }
                 }
-                if (_fields.Contains("profile_url") || _fields.Contains("@all"))
+                if (fields.Contains("profileUrl") || fields.Contains("@all"))
                 {
-                    _person.setProfileUrl(url_prefix + "/profile/" + _person_id);
+                    person.setProfileUrl(urlPrefix + "/profile/" + personId);
                 }
-                if (_fields.Contains("profile_video") || _fields.Contains("@all"))
+                if (fields.Contains("profile_video") || fields.Contains("@all"))
                 {
                     if (!string.IsNullOrEmpty(p.profile_video))
                     {
-                        _person.setProfileVideo(new UrlImpl(p.profile_video, "", ""));
+                        person.setProfileVideo(new UrlImpl(p.profile_video, "", ""));
                     }
                 }
-                if (_fields.Contains("relationship_status") || _fields.Contains("@all"))
+                if (fields.Contains("relationship_status") || fields.Contains("@all"))
                 {
-                    _person.setRelationshipStatus(p.relationship_status);
+                    person.setRelationshipStatus(p.relationship_status);
                 }
-                if (_fields.Contains("religion") || _fields.Contains("@all"))
+                if (fields.Contains("religion") || fields.Contains("@all"))
                 {
-                    _person.setReligion(p.religion);
+                    person.setReligion(p.religion);
                 }
-                if (_fields.Contains("romance") || _fields.Contains("@all"))
+                if (fields.Contains("romance") || fields.Contains("@all"))
                 {
-                    _person.setRomance(p.romance);
+                    person.setRomance(p.romance);
                 }
-                if (_fields.Contains("scared_of") || _fields.Contains("@all"))
+                if (fields.Contains("scared_of") || fields.Contains("@all"))
                 {
-                    _person.setScaredOf(p.scared_of);
+                    person.setScaredOf(p.scared_of);
                 }
-                if (_fields.Contains("sexual_orientation") || _fields.Contains("@all"))
+                if (fields.Contains("sexual_orientation") || fields.Contains("@all"))
                 {
-                    _person.setSexualOrientation(p.sexual_orientation);
+                    person.setSexualOrientation(p.sexual_orientation);
                 }
-                if (_fields.Contains("status") || _fields.Contains("@all"))
+                if (fields.Contains("status") || fields.Contains("@all"))
                 {
-                    _person.setStatus(p.status);
+                    person.setStatus(p.status);
                 }
-                if (_fields.Contains("thumbnail_url") || _fields.Contains("@all"))
+                if (fields.Contains("thumbnailUrl") || fields.Contains("@all"))
                 {
-                    _person.setThumbnailUrl(!string.IsNullOrEmpty(p.thumbnail_url) ? url_prefix + p.thumbnail_url : "");
+                    person.setThumbnailUrl(!string.IsNullOrEmpty(p.thumbnail_url) ? urlPrefix + p.thumbnail_url : "");
                     if (!string.IsNullOrEmpty(p.thumbnail_url))
                     {
-                        _person.setThumbnailUrl(url_prefix + p.thumbnail_url);
-                        // also report thumbnail_url in standard photos field (this is the only photo supported by partuza)
-                        _person.setPhotos(new List<ListField>
+                        person.setPhotos(new List<ListField>
                                               {
-                                                  new UrlImpl(url_prefix + p.thumbnail_url, "thumbnail", "thumbnail")
+                                                  new UrlImpl(urlPrefix + p.thumbnail_url, "thumbnail", "thumbnail")
                                               });
                     }
                 }
-                if (_fields.Contains("time_zone") || _fields.Contains("@all"))
+                if (fields.Contains("time_zone") || fields.Contains("@all"))
                 {
-                    _person.setUtcOffset(p.time_zone); // force "-00:00" utc-offset format
+                    person.setUtcOffset(p.time_zone); // force "-00:00" utc-offset format
                 }
-                if (_fields.Contains("drinker") || _fields.Contains("@all"))
+                if (fields.Contains("drinker") || fields.Contains("@all"))
                 {
                     if (!String.IsNullOrEmpty(p.drinker))
                     {
-                        _person.setDrinker(EnumBaseType<EnumTypes.Drinker>.GetBaseByKey(p.drinker));
+                        person.setDrinker(EnumBaseType<EnumTypes.Drinker>.GetBaseByKey(p.drinker));
                     }
                 }
-                if (_fields.Contains("gender") || _fields.Contains("@all"))
+                if (fields.Contains("gender") || fields.Contains("@all"))
                 {
                     if (!String.IsNullOrEmpty(p.gender))
                     {
-                        _person.setGender(p.gender.ToLower() == Person.Gender.male.ToString()
+                        person.setGender(p.gender.ToLower() == Person.Gender.male.ToString()
                                               ? Person.Gender.male
                                               : Person.Gender.female);
                     }
                 }
-                if (_fields.Contains("smoker") || _fields.Contains("@all"))
+                if (fields.Contains("smoker") || fields.Contains("@all"))
                 {
                     if (!String.IsNullOrEmpty(p.smoker))
                     {
-                        _person.setSmoker(EnumBaseType<EnumTypes.Smoker>.GetBaseByKey(p.smoker));
+                        person.setSmoker(EnumBaseType<EnumTypes.Smoker>.GetBaseByKey(p.smoker));
                     }
                 }
-                if (_fields.Contains("activities") || _fields.Contains("@all"))
+                if (fields.Contains("activities") || fields.Contains("@all"))
                 {
-                    var activities = Db.person_activities.Where(a => a.person_id == _person_id).Select(a => a.activity);
-                    _person.setActivities(activities.ToList());
+                    var activities = Db.person_activities.Where(a => a.person_id == personId).Select(a => a.activity);
+                    person.setActivities(activities.ToList());
                 }
 
-                if (_fields.Contains("addresses") || _fields.Contains("@all"))
+                if (fields.Contains("addresses") || fields.Contains("@all"))
                 {
                     var person_addresses = Db.addresses.
                         Join(Db.person_addresses, a => a.id, b => b.address_id, (a, b) => new { a, b }).
-                        Where(x => x.b.person_id == _person_id).
+                        Where(x => x.b.person_id == personId).
                         Select(x => x.a);
                     List<Address> _addresses = new List<Address>();
                     foreach (address _row in person_addresses)
@@ -424,12 +419,12 @@ namespace pestaServer.DataAccess
                         _addres.setPrimary(true);
                         _addresses.Add(_addres);
                     }
-                    _person.setAddresses(_addresses);
+                    person.setAddresses(_addresses);
                 }
 
-                if (_fields.Contains("bodyType") || _fields.Contains("@all"))
+                if (fields.Contains("bodyType") || fields.Contains("@all"))
                 {
-                    var _row = Db.person_body_types.Where(x => x.person_id == _person_id).SingleOrDefault();
+                    var _row = Db.person_body_types.Where(x => x.person_id == personId).SingleOrDefault();
                     if (_row != null)
                     {
                         BodyTypeImpl _bodyType = new BodyTypeImpl();
@@ -440,27 +435,27 @@ namespace pestaServer.DataAccess
                             _bodyType.setHeight(float.Parse(_row.height.Value.ToString()));
                         if (_row.weight.HasValue)
                             _bodyType.setWeight(float.Parse(_row.weight.Value.ToString()));
-                        _person.setBodyType(_bodyType);
+                        person.setBodyType(_bodyType);
                     }
                 }
 
-                if (_fields.Contains("books") || _fields.Contains("@all"))
+                if (fields.Contains("books") || fields.Contains("@all"))
                 {
-                    var _books = Db.person_books.Where(x => x.person_id == _person_id).Select(x => x.book);
-                    _person.setBooks(_books.ToList());
+                    var books = Db.person_books.Where(x => x.person_id == personId).Select(x => x.book);
+                    person.setBooks(books.ToList());
                 }
 
-                if (_fields.Contains("cars") || _fields.Contains("@all"))
+                if (fields.Contains("cars") || fields.Contains("@all"))
                 {
-                    var _cars = Db.person_cars.Where(x => x.person_id == _person_id).Select(x => x.car);
-                    _person.setCars(_cars.ToList());
+                    var _cars = Db.person_cars.Where(x => x.person_id == personId).Select(x => x.car);
+                    person.setCars(_cars.ToList());
                 }
 
-                if (_fields.Contains("currentLocation") || _fields.Contains("@all"))
+                if (fields.Contains("currentLocation") || fields.Contains("@all"))
                 {
                     var _row = Db.addresses.
                             Join(Db.person_current_locations, a => a.id, b => b.address_id, (a, b) => new { a, b }).
-                            Where(x => x.b.person_id == _person_id).Select(x => x.a).SingleOrDefault();
+                            Where(x => x.b.person_id == personId).Select(x => x.a).SingleOrDefault();
                     if (_row != null)
                     {
                         if (string.IsNullOrEmpty(_row.unstructured_address))
@@ -476,45 +471,45 @@ namespace pestaServer.DataAccess
                         _addres.setRegion(_row.region);
                         _addres.setStreetAddress(_row.street_address);
                         _addres.setType(_row.address_type);
-                        _person.setCurrentLocation(_addres);
+                        person.setCurrentLocation(_addres);
                     }
                 }
 
-                if (_fields.Contains("emails") || _fields.Contains("@all"))
+                if (fields.Contains("emails") || fields.Contains("@all"))
                 {
-                    var _emails = Db.person_emails.Where(x => x.person_id == _person_id);
+                    var _emails = Db.person_emails.Where(x => x.person_id == personId);
                     List<ListField> _emailList = new List<ListField>();
                     foreach (person_email _email in _emails)
                     {
                         _emailList.Add(new ListFieldImpl(_email.email_type, _email.address)); // TODO: better email canonicalization; remove dups
                     }
-                    _person.setEmails(_emailList);
+                    person.setEmails(_emailList);
                 }
 
-                if (_fields.Contains("food") || _fields.Contains("@all"))
+                if (fields.Contains("food") || fields.Contains("@all"))
                 {
-                    var _foods = Db.person_foods.Where(x => x.person_id == _person_id).Select(x => x.food);
-                    _person.setFood(_foods.ToList());
+                    var _foods = Db.person_foods.Where(x => x.person_id == personId).Select(x => x.food);
+                    person.setFood(_foods.ToList());
                 }
 
-                if (_fields.Contains("heroes") || _fields.Contains("@all"))
+                if (fields.Contains("heroes") || fields.Contains("@all"))
                 {
-                    var _strings = Db.person_heroes.Where(x => x.person_id == _person_id).Select(x => x.hero);
-                    _person.setHeroes(_strings.ToList());
+                    var _strings = Db.person_heroes.Where(x => x.person_id == personId).Select(x => x.hero);
+                    person.setHeroes(_strings.ToList());
                 }
 
-                if (_fields.Contains("interests") || _fields.Contains("@all"))
+                if (fields.Contains("interests") || fields.Contains("@all"))
                 {
-                    var _strings = Db.person_interests.Where(x => x.person_id == _person_id).Select(x => x.interest);
-                    _person.setInterests(_strings.ToList());
+                    var _strings = Db.person_interests.Where(x => x.person_id == personId).Select(x => x.interest);
+                    person.setInterests(_strings.ToList());
                 }
                 List<Organization> _organizations = new List<Organization>();
                 bool _fetchedOrg = false;
-                if (_fields.Contains("jobs") || _fields.Contains("@all"))
+                if (fields.Contains("jobs") || fields.Contains("@all"))
                 {
                     var _org = Db.organizations.
                         Join(Db.person_jobs, a => a.id, b => b.organization_id, (a, b) => new { a, b }).
-                        Where(x => x.b.person_id == _person_id).
+                        Where(x => x.b.person_id == personId).
                         Select(x => x.a);
                     foreach (var _row in _org)
                     {
@@ -555,11 +550,11 @@ namespace pestaServer.DataAccess
                     _fetchedOrg = true;
                 }
 
-                if (_fields.Contains("schools") || _fields.Contains("@all"))
+                if (fields.Contains("schools") || fields.Contains("@all"))
                 {
                     var _res2 = Db.organizations.
                         Join(Db.person_schools, a => a.id, b => b.organization_id, (a, b) => new { a, b }).
-                        Where(x => x.b.person_id == _person_id).
+                        Where(x => x.b.person_id == personId).
                         Select(x => x.a);
                     foreach (var _row in _res2)
                     {
@@ -601,29 +596,29 @@ namespace pestaServer.DataAccess
                 }
                 if (_fetchedOrg)
                 {
-                    _person.setOrganizations(_organizations);
+                    person.setOrganizations(_organizations);
                 }
                 //TODO languagesSpoken, currently missing the languages / countries tables so can"t do this yet
 
-                if (_fields.Contains("movies") || _fields.Contains("@all"))
+                if (fields.Contains("movies") || fields.Contains("@all"))
                 {
-                    var _strings = Db.person_movies.Where(x => x.person_id == _person_id).Select(x => x.movie);
-                    _person.setMovies(_strings.ToList());
+                    var _strings = Db.person_movies.Where(x => x.person_id == personId).Select(x => x.movie);
+                    person.setMovies(_strings.ToList());
                 }
-                if (_fields.Contains("music") || _fields.Contains("@all"))
+                if (fields.Contains("music") || fields.Contains("@all"))
                 {
-                    var _strings = Db.person_musics.Where(x => x.person_id == _person_id).Select(x => x.music);
-                    _person.setMusic(_strings.ToList());
+                    var _strings = Db.person_musics.Where(x => x.person_id == personId).Select(x => x.music);
+                    person.setMusic(_strings.ToList());
                 }
-                if (_fields.Contains("phoneNumbers") || _fields.Contains("@all"))
+                if (fields.Contains("phoneNumbers") || fields.Contains("@all"))
                 {
                     List<ListField> numList = new List<ListField>();
-                    var _numbers = Db.person_phone_numbers.Where(x => x.person_id == _person_id);
+                    var _numbers = Db.person_phone_numbers.Where(x => x.person_id == personId);
                     foreach (var _number in _numbers)
                     {
                         numList.Add(new ListFieldImpl(_number.number_type, _number.number));
                     }
-                    _person.setPhoneNumbers(numList);
+                    person.setPhoneNumbers(numList);
                 }
                 /*
                 if (_fields.Contains("ims") || _fields.Contains("@all")) 
@@ -644,45 +639,47 @@ namespace pestaServer.DataAccess
                 }
                 _person.setAccounts(_accounts);
                 }*/
-                if (_fields.Contains("quotes") || _fields.Contains("@all"))
+                if (fields.Contains("quotes") || fields.Contains("@all"))
                 {
-                    var _strings = Db.person_quotes.Where(x => x.person_id == _person_id).Select(x => x.quote);
-                    _person.setQuotes(_strings.ToList());
+                    var _strings = Db.person_quotes.Where(x => x.person_id == personId).Select(x => x.quote);
+                    person.setQuotes(_strings.ToList());
                 }
-                if (_fields.Contains("sports") || _fields.Contains("@all"))
+                if (fields.Contains("sports") || fields.Contains("@all"))
                 {
-                    var _strings = Db.person_sports.Where(x => x.person_id == _person_id).Select(x => x.sport);
-                    _person.setSports(_strings.ToList());
+                    var _strings = Db.person_sports.Where(x => x.person_id == personId).Select(x => x.sport);
+                    person.setSports(_strings.ToList());
                 }
-                if (_fields.Contains("tags") || _fields.Contains("@all"))
+                if (fields.Contains("tags") || fields.Contains("@all"))
                 {
-                    var _strings = Db.person_tags.Where(x => x.person_id == _person_id).Select(x => x.tag);
-                    _person.setTags(_strings.ToList());
+                    var _strings = Db.person_tags.Where(x => x.person_id == personId).Select(x => x.tag);
+                    person.setTags(_strings.ToList());
                 }
 
-                if (_fields.Contains("turnOns") || _fields.Contains("@all"))
+                if (fields.Contains("turnOns") || fields.Contains("@all"))
                 {
-                    var _strings = Db.person_turn_ons.Where(x => x.person_id == _person_id).Select(x => x.turn_on);
-                    _person.setTurnOns(_strings.ToList());
+                    var _strings = Db.person_turn_ons.Where(x => x.person_id == personId).Select(x => x.turn_on);
+                    person.setTurnOns(_strings.ToList());
                 }
-                if (_fields.Contains("turnOffs") || _fields.Contains("@all"))
+                if (fields.Contains("turnOffs") || fields.Contains("@all"))
                 {
-                    var _strings = Db.person_turn_offs.Where(x => x.person_id == _person_id).Select(x => x.turn_off);
-                    _person.setTurnOffs(_strings.ToList());
+                    var _strings = Db.person_turn_offs.Where(x => x.person_id == personId).Select(x => x.turn_off);
+                    person.setTurnOffs(_strings.ToList());
                 }
-                if (_fields.Contains("urls") || _fields.Contains("@all"))
+                
+                if (fields.Contains("urls") || fields.Contains("@all"))
                 {
-                    var _strings = Db.person_urls.Where(x => x.person_id == _person_id).Select(x => x.url);
+                    var _strings = Db.person_urls.Where(x => x.person_id == personId).Select(x => x.url);
                     List<ListField> urllist = new List<ListField>();
                     foreach (string s in _strings)
                     {
                         var url = new UrlImpl(s, null, null);
                         urllist.Add(url);
                     }
-                    urllist.Add(new UrlImpl(url_prefix + "/profile/" + _person_id, null, "profile"));
-                    _person.setUrls(urllist);
+                    urllist.Add(new UrlImpl(urlPrefix + "/profile/" + personId, null, "profile"));
+                    person.setUrls(urllist);
                 }
-                _ret.Add(_person_id.ToString(), _person);
+                 
+                _ret.Add(personId.ToString(), person);
             } // foreach
 
             return _ret;  

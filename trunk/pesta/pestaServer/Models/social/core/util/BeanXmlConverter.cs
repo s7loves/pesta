@@ -32,7 +32,7 @@ namespace pestaServer.Models.social.core.util
     /// </summary>
     public class BeanXmlConverter : BeanConverter
     {
-        private static readonly Dictionary<string, string> entryTypes = new Dictionary<string, string>
+        private static readonly Dictionary<string, string> ENTRY_TYPES = new Dictionary<string, string>
                                                                    {
                                                                        {"people", "entry"},
                                                                        {"appdata", "entry"},
@@ -40,64 +40,64 @@ namespace pestaServer.Models.social.core.util
                                                                        {"messages", "entry"},
                                                                    };
 
-        public override String getContentType()
+        public override String GetContentType()
         {
             return "application/xml";
         }
-        public override String convertToString(Object pojo)
+        public override String ConvertToString(Object pojo)
         {
             return convertToXml(pojo, null);
         }
-        public override String convertToString(Object pojo, RequestItem request) 
+        public override String ConvertToString(Object pojo, RequestItem request) 
         {
             return convertToXml(pojo, request);
         }
         protected String convertToXml(Object obj, RequestItem request)
         {
-            createXmlDoc(xmlVersion, charSet);
-            var requestType = getRequestType(request, entryTypes);
+            CreateXmlDoc(XMLVERSION, CHARSET);
+            var requestType = GetRequestType(request, ENTRY_TYPES);
 
             if (obj is IRestfulCollection)
             {
                 IRestfulCollection collection = (IRestfulCollection)obj;
                 int totalResults = collection.getTotalResults();
-                int itemsPerPage = request.getCount();
+                int itemsPerPage = request.GetCount();
                 int startIndex = collection.getStartIndex();
 
-                XmlNode entry = addNode(xmlDoc, "response", "");
+                XmlNode entry = AddNode(xmlDoc, "response", "");
 
                 // Required Xml fields
-                addNode(entry, "startIndex", startIndex.ToString());
-                addNode(entry, "itemsPerPage", itemsPerPage.ToString());
-                addNode(entry, "totalResults", totalResults.ToString());
+                AddNode(entry, "startIndex", startIndex.ToString());
+                AddNode(entry, "itemsPerPage", itemsPerPage.ToString());
+                AddNode(entry, "totalResults", totalResults.ToString());
                 var responses = collection.getEntry();
                 foreach (var response in responses)
                 {
                     // recursively add responseItem data to the xml structure
-                    addData(entry, requestType, response);
+                    AddData(entry, requestType, response);
                 }
             }
             else if (obj is DataCollection)
             {
-                var appdata = addNode(xmlDoc, "appdata", null, null, osNameSpace);
+                var appdata = AddNode(xmlDoc, "appdata", null, null, osNameSpace);
                 var entries = ((DataCollection)obj).getEntry();
                 foreach (var ent in entries)
                 {
-                    XmlNode entry = addNode(appdata, "entry", "");
-                    addNode(entry, "key", ent.Key);
-                    XmlNode valueNode = addNode(entry, "value", "");
-                    XmlNode entry2 = addNode(valueNode, "entry", "");
+                    XmlNode entry = AddNode(appdata, "entry", "");
+                    AddNode(entry, "key", ent.Key);
+                    XmlNode valueNode = AddNode(entry, "value", "");
+                    XmlNode entry2 = AddNode(valueNode, "entry", "");
                     foreach (var val in ent.Value)
                     {
-                        addNode(entry2, "key", val.Key);
-                        addNode(entry2, "value", val.Value);
+                        AddNode(entry2, "key", val.Key);
+                        AddNode(entry2, "value", val.Value);
                     }
                 }
             }
             else
             {
-                var entry = addNode(xmlDoc, "response", "");
-                addData(entry, "entry", obj);
+                var entry = AddNode(xmlDoc, "response", "");
+                AddData(entry, "entry", obj);
             }
             using (MemoryStream ms = new MemoryStream())
             {
@@ -106,20 +106,20 @@ namespace pestaServer.Models.social.core.util
             }
         }
         
-        public override Object convertToObject(String xml, Type className) 
+        public override Object ConvertToObject(String xml, Type className) 
         {
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(xml);
             switch (className.Name)
             {
                 case "Activity":
-                    return convertActivities(doc);
+                    return ConvertActivities(doc);
                 case "DataCollection":
-                    return convertAppData(doc);
+                    return ConvertAppData(doc);
                 case "Message":
-                    return convertMessages(doc);
+                    return ConvertMessages(doc);
                 case "Person":
-                    return convertPeople(doc);
+                    return ConvertPeople(doc);
             }
             return null;
         }

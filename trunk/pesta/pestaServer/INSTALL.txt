@@ -23,8 +23,10 @@ You can do that here, http://pesta.googlecode.com/files/IKVM.Shindig.dll.0.1.zip
 will be explained later.
 
 Once you have checked out the above projects, open the .csproj files under each project. Basically, both pestaserver and raya
-is dependent on pesta (which builds into a DLL). What I normally do is that I open 2 copies of Visual Studio. pesta and pestaserver 
-will be loaded on the first VS; pesta and raya will be loaded on the second VS.
+is dependent on pesta (which builds into a DLL). Open all 3 projects under the same solution.
+
+Select your solution and under "Project -> Set Startup Projects", select "Multiple startup projects" and set
+the "Action" for pestaserver and raya as "Start"  
 
 pestaServer
 ----------------------------------------------------------------------------------
@@ -59,8 +61,6 @@ You can update the dynamic port number later.
 3. Either specify the tokenMasterKey so that communication between the site and gadget server includes a security token
 OR
 set allowUnauthenticated to true to bare it all
-
-FYI: There will be another article on how to setup OAuth.
 
 
 raya

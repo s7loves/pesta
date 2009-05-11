@@ -21,6 +21,14 @@ The javascript referenced here should be found in the caja jar.
 <feature>
   <name>caja</name>
   <gadget>
+    <script src="cajita.js"></script>
+    <script src="css-defs.js"></script>
+    <script src="html4-defs.js"></script>
+    <script src="html-emitter.js"></script>
+    <script src="html-sanitizer.js"></script>
+    <script src="unicode.js"></script>
     <script src="domita.js"></script>
+    <script src="caja.js"></script>
+    <script src="valija.co.js"></script>
   </gadget>
 </feature>

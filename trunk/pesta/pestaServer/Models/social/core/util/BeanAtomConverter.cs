@@ -51,24 +51,24 @@ namespace pestaServer.Models.social.core.util
                                                                        {"messages", "messages"},
                                                                    };
 
-        public override String getContentType() 
+        public override String GetContentType() 
         {
             return "application/atom+xml";
         }
 
-        public override String convertToString(Object pojo)
+        public override String ConvertToString(Object pojo)
         {
             return convertToAtom(pojo, null);
         }
 
-        public override String convertToString(Object pojo, RequestItem request) 
+        public override String ConvertToString(Object pojo, RequestItem request) 
         {
             return convertToAtom(pojo, request);
         }
 
         public String convertToAtom(Object obj, RequestItem request) 
         {
-            createXmlDoc(xmlVersion, charSet);
+            CreateXmlDoc(XMLVERSION, CHARSET);
             var userIds = request.getUsers();
             IEnumerator<UserId> users = userIds.GetEnumerator();
             users.MoveNext();
@@ -89,7 +89,7 @@ namespace pestaServer.Models.social.core.util
             {
                 IRestfulCollection collection = (IRestfulCollection)obj;
                 int totalResults = collection.getTotalResults();
-                int itemsPerPage = request.getCount();
+                int itemsPerPage = request.GetCount();
                 int startIndex = collection.getStartIndex();
 
                 //int endPos = (startIndex + itemsPerPage) > totalResults ? totalResults : (startIndex + itemsPerPage);
@@ -252,11 +252,11 @@ namespace pestaServer.Models.social.core.util
         private XmlNode addAtomData(string name, object data, string namespc)
         {
             XmlNode xmldata = xmlDoc.CreateElement("xmldata");
-            addData(xmldata, name, data, namespc);
+            AddData(xmldata, name, data, namespc);
             return xmldata;
         }
 
-        public override object convertToObject(String xml, Type className)
+        public override object ConvertToObject(String xml, Type className)
         {
             StringReader sr = new StringReader(xml);
             XmlReader reader = XmlReader.Create(sr);
@@ -290,13 +290,13 @@ namespace pestaServer.Models.social.core.util
             switch (className.Name)
             {
                 case "Activity":
-                    return convertActivities(doc);
+                    return ConvertActivities(doc);
                 case "DataCollection":
-                    return convertAppData(doc);
+                    return ConvertAppData(doc);
                 case "Message":
-                    return convertMessages(doc);
+                    return ConvertMessages(doc);
                 case "Person":
-                    return convertPeople(doc);
+                    return ConvertPeople(doc);
             }
             return null;
         }

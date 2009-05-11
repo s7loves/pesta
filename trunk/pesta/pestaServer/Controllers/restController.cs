@@ -30,40 +30,40 @@ using Pesta.Engine.social.spi;
 
 namespace pestaServer.Controllers
 {
-    public class restController : apiController
+    public class restController : ApiController
     {
-        protected static readonly String FORMAT_PARAM = "format";
-        protected static readonly String ATOM_FORMAT = "atom";
-        protected static readonly String XML_FORMAT = "xml";
-        protected static readonly String JSON_BATCH_ROUTE = "jsonBatch";
+        private const String FORMAT_PARAM = "format";
+        private const String ATOM_FORMAT = "atom";
+        private const String XML_FORMAT = "xml";
+        private const String JSON_BATCH_ROUTE = "jsonBatch";
 
         [CompressFilter]
         public void Index(string id1, string id2, string id3, string id4)
         {
             HttpRequest request = System.Web.HttpContext.Current.Request;
             HttpResponse response = System.Web.HttpContext.Current.Response;
-            ISecurityToken token = getSecurityToken(System.Web.HttpContext.Current); // BasicSecurityToken
+            ISecurityToken token = GetSecurityToken(System.Web.HttpContext.Current); // BasicSecurityToken
             if (token == null)
             {
-                sendSecurityError(response);
+                SendSecurityError(response);
                 return;
             }
-            BeanConverter converter = getConverterForRequest(request);
+            BeanConverter converter = GetConverterForRequest(request);
             if (id1 == JSON_BATCH_ROUTE)
             {
-                handleBatchRequest(request, response, token, converter);
+                HandleBatchRequest(request, response, token, converter);
             }
             else
             {
-                handleSingleRequest(request, response, token, converter);
+                HandleSingleRequest(request, response, token, converter);
             }
         }
-        private void handleSingleRequest(HttpRequest request, HttpResponse response, ISecurityToken token, BeanConverter converter)
+        private void HandleSingleRequest(HttpRequest request, HttpResponse response, ISecurityToken token, BeanConverter converter)
         {
             RestfulRequestItem requestItem = new RestfulRequestItem(request, token, converter);
-            ResponseItem responseItem = getResponseItem(handleRequestItem(requestItem));
+            ResponseItem responseItem = GetResponseItem(HandleRequestItem(requestItem));
 
-            response.ContentType = converter.getContentType();
+            response.ContentType = converter.GetContentType();
             if (responseItem != null && responseItem.getError() == null)
             {
                 Object resp = responseItem.getResponse();
@@ -89,19 +89,20 @@ namespace pestaServer.Controllers
                             resp = new DataCollection(new Dictionary<string, Dictionary<string,string>>{{"entry",(Dictionary<string,string>)resp}});
                             break;
                         default:
-                            resp = new Dictionary<string, object>() {{"entry", resp}};
+                            resp = new Dictionary<string, object> {{"entry", resp}};
                             break;
                     }
                 }
-                response.Output.Write(converter.convertToString(resp, requestItem));
+                
+                response.Output.Write(converter.ConvertToString(resp, requestItem));
             }
             else
             {
-                sendError(response, responseItem);
+                SendError(response, responseItem);
             }
         }
 
-        private void handleBatchRequest(HttpRequest request, HttpResponse response, ISecurityToken token, BeanConverter converter)
+        private void HandleBatchRequest(HttpRequest request, HttpResponse response, ISecurityToken token, BeanConverter converter)
         {
             RestfulRequestItem mainRequest = new RestfulRequestItem(request, token, converter);
             Dictionary<String, object> responses = new Dictionary<string, object>();
@@ -111,26 +112,17 @@ namespace pestaServer.Controllers
                 string key = entry.Key;
                 JsonObject req = (JsonObject)JsonConvert.Import(entry.Value);
                 RestfulRequestItem requestItem = new RestfulRequestItem(req["url"].ToString(), req["method"].ToString(),"", token, converter);
-                responses.Add(key, getResponseItem(handleRequestItem(requestItem)).getResponse());
+                responses.Add(key, GetResponseItem(HandleRequestItem(requestItem)).getResponse());
             }
-            response.Output.Write(converter.convertToString(new Dictionary<string, object> { { "error", false }, { "responses", responses } }, mainRequest));
+            response.Output.Write(converter.ConvertToString(new Dictionary<string, object> { { "error", false }, { "responses", responses } }, mainRequest));
         }
 
-        BeanConverter getConverterForRequest(HttpRequest servletRequest)
+        BeanConverter GetConverterForRequest(HttpRequest servletRequest)
         {
-            String formatString = null;
             BeanConverter converter = null;
-            String contentType = null;
 
-            try
-            {
-                formatString = servletRequest.Params[FORMAT_PARAM];
-                contentType = servletRequest.Headers[IHandlerDispatcher.CONTENT_TYPE];
-            }
-            catch (Exception t)
-            {
-                //this happens while testing
-            }
+            string formatString = servletRequest.Params[FORMAT_PARAM];
+            string contentType = servletRequest.Headers[IHandlerDispatcher.CONTENT_TYPE];
 
             if (contentType != null)
             {
@@ -174,7 +166,7 @@ namespace pestaServer.Controllers
             return converter;
         }
 
-        protected override void sendError(HttpResponse response, ResponseItem responseItem)
+        protected override void SendError(HttpResponse response, ResponseItem responseItem)
         {
             response.StatusCode = responseItem.getError().getHttpErrorCode();
             response.StatusDescription = responseItem.getErrorMessage();

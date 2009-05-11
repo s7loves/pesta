@@ -25,7 +25,6 @@ using Pesta.Engine.social;
 using Pesta.Engine.social.model;
 using Pesta.Engine.social.spi;
 using pestaServer.Models.common;
-using pestaServer.DataAccess;
 
 namespace pestaServer.Models.social.service
 {
@@ -86,7 +85,7 @@ namespace pestaServer.Models.social.service
             }
             if (userIds.Contains(new UserId(UserId.Type.userId,"@supportedFields")))
             {
-                JsonArray supported = JsonContainerConfig.Instance.getJsonObject(request.getToken().getContainer() ?? "default", "gadgets.features")
+                JsonArray supported = JsonContainerConfig.Instance.GetJsonObject(request.getToken().getContainer() ?? "default", "gadgets.features")
                                             .getJSONObject("opensocial-0.8")
                                             .getJSONObject("supportedFields")["person"] as JsonArray;
                 return supported;
@@ -99,7 +98,7 @@ namespace pestaServer.Models.social.service
             options.setFilterOperation(request.getFilterOperation());
             options.setFilterValue(request.getFilterValue());
             options.setFirst(request.getStartIndex());
-            options.setMax(request.getCount());
+            options.setMax(request.GetCount());
 
             if (userIds.Count == 1)
             {

@@ -81,7 +81,7 @@ namespace pestaServer.Models.gadgets.rewrite
                         return get(spec);
                     }
                 } 
-                catch (GadgetException ge) 
+                catch (GadgetException) 
                 {
                     return defaultFeature;
                 }

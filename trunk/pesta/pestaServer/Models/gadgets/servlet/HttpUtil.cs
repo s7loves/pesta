@@ -115,7 +115,7 @@ namespace pestaServer.Models.gadgets.servlet
         */
         public static JsonObject GetJsConfig(ContainerConfig config, GadgetContext context, HashSet<string> features)
         {
-            JsonObject containerFeatures = config.getJsonObject(context.getContainer(),
+            JsonObject containerFeatures = config.GetJsonObject(context.getContainer(),
                                                                 "gadgets.features");
             JsonObject retv = new JsonObject();
             if (containerFeatures != null)

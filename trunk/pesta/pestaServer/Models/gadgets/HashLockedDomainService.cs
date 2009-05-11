@@ -59,12 +59,12 @@ namespace pestaServer.Models.gadgets
             this.enabled = enabled;
             lockedSuffixes = new Dictionary<string,string>();
             required = new Dictionary<string,bool>();
-            ICollection<String> containers = config.getContainers();
+            ICollection<String> containers = config.GetContainers();
             if (enabled) 
             {
                 foreach(String container in containers) 
                 {
-                    String suffix = config.get(container, LOCKED_DOMAIN_SUFFIX_KEY);
+                    String suffix = config.Get(container, LOCKED_DOMAIN_SUFFIX_KEY);
                     if (suffix == null)
                     {
 
@@ -73,7 +73,7 @@ namespace pestaServer.Models.gadgets
                     {
                         lockedSuffixes.Add(container, suffix);
                     }
-                    String require = config.get(container, LOCKED_DOMAIN_REQUIRED_KEY);
+                    String require = config.Get(container, LOCKED_DOMAIN_REQUIRED_KEY);
                     required.Add(container, "true".Equals(require));
                 }
             }
@@ -88,21 +88,21 @@ namespace pestaServer.Models.gadgets
         {
             if (enabled)
             {
-                return !hostRequiresLockedDomain(host);
+                return !HostRequiresLockedDomain(host);
             }
             return true;
         }
 
         public bool gadgetCanRender(String host, GadgetSpec gadget, String container)
         {
-            container = normalizeContainer(container);
+            container = NormalizeContainer(container);
             if (enabled)
             {
-                if (gadgetWantsLockedDomain(gadget) ||
-                    hostRequiresLockedDomain(host) ||
-                    containerRequiresLockedDomain(container))
+                if (GadgetWantsLockedDomain(gadget) ||
+                    HostRequiresLockedDomain(host) ||
+                    ContainerRequiresLockedDomain(container))
                 {
-                    String neededHost = getLockedDomain(gadget, container);
+                    String neededHost = GetLockedDomain(gadget, container);
                     return host.Equals(neededHost);
                 }
             }
@@ -111,19 +111,19 @@ namespace pestaServer.Models.gadgets
 
         public String getLockedDomainForGadget(GadgetSpec gadget, String container)
         {
-            container = normalizeContainer(container);
+            container = NormalizeContainer(container);
             if (enabled)
             {
-                if (gadgetWantsLockedDomain(gadget) ||
-                    containerRequiresLockedDomain(container))
+                if (GadgetWantsLockedDomain(gadget) ||
+                    ContainerRequiresLockedDomain(container))
                 {
-                    return getLockedDomain(gadget, container);
+                    return GetLockedDomain(gadget, container);
                 }
             }
             return null;
         }
 
-        private String getLockedDomain(GadgetSpec gadget, String container)
+        private String GetLockedDomain(GadgetSpec gadget, String container)
         {
             String suffix;
             if (!lockedSuffixes.TryGetValue(container, out suffix))
@@ -134,12 +134,12 @@ namespace pestaServer.Models.gadgets
             return hash + suffix;
         }
 
-        private bool gadgetWantsLockedDomain(GadgetSpec gadget)
+        private static bool GadgetWantsLockedDomain(GadgetSpec gadget)
         {
             return gadget.getModulePrefs().getFeatures().ContainsKey("locked-domain");
         }
 
-        private bool hostRequiresLockedDomain(String host) 
+        private bool HostRequiresLockedDomain(String host) 
         {
             foreach(String suffix in lockedSuffixes.Values) 
             {
@@ -151,13 +151,13 @@ namespace pestaServer.Models.gadgets
             return false;
         }
 
-        private bool containerRequiresLockedDomain(String container)
+        private bool ContainerRequiresLockedDomain(String container)
         {
             bool dummy;
             return required.TryGetValue(container, out dummy);
         }
 
-        private String normalizeContainer(String container)
+        private String NormalizeContainer(String container)
         {
             if (required.ContainsKey(container))
             {

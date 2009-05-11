@@ -20,7 +20,6 @@
 using System;
 using System.IO;
 using System.Net;
-using System.Web;
 using Pesta.Engine.common;
 using pestaServer.Models.gadgets.http;
 using Uri=Pesta.Engine.common.uri.Uri;
@@ -37,7 +36,7 @@ namespace pestaServer.Models.gadgets
     /// </remarks>
     public class JsLibrary
     {
-        private Type type;
+        private readonly Type type;
         public Type _Type
         {
             get
@@ -51,7 +50,7 @@ namespace pestaServer.Models.gadgets
         * other compression techniques. Use debugContent to get the unmodified
         * version.
         */
-        private String content;
+        private readonly String content;
         public String Content
         {
             get
@@ -124,7 +123,7 @@ namespace pestaServer.Models.gadgets
         * @return The newly created library.
         * @throws GadgetException
         */
-        public static JsLibrary create(Type type, String content, String feature, IHttpFetcher fetcher)
+        public static JsLibrary Create(Type type, String content, String feature, IHttpFetcher fetcher)
         {
             String optimizedContent = null;
             String debugContent;
@@ -134,9 +133,9 @@ namespace pestaServer.Models.gadgets
                 case Type.RESOURCE:
                     if (content.EndsWith(".js"))
                     {
-                        optimizedContent = loadData(content.Substring(0, content.Length - 3) + ".opt.js", type);
+                        optimizedContent = LoadData(content.Substring(0, content.Length - 3) + ".opt.js", type);
                     }
-                    debugContent = loadData(content, type);
+                    debugContent = LoadData(content, type);
                     if (String.IsNullOrEmpty(optimizedContent))
                     {
                         optimizedContent = debugContent;
@@ -150,7 +149,7 @@ namespace pestaServer.Models.gadgets
                     else
                     {
                         type = Type.FILE;
-                        debugContent = optimizedContent = loadDataFromUrl(content, fetcher);
+                        debugContent = optimizedContent = LoadDataFromUrl(content, fetcher);
                     }
                     break;
                 default:
@@ -167,15 +166,15 @@ namespace pestaServer.Models.gadgets
         * @param type
         * @return The contents of the file or resource named by @code name.
         */
-        private static String loadData(String name, Type type)
+        private static String LoadData(String name, Type type)
         {
             if (type == Type.FILE)
             {
-                return loadFile(name);
+                return LoadFile(name);
             }
             if (type == Type.RESOURCE)
             {
-                return loadResource(name);
+                return LoadResource(name);
             }
             return null;
         }
@@ -188,23 +187,16 @@ namespace pestaServer.Models.gadgets
         * @return The contents of the JS file, or null if it can't be fetched.
         * @throws GadgetException
         */
-        private static String loadDataFromUrl(String url, IHttpFetcher fetcher)
+        private static String LoadDataFromUrl(String url, IHttpFetcher fetcher)
         {
-            try
+            
+            // set up the request and response objects
+            Uri uri = Uri.parse(url);
+            sRequest request = new sRequest(uri);
+            sResponse response = fetcher.fetch(request);
+            if (response.getHttpStatusCode() == (int)HttpStatusCode.OK)
             {
-                // set up the request and response objects
-                Uri uri = Uri.parse(url);
-                sRequest request = new sRequest(uri);
-                sResponse response = fetcher.fetch(request);
-                if (response.getHttpStatusCode() == (int)HttpStatusCode.OK)
-                {
-                    return response.responseString;
-                }
-                return null;
-            }
-            catch
-            {
-                // The remote site is currently down. Try again next time.
+                return response.responseString;
             }
             return null;
         }
@@ -214,20 +206,17 @@ namespace pestaServer.Models.gadgets
         * @param fileName
         * @return The contents of the file.
         */
-        private static String loadFile(String fileName)
+        private static String LoadFile(String fileName)
         {
-            string html = "";
-            try
+            // try to use MapPath to get the file, this throws an error if the file doesn't exist
+            // use HttpContext.Current.Server.MapPath(HttpContext.Current.Request.ApplicationPath)??
+            string path2 = AppDomain.CurrentDomain.BaseDirectory + "/Content/" + fileName;
+            if (!File.Exists(path2))
             {
-                // try to use MapPath to get the file, this throws an error if the file doesn't exist
-                // use HttpContext.Current.Server.MapPath(HttpContext.Current.Request.ApplicationPath)??
-                string path2 = AppDomain.CurrentDomain.BaseDirectory + "/Content/" + fileName;
-                html = File.ReadAllText(path2);
+                return "";
             }
-            catch
-            {
-
-            }
+            string html = File.ReadAllText(path2);
+            
             return html;
         }
 
@@ -236,11 +225,11 @@ namespace pestaServer.Models.gadgets
         * @param name
         * @return The contents of the named resource.
         */
-        private static String loadResource(String name)
+        private static String LoadResource(String name)
         {
             try
             {
-                return ResourceLoader.getContent(name);
+                return ResourceLoader.GetContent(name);
             }
             catch
             {

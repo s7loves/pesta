@@ -74,7 +74,7 @@ namespace pestaServer.Models.gadgets
             Uri uri = Uri.fromJavaUri(gadgetUri);
             if (ignoreCache)
             {
-                return fetchObjectAndCache(uri, ignoreCache);
+                return FetchObjectAndCache(uri, ignoreCache);
             }
 
             GadgetSpec cached = HttpRuntime.Cache[gadgetUri.ToString()] as GadgetSpec;
@@ -84,7 +84,7 @@ namespace pestaServer.Models.gadgets
             {
                 try
                 {
-                    spec = fetchObjectAndCache(uri, ignoreCache);
+                    spec = FetchObjectAndCache(uri, ignoreCache);
                 }
                 catch (GadgetException e)
                 {
@@ -107,7 +107,7 @@ namespace pestaServer.Models.gadgets
             return spec;
         }
 
-        private GadgetSpec fetchObjectAndCache(Uri url, bool ignoreCache)
+        private GadgetSpec FetchObjectAndCache(Uri url, bool ignoreCache)
         {
             sRequest request = new sRequest(url)
                         .setIgnoreCache(ignoreCache)

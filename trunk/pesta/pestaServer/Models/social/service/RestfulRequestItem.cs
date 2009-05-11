@@ -35,8 +35,8 @@ namespace pestaServer.Models.social.service
     /// </remarks>
     public class RestfulRequestItem : RequestItem
     {
-        protected static String X_HTTP_METHOD_OVERRIDE = "X-HTTP-Method-Override";
-        protected static String SOCIAL_RESTFUL_PATH = HttpRuntime.AppDomainAppVirtualPath.Equals("/") ? "/social/rest/" : HttpRuntime.AppDomainAppVirtualPath + "/social/rest/";
+        private const String X_HTTP_METHOD_OVERRIDE = "X-HTTP-Method-Override";
+        private static readonly String SOCIAL_RESTFUL_PATH = HttpRuntime.AppDomainAppVirtualPath.Equals("/") ? "/social/rest/" : HttpRuntime.AppDomainAppVirtualPath + "/social/rest/";
         private String url;
 
         private Dictionary<String, HashSet<String>> parameters;
@@ -50,18 +50,18 @@ namespace pestaServer.Models.social.service
         }
 
         public RestfulRequestItem(String path, String method, String postData, ISecurityToken token, BeanConverter converter)
-            : base(getServiceFromPath(path), method, token, converter)
+            : base(GetServiceFromPath(path), method, token, converter)
         {
             this.postData = postData;
             url = path;
-            putUrlParamsIntoParameters();
+            PutUrlParamsIntoParameters();
         }
 
         public RestfulRequestItem(HttpRequest request, ISecurityToken token, BeanConverter converter)
-            : base(getServiceFromPath(request.RawUrl), getMethod(request), token, converter)
+            : base(GetServiceFromPath(request.RawUrl), GetMethod(request), token, converter)
         {
             url = request.RawUrl.Replace(SOCIAL_RESTFUL_PATH, "/");
-            parameters = createParameterMap(request);
+            parameters = CreateParameterMap(request);
 
             try
             {
@@ -83,7 +83,7 @@ namespace pestaServer.Models.social.service
             }
         }
 
-        static String getServiceFromPath(String pathInfo)
+        static String GetServiceFromPath(String pathInfo)
         {
             pathInfo = pathInfo.Replace(SOCIAL_RESTFUL_PATH, "");
             // in situations where batch requests are handled, sometimes '/' is prefixed
@@ -99,7 +99,7 @@ namespace pestaServer.Models.social.service
             return pathInfo;
         }
 
-        static String getMethod(HttpRequest request)
+        static String GetMethod(HttpRequest request)
         {
             String overrided = request.Params[X_HTTP_METHOD_OVERRIDE];
             if (!string.IsNullOrEmpty(overrided))
@@ -109,14 +109,19 @@ namespace pestaServer.Models.social.service
             return request.HttpMethod;
         }
 
-        private static Dictionary<String, HashSet<String>> createParameterMap(HttpRequest servletRequest)
+        private static Dictionary<String, HashSet<String>> CreateParameterMap(HttpRequest servletRequest)
         {
-            Dictionary<String, HashSet<string>> _parameters = new Dictionary<string, HashSet<string>>();
+            Dictionary<String, HashSet<string>> parameters = new Dictionary<string, HashSet<string>>();
             for (int i = 0; i < servletRequest.Params.Count; i++)
             {
-                _parameters.Add(servletRequest.Params.GetKey(i), new HashSet<string>(servletRequest.Params.GetValues(i)));
+                string key = servletRequest.Params.GetKey(i);
+                var value = servletRequest.Params.GetValues(i);
+                if (value != null && key != null)
+                {
+                    parameters.Add(key, new HashSet<string>(value));
+                }
             }
-            return _parameters;
+            return parameters;
         }
 
         /*
@@ -124,7 +129,7 @@ namespace pestaServer.Models.social.service
         * Usually the servlet request code does this for us but the batch request calls have to do it
         * by hand.
         */
-        void putUrlParamsIntoParameters()
+        void PutUrlParamsIntoParameters()
         {
             if (parameters == null)
             {
@@ -168,7 +173,7 @@ namespace pestaServer.Models.social.service
         */
         public override void applyUrlTemplate(String urlTemplate)
         {
-            putUrlParamsIntoParameters();
+            PutUrlParamsIntoParameters();
             String[] actualUrl = url.Split('/');
             String[] expectedUrl = urlTemplate.Split('/');
 
@@ -209,17 +214,15 @@ namespace pestaServer.Models.social.service
 
         public override object getTypedParameters(Type dataTypeClass)
         {
-            return converter.convertToObject(postData, dataTypeClass);
+            return converter.ConvertToObject(postData, dataTypeClass);
         }
 
-
-
-        public Dictionary<String, HashSet<String>> getParameters()
+        public Dictionary<String, HashSet<String>> GetParameters()
         {
             return parameters;
         }
 
-        public void setParameter(String paramName, String paramValue)
+        public void SetParameter(String paramName, String paramValue)
         {
             // Ignore nulls
             if (paramValue == null)
@@ -229,7 +232,7 @@ namespace pestaServer.Models.social.service
             parameters.Add(paramName, new HashSet<String> { paramValue });
         }
 
-        public void setListParameter(String paramName, HashSet<String> paramValue)
+        public void SetListParameter(String paramName, HashSet<String> paramValue)
         {
             parameters.Add(paramName, paramValue);
         }

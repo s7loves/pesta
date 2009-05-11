@@ -30,33 +30,33 @@ using pestaServer.Models.social.service;
 
 namespace pestaServer.Controllers
 {
-    public abstract class apiController : Controller
+    public abstract class ApiController : Controller
     {
-        private static String DEFAULT_ENCODING = "UTF-8";
+        private const String DEFAULT_ENCODING = "UTF-8";
         private readonly IHandlerDispatcher dispatcher;
-        protected BeanJsonConverter jsonConverter;
-        protected BeanConverter xmlConverter;
-        protected BeanConverter atomConverter;
+        protected readonly BeanJsonConverter jsonConverter;
+        protected readonly BeanConverter xmlConverter;
+        protected readonly BeanConverter atomConverter;
 
         /// <summary>
         /// Initializes a new instance of the ApiServlet class.
-        public apiController()
+        protected ApiController()
         {
             jsonConverter = new BeanJsonConverter();
             xmlConverter = new BeanXmlConverter();
             atomConverter = new BeanAtomConverter();
             dispatcher = new StandardHandlerDispatcher(new PersonHandler(), new ActivityHandler(), new AppDataHandler());
         }
-        protected abstract void sendError(HttpResponse response, ResponseItem responseItem);
+        protected abstract void SendError(HttpResponse response, ResponseItem responseItem);
 
-        protected ISecurityToken getSecurityToken(HttpContext context)
+        protected static ISecurityToken GetSecurityToken(HttpContext context)
         {
             return new AuthInfo(context, context.Request.RawUrl).getSecurityToken();
         }
 
-        protected void sendSecurityError(HttpResponse response)
+        protected void SendSecurityError(HttpResponse response)
         {
-            sendError(response, new ResponseItem(ResponseError.UNAUTHORIZED,
+            SendError(response, new ResponseItem(ResponseError.UNAUTHORIZED,
                                                  "The request did not have a proper security token nor oauth message and unauthenticated "
                                                  + "requests are not allowed"));
         }
@@ -64,7 +64,7 @@ namespace pestaServer.Controllers
         /**
        * Delivers a request item to the appropriate DataRequestHandler.
        */
-        protected IAsyncResult handleRequestItem(RequestItem requestItem)
+        protected IAsyncResult HandleRequestItem(RequestItem requestItem)
         {
             DataRequestHandler handler = dispatcher.getHandler(requestItem.getService());
             if (handler == null)
@@ -76,7 +76,7 @@ namespace pestaServer.Controllers
             return handler.handleItem(requestItem);
         }
 
-        protected ResponseItem getResponseItem(IAsyncResult future)
+        protected ResponseItem GetResponseItem(IAsyncResult future)
         {
             ResponseItem response;
             try

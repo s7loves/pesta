@@ -19,6 +19,7 @@
 #endregion
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Jayrock.Json;
 using Jayrock.Json.Conversion;
@@ -26,7 +27,6 @@ using org.apache.shindig.gadgets.rewrite;
 using org.apache.shindig.common.xml;
 using org.w3c.dom;
 using Pesta.Engine.auth;
-using Pesta.Engine.common;
 using Pesta.Utilities;
 using pestaServer.Models.common;
 using pestaServer.Models.gadgets.http;
@@ -73,93 +73,83 @@ namespace pestaServer.Models.gadgets.render
 
         public RewriterResults rewrite(Gadget gadget, MutableContent mutableContent)
         {
-            try
+            Document document = mutableContent.getDocument();
+
+            Element head = (Element)DomUtil.getFirstNamedChildNode(document.getDocumentElement(), "head");
+
+            // Remove all the elements currently in head and add them back after we inject content
+            NodeList children = head.getChildNodes();
+            List<Node> existingHeadContent = new List<Node>(children.getLength());
+            for (int i = 0; i < children.getLength(); i++) 
             {
-                Document document = mutableContent.getDocument();
-
-                Element head = (Element)DomUtil.getFirstNamedChildNode(document.getDocumentElement(), "head");
-
-                // Remove all the elements currently in head and add them back after we inject content
-                NodeList children = head.getChildNodes();
-                List<Node> existingHeadContent = new List<Node>(children.getLength());
-                for (int i = 0; i < children.getLength(); i++) 
-                {
-                    existingHeadContent.Add(children.item(i));
-                }
-
-                foreach(Node n in existingHeadContent) 
-                {
-                    head.removeChild(n);
-                }
-
-                // Only inject default styles if no doctype was specified.
-                if (document.getDoctype() == null) 
-                {
-                    Element defaultStyle = document.createElement("style");
-                    defaultStyle.setAttribute("type", "text/css");
-                    head.appendChild(defaultStyle);
-                    defaultStyle.appendChild(defaultStyle.getOwnerDocument().
-                    createTextNode(DEFAULT_CSS));
-                }
-
-                injectBaseTag(gadget, head);
-                injectFeatureLibraries(gadget, head);
-
-                // This can be one script block.
-                Element mainScriptTag = document.createElement("script");
-                injectMessageBundles(gadget, mainScriptTag);
-                injectDefaultPrefs(gadget, mainScriptTag);
-                injectPreloads(gadget, mainScriptTag);
-
-                // We need to inject our script before any developer scripts.
-                head.appendChild(mainScriptTag);
-
-                Element body = (Element)DomUtil.getFirstNamedChildNode(document.getDocumentElement(), "body");
-
-                LocaleSpec localeSpec = gadget.getLocale();
-                if (localeSpec != null) {
-                body.setAttribute("dir", localeSpec.getLanguageDirection());
-                }
-
-                // re append head content
-                foreach(Node node in existingHeadContent)
-                {
-                    head.appendChild(node);
-                }
-
-                injectOnLoadHandlers(body);
-
-                mutableContent.documentChanged();
-                return RewriterResults.notCacheable();
-            } 
-            catch (GadgetException ex) 
-            {
-                // TODO: Rewriter interface needs to be modified to handle GadgetException or
-                // RewriterException or something along those lines.
-                throw;
+                existingHeadContent.Add(children.item(i));
             }
 
+            foreach(Node n in existingHeadContent) 
+            {
+                head.removeChild(n);
+            }
+
+            // Only inject default styles if no doctype was specified.
+            if (document.getDoctype() == null) 
+            {
+                Element defaultStyle = document.createElement("style");
+                defaultStyle.setAttribute("type", "text/css");
+                head.appendChild(defaultStyle);
+                defaultStyle.appendChild(defaultStyle.getOwnerDocument().
+                                             createTextNode(DEFAULT_CSS));
+            }
+
+            InjectBaseTag(gadget, head);
+            InjectFeatureLibraries(gadget, head);
+
+            // This can be one script block.
+            Element mainScriptTag = document.createElement("script");
+            InjectMessageBundles(gadget, mainScriptTag);
+            InjectDefaultPrefs(gadget, mainScriptTag);
+            InjectPreloads(gadget, mainScriptTag);
+
+            // We need to inject our script before any developer scripts.
+            head.appendChild(mainScriptTag);
+
+            Element body = (Element)DomUtil.getFirstNamedChildNode(document.getDocumentElement(), "body");
+
+            LocaleSpec localeSpec = gadget.getLocale();
+            if (localeSpec != null) {
+                body.setAttribute("dir", localeSpec.getLanguageDirection());
+            }
+
+            // re append head content
+            foreach(Node node in existingHeadContent)
+            {
+                head.appendChild(node);
+            }
+
+            InjectOnLoadHandlers(body);
+
+            mutableContent.documentChanged();
+            return RewriterResults.notCacheable();
         }
 
-        private void injectBaseTag(Gadget gadget, Node headTag)
+        private void InjectBaseTag(Gadget gadget, Node headTag)
         {
             GadgetContext context = gadget.getContext();
-            if ("true".Equals(containerConfig.get(context.getContainer(), INSERT_BASE_ELEMENT_KEY))) 
+            if ("true".Equals(containerConfig.Get(context.getContainer(), INSERT_BASE_ELEMENT_KEY))) 
             {
-                Uri _base = gadget.getSpec().getUrl();
+                Uri baseUrl = gadget.getSpec().getUrl();
                 View view = gadget.getCurrentView();
                 if (view != null && view.getHref() != null) 
                 {
-                    _base = view.getHref();
+                    baseUrl = view.getHref();
                 }
                 Element baseTag = headTag.getOwnerDocument().createElement("base");
-                baseTag.setAttribute("href", _base.ToString());
+                baseTag.setAttribute("href", baseUrl.ToString());
                 headTag.insertBefore(baseTag, headTag.getFirstChild());
 
             }
         }
 
-        private void injectOnLoadHandlers(Node bodyTag) 
+        private static void InjectOnLoadHandlers(Node bodyTag) 
         {
             Element onloadScript = bodyTag.getOwnerDocument().createElement("script");
             bodyTag.appendChild(onloadScript);
@@ -167,10 +157,12 @@ namespace pestaServer.Models.gadgets.render
                 "gadgets.util.runOnLoadHandlers();"));
         }
 
-        /**
-        * Injects javascript libraries needed to satisfy feature dependencies.
-        */
-        private void injectFeatureLibraries(Gadget gadget, Node headTag)
+        /// <summary>
+        /// Injects javascript libraries needed to satisfy feature dependencies.
+        /// </summary>
+        /// <param name="gadget"></param>
+        /// <param name="headTag"></param>
+        private void InjectFeatureLibraries(Gadget gadget, Node headTag)
         {
             // TODO: If there isn't any js in the document, we can skip this. Unfortunately, that means
             // both script tags (easy to detect) and event handlers (much more complex).
@@ -202,7 +194,7 @@ namespace pestaServer.Models.gadgets.render
 
                 // Forced transitive deps need to be added as well so that they don't get pulled in twice.
                 // TODO: Figure out a clean way to avoid having to call getFeatures twice.
-                foreach(GadgetFeature dep in featureRegistry.getFeatures(forced)) 
+                foreach(GadgetFeature dep in featureRegistry.GetFeatures(forced)) 
                 {
                     forced.Add(dep.getName());
                 }
@@ -211,7 +203,7 @@ namespace pestaServer.Models.gadgets.render
             // Inline any libs that weren't forced. The ugly context switch between inline and external
             // Js is needed to allow both inline and external scripts declared in feature.xml.
             String container = context.getContainer();
-            ICollection<GadgetFeature> features = getFeatures(spec, forced);
+            ICollection<GadgetFeature> features = GetFeatures(spec, forced);
 
             // Precalculate the maximum length in order to avoid excessive garbage generation.
             int size = 0;
@@ -219,7 +211,7 @@ namespace pestaServer.Models.gadgets.render
             {
                 foreach(JsLibrary library in feature.getJsLibraries(RenderingContext.GADGET, container))
                 {
-                    if (library.GetType().Equals(JsLibrary.Type.URL))
+                    if (library._Type == JsLibrary.Type.URL)
                     {
                         size += library.Content.Length;
                     }
@@ -233,7 +225,7 @@ namespace pestaServer.Models.gadgets.render
             {
                 foreach (JsLibrary library in feature.getJsLibraries(RenderingContext.GADGET, container))
                 {
-                    if (library._Type.Equals(JsLibrary.Type.URL))
+                    if (library._Type == JsLibrary.Type.URL)
                     {
                         if (inlineJs.Length > 0)
                         {
@@ -265,7 +257,7 @@ namespace pestaServer.Models.gadgets.render
                 }
             }
 
-            inlineJs.Append(getLibraryConfig(gadget, features));
+            inlineJs.Append(GetLibraryConfig(gadget, features));
 
             if (inlineJs.Length > 0) 
             {
@@ -275,13 +267,13 @@ namespace pestaServer.Models.gadgets.render
             }
         }
 
-        /**
-   * Get all features needed to satisfy this rendering request.
-   *
-   * @param forced Forced libraries; added in addition to those found in the spec. Defaults to
-   * "core".
-   */
-        private ICollection<GadgetFeature> getFeatures(GadgetSpec spec, ICollection<String> forced)
+        /// <summary>
+        /// Get all features needed to satisfy this rendering request.
+        /// </summary>
+        /// <param name="spec"></param>
+        /// <param name="forced">Forced libraries; added in addition to those found in the spec. Defaults to "core"</param>
+        /// <returns></returns>
+        private ICollection<GadgetFeature> GetFeatures(GadgetSpec spec, ICollection<String> forced)
         {
             Dictionary<String, Feature> features = spec.getModulePrefs().getFeatures();
             HashKey<String> libs = new HashKey<string>();
@@ -299,7 +291,7 @@ namespace pestaServer.Models.gadgets.render
             }
 
             HashSet<String> unsupported = new HashSet<String>();
-            ICollection<GadgetFeature> feats = featureRegistry.getFeatures(libs, unsupported);
+            ICollection<GadgetFeature> feats = featureRegistry.GetFeatures(libs, unsupported);
             foreach (var item in forced)
             {
                 unsupported.Remove(item);
@@ -321,7 +313,7 @@ namespace pestaServer.Models.gadgets.render
                 // Throw error with full list of unsupported libraries
                 if (unsupported.Count != 0) 
                 {
-                    throw new UnsupportedFeatureException(unsupported.ToString());
+                    throw new UnsupportedFeatureException(String.Join(",", unsupported.ToArray()));
                 }
             }
             return feats;
@@ -339,12 +331,12 @@ namespace pestaServer.Models.gadgets.render
         * @param reqs The features needed to satisfy the request.
         * @throws GadgetException If there is a problem with the gadget auth token
         */
-        private String getLibraryConfig(Gadget gadget, ICollection<GadgetFeature> reqs)
+        private String GetLibraryConfig(Gadget gadget, ICollection<GadgetFeature> reqs)
 
         {
             GadgetContext context = gadget.getContext();
 
-            JsonObject features = containerConfig.getJsonObject(context.getContainer(), FEATURES_KEY);
+            JsonObject features = containerConfig.GetJsonObject(context.getContainer(), FEATURES_KEY);
 
             Dictionary<String, Object> config = new Dictionary<string, object>(features == null ? 2 : features.Names.Count + 2);
 
@@ -398,7 +390,7 @@ namespace pestaServer.Models.gadgets.render
         * Injects message bundles into the gadget output.
         * @throws GadgetException If we are unable to retrieve the message bundle.
         */
-        private void injectMessageBundles(Gadget gadget, Node scriptTag) 
+        private void InjectMessageBundles(Gadget gadget, Node scriptTag) 
         {
             GadgetContext context = gadget.getContext();
             MessageBundle bundle = messageBundleFactory.getBundle(
@@ -416,7 +408,7 @@ namespace pestaServer.Models.gadgets.render
         /**
         * Injects default values for user prefs into the gadget output.
         */
-        private void injectDefaultPrefs(Gadget gadget, Node scriptTag)
+        private static void InjectDefaultPrefs(Gadget gadget, Node scriptTag)
         {
                 List<UserPref> prefs = gadget.getSpec().getUserPrefs();
                 Dictionary<String, String> defaultPrefs = new Dictionary<string, string>(prefs.Count);
@@ -436,7 +428,7 @@ namespace pestaServer.Models.gadgets.render
         *
         * If preloading fails for any reason, we just output an empty object.
         */
-        private void injectPreloads(Gadget gadget, Node scriptTag) 
+        private static void InjectPreloads(Gadget gadget, Node scriptTag) 
         {
             IPreloads preloads = gadget.getPreloads();
 
@@ -444,16 +436,9 @@ namespace pestaServer.Models.gadgets.render
 
             foreach(PreloadedData preloaded in preloads.getData()) 
             {
-                try 
+                foreach(var entry in preloaded.toJson()) 
                 {
-                    foreach(var entry in preloaded.toJson()) 
-                    {
-                        preload.Add(entry.Key, entry.Value);
-                    }
-                } 
-                catch (PreloadException pe) 
-                {
-                    // This will be thrown in the event of some unexpected exception. We can move on.
+                    preload.Add(entry.Key, entry.Value);
                 }
             }
             Text text = scriptTag.getOwnerDocument().createTextNode("gadgets.io.preloaded_=");

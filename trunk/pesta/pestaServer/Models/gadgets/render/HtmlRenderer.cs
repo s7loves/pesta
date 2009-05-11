@@ -134,21 +134,12 @@ namespace pestaServer.Models.gadgets.render
 
                 foreach(PreloadedData preload in proxyPreloads.getData()) 
                 {
-                    try 
+                    Dictionary<String, Object> dataMap = preload.toJson();
+                    foreach(var entry in dataMap) 
                     {
-                      Dictionary<String, Object> dataMap = preload.toJson();
-                      foreach(var entry in dataMap) 
-                      {
                         // TODO: the existing, supported content is JSONObjects that contain the
                         // key already.  Discarding the key is odd.
                         array.Put(entry.Value);
-                      }
-                    } 
-                    catch (PreloadException pe)
-                    {
-                      // TODO: Determine whether this is a terminal path for the request. The spec is not
-                      // clear.
-                      // logger.log(Level.WARNING, "Unexpected error when preloading", pe);
                     }
                 }
 

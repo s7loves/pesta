@@ -55,14 +55,18 @@
     }
   },
   "opensocial-0.8" : {
-    "impl" : "rest",  //Use "rpc" to enable JSON-RPC, "rest' for REST
-    "path" : "http://pesta.my6solutions.com/social",
+    "impl" : "rpc",  //Use "rpc" to enable JSON-RPC, "rest' for REST
+    "path" : "http://%host%/social",
     "domain" : "pesta",
     "enableCaja" : false,
     "supportedFields" : {
        "person" : ["id", {"name" : ["familyName", "givenName", "unstructured"]}, "thumbnailUrl", "profileUrl"],
        "activity" : ["id", "title"]
     }
+  },
+  "osapi.base" : {
+    // Use EL when available.
+    "rpcUrl" : "http://%host%/social"
   }
 }
 }
