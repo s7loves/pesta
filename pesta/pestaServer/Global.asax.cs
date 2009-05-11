@@ -77,7 +77,7 @@ namespace pestaServer
                 "{controller}/{action}/{id}",                           // URL with parameters
                 new { controller = "Home", action = "Index", id = "" }  // Parameter defaults
             );
-
+            routes.MapRoute("Catch All", "{*path}", new { controller = "Error", action = "NotFound" });
         }
 
         protected void Application_Start()

@@ -26,9 +26,9 @@ namespace pestaServer.Models.gadgets.oauth
     ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
     public class OAuthModule
     {
-        private static readonly String OAUTH_CONFIG = "config/oauth.json";
-        private static readonly String OAUTH_SIGNING_KEY_FILE = "shindig.signing.key-file";
-        private static readonly String OAUTH_SIGNING_KEY_NAME = "shindig.signing.key-name";
+        private const String OAUTH_CONFIG = "config/oauth.json";
+        private const String OAUTH_SIGNING_KEY_FILE = "shindig.signing.key-file";
+        private const String OAUTH_SIGNING_KEY_NAME = "shindig.signing.key-name";
 
         public class OAuthCrypterProvider 
         {

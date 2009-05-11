@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Jayrock.Json;
 using Pesta.Engine.social.model;
 using Pesta.Engine.social.spi;
 using pestaServer.DataAccess;
@@ -98,7 +99,7 @@ namespace pestaServer.Models.social.service
                                    request.getAppId(), request.getFields(),
                                    (Activity)request.getTypedParameter("activity", typeof(Activity)),
                                    request.getToken());
-            return null;
+            return new JsonObject();
         }
 
         /**
@@ -129,7 +130,7 @@ namespace pestaServer.Models.social.service
             options.setFilterOperation(request.getFilterOperation());
             options.setFilterValue(request.getFilterValue());
             options.setFirst(request.getStartIndex());
-            options.setMax(request.getCount());
+            options.setMax(request.GetCount());
 
             if (optionalActivityIds.Count != 0)
             {

@@ -18,40 +18,10 @@
  */
 
 {
-  "http://localhost:8702/gadgets/files/samplecontainer/examples/oauth.xml" : {
-    "servicename" : {
-      "consumer_key" : "gadgetConsumer",
-      "consumer_secret" : "gadgetSecret",
-      "key_type" : "HMAC_SYMMETRIC"
-    }
-  },
- /* 
-  "http://dirk.balfanz.googlepages.com/contacts.xml" : {
-    "google" : {
-      "consumer_key" : "my6solutions.com",
-      "consumer_secret" : "WjbzTy7PK3eZpoTDiROOmzAO",
-      "key_type" : "HMAC_SYMMETRIC"
-    }
-  }, */
-  "http://dirk.balfanz.googlepages.com/contacts.xml" : {
-    "google" : {
-      "consumer_key" : "my6solutions.com",
-      "certificate" : "/config/certs/myrsacert.pfx",
-      "certificate_pass" : "1234",
-      "key_type" : "RSA_PRIVATE"
-    }
-  },
-  "http://natbro.garageband.com/gadget/ilike/partuza" : {
-    "" : {
-      "consumer_key" : "my6solutions.com",
-      "consumer_secret" : "WjbzTy7PK3eZpoTDiROOmzAO",
-      "key_type" : "HMAC_SYMMETRIC"
-    }
-  },
-  "http://localhost:58628/html/gadgets/files/oauthtest.xml" : {
-    "raya" : {
-      "consumer_key" : "CBF0F8F6-C7F0-C4F1-92D6-F9E2C7FFC9E2",
-      "consumer_secret" : "a84ea7d977aa31dc7cfb3f1ee1c77e10",
+  "http://localhost:32974/content/widgets/gmailContacts.xml" : {
+    "gmail" : {
+      "consumer_key" : "baizura.com",
+      "consumer_secret" : "XWMtLyKdDqRSSUoyFejbdDrq",
       "key_type" : "HMAC_SYMMETRIC"
     }
   }

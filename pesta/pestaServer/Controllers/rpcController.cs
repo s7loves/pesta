@@ -29,11 +29,12 @@ using Pesta.Engine.common.util;
 using Pesta.Engine.social;
 using Pesta.Engine.social.spi;
 using pestaServer.ActionFilters;
+using pestaServer.Models.social.core.util;
 using pestaServer.Models.social.service;
 
 namespace pestaServer.Controllers
 {
-    public class rpcController : apiController
+    public class RpcController : ApiController
     {
         //
         // GET: /rpc/
@@ -45,10 +46,10 @@ namespace pestaServer.Controllers
             string method = request.HttpMethod;
             if (method == "POST")
             {
-                ISecurityToken token = getSecurityToken(System.Web.HttpContext.Current);
+                ISecurityToken token = GetSecurityToken(System.Web.HttpContext.Current);
                 if (token == null)
                 {
-                    sendSecurityError(response);
+                    SendSecurityError(response);
                     return;
                 }
 
@@ -67,43 +68,35 @@ namespace pestaServer.Controllers
                     {
                         // Is a batch
                         JsonArray batch = JsonConvert.Import(content) as JsonArray;
-                        dispatchBatch(batch, request, response, token);
+                        DispatchBatch(batch, response, token);
                     }
                     else
                     {
                         JsonObject requestObj = JsonConvert.Import(content) as JsonObject;
-                        dispatch(requestObj, request, response, token);
+                        Dispatch(requestObj, response, token);
                     }
                 }
                 catch (JsonException je)
                 {
-                    sendBadRequest(je, response);
+                    SendBadRequest(je, response);
                 }
             }
             else if (method == "GET")
             {
-                ISecurityToken token = getSecurityToken(System.Web.HttpContext.Current);
+                ISecurityToken token = GetSecurityToken(System.Web.HttpContext.Current);
                 if (token == null)
                 {
-                    sendSecurityError(response);
+                    SendSecurityError(response);
                     return;
                 }
-
-                try
-                {
-                    setCharacterEncodings(request, response);
-                    JsonObject requestObj = JsonConversionUtil.fromRequest(request);
-                    dispatch(requestObj, request, response, token);
-                }
-                catch (JsonException je)
-                {
-                    // FIXME
-                }
+                
+                setCharacterEncodings(request, response);
+                JsonObject requestObj = JsonConversionUtil.FromRequest(request);
+                Dispatch(requestObj, response, token);
             }
         }
 
-        protected void dispatchBatch(JsonArray batch, HttpRequest servletRequest,
-                                     HttpResponse servletResponse, ISecurityToken token)
+        private void DispatchBatch(JsonArray batch, HttpResponse servletResponse, ISecurityToken token)
         {
             // Use linked hash map to preserve order
             List<IAsyncResult> responses = new List<IAsyncResult>(batch.Length);
@@ -116,7 +109,7 @@ namespace pestaServer.Controllers
             {
                 JsonObject batchObj = batch.GetObject(i);
                 RpcRequestItem requestItem = new RpcRequestItem(batchObj, token, jsonConverter);
-                responses.Add(handleRequestItem(requestItem));
+                responses.Add(HandleRequestItem(requestItem));
             }
 
             // Resolve each Future into a response.
@@ -130,13 +123,12 @@ namespace pestaServer.Controllers
                 {
                     key = batchObj["id"] as String;
                 }
-                result.Put(getJSONResponse(key, getResponseItem(responses[i])));
+                result.Put(GetJsonResponse(key, GetResponseItem(responses[i])));
             }
             servletResponse.Output.Write(result.ToString());
         }
 
-        protected void dispatch(JsonObject request, HttpRequest servletRequest,
-                                HttpResponse servletResponse, ISecurityToken token)
+        private void Dispatch(JsonObject request, HttpResponse servletResponse, ISecurityToken token)
         {
             String key = null;
             if (request.Contains("id"))
@@ -147,13 +139,13 @@ namespace pestaServer.Controllers
 
             // Resolve each Future into a response.
             // TODO: should use shared deadline across each request
-            ResponseItem response = getResponseItem(handleRequestItem(requestItem));
-            JsonObject result = getJSONResponse(key, response);
+            ResponseItem response = GetResponseItem(HandleRequestItem(requestItem));
+            JsonObject result = GetJsonResponse(key, response);
 
             servletResponse.Output.Write(result.ToString());
         }
 
-        private JsonObject getJSONResponse(String key, ResponseItem responseItem)
+        private static JsonObject GetJsonResponse(String key, ResponseItem responseItem)
         {
             JsonObject result = new JsonObject();
             if (key != null)
@@ -162,12 +154,12 @@ namespace pestaServer.Controllers
             }
             if (responseItem.getError() != null)
             {
-                result.Put("error", getErrorJson(responseItem));
+                result.Put("error", GetErrorJson(responseItem));
             }
             else
             {
                 Object response = responseItem.getResponse();
-                JsonObject converted = (JsonObject)jsonConverter.convertToJson(response);
+                JsonObject converted = (JsonObject)BeanJsonConverter.ConvertToJson(response);
 
                 if (response is DataCollection)
                 {
@@ -195,13 +187,13 @@ namespace pestaServer.Controllers
             return result;
         }
 
-        private void sendBadRequest(Exception t, HttpResponse response)
+        private void SendBadRequest(Exception t, HttpResponse response)
         {
-            sendError(response, new ResponseItem(ResponseError.BAD_REQUEST,
+            SendError(response, new ResponseItem(ResponseError.BAD_REQUEST,
                                                  "Invalid batch - " + t.Message));
         }
 
-        private JsonObject getErrorJson(ResponseItem responseItem)
+        private static JsonObject GetErrorJson(ResponseItem responseItem)
         {
             JsonObject error = new JsonObject();
             error.Put("code", responseItem.getError().getHttpErrorCode());
@@ -215,11 +207,11 @@ namespace pestaServer.Controllers
             return error;
         }
 
-        protected override void sendError(HttpResponse response, ResponseItem responseItem)
+        protected override void SendError(HttpResponse response, ResponseItem responseItem)
         {
             try
             {
-                JsonObject error = getErrorJson(responseItem);
+                JsonObject error = GetErrorJson(responseItem);
                 response.Output.Write(error.ToString());
             }
             catch (JsonException je)

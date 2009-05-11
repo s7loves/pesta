@@ -52,8 +52,8 @@ namespace pestaServer.Controllers
 
                 try
                 {
-                    reqValue = validateParameterValue(request, GET_REQUEST_REQ_PARAM);
-                    callbackValue = validateParameterValue(request, GET_REQUEST_CALLBACK_PARAM);
+                    reqValue = ValidateParameterValue(request, GET_REQUEST_REQ_PARAM);
+                    callbackValue = ValidateParameterValue(request, GET_REQUEST_CALLBACK_PARAM);
                     if (!GET_REQUEST_CALLBACK_PATTERN.Match(callbackValue).Success)
                     {
                         throw new Exception("Wrong format for parameter '" +
@@ -68,10 +68,10 @@ namespace pestaServer.Controllers
                     return;
                 }
 
-                Result result = process(request, response, Encoding.UTF8.GetBytes(reqValue));
-                response.Output.Write(result.isSuccess()
-                                          ? callbackValue + "(" + result.getOutput() + ")"
-                                          : result.getOutput());
+                Result result = Process(request, response, Encoding.UTF8.GetBytes(reqValue));
+                response.Output.Write(result.IsSuccess()
+                                          ? callbackValue + "(" + result.GetOutput() + ")"
+                                          : result.GetOutput());
             }
             else if (request.HttpMethod == "POST")
             {
@@ -102,13 +102,13 @@ namespace pestaServer.Controllers
                     return;
                 }
 
-                Result result = process(request, response, body);
-                response.Output.Write(result.getOutput());
+                Result result = Process(request, response, body);
+                response.Output.Write(result.GetOutput());
                 response.End();
             }
         }
 
-        private String validateParameterValue(HttpRequest request, String parameter)
+        private static String ValidateParameterValue(HttpRequest request, String parameter)
         {
             String result = request.Params[parameter];
             if (result == null)
@@ -118,13 +118,13 @@ namespace pestaServer.Controllers
             return result;
         }
 
-        private Result process(HttpRequest request, HttpResponse response, byte[] body)
+        private Result Process(HttpRequest request, HttpResponse response, byte[] body)
         {
             try
             {
-                Encoding encoding = getRequestCharacterEncoding(request);
+                Encoding encoding = GetRequestCharacterEncoding(request);
                 JsonObject req = JsonConvert.Import(HttpUtility.UrlDecode(encoding.GetString(body))) as JsonObject;
-                JsonObject resp = jsonHandler.process(req);
+                JsonObject resp = jsonHandler.Process(req);
                 response.StatusCode = (int)HttpStatusCode.OK;
                 // charset should match encoding?
                 response.ContentType = "application/json; charset=utf-8";
@@ -148,7 +148,7 @@ namespace pestaServer.Controllers
             }
         }
 
-        private Encoding getRequestCharacterEncoding(HttpRequest request)
+        private static Encoding GetRequestCharacterEncoding(HttpRequest request)
         {
             String encoding = request.ContentEncoding.WebName ?? "UTF-8";
 
@@ -166,12 +166,12 @@ namespace pestaServer.Controllers
                 this.success = success;
             }
 
-            public String getOutput()
+            public String GetOutput()
             {
                 return output;
             }
 
-            public bool isSuccess()
+            public bool IsSuccess()
             {
                 return success;
             }

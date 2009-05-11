@@ -19,8 +19,8 @@
 #endregion
 
 using System;
+using System.Collections;
 using Jayrock.Json;
-using Pesta.Engine.common;
 using pestaServer.Models.common;
 using pestaServer.Models.gadgets.spec;
 using pestaServer.Models.gadgets.variables;
@@ -35,21 +35,22 @@ namespace pestaServer.Models.gadgets.process
         private readonly ContainerConfig containerConfig;
         private readonly GadgetBlacklist blacklist;
         public static readonly Processor Instance = new Processor();
-        protected Processor()
+
+        private Processor()
         {
-            this.gadgetSpecFactory = DefaultGadgetSpecFactory.Instance;
-            this.substituter = new VariableSubstituter();
-            this.blacklist = new BasicGadgetBlacklist("");
-            this.containerConfig = JsonContainerConfig.Instance;
+            gadgetSpecFactory = DefaultGadgetSpecFactory.Instance;
+            substituter = new VariableSubstituter();
+            blacklist = new BasicGadgetBlacklist("");
+            containerConfig = JsonContainerConfig.Instance;
         }
 
-        /**
-        * Process a single gadget. Creates a gadget from a retrieved GadgetSpec and context object,
-        * automatically performing variable substitution on the spec for use elsewhere.
-        *
-        * @throws ProcessingException If there is a problem processing the gadget.
-        */
-        public Gadget process(GadgetContext context)
+        /// <summary>
+        /// Process a single gadget. Creates a gadget from a retrieved GadgetSpec and context object,
+        /// automatically performing variable substitution on the spec for use elsewhere.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public Gadget Process(GadgetContext context)
         {
             Uri url = context.getUrl();
 
@@ -76,7 +77,7 @@ namespace pestaServer.Models.gadgets.process
                 return new Gadget()
                     .setContext(context)
                     .setSpec(spec)
-                    .setCurrentView(getView(context, spec));
+                    .setCurrentView(GetView(context, spec));
             } 
             catch (GadgetException e) 
             {
@@ -84,38 +85,44 @@ namespace pestaServer.Models.gadgets.process
             }
         }
 
-        /**
-        * Attempts to extract the "current" view for the given gadget.
-        */
-        private View getView(GadgetContext context, GadgetSpec spec) 
+        /// <summary>
+        /// Attempts to extract the "current" view for the given gadget.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="spec"></param>
+        /// <returns></returns>
+        private View GetView(GadgetContext context, GadgetSpec spec) 
         {
             String viewName = context.getView();
             View view = spec.getView(viewName);
             if (view == null)
             {
-                JsonArray aliases = containerConfig.getJsonArray(context.getContainer(),
-                                                                 "gadgets.features/views/" + viewName + "/aliases");
-                if (aliases != null)
+                JsonObject views = containerConfig.GetJsonObject(context.getContainer(), "gadgets.features/views");
+                foreach (DictionaryEntry v in views)
                 {
-                    for (int i = 0, j = aliases.Length; i < j; ++i)
+                    JsonArray aliases = ((JsonObject)v.Value)["aliases"] as JsonArray;
+                    if (aliases != null && view == null)
                     {
-                        viewName = aliases.GetString(i);
-                        if (!String.IsNullOrEmpty(viewName)) 
+                        for (int i = 0, j = aliases.Length; i < j; ++i)
                         {
-                            view = spec.getView(viewName);
-                            if (view != null) 
+                            if (viewName == aliases.GetString(i))
                             {
-                                break;
+                                view = spec.getView(v.Key.ToString());
+                                if (view != null)
+                                {
+                                    break;
+                                }
                             }
                         }
                     }
                 }
+            }  
 
-                if (view == null) 
-                {
-                    view = spec.getView(GadgetSpec.DEFAULT_VIEW);
-                }
+            if (view == null) 
+            {
+                view = spec.getView(GadgetSpec.DEFAULT_VIEW);
             }
+            
             return view;
         }
     }

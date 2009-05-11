@@ -136,7 +136,7 @@ namespace pestaServer.Models.gadgets.spec
                     */
                     this.messages = Uri.parse(messages);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     throw new SpecParserException("Locale@messages url is invalid.");
                 }

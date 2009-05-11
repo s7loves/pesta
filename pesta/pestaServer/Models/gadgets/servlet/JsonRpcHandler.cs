@@ -36,14 +36,15 @@ namespace pestaServer.Models.gadgets.servlet
     /// </remarks>
     public class JsonRpcHandler
     {
-        private static Processor processor;
-        private static DefaultUrlGenerator urlGenerator;
-        private delegate JsonObject preloadProcessor(GadgetContext context);
+        private static Processor Processor;
+        private static DefaultUrlGenerator UrlGenerator;
+        private delegate JsonObject PreloadProcessor(GadgetContext context);
         public readonly static JsonRpcHandler Instance = new JsonRpcHandler();
-        protected JsonRpcHandler()
+
+        private JsonRpcHandler()
         {
-            processor = Processor.Instance;
-            urlGenerator = DefaultUrlGenerator.Instance;
+            Processor = Processor.Instance;
+            UrlGenerator = DefaultUrlGenerator.Instance;
         }
         /**
          * Processes a JSON request.
@@ -51,7 +52,7 @@ namespace pestaServer.Models.gadgets.servlet
          * @param request Original JSON request
          * @return The JSON response.
          */
-        public JsonObject process(JsonObject request)
+        public JsonObject Process(JsonObject request)
         {
             JsonObject response = new JsonObject();
 
@@ -64,7 +65,7 @@ namespace pestaServer.Models.gadgets.servlet
             for (int i = 0, j = requestedGadgets.Length; i < j; ++i)
             {
                 var context = new JsonRpcGadgetContext(requestContext, (JsonObject)requestedGadgets[i]);
-                preloadProcessor proc = new preloadProcessor(callJob);
+                PreloadProcessor proc = new PreloadProcessor(CallJob);
                 IAsyncResult result = proc.BeginInvoke(context, null, null);
                 gadgets.Add(result);
             }
@@ -74,7 +75,7 @@ namespace pestaServer.Models.gadgets.servlet
                 try
                 {
                     AsyncResult result = (AsyncResult)entry;
-                    preloadProcessor proc = (preloadProcessor)result.AsyncDelegate;
+                    PreloadProcessor proc = (PreloadProcessor)result.AsyncDelegate;
                     JsonObject gadget = proc.EndInvoke(result);
                     response.Accumulate("gadgets", gadget);
                 }
@@ -109,12 +110,12 @@ namespace pestaServer.Models.gadgets.servlet
             return response;
         }
 
-        private JsonObject callJob(GadgetContext context)
+        private JsonObject CallJob(GadgetContext context)
         {
             try
             {
                 JsonObject gadgetJson = new JsonObject();
-                Gadget gadget = processor.process(context);
+                Gadget gadget = Processor.Process(context);
 
                 GadgetSpec spec = gadget.getSpec();
                 ModulePrefs prefs = spec.getModulePrefs();
@@ -164,7 +165,7 @@ namespace pestaServer.Models.gadgets.servlet
                 // TODO: This should probably just copy all data from
                 // ModulePrefs.getAttributes(), but names have to be converted to
                 // camel case.
-                gadgetJson.Put("iframeUrl", urlGenerator.getIframeUrl(gadget))
+                gadgetJson.Put("iframeUrl", UrlGenerator.getIframeUrl(gadget))
                     .Put("url", context.getUrl().ToString())
                     .Put("moduleId", context.getModuleId())
                     .Put("title", prefs.getTitle())

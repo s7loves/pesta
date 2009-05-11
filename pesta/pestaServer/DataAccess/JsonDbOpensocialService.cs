@@ -27,7 +27,6 @@ using Pesta.Engine.auth;
 using Pesta.Engine.social;
 using Pesta.Engine.social.model;
 using Pesta.Engine.social.spi;
-using Pesta.Utilities;
 using pestaServer.Models.social.core.util;
 using pestaServer.Models.social.service;
 
@@ -42,9 +41,10 @@ using pestaServer.Models.social.service;
     public class JsonDbOpensocialService : IPersonService, IActivityService, IAppDataService
     {
         private const string Jsondb = "gadgets/files/sampledata/canonicaldb.json";
-        public readonly static string DbLocation = HttpContext.Current.Server.MapPath(HttpContext.Current.Request.ApplicationPath) + Jsondb;
+        private readonly static string DbLocation = HttpContext.Current.Server.MapPath(HttpContext.Current.Request.ApplicationPath) + Jsondb;
         public readonly static JsonDbOpensocialService Instance = new JsonDbOpensocialService();
-        protected JsonDbOpensocialService()
+
+        private JsonDbOpensocialService()
         {
             using (StreamReader reader = new StreamReader(DbLocation))
             {
@@ -53,7 +53,7 @@ using pestaServer.Models.social.service;
             }
             this.converter = new BeanJsonConverter();
         }
-        private class NAME_COMPARATOR : IComparer<Person>
+        private class NameComparator : IComparer<Person>
         {
             public int Compare(Person person, Person person1)
             {
@@ -98,9 +98,9 @@ using pestaServer.Models.social.service;
             return db;
         }
 
-        public void setDb(JsonObject db)
+        public void SetDb(JsonObject _db)
         {
-            this.db = db;
+            this.db = _db;
         }
 
         public RestfulCollection<Activity> getActivities(HashSet<UserId> userIds, GroupId groupId,
@@ -109,29 +109,32 @@ using pestaServer.Models.social.service;
             List<Activity> result = new List<Activity>();
             try
             {
-                HashSet<String> idSet = getIdSet(userIds, groupId, token);
+                HashSet<String> idSet = GetIdSet(userIds, groupId, token);
                 foreach (String id in idSet)
                 {
                     if (db.getJSONObject(ACTIVITIES_TABLE).Contains(id))
                     {
                         JsonArray activities = db.getJSONObject(ACTIVITIES_TABLE)[id] as JsonArray;
-                        for (int i = 0; i < activities.Length; i++)
+                        if (activities != null)
                         {
-                            JsonObject activity = activities[i] as JsonObject;
-                            if (appId == null || !activity.Contains(Activity.Field.APP_ID.Value))
+                            for (int i = 0; i < activities.Length; i++)
                             {
-                                result.Add(convertToActivity(activity, fields));
-                            }
-                            else if (activity[Activity.Field.APP_ID.Value].Equals(appId))
-                            {
-                                result.Add(convertToActivity(activity, fields));
+                                JsonObject activity = activities[i] as JsonObject;
+                                if (appId == null || !activity.Contains(Activity.Field.APP_ID.Value))
+                                {
+                                    result.Add(ConvertToActivity(activity, fields));
+                                }
+                                else if (activity[Activity.Field.APP_ID.Value].Equals(appId))
+                                {
+                                    result.Add(ConvertToActivity(activity, fields));
+                                }
                             }
                         }
                     }
                 }
                 return new RestfulCollection<Activity>(result);
             }
-            catch (JsonException je)
+            catch (Exception je)
             {
                 throw new SocialSpiException(ResponseError.INTERNAL_ERROR, je.Message, je);
             }
@@ -147,19 +150,22 @@ using pestaServer.Models.social.service;
                 if (db.getJSONObject(ACTIVITIES_TABLE).Contains(user))
                 {
                     JsonArray activities = db.getJSONObject(ACTIVITIES_TABLE)[user] as JsonArray;
-                    for (int i = 0; i < activities.Length; i++)
+                    if (activities != null)
                     {
-                        JsonObject activity = activities[i] as JsonObject;
-                        if (activity[Activity.Field.USER_ID.Value].Equals(user)
-                            && activityIds.Contains(activity[Activity.Field.ID.Value] as string))
+                        for (int i = 0; i < activities.Length; i++)
                         {
-                            result.Add(convertToActivity(activity, fields));
+                            JsonObject activity = activities[i] as JsonObject;
+                            if (activity[Activity.Field.USER_ID.Value].Equals(user)
+                                && activityIds.Contains(activity[Activity.Field.ID.Value] as string))
+                            {
+                                result.Add(ConvertToActivity(activity, fields));
+                            }
                         }
                     }
                 }
                 return new RestfulCollection<Activity>(result);
             }
-            catch (JsonException je)
+            catch (Exception je)
             {
                 throw new SocialSpiException(ResponseError.INTERNAL_ERROR, je.Message, je);
             }
@@ -177,16 +183,17 @@ using pestaServer.Models.social.service;
                     for (int i = 0; i < activities.Length; i++)
                     {
                         JsonObject activity = activities[i] as JsonObject;
-                        if (activity[Activity.Field.USER_ID.Value] as string == user
-                            && activity[Activity.Field.ID.Value] as string == activityId)
+                        if (activity != null && 
+                            activity[Activity.Field.USER_ID.Value] as string == user && 
+                            activity[Activity.Field.ID.Value] as string == activityId)
                         {
-                            return convertToActivity(activity, fields);
+                            return ConvertToActivity(activity, fields);
                         }
                     }
                 }
                 throw new SocialSpiException(ResponseError.BAD_REQUEST, "Activity not found");
             }
-            catch (JsonException je)
+            catch (Exception je)
             {
                 throw new SocialSpiException(ResponseError.INTERNAL_ERROR, je.Message, je);
             }
@@ -207,7 +214,7 @@ using pestaServer.Models.social.service;
                         for (int i = 0; i < activities.Length; i++)
                         {
                             JsonObject activity = activities[i] as JsonObject;
-                            if (!activityIds.Contains(activity[Activity.Field.ID.Value] as string))
+                            if (activity != null && !activityIds.Contains(activity[Activity.Field.ID.Value] as string))
                             {
                                 newList.Put(activity);
                             }
@@ -221,7 +228,7 @@ using pestaServer.Models.social.service;
                 }
                 // What is the appropriate response here??
             }
-            catch (JsonException je)
+            catch (Exception je)
             {
                 throw new SocialSpiException(ResponseError.INTERNAL_ERROR, je.Message, je);
             }
@@ -233,7 +240,7 @@ using pestaServer.Models.social.service;
             // Are fields really needed here?
             try
             {
-                JsonObject jsonObject = convertFromActivity(activity, fields);
+                JsonObject jsonObject = ConvertFromActivity(activity, fields);
                 if (!jsonObject.Contains(Activity.Field.ID.Value))
                 {
                     jsonObject.Put(Activity.Field.ID.Value, DateTime.UtcNow.Ticks);
@@ -246,7 +253,7 @@ using pestaServer.Models.social.service;
                 }
                 jsonArray.Put(jsonObject);
             }
-            catch (JsonException je)
+            catch (Exception je)
             {
                 throw new SocialSpiException(ResponseError.INTERNAL_ERROR, je.Message, je);
             }
@@ -260,23 +267,25 @@ using pestaServer.Models.social.service;
             {
                 JsonArray people = db[PEOPLE_TABLE] as JsonArray;
 
-                HashSet<String> idSet = getIdSet(userIds, groupId, token);
+                HashSet<String> idSet = GetIdSet(userIds, groupId, token);
 
-                for (int i = 0; i < people.Length; i++)
+                if (people != null)
                 {
-                    JsonObject person = people[i] as JsonObject;
-                    if (!idSet.Contains(person[Person.Field.ID.Value] as string))
+                    for (int i = 0; i < people.Length; i++)
                     {
-                        continue;
+                        JsonObject person = people[i] as JsonObject;
+                        if (person != null && !idSet.Contains(person[Person.Field.ID.Value] as string))
+                        {
+                            continue;
+                        }
+                        // Add group support later
+                        result.Add(ConvertToPerson(person, fields));
                     }
-                    // Add group support later
-                    result.Add(convertToPerson(person, fields));
                 }
-
                 // We can pretend that by default the people are in top friends order
                 if (options.getSortBy().Equals(Person.Field.NAME.Value))
                 {
-                    result.Sort(new NAME_COMPARATOR());
+                    result.Sort(new NameComparator());
                 }
 
                 if (options.getSortOrder().Equals(SortOrder.descending))
@@ -293,7 +302,7 @@ using pestaServer.Models.social.service;
 
                 return new RestfulCollection<Person>(result, options.getFirst(), totalSize);
             }
-            catch (JsonException je)
+            catch (Exception je)
             {
                 throw new SocialSpiException(ResponseError.INTERNAL_ERROR, je.Message, je);
             }
@@ -305,17 +314,20 @@ using pestaServer.Models.social.service;
             {
                 JsonArray people = db[PEOPLE_TABLE] as JsonArray;
 
-                for (int i = 0; i < people.Length; i++)
+                if (people != null)
                 {
-                    JsonObject person = people[i] as JsonObject;
-                    if (id != null && person[Person.Field.ID.Value] as string == id.getUserId(token))
+                    for (int i = 0; i < people.Length; i++)
                     {
-                        return convertToPerson(person, fields);
+                        JsonObject person = people[i] as JsonObject;
+                        if (id != null && person != null && person[Person.Field.ID.Value] as string == id.getUserId(token))
+                        {
+                            return ConvertToPerson(person, fields);
+                        }
                     }
                 }
                 throw new SocialSpiException(ResponseError.BAD_REQUEST, "Person not found");
             }
-            catch (JsonException je)
+            catch (Exception je)
             {
                 throw new SocialSpiException(ResponseError.INTERNAL_ERROR, je.Message, je);
             }
@@ -327,7 +339,7 @@ using pestaServer.Models.social.service;
             try
             {
                 Dictionary<String, Dictionary<String, String>> idToData = new Dictionary<string, Dictionary<string, string>>();
-                HashSet<String> idSet = getIdSet(userIds, groupId, token);
+                HashSet<String> idSet = GetIdSet(userIds, groupId, token);
                 foreach (String id in idSet)
                 {
                     JsonObject personData;
@@ -359,7 +371,7 @@ using pestaServer.Models.social.service;
                 }
                 return new DataCollection(idToData);
             }
-            catch (JsonException je)
+            catch (Exception je)
             {
                 throw new SocialSpiException(ResponseError.INTERNAL_ERROR, je.Message, je);
             }
@@ -386,7 +398,7 @@ using pestaServer.Models.social.service;
                 db.getJSONObject(DATA_TABLE).Put(user, newPersonData);
                 return;
             }
-            catch (JsonException je)
+            catch (Exception je)
             {
                 throw new SocialSpiException(ResponseError.INTERNAL_ERROR, je.Message, je);
             }
@@ -413,7 +425,7 @@ using pestaServer.Models.social.service;
                 }
                 return;
             }
-            catch (JsonException je)
+            catch (Exception je)
             {
                 throw new SocialSpiException(ResponseError.INTERNAL_ERROR, je.Message, je);
             }
@@ -422,13 +434,13 @@ using pestaServer.Models.social.service;
         /**
         * Get the set of user id's from a user and group
         */
-        private HashSet<String> getIdSet(UserId user, GroupId group, ISecurityToken token)
+        private HashSet<String> GetIdSet(UserId user, GroupId group, ISecurityToken token)
         {
             String userId = user.getUserId(token);
 
             if (group == null)
             {
-                return new HashSet<string>() { userId };
+                return new HashSet<string> { userId };
             }
 
             HashSet<String> returnVal = new HashSet<string>();
@@ -440,9 +452,12 @@ using pestaServer.Models.social.service;
                     if (db[FRIEND_LINK_TABLE].ToString().Contains(userId))
                     {
                         JsonArray friends = ((JsonObject)db[FRIEND_LINK_TABLE])[userId] as JsonArray;
-                        for (int i = 0; i < friends.Length; i++)
+                        if (friends != null)
                         {
-                            returnVal.Add(friends[i] as string);
+                            for (int i = 0; i < friends.Length; i++)
+                            {
+                                returnVal.Add(friends[i] as string);
+                            }
                         }
                     }
                     break;
@@ -456,17 +471,17 @@ using pestaServer.Models.social.service;
         /**
         * Get the set of user id's for a set of users and a group
         */
-        private HashSet<String> getIdSet(HashSet<UserId> users, GroupId group, ISecurityToken token)
+        private HashSet<String> GetIdSet(HashSet<UserId> users, GroupId group, ISecurityToken token)
         {
             HashSet<String> ids = new HashSet<string>();
             foreach (UserId user in users)
             {
-                ids.UnionWith(getIdSet(user, group, token));
+                ids.UnionWith(GetIdSet(user, group, token));
             }
             return ids;
         }
 
-        private Activity convertToActivity(JsonObject inobject, HashSet<String> fields)
+        private Activity ConvertToActivity(JsonObject inobject, HashSet<String> fields)
         {
             if (fields.Count != 0)
             {
@@ -474,16 +489,16 @@ using pestaServer.Models.social.service;
                 fields.CopyTo(datafields);
                 inobject = new JsonObject(inobject, datafields);
             }
-            return converter.convertToObject(inobject.ToString(), typeof(Activity)) as Activity;
+            return converter.ConvertToObject(inobject.ToString(), typeof(Activity)) as Activity;
         }
 
-        private JsonObject convertFromActivity(Activity activity, HashSet<String> fields)
+        private JsonObject ConvertFromActivity(Activity activity, HashSet<String> fields)
         {
             // TODO Not using fields yet
-            return JsonConvert.Import(converter.convertToString(activity)) as JsonObject;
+            return JsonConvert.Import(converter.ConvertToString(activity)) as JsonObject;
         }
 
-        private Person convertToPerson(JsonObject inobject, HashSet<String> fields)
+        private Person ConvertToPerson(JsonObject inobject, HashSet<String> fields)
         {
             if (fields.Count != 0)
             {
@@ -492,6 +507,6 @@ using pestaServer.Models.social.service;
                 fields.CopyTo(datafields);
                 inobject = new JsonObject(inobject, datafields);
             }
-            return converter.convertToObject(inobject.ToString(), typeof(Person)) as Person;
+            return converter.ConvertToObject(inobject.ToString(), typeof(Person)) as Person;
         }
     }

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+ <ModulePrefs title="Social Hello World">
+   <Require feature="opensocial-samplecontainer"></Require>
+ </ModulePrefs>
+ <Content type="html">
+   <![CDATA[
+    <input type=button onclick="window.top.location='http://www.google.com'" value="Reset window.top.location">
+    ]]>
+  </Content>
+</Module>

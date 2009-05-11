@@ -117,7 +117,7 @@ namespace pestaServer.Models.social.service
         {
             try
             {
-                return converter.convertToObject(data[parameterName].ToString(), dataTypeClass);
+                return converter.ConvertToObject(data[parameterName].ToString(), dataTypeClass);
             }
             catch (JsonException je)
             {
@@ -127,7 +127,7 @@ namespace pestaServer.Models.social.service
 
         public override object getTypedParameters(Type dataTypeClass)
         {
-            return converter.convertToObject(data.ToString(), dataTypeClass);
+            return converter.ConvertToObject(data.ToString(), dataTypeClass);
         }
 
 

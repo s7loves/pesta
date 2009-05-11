@@ -207,7 +207,7 @@ namespace pestaServer.Models.gadgets.servlet
                 String url = json["url"] as string;
                 return new URI(url);
             }
-            catch (UriFormatException e)
+            catch (Exception)
             {
                 return null;
             }

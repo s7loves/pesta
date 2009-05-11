@@ -65,36 +65,26 @@ namespace pestaServer.Models.gadgets.rewrite.lexer
 
         public virtual RewriterResults rewrite(sRequest request, sResponse original, MutableContent content)
         {
-            try
+            ByteArrayOutputStream baos = new ByteArrayOutputStream((content.getContent().Length * 110) / 100);
+            OutputStreamWriter output = new OutputStreamWriter(baos);
+            String mimeType = original.getHeader("Content-Type");
+            if (request.RewriteMimeType != null)
             {
-                java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream((content.getContent().Length * 110) / 100);
-                java.io.OutputStreamWriter output = new java.io.OutputStreamWriter(baos);
-                String mimeType = original.getHeader("Content-Type");
-                if (request.RewriteMimeType != null)
-                {
-                    mimeType = request.RewriteMimeType;
-                }
-                GadgetSpec spec = null;
-                if (request.Gadget != null)
-                {
-                    spec = _specFactory.getGadgetSpec(request.Gadget.toJavaUri(), false);
-                }
-                if (rewrite(spec, request.getUri(),
-                            content,
-                            mimeType,
-                            output))
-                {
-                    content.setContent(Encoding.Default.GetString(baos.toByteArray()));
-                    return RewriterResults.cacheableIndefinitely();
+                mimeType = request.RewriteMimeType;
+            }
+            GadgetSpec spec = null;
+            if (request.Gadget != null)
+            {
+                spec = _specFactory.getGadgetSpec(request.Gadget.toJavaUri(), false);
+            }
+            if (rewrite(spec, request.getUri(),
+                        content,
+                        mimeType,
+                        output))
+            {
+                content.setContent(Encoding.Default.GetString(baos.toByteArray()));
+                return RewriterResults.cacheableIndefinitely();
 
-                }
-            }
-            catch (GadgetException ge)
-            {
-            }
-            catch (Exception ex)
-            {
-                throw;
             }
 
             return null;

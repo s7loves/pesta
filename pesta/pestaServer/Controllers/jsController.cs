@@ -83,7 +83,7 @@ namespace pestaServer.Controllers
             RenderingContext rcontext = "1".Equals(containerStr) ?
                                                                      RenderingContext.CONTAINER : RenderingContext.GADGET;
 
-            ICollection<GadgetFeature> features = registry.getFeatures(needed);
+            ICollection<GadgetFeature> features = registry.GetFeatures(needed);
             StringBuilder jsData = new StringBuilder();
             foreach (GadgetFeature feature in features)
             {

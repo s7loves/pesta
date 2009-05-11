@@ -306,7 +306,9 @@ gadgets.rpc = function() {
 
   // Create the Default RPC handler.
   services[DEFAULT_NAME] = function() {
-    throw new Error('Unknown RPC service: ' + this.s);
+    if (console && console.log) {
+      console.log('Unknown RPC service: ' + this.s);
+    }
   };
 
   // Create a Special RPC handler for callbacks.
@@ -567,7 +569,9 @@ gadgets.rpc = function() {
     var relay = gadgets.rpc.getRelayUrl(targetId);
 
     if (!relay) {
-      throw new Error('No relay file assigned for IFPC');
+      if (console && console.log) {
+        console.log('No relay file assigned for IFPC');
+      }
     }
 
     // The RPC mechanism supports two formats for IFPC (legacy and current).
@@ -696,7 +700,12 @@ gadgets.rpc = function() {
             break;
           }
         }
-        relayUrl['..'] = parentParam + config.rpc.parentRelayUrl;
+        if (parentParam !== "") {
+          // Otherwise, relayUrl['..'] will be null, signaling transport
+          // code to ignore rpc calls since they cannot work without a
+          // relay URL with host qualification.
+          relayUrl['..'] = parentParam + config.rpc.parentRelayUrl;
+        }
       }
       useLegacyProtocol['..'] = !!config.rpc.useLegacyProtocol;
     }
@@ -826,7 +835,10 @@ gadgets.rpc = function() {
 
         case 'wpm': // use window.postMessage.
           var targetWin = targetId === '..' ? parent : frames[targetId];
-          targetWin.postMessage(rpcData, relayUrl[targetId]);
+          var relay = gadgets.rpc.getRelayUrl(targetId);
+          if (relay) {
+            targetWin.postMessage(rpcData, relay);
+          }
           break;
 
         case 'nix': // use NIX.

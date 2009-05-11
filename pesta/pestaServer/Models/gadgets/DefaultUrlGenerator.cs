@@ -40,32 +40,31 @@ namespace pestaServer.Models.gadgets
     /// </remarks>
     public class DefaultUrlGenerator : UrlGenerator
     {
-        protected static readonly Regex ALLOWED_FEATURE_NAME = new Regex("[0-9a-zA-Z\\.\\-]+", RegexOptions.Compiled);
-        protected static readonly String IFRAME_URI_PARAM = "gadgets.iframeBaseUri";
-        protected static readonly String JS_URI_PARAM = "gadgets.jsUriTemplate";
+        private static readonly Regex ALLOWED_FEATURE_NAME = new Regex("[0-9a-zA-Z\\.\\-]+", RegexOptions.Compiled);
+        private const String IFRAME_URI_PARAM = "gadgets.iframeBaseUri";
+        private const String JS_URI_PARAM = "gadgets.jsUriTemplate";
         private readonly String jsChecksum;
         private readonly Dictionary<String, Uri> iframeBaseUris;
         private readonly Dictionary<String, String> jsUriTemplates;
         private readonly LockedDomainService lockedDomainService;
         public readonly static DefaultUrlGenerator Instance = new DefaultUrlGenerator();
-        protected DefaultUrlGenerator()
+
+        private DefaultUrlGenerator()
         {
             ContainerConfig containerConfig = JsonContainerConfig.Instance;
-            LockedDomainService lockedDomainService = HashLockedDomainService.Instance;
+            lockedDomainService = HashLockedDomainService.Instance;
             GadgetFeatureRegistry registry = GadgetFeatureRegistry.Instance;
 
             iframeBaseUris = new Dictionary<string,Uri>();
             jsUriTemplates = new Dictionary<string,string>();
-            foreach (String container in containerConfig.getContainers())
+            foreach (String container in containerConfig.GetContainers())
             {
-                iframeBaseUris.Add(container, Uri.parse(containerConfig.get(container, IFRAME_URI_PARAM)));
-                jsUriTemplates.Add(container, containerConfig.get(container, JS_URI_PARAM));
+                iframeBaseUris.Add(container, Uri.parse(containerConfig.Get(container, IFRAME_URI_PARAM)));
+                jsUriTemplates.Add(container, containerConfig.Get(container, JS_URI_PARAM));
             }
 
-            this.lockedDomainService = lockedDomainService;
-
             StringBuilder jsBuf = new StringBuilder();
-            foreach (GadgetFeature feature in registry.getAllFeatures())
+            foreach (GadgetFeature feature in registry.GetAllFeatures())
             {
                 foreach(JsLibrary library in feature.getJsLibraries(null, null)) 
                 {
@@ -127,20 +126,13 @@ namespace pestaServer.Models.gadgets
             GadgetSpec spec = gadget.getSpec();
             String url = context.getUrl().ToString();
             View view = gadget.getCurrentView();
-            View.ContentType type;
-            if (view == null) 
-            {
-                type = View.ContentType.HTML;
-            } 
-            else
-            {
-                type = view.getType();
-            }
+            View.ContentType type = view == null ? View.ContentType.HTML : view.getType();
 
             UriBuilder uri;
             if (type == View.ContentType.URL)
             {
-                uri = new UriBuilder(view.getHref());
+                uri = view == null ? new UriBuilder() : new UriBuilder(view.getHref());
+                
             }
             else
             {

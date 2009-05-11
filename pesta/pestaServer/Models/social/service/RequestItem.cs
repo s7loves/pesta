@@ -127,21 +127,21 @@ namespace pestaServer.Models.social.service
             {
                 return startIndex == null ? DEFAULT_START_INDEX : int.Parse(startIndex);
             }
-            catch (Exception nfe)
+            catch (Exception)
             {
                 throw new SocialSpiException(ResponseError.BAD_REQUEST,
                                              "Parameter " + START_INDEX + " (" + startIndex + ") is not a number.");
             }
         }
 
-        public int getCount()
+        public int GetCount()
         {
             String count = getParameter(COUNT);
             try
             {
                 return count == null ? DEFAULT_COUNT : int.Parse(count);
             }
-            catch (FormatException nfe)
+            catch (FormatException)
             {
                 throw new SocialSpiException(ResponseError.BAD_REQUEST,
                                              "Parameter " + COUNT + " (" + count + ") is not a number.");

@@ -32,14 +32,15 @@ namespace pestaServer.Controllers
     public class ifrController : Controller
     {
         const int DEFAULT_CACHE_TTL = 300;  // seconds
-        private HttpContext _context;
+        private HttpContext context;
 
         [CompressFilter]
+        //[ValidateInput(false)]
         public void Index()
         {
             HttpRequest req = System.Web.HttpContext.Current.Request;
             HttpResponse resp = System.Web.HttpContext.Current.Response;
-            _context = System.Web.HttpContext.Current;
+            context = System.Web.HttpContext.Current;
 
             // If an If-Modified-Since header is ever provided, we always say
             // not modified. This is because when there actually is a change,
@@ -52,10 +53,10 @@ namespace pestaServer.Controllers
                 return;
             }
 
-            render(req, resp);
+            Render(req, resp);
         }
 
-        private void render(HttpRequest req, HttpResponse resp)
+        private void Render(HttpRequest req, HttpResponse resp)
         {
             if (!String.IsNullOrEmpty(req.Headers[sRequest.DOS_PREVENTION_HEADER]))
             {
@@ -69,13 +70,13 @@ namespace pestaServer.Controllers
             resp.ContentType = "text/html";
             resp.ContentEncoding = System.Text.Encoding.UTF8;
 
-            GadgetContext context = new HttpGadgetContext(_context);
+            GadgetContext gadgetContext = new HttpGadgetContext(context);
             Renderer renderer = new Renderer();
-            RenderingResults results = renderer.render(context);
+            RenderingResults results = renderer.Render(gadgetContext);
             switch (results.getStatus())
             {
                 case RenderingResults.Status.OK:
-                    if (context.getIgnoreCache())
+                    if (gadgetContext.getIgnoreCache())
                     {
                         HttpUtil.SetCachingHeaders(resp, 0);
                     }

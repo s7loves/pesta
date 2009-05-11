@@ -20,7 +20,6 @@
 using System;
 using System.Collections.Generic;
 using Pesta.Utilities;
-using pestaServer.Models.gadgets;
 
 namespace pestaServer.Models.gadgets
 {
@@ -47,10 +46,10 @@ namespace pestaServer.Models.gadgets
             features = new Dictionary<String, GadgetFeature>();
             core = new Dictionary<String, GadgetFeature>();
             JsFeatureLoader loader = new JsFeatureLoader();
-            loader.loadFeatures(AppDomain.CurrentDomain.BaseDirectory + "/Content/features/features.txt", this);
+            loader.LoadFeatures(AppDomain.CurrentDomain.BaseDirectory + "/Content/features/features.txt", this);
         }
 
-        protected void populateDependencies(HashSet<string> needed, HashSet<GadgetFeature> deps)
+        private void PopulateDependencies(HashSet<string> needed, HashSet<GadgetFeature> deps)
         {
             foreach (string feature in needed)
             {
@@ -58,12 +57,12 @@ namespace pestaServer.Models.gadgets
                 if (features.TryGetValue(feature, out feat) &&
                     !deps.Contains(feat))
                 {
-                    populateDependencies(feat.getDependencies(), deps);
+                    PopulateDependencies(feat.getDependencies(), deps);
                     deps.Add(feat);
                 }
             }
         }
-        public ICollection<GadgetFeature> getAllFeatures()
+        public ICollection<GadgetFeature> GetAllFeatures()
         {
             return features.Values;
         }
@@ -72,18 +71,19 @@ namespace pestaServer.Models.gadgets
         * @return All {@code GadgetFeature} objects necessary for {@code needed} in
         *     graph-dependent order.
         */
-        public HashSet<GadgetFeature> getFeatures(HashKey<String> needed)
+        public HashSet<GadgetFeature> GetFeatures(HashKey<String> needed)
         {
-            return getFeatures(needed, null);
+            return GetFeatures(needed, null);
         }
 
-        /**
-        * @param needed All features requested by the gadget.
-        * @param unsupported Populated with any unsupported features.
-        * @return All {@code GadgetFeature} objects necessary for {@code needed} in
-        *     graph-dependent order.
-        */
-        public HashSet<GadgetFeature> getFeatures(HashKey<String> needed,
+        
+        /// <summary>
+        /// GetFeatures
+        /// </summary>
+        /// <param name="needed">All features requested by the gadget.</param>
+        /// <param name="unsupported">Populated with any unsupported features.</param>
+        /// <returns>All objects necessary for needed in graph-dependent order</returns>
+        public HashSet<GadgetFeature> GetFeatures(HashKey<String> needed,
                                                   HashSet<String> unsupported)
         {
             graphComplete = true;
@@ -102,7 +102,7 @@ namespace pestaServer.Models.gadgets
                 return libCache;
             }
             HashSet<GadgetFeature> ret = new HashSet<GadgetFeature>();
-            populateDependencies(needed, ret);
+            PopulateDependencies(needed, ret);
             // Fill in anything that was optional but missing. These won't be cached.
             if (unsupported != null)
             {
@@ -122,14 +122,14 @@ namespace pestaServer.Models.gadgets
             return ret;
         }
 
-        public void register(GadgetFeature feature)
+        public void Register(GadgetFeature feature)
         {
             if (graphComplete)
             {
                 throw new Exception("register should never be " +
                                     "invoked after calling getLibraries");
             }
-            if (isCore(feature))
+            if (IsCore(feature))
             {
                 core[feature.getName()] = feature;
                 foreach (var feat in features.Values)
@@ -144,7 +144,7 @@ namespace pestaServer.Models.gadgets
             features[feature.getName()] = feature;
         }
 
-        private static bool isCore(GadgetFeature feature)
+        private static bool IsCore(GadgetFeature feature)
         {
             return feature.getName().StartsWith("core");
         }

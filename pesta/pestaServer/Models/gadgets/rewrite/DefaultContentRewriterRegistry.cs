@@ -40,19 +40,20 @@ namespace pestaServer.Models.gadgets.rewrite
     /// </remarks>
     public class DefaultContentRewriterRegistry : IContentRewriterRegistry
     {
-        protected readonly List<IContentRewriter> rewriters;
-        protected readonly GadgetHtmlParser htmlParser;
+        private readonly List<IContentRewriter> rewriters;
+        private readonly GadgetHtmlParser htmlParser;
         public static readonly DefaultContentRewriterRegistry Instance = new DefaultContentRewriterRegistry();
-        protected DefaultContentRewriterRegistry()
+
+        private DefaultContentRewriterRegistry()
         {
-            this.rewriters = new List<IContentRewriter>
+            rewriters = new List<IContentRewriter>
                                  {
                                      new DefaultContentRewriter(DefaultGadgetSpecFactory.Instance, ".*", "", "86400",
                                                                 "style, link, img, script, embed"),
                                      new CajaContentRewriter(),
                                      new RenderingContentRewriter()
                                  };
-            this.htmlParser = new NekoSimplifiedHtmlParser(new org.apache.xerces.dom.DOMImplementationImpl());
+            htmlParser = new NekoSimplifiedHtmlParser(new org.apache.xerces.dom.DOMImplementationImpl());
         }
 
         public String rewriteGadget(Gadget gadget, View currentView) 
@@ -62,7 +63,7 @@ namespace pestaServer.Models.gadgets.rewrite
                 // Nothing to rewrite.
                 return null;
             }
-            MutableContent mc = getMutableContent(gadget.getSpec(), currentView);
+            MutableContent mc = GetMutableContent(gadget.getSpec(), currentView);
 
             foreach(IContentRewriter rewriter in rewriters) 
             {
@@ -79,7 +80,7 @@ namespace pestaServer.Models.gadgets.rewrite
                 return null;
             }
 
-            MutableContent mc = getMutableContent(content);
+            MutableContent mc = GetMutableContent(content);
 
             foreach(IContentRewriter rewriter in rewriters) 
             {
@@ -92,7 +93,7 @@ namespace pestaServer.Models.gadgets.rewrite
         public sResponse rewriteHttpResponse(sRequest req, sResponse resp)
         {
             String originalContent = resp.responseString;
-            MutableContent mc = getMutableContent(originalContent);
+            MutableContent mc = GetMutableContent(originalContent);
 
             foreach(IContentRewriter rewriter in rewriters)
             {
@@ -108,20 +109,20 @@ namespace pestaServer.Models.gadgets.rewrite
             return new HttpResponseBuilder(resp).setResponseString(rewrittenContent).create();
         }
 
-        protected MutableContent getMutableContent(String content)
+        private MutableContent GetMutableContent(String content)
         {
             MutableContent mc = new MutableContent(htmlParser, content);
             return mc;
         }
 
-        protected MutableContent getMutableContent(GadgetSpec spec, View v) 
+        private MutableContent GetMutableContent(GadgetSpec spec, View v) 
         {
             // TODO - Consider using caching here to avoid parse costs
             MutableContent mc = new MutableContent(htmlParser, v.getContent());
             return mc;
         }
 
-        protected List<IContentRewriter> getRewriters()
+        protected List<IContentRewriter> GetRewriters()
         {
             return rewriters;
         }

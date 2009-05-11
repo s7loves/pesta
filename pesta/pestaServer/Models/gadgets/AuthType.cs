@@ -57,15 +57,12 @@ namespace pestaServer.Models.gadgets
                 {
                     return GetBaseByValue(value);
                 }
-                catch (ArgumentException iae)
+                catch (ArgumentException)
                 {
                     return NONE;
                 }
             }
-            else
-            {
-                return NONE;
-            }
+            return NONE;
         }
 
         /**

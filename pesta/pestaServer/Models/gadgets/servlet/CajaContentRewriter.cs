@@ -63,11 +63,7 @@ namespace pestaServer.Models.gadgets.servlet
                     }
                     return new java.io.StringReader(sb.ToString());
                 }
-                catch (java.net.MalformedURLException ex)
-                {
-                    throw new UriCallbackException(externalReference, ex);
-                }
-                catch (IOException ex)
+                catch (Exception ex)
                 {
                     throw new UriCallbackException(externalReference, ex);
                 }

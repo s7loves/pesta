@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Jayrock.Json;
 using Pesta.Engine.social;
 using Pesta.Engine.social.spi;
 using pestaServer.DataAccess;
@@ -84,8 +85,7 @@ namespace pestaServer.Models.social.service
 
         protected override object handlePut(RequestItem request)
         {
-            handlePost(request);
-            return null;
+            return handlePost(request);
         }
 
         /**
@@ -118,7 +118,7 @@ namespace pestaServer.Models.social.service
             iuserid.MoveNext();
             service.updatePersonData(iuserid.Current, request.getGroup(),
                                      request.getAppId(), request.getFields(), values, request.getToken());
-            return null;
+            return new JsonObject();
         }
 
         /**

@@ -20,7 +20,6 @@
 using System;
 using System.Text.RegularExpressions;
 using Jayrock.Json;
-using Pesta.Engine.common;
 using pestaServer.Models.common;
 using pestaServer.Models.gadgets.process;
 using pestaServer.Models.gadgets.spec;
@@ -53,16 +52,16 @@ namespace pestaServer.Models.gadgets.render
         *
         * TODO: Localize error messages.
         */
-        public RenderingResults render(GadgetContext context) 
+        public RenderingResults Render(GadgetContext context) 
         {
-            if (!validateParent(context)) 
+            if (!ValidateParent(context)) 
             {
                 return RenderingResults.error("Unsupported parent parameter. Check your container code.");
             }
 
             try 
             {
-                Gadget gadget = processor.process(context);
+                Gadget gadget = processor.Process(context);
 
                 if (gadget.getCurrentView() == null)
                 {
@@ -85,23 +84,23 @@ namespace pestaServer.Models.gadgets.render
             }
             catch (RenderingException e) 
             {
-                return logError(context.getUrl(), e);
+                return LogError(context.getUrl(), e);
             } 
             catch (ProcessingException e) 
             {
-                return logError(context.getUrl(), e);
+                return LogError(context.getUrl(), e);
             } 
             catch (Exception e) 
             {
                 if (e.GetBaseException() is GadgetException) 
                 {
-                    return logError(context.getUrl(), e.GetBaseException());
+                    return LogError(context.getUrl(), e.GetBaseException());
                 }
-                throw e;
+                throw;
             }
         }
 
-        private RenderingResults logError(URI gadgetUrl, Exception t)
+        private static RenderingResults LogError(URI gadgetUrl, Exception t)
         {
             return RenderingResults.error(t.Message);
         }
@@ -111,7 +110,7 @@ namespace pestaServer.Models.gadgets.render
         *
         * @return True if the parent parameter is valid for the current container.
         */
-        private bool validateParent(GadgetContext context) 
+        private bool ValidateParent(GadgetContext context) 
         {
             String container = context.getContainer();
             String parent = context.getParameter("parent");
@@ -125,7 +124,7 @@ namespace pestaServer.Models.gadgets.render
 
             try
             {
-                JsonArray parents = containerConfig.getJsonArray(container, "gadgets.parent");
+                JsonArray parents = containerConfig.GetJsonArray(container, "gadgets.parent");
                 if (parents == null) 
                 {
                     return true;
@@ -139,7 +138,7 @@ namespace pestaServer.Models.gadgets.render
                     }
                 }
             } 
-            catch (JsonException e) 
+            catch (JsonException) 
             {
 
             }

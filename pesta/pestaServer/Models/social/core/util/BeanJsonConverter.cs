@@ -40,7 +40,7 @@ namespace pestaServer.Models.social.core.util
     /// </remarks>
     public class BeanJsonConverter : BeanConverter
     {
-        public override String getContentType()
+        public override String GetContentType()
         {
             return "application/json";
         }
@@ -51,14 +51,14 @@ namespace pestaServer.Models.social.core.util
          * @param pojo The object to convert
          * @return An object whos toString method will return json
          */
-        public override String convertToString(Object pojo)
+        public override String ConvertToString(Object pojo)
         {
-            return convertToJson(pojo).ToString();
+            return ConvertToJson(pojo).ToString();
         }
 
-        public override String convertToString(Object pojo, RequestItem request)
+        public override String ConvertToString(Object pojo, RequestItem request)
         {
-            return convertToJson(pojo).ToString();
+            return ConvertToJson(pojo).ToString();
         }
         /**
          * Convert the passed in object to a json object.
@@ -66,11 +66,11 @@ namespace pestaServer.Models.social.core.util
          * @param pojo The object to convert
          * @return An object whos toString method will return json
          */
-        public Object convertToJson(Object pojo)
+        public static Object ConvertToJson(Object pojo)
         {
             try
             {
-                return translateObjectToJson(pojo);
+                return TranslateObjectToJson(pojo);
             }
             catch (JsonException e)
             {
@@ -78,7 +78,7 @@ namespace pestaServer.Models.social.core.util
             }
         }
 
-        public override Object convertToObject(String json, Type className)
+        public override Object ConvertToObject(String json, Type className)
         {
             // ignore strings
             if (className == typeof(String))
@@ -102,7 +102,7 @@ namespace pestaServer.Models.social.core.util
             try
             {
                 Object pojo = Activator.CreateInstance(className);
-                return convertToObj(json, pojo);
+                return ConvertToObj(json, pojo);
             }
             catch (Exception e)
             {
@@ -110,7 +110,7 @@ namespace pestaServer.Models.social.core.util
             }
         }
 
-        public Object convertToObj(String json, Object pojo)
+        private Object ConvertToObj(String json, Object pojo)
         {
             if (pojo.GetType() == typeof(String))
             {
@@ -122,10 +122,10 @@ namespace pestaServer.Models.social.core.util
                 // second Map parameter. Right now we are hardcoding to String
                 Type mapValueClass = typeof(String);
 
-                JsonObject JsonObject = (JsonObject)JsonConvert.Import(json);
-                foreach (String key in JsonObject.Names)
+                JsonObject jsonObject = (JsonObject)JsonConvert.Import(json);
+                foreach (String key in jsonObject.Names)
                 {
-                    Object value = convertToObject(JsonObject[key].ToString(), mapValueClass);
+                    Object value = ConvertToObject(jsonObject[key].ToString(), mapValueClass);
                     ((Dictionary<String, String>)pojo).Add(key, value.ToString());
                 }
             }
@@ -140,11 +140,11 @@ namespace pestaServer.Models.social.core.util
             }
             else
             {
-                JsonObject JsonObject = JsonConvert.Import(json) as JsonObject;
+                JsonObject jsonObject = JsonConvert.Import(json) as JsonObject;
                 List<MethodPair> methods;
                 if (!SETTER_METHODS.TryGetValue(pojo.GetType(), out methods))
                 {
-                    methods = getMatchingMethods(pojo.GetType(), SETTER_PREFIX);
+                    methods = GetMatchingMethods(pojo.GetType(), SETTER_PREFIX);
                     if (!SETTER_METHODS.ContainsKey(pojo.GetType()))
                     {
                         SETTER_METHODS.Add(pojo.GetType(), methods);
@@ -153,16 +153,16 @@ namespace pestaServer.Models.social.core.util
 
                 foreach (MethodPair setter in methods)
                 {
-                    if (JsonObject.Contains(setter.fieldName))
+                    if (jsonObject != null && jsonObject.Contains(setter.FieldName))
                     {
-                        callSetterWithValue(pojo, setter.method, JsonObject, setter.fieldName);
+                        CallSetterWithValue(pojo, setter.Method, jsonObject, setter.FieldName);
                     }
                 }
             }
             return pojo;
         }
 
-        private void callSetterWithValue(object pojo, MethodInfo method, JsonObject JsonObject, String fieldName)
+        private void CallSetterWithValue(object pojo, MethodInfo method, JsonObject jsonObject, String fieldName)
         {
             Object value = null;
             Type expectedType = method.GetParameters()[0].ParameterType;
@@ -171,7 +171,7 @@ namespace pestaServer.Models.social.core.util
                 expectedType = expectedType.GetGenericArguments()[0];
             }
 
-            if (!JsonObject.Contains(fieldName))
+            if (!jsonObject.Contains(fieldName))
             {
                 // Skip
             }
@@ -182,16 +182,16 @@ namespace pestaServer.Models.social.core.util
                 Type rawType = typeof(List<>).MakeGenericType(new[] { type });
 
                 Object list = Activator.CreateInstance(rawType);
-                JsonArray JsonArray = (JsonArray)JsonObject[fieldName];
-                for (int i = 0; i < JsonArray.Length; i++)
+                JsonArray jsonArray = (JsonArray)jsonObject[fieldName];
+                for (int i = 0; i < jsonArray.Length; i++)
                 {
                     if (typeof(Enums<>).IsAssignableFrom(rawType))
                     {
-                        ((IList)list).Add(convertEnum(listElementClass, JsonArray.GetObject(i)));
+                        ((IList)list).Add(convertEnum(listElementClass, jsonArray.GetObject(i)));
                     }
                     else
                     {
-                        ((IList)list).Add(convertToObject(JsonArray.GetString(i), listElementClass));
+                        ((IList)list).Add(ConvertToObject(jsonArray.GetString(i), listElementClass));
                     }
                 }
                 value = list;
@@ -203,10 +203,10 @@ namespace pestaServer.Models.social.core.util
                 Type valueClass = types[1];
 
                 Dictionary<String, String> map = new Dictionary<String, String>();
-                JsonObject jsonMap = JsonObject.getJSONObject(fieldName);
+                JsonObject jsonMap = jsonObject.getJSONObject(fieldName);
                 foreach (String keyName in jsonMap.Names)
                 {
-                    map.Add(keyName, convertToObject(jsonMap[keyName].ToString(), valueClass) as String);
+                    map.Add(keyName, ConvertToObject(jsonMap[keyName].ToString(), valueClass) as String);
                 }
 
                 value = map;
@@ -214,16 +214,16 @@ namespace pestaServer.Models.social.core.util
             }
             else if (typeof(Enums<>).IsAssignableFrom(expectedType))
             {
-                value = convertEnum(method.GetGenericArguments()[0], JsonObject[fieldName] as JsonObject);
+                value = convertEnum(method.GetGenericArguments()[0], jsonObject[fieldName] as JsonObject);
             }
             else if (expectedType.IsEnum || 
                 expectedType.GetCustomAttributes(typeof(IsJavaEnum), true).Length != 0)
             {
-                if (JsonObject[fieldName] != null)
+                if (jsonObject[fieldName] != null)
                 {
                     foreach (FieldInfo v in expectedType.GetFields(BindingFlags.Static | BindingFlags.Public))
                     {
-                        if (string.Compare(v.Name, JsonObject[fieldName].ToString(), StringComparison.CurrentCultureIgnoreCase) == 0)
+                        if (string.Compare(v.Name, jsonObject[fieldName].ToString(), StringComparison.CurrentCultureIgnoreCase) == 0)
                         {
                             value = expectedType.IsEnum ? Enum.Parse(expectedType, v.GetRawConstantValue().ToString()) : v.GetValue(null);
                             break;
@@ -231,40 +231,40 @@ namespace pestaServer.Models.social.core.util
                     }
                     if (value == null)
                     {
-                        throw new ArgumentException("No enum value  '" + JsonObject[fieldName]
+                        throw new ArgumentException("No enum value  '" + jsonObject[fieldName]
                                                     + "' in " + expectedType.Name);
                     }
                 }
             }
             else if (expectedType.Equals(typeof(String)))
             {
-                value = JsonObject[fieldName].ToString();
+                value = jsonObject[fieldName].ToString();
             }
             else if (expectedType.Equals(typeof(DateTime)))
             {
                 // Use JODA ISO parsing for the conversion
-                value = DateTime.Parse(JsonObject[fieldName].ToString());
+                value = DateTime.Parse(jsonObject[fieldName].ToString());
             }
             else if (expectedType.Equals(typeof(long)))
             {
-                value = long.Parse(JsonObject[fieldName].ToString());
+                value = long.Parse(jsonObject[fieldName].ToString());
             }
             else if (expectedType.Equals(typeof(int)))
             {
-                value = int.Parse(JsonObject[fieldName].ToString());
+                value = int.Parse(jsonObject[fieldName].ToString());
             }
             else if (expectedType.Equals(typeof(bool)))
             {
-                value = bool.Parse(JsonObject[fieldName].ToString());
+                value = bool.Parse(jsonObject[fieldName].ToString());
             }
             else if (expectedType.Equals(typeof(float)))
             {
-                value = float.Parse(JsonObject[fieldName].ToString());
+                value = float.Parse(jsonObject[fieldName].ToString());
             }
             else
             {
                 // Assume its an injected type
-                value = convertToObject(JsonObject[fieldName].ToString(), expectedType);
+                value = ConvertToObject(jsonObject[fieldName].ToString(), expectedType);
             }
 
             if (value != null)

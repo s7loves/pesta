@@ -34,11 +34,11 @@ namespace pestaServer.Models.common
     /// </remarks>
     public abstract class ContainerConfig
     {
-        public static string DEFAULT_CONTAINER = "default";
+        public const string DEFAULT_CONTAINER = "default";
         /**
        * @return The set of all containers that are currently registered.
        */
-        public abstract ICollection<String> getContainers();
+        public abstract ICollection<String> GetContainers();
 
         /**
        * Fetches a configuration parameter as a JSON object, array, string, or
@@ -52,7 +52,7 @@ namespace pestaServer.Models.common
        *
        * TODO: Convert to a more generalized object.
        */
-        public abstract Object getJson(String container, String parameter);
+        public abstract Object GetJson(String container, String parameter);
 
         /**
        * Attempts to fetch a parameter for the given container, or the default
@@ -60,21 +60,21 @@ namespace pestaServer.Models.common
        *
        * @return A configuration parameter as a string, or null if not set.
        */
-        public abstract String get(String container, String parameter);
+        public abstract String Get(String container, String parameter);
 
         /**
        * @return A configuration parameter as a JSON object or null if not set or
        *     can't be interpreted as JSON.
        */
-        public abstract JsonObject getJsonObject(String container, String parameter);
+        public abstract JsonObject GetJsonObject(String container, String parameter);
 
         /**
        * @return A configuration parameter as a JSON object or null if not set or
        *     can't be interpreted as JSON.
        */
-        public abstract JsonArray getJsonArray(String container, String parameter);
+        public abstract JsonArray GetJsonArray(String container, String parameter);
 
-        public static string getConfigurationValue(string name)
+        public static string GetConfigurationValue(string name)
         {
             return ConfigurationManager.AppSettings[name];
         }
