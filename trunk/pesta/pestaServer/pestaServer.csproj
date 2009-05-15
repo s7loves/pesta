@@ -1,6 +1,7 @@
 ﻿<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <UsingTask TaskName="YuiCompress" AssemblyFile="..\CustomBuildTasks\bin\$(Configuration)\CustomBuildTasks.dll" />
   <PropertyGroup>
+    <RoleType>Web</RoleType>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
@@ -261,7 +262,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="config\container.js" />
-    <Resource Include="config\baizura.js" />
     <Resource Include="config\raya.js" />
     <Content Include="Content\features\analytics\feature.xml" />
     <JavaScriptContent Include="Content\features\auth-refresh\auth-refresh.js" />
