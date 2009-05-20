@@ -22,5 +22,5 @@ The following describes the steps necessary to build shindig.dll for pesta. The 
   * json_simple-r1
   * nekohtml-1.9.11
   * xercesImpl-2.9.1
-  # From the ikvm binaries directory, execute the command *ikvmc -out:shindig.dll -target:library c:\ikvm\shindig\'*'.jar*
+  # From the ikvm binaries directory, execute the command *ikvmc -out:shindig.dll -target:library c:\ikvm\shindig\`*`.jar*
   # There will be a bunch of warnings but this can be safely ignored as we have only included dependencies for the features we will calling from pesta
