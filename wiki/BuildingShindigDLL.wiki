@@ -9,7 +9,7 @@ The following describes the steps necessary to build shindig.dll for pesta. The 
 
 
 = Details =
-  # create a working directory, eg. c:\ikvm\shindig_ r776142
+  # create a working directory, eg. c:\ikvm\shindig
   # Copy shindig-common-1.1-SNAPSHOT.jar, shindig-gadgets-1.1-SNAPSHOT.jar, shindig-social-api-1.1-SNAPSHOT.jar from your shindig target directories into this working directory
   # Copy the following from your maven repository (mine is located at C:\Users\sean\.m2\repository) into the working directory
   * caja-r3375
@@ -22,5 +22,5 @@ The following describes the steps necessary to build shindig.dll for pesta. The 
   * json_simple-r1
   * nekohtml-1.9.11
   * xercesImpl-2.9.1
-  # From the ikvm binaries directory, execute the command *ikvmc -out:shindig.dll -target:library c:\ikvm\shindig_ r776142\*.jar*
+  # From the ikvm binaries directory, execute the command *ikvmc -out:shindig.dll -target:library c:\ikvm\shindig\*.jar*
   # There will be a bunch of warnings but this can be safely ignored as we have only included dependencies for the features we will calling from pesta
