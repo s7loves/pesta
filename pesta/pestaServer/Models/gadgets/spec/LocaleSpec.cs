@@ -22,6 +22,7 @@ using System.Text;
 using System.Xml;
 using Pesta.Engine.common.xml;
 using Uri=Pesta.Engine.common.uri.Uri;
+using URI = System.Uri;
 
 namespace pestaServer.Models.gadgets.spec
 {
@@ -124,7 +125,7 @@ namespace pestaServer.Models.gadgets.spec
             {
                 try
                 {
-                    /*URI thisuri = new URI(messages, UriKind.RelativeOrAbsolute);
+                    URI thisuri = new URI(messages, UriKind.RelativeOrAbsolute);
                     if (thisuri.IsAbsoluteUri)
                     {
                         this.messages = specUrl.resolve(Uri.parse(messages));
@@ -133,8 +134,7 @@ namespace pestaServer.Models.gadgets.spec
                     {
                         this.messages = specUrl.resolve(Uri.parse(specUrl.toJavaUri(),thisuri));
                     }
-                    */
-                    this.messages = Uri.parse(messages);
+                    //this.messages = Uri.parse(messages);
                 }
                 catch (Exception)
                 {
