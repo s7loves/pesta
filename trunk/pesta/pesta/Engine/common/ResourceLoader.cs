@@ -42,6 +42,7 @@ namespace Pesta.Engine.common
 
             StreamReader sr = new StreamReader(s);
             String retval = sr.ReadToEnd();
+            s.Close();
             return retval;
         }
 
