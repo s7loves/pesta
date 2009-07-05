@@ -18,9 +18,10 @@
  */
 #endregion
 using System;
+using System.Net;
 using Pesta.Engine.social;
 
-namespace pestaServer.Models.social.service
+namespace Pesta.Engine.protocol
 {
     /// <summary>
     /// Summary description for ResponseItem
@@ -33,63 +34,75 @@ namespace pestaServer.Models.social.service
     public class ResponseItem
     {
         /**
-        * The ResponseError associated with the item.
-        */
-        private ResponseError error;
+   * The error code associated with the item.
+   */
+        private readonly int errorCode;
 
         /**
-        * The error message.
-        */
-        private String errorMessage;
+         * The error message.
+         */
+        private readonly String errorMessage;
 
         /**
-        * The response value.
-        */
-        private Object response;
+         * The response value.
+         */
+        private readonly Object response;
 
         /**
-        * Create a ResponseItem specifying the ResponseError and error Message.
-        * @param error a ResponseError
-        * @param errorMessage the Error Message
-        */
-        public ResponseItem(ResponseError error, String errorMessage)
+         * Create a ResponseItem specifying the ResponseError and error Message.
+         * @param errorCode an RPC error code
+         * @param errorMessage the Error Message
+         */
+        public ResponseItem(int errorCode, String errorMessage)
+            : this(errorCode, errorMessage, null)
         {
-            this.error = error;
-            this.errorMessage = errorMessage;
-            this.response = null;
         }
 
         /**
-        * Create a ResponseItem specifying a value.
-        */
+         * Create a ResponseItem specifying the ResponseError and error Message.
+         * @param errorCode an RPC error code
+         * @param errorMessage the Error Message
+         * @param response the application specific value that will be sent as
+         *     as part of "data" section of the error.
+         */
+        public ResponseItem(int errorCode, String errorMessage, Object response)
+        {
+            this.errorCode = errorCode;
+            this.errorMessage = errorMessage;
+            this.response = response;
+        }
+
+        /**
+         * Create a ResponseItem specifying a value.
+         */
         public ResponseItem(Object response)
         {
-            this.error = null;
+            this.errorCode = 200;
             this.errorMessage = null;
             this.response = response;
         }
 
         /**
-        * Get the response value.
-        */
+         * Get the response value.
+         */
         public Object getResponse()
         {
             return response;
         }
 
         /**
-        * Get the ResponseError associated with this ResponseItem.
-        * @return the ResponseError associated with this ResponseItem
-        */
-        public ResponseError getError()
+         * Get the error code associated with this ResponseItem.
+         * @return the error code associated with this ResponseItem
+         */
+        public int getErrorCode()
         {
-            return error;
+            return errorCode;
         }
 
         /**
-        * Get the Error Message associated with this Response Item.
-        * @return the Error Message
-        */
+         * Get the Error Message associated with this Response Item.
+         * @return the Error Message
+         */
         public String getErrorMessage()
         {
             return errorMessage;
@@ -109,14 +122,14 @@ namespace pestaServer.Models.social.service
             }
 
             ResponseItem that = (ResponseItem)o;
-            return (error == that.error)
+            return (errorCode == that.errorCode)
                    && Object.Equals(errorMessage, that.errorMessage)
                    && Object.Equals(response, that.response);
         }
 
         public override int GetHashCode()
         {
-            int result = (error != null ? error.GetHashCode() : 0);
+            int result = errorCode.GetHashCode();
             result = 31 * result + (errorMessage != null ? errorMessage.GetHashCode() : 0);
             result = 31 * result + (response != null ? response.GetHashCode() : 0);
             return result;

@@ -19,6 +19,7 @@
 #endregion
 using System;
 using System.Collections.Generic;
+using Pesta.Engine.protocol;
 using Pesta.Engine.social;
 using Pesta.Engine.social.spi;
 
@@ -51,7 +52,7 @@ namespace pestaServer.Models.social.service
         {
             if (request.getOperation() == null)
             {
-                throw new SocialSpiException(ResponseError.NOT_IMPLEMENTED,
+                throw new ProtocolException(ResponseError.NOT_IMPLEMENTED,
                                              "Unserviced operation");
             }
             String operation = request.getOperation().ToLower();
@@ -74,7 +75,7 @@ namespace pestaServer.Models.social.service
             }
             else
             {
-                throw new SocialSpiException(ResponseError.NOT_IMPLEMENTED,
+                throw new ProtocolException(ResponseError.NOT_IMPLEMENTED,
                                              "Unserviced operation " + operation);
             }
             return handler.BeginInvoke(request, null, null);
@@ -107,7 +108,7 @@ namespace pestaServer.Models.social.service
             {
                 if (coll.Count == 0)
                 {
-                    throw new SocialSpiException(ResponseError.BAD_REQUEST, message);
+                    throw new ProtocolException(ResponseError.BAD_REQUEST, message);
                 }
             }
 
@@ -115,7 +116,7 @@ namespace pestaServer.Models.social.service
             {
                 if (list.Count != 0)
                 {
-                    throw new SocialSpiException(ResponseError.BAD_REQUEST, message);
+                    throw new ProtocolException(ResponseError.BAD_REQUEST, message);
                 }
             }
 
@@ -123,7 +124,7 @@ namespace pestaServer.Models.social.service
             {
                 if (coll.Count != 1)
                 {
-                    throw new SocialSpiException(ResponseError.BAD_REQUEST, message);
+                    throw new ProtocolException(ResponseError.BAD_REQUEST, message);
                 }
             }
 
@@ -131,7 +132,7 @@ namespace pestaServer.Models.social.service
             {
                 if (coll.Count <= 1)
                 {
-                    throw new SocialSpiException(ResponseError.BAD_REQUEST, message);
+                    throw new ProtocolException(ResponseError.BAD_REQUEST, message);
                 }
             }
         }

@@ -35,7 +35,7 @@ namespace pestaServer.Controllers
         private HttpContext context;
 
         [CompressFilter]
-        //[ValidateInput(false)]
+        [ValidateInput(false)]
         public void Index()
         {
             HttpRequest req = System.Web.HttpContext.Current.Request;

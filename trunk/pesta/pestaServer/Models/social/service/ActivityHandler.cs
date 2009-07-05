@@ -21,9 +21,9 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Jayrock.Json;
+using Pesta.Engine.protocol;
 using Pesta.Engine.social.model;
 using Pesta.Engine.social.spi;
-using pestaServer.DataAccess;
 
 namespace pestaServer.Models.social.service
 {
@@ -63,7 +63,7 @@ namespace pestaServer.Models.social.service
             iuserid.MoveNext();
             service.deleteActivities(iuserid.Current, request.getGroup(),
                                      request.getAppId(), activityIds, request.getToken());
-            return null;
+            return new JsonObject();
         }
 
         /**
@@ -74,7 +74,7 @@ namespace pestaServer.Models.social.service
         protected override object handlePut(RequestItem request)
         {
             handlePost(request);
-            return null;
+            return new JsonObject();
         }
 
         /**
@@ -97,7 +97,7 @@ namespace pestaServer.Models.social.service
             iuserid.MoveNext();
             service.createActivity(iuserid.Current, request.getGroup(),
                                    request.getAppId(), request.getFields(),
-                                   (Activity)request.getTypedParameter("activity", typeof(Activity)),
+                                   request.getTypedParameter<Activity>("activity"),
                                    request.getToken());
             return new JsonObject();
         }
@@ -130,7 +130,7 @@ namespace pestaServer.Models.social.service
             options.setFilterOperation(request.getFilterOperation());
             options.setFilterValue(request.getFilterValue());
             options.setFirst(request.getStartIndex());
-            options.setMax(request.GetCount());
+            options.setMax(request.getCount() ?? RequestItem.DEFAULT_COUNT);
 
             if (optionalActivityIds.Count != 0)
             {

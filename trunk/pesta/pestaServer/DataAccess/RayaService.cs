@@ -21,13 +21,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Pesta.Engine.auth;
+using Pesta.Engine.protocol;
 using Pesta.Engine.social;
-using Pesta.Engine.social.core.model;
 using Pesta.Engine.social.model;
 using Pesta.Engine.social.spi;
 using pestaServer.DataAccess;
 
-///  Apache Software License 2.0 2008 Partuza! ported to Pesta by Sean Lin M.T. (my6solutions.com)
     public class RayaService : IPersonService, IActivityService, IAppDataService, IMessagesService
     {
         public readonly static RayaService Instance = new RayaService();
@@ -39,8 +38,8 @@ using pestaServer.DataAccess;
         {
             public int Compare(Person person, Person person1)
             {
-                String name = person.getName().getFormatted();
-                String name1 = person1.getName().getFormatted();
+                String name = person.name.formatted;
+                String name1 = person1.name.formatted;
                 return name.CompareTo(name1);
             }
         }
@@ -60,8 +59,8 @@ using pestaServer.DataAccess;
                 case GroupId.Type.all:
                 case GroupId.Type.friends:
                 case GroupId.Type.groupId:
-                    var friendIds = RayaDbFetcher.Get().GetFriendIds(int.Parse(userId)).ToArray();
-                    for (int i = 0; i < friendIds.Length; i++)
+                    var friendIds = RayaDbFetcher.Get().GetFriendIds(int.Parse(userId)).ToList();
+                    for (int i = 0; i < friendIds.Count; i++)
                     {
                         returnVal.Add(friendIds[i].ToString());
                     }
@@ -102,11 +101,11 @@ using pestaServer.DataAccess;
                     Person person = allPeople[id];
                     if (!token.isAnonymous() && id == token.getViewerId())
                     {
-                        person.setIsViewer(true);
+                        person.isViewer = true;
                     }
                     if (!token.isAnonymous() && id == token.getOwnerId())
                     {
-                        person.setIsOwner(true);
+                        person.isOwner = true;
                     }
                     result.Add(person);
                 }
@@ -132,21 +131,21 @@ using pestaServer.DataAccess;
         }
 
 
-        override public Person getPerson(UserId userId, HashSet<String> fields, ISecurityToken token)
+        override public Person getPerson(UserId userId, HashSet<string> fields, ISecurityToken token)
         {
             try
             {
                 var groupId = new GroupId(GroupId.Type.self, "all");
                 var person = getPeople(new HashSet<UserId> {userId}, groupId, new CollectionOptions(), fields,
                                              token);
-                if (person.getEntry().Count == 1)
-                    return (Person)person.getEntry()[0];
+                if (person.entry.Count == 1)
+                    return (Person)person.entry[0];
 
-                throw new SocialSpiException(ResponseError.BAD_REQUEST, "Person not found");
+                throw new ProtocolException(ResponseError.BAD_REQUEST, "Person not found");
             }
             catch (Exception je)
             {
-                throw new SocialSpiException(ResponseError.INTERNAL_ERROR, je.Message, je);
+                throw new ProtocolException(ResponseError.INTERNAL_ERROR, je.Message);
             }
         }
 
@@ -166,18 +165,18 @@ using pestaServer.DataAccess;
             var ids = GetIdSet(uid, groupId, token);
             if (ids.Count < 1)
             {
-                throw new SocialSpiException(ResponseError.BAD_REQUEST, "No _userId specified");
+                throw new ProtocolException(ResponseError.BAD_REQUEST, "No _userId specified");
             }
             if (ids.Count > 1) 
             {
-                throw new SocialSpiException(ResponseError.BAD_REQUEST, "Multiple _userIds not supported");
+                throw new ProtocolException(ResponseError.BAD_REQUEST, "Multiple _userIds not supported");
             }
             IEnumerator<string> iuserid = ids.GetEnumerator();
             iuserid.MoveNext();
             string userId = iuserid.Current;
             if (!RayaDbFetcher.Get().DeleteAppData(userId, fields, appId))
             {
-                throw new SocialSpiException(ResponseError.INTERNAL_ERROR, "Internal server error");
+                throw new ProtocolException(ResponseError.INTERNAL_ERROR, "Internal server error");
             }
             
         }
@@ -187,7 +186,7 @@ using pestaServer.DataAccess;
         {
             if (userId.getUserId(token) == null) 
             {
-                throw new SocialSpiException(ResponseError.NOT_FOUND, "Unknown person id.");
+                throw new ProtocolException(ResponseError.NOT_FOUND, "Unknown person id.");
             }
             switch (groupId.getType()) 
             {
@@ -197,12 +196,12 @@ using pestaServer.DataAccess;
                         var value = values[key];
                         if (! RayaDbFetcher.Get().SetAppData(userId.getUserId(token), key, value, token.getAppId())) 
                         {
-                            throw new SocialSpiException(ResponseError.INTERNAL_ERROR, "Internal server error");
+                            throw new ProtocolException(ResponseError.INTERNAL_ERROR, "Internal server error");
                         }
                     }
                     break;
                 default:
-                    throw new SocialSpiException(ResponseError.NOT_IMPLEMENTED, "We don't support updating data in batches yet");
+                    throw new ProtocolException(ResponseError.NOT_IMPLEMENTED, "We don't support updating data in batches yet");
             }
         }
 
@@ -225,12 +224,12 @@ using pestaServer.DataAccess;
             List<Activity> actList = new List<Activity>();
             foreach (var row in activities)
             {
-                var act = new ActivityImpl(row.id.ToString(), row.person_id.ToString());
-                act.setStreamTitle("activities");
-                act.setTitle(row.title);
-                act.setBody(row.body);
-                act.setPostedTime(row.created);
-                act.setMediaItems(RayaDbFetcher.Get().GetMediaItems(row.id));
+                var act = new Activity(row.id.ToString(), row.person_id.ToString());
+                act.streamTitle = "activities";
+                act.title = row.title;
+                act.body = row.body;
+                act.postedTime = row.created;
+                act.mediaItems = RayaDbFetcher.Get().GetMediaItems(row.id);
                 actList.Add(act);
             }
 
@@ -249,12 +248,12 @@ using pestaServer.DataAccess;
                 {
                     if (activityIds.Contains(row.id.ToString()))
                     {
-                        var act = new ActivityImpl(row.id.ToString(), row.person_id.ToString());
-                        act.setStreamTitle("activities");
-                        act.setTitle(row.title);
-                        act.setBody(row.body);
-                        act.setPostedTime(row.created);
-                        act.setMediaItems(RayaDbFetcher.Get().GetMediaItems(row.id));
+                        var act = new Activity(row.id.ToString(), row.person_id.ToString());
+                        act.streamTitle = "activities";
+                        act.title = row.title;
+                        act.body = row.body;
+                        act.postedTime = row.created;
+                        act.mediaItems = RayaDbFetcher.Get().GetMediaItems(row.id);
                         actList.Add(act);
                     }
                 }
@@ -264,22 +263,22 @@ using pestaServer.DataAccess;
             {
                 return new RestfulCollection<Activity>(actList);
             }
-            throw new SocialSpiException(ResponseError.NOT_FOUND, "Activity not found");
+            throw new ProtocolException(ResponseError.NOT_FOUND, "Activity not found");
         }
 
         public Activity getActivity(UserId userId, GroupId groupId, String appId, CollectionOptions options,
                                     HashSet<String> fields, String activityId, ISecurityToken token)
         {
             var activities = getActivities(new HashSet<UserId> { userId }, groupId, appId, options, fields, token);
-            var acts = activities.getEntry();
+            var acts = activities.entry;
             foreach (Activity activity in acts)
             {
-                if (activity.getId() == activityId)
+                if (activity.id == activityId)
                 {
                     return activity;
                 }
             }
-            throw new SocialSpiException(ResponseError.NOT_FOUND, "Activity not found");
+            throw new ProtocolException(ResponseError.NOT_FOUND, "Activity not found");
         }
 
         
@@ -289,13 +288,13 @@ using pestaServer.DataAccess;
             var ids = GetIdSet(userId, groupId, token);
             if (ids.Count < 1 || ids.Count > 1)
             {
-                throw new SocialSpiException(ResponseError.BAD_REQUEST, "Invalid user id or count");
+                throw new ProtocolException(ResponseError.BAD_REQUEST, "Invalid user id or count");
             }
             IEnumerator<string> iuserid = ids.GetEnumerator();
             iuserid.MoveNext();
             if (!RayaDbFetcher.Get().DeleteActivities(iuserid.Current, appId, activityIds)) 
             {
-                throw new SocialSpiException(ResponseError.NOT_IMPLEMENTED, "Invalid activity id(s)");
+                throw new ProtocolException(ResponseError.NOT_IMPLEMENTED, "Invalid activity id(s)");
             }
         }
 
@@ -306,16 +305,53 @@ using pestaServer.DataAccess;
             {
                 if (token.getOwnerId() != token.getViewerId()) 
                 {
-                    throw new SocialSpiException(ResponseError.UNAUTHORIZED, "unauthorized: Create activity permission denied.");
+                    throw new ProtocolException(ResponseError.UNAUTHORIZED, "unauthorized: Create activity permission denied.");
                 }
                 RayaDbFetcher.Get().CreateActivity(userId.getUserId(token), activity, token.getAppId());
             } 
             catch (Exception e) 
             {
-                throw new SocialSpiException(ResponseError.INTERNAL_ERROR,"Invalid create activity request: " + e.Message);
+                throw new ProtocolException(ResponseError.INTERNAL_ERROR,"Invalid create activity request: " + e.Message);
             }
         }
 
-        
-    
+    public RestfulCollection<MessageCollection> getMessageCollections(UserId userId, IEnumerable<string> fields, CollectionOptions options, ISecurityToken token)
+    {
+        throw new NotImplementedException();
+    }
+
+    public MessageCollection createMessageCollection(UserId userId, MessageCollection msgCollection, ISecurityToken token)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void modifyMessageCollection(UserId userId, MessageCollection msgCollection, ISecurityToken token)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void deleteMessageCollection(UserId userId, string msgCollId, ISecurityToken token)
+    {
+        throw new NotImplementedException();
+    }
+
+    public RestfulCollection<Message> getMessages(UserId userId, string msgCollId, IEnumerable<string> fields, IEnumerable<string> msgIds, CollectionOptions options, ISecurityToken token)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void createMessage(UserId userId, string appId, string msgCollId, Message message, ISecurityToken token)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void deleteMessages(UserId userId, string msgCollId, HashSet<string> ids, ISecurityToken token)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void modifyMessage(UserId userId, string msgCollId, string messageId, Message message, ISecurityToken token)
+    {
+        throw new NotImplementedException();
+    }
     }

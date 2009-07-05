@@ -22,24 +22,15 @@ using System.IO;
 using System.Net;
 using Jayrock.Json;
 using Jayrock.Json.Conversion;
+using Pesta.Engine.protocol;
 using Pesta.Engine.social;
-using Pesta.Engine.social.spi;
-
 
 namespace pestaServer.Models.social.service
 {
-    /// <summary>
-    /// Summary description for SampleContainerHandler
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
-    /// </para>
-    /// </remarks>
     public class SampleContainerHandler : DataRequestHandler
     {
         private readonly JsonDbOpensocialService service;
-
+        public const string Jsondb = "Pesta.DataAccess.canonicaldb.json";
         private const String POST_PATH = "/samplecontainer/{type}/{doevil}";
 
         public SampleContainerHandler()
@@ -52,7 +43,7 @@ namespace pestaServer.Models.social.service
         */
         protected override object handleDelete(RequestItem request)
         {
-            throw new SocialSpiException(ResponseError.NOT_IMPLEMENTED, null);
+            throw new ProtocolException(ResponseError.NOT_IMPLEMENTED, null);
         }
 
         /**
@@ -80,13 +71,13 @@ namespace pestaServer.Models.social.service
                 }
                 catch (JsonException e)
                 {
-                    throw new SocialSpiException(ResponseError.BAD_REQUEST,
-                                                 "The json state file was not valid json", e);
+                    throw new ProtocolException(ResponseError.BAD_REQUEST,
+                                                 "The json state file was not valid json");
                 }
             }
             else if (type.Equals("setevilness"))
             {
-                throw new SocialSpiException(ResponseError.NOT_IMPLEMENTED,
+                throw new ProtocolException(ResponseError.NOT_IMPLEMENTED,
                                              "evil data has not been implemented yet");
             }
             return new JsonObject();

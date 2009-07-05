@@ -19,52 +19,123 @@
 #endregion
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Web;
-using Jayrock.Json;
-using Jayrock.Json.Conversion;
 using Pesta.Engine.auth;
+using Pesta.Engine.protocol;
+using Pesta.Engine.protocol.conversion;
 using Pesta.Engine.social.model;
-using pestaServer.ActionFilters;
-using pestaServer.Models.social.service;
 using Pesta.Engine.social.spi;
+using System.Linq;
+using pestaServer.Models.social.service;
 
 namespace pestaServer.Controllers
 {
     public class restController : ApiController
     {
-        private const String FORMAT_PARAM = "format";
-        private const String ATOM_FORMAT = "atom";
-        private const String XML_FORMAT = "xml";
-        private const String JSON_BATCH_ROUTE = "jsonBatch";
+        public static readonly IEnumerable<String> ALLOWED_CONTENT_TYPES =
+                                          ContentTypes.ALLOWED_JSON_CONTENT_TYPES
+                                          .Union(ContentTypes.ALLOWED_XML_CONTENT_TYPES)
+                                          .Union(ContentTypes.ALLOWED_ATOM_CONTENT_TYPES);
 
-        [CompressFilter]
-        public void Index(string id1, string id2, string id3, string id4)
+        private static readonly String X_HTTP_METHOD_OVERRIDE = "X-HTTP-Method-Override";
+
+        public void Index()
         {
-            HttpRequest request = System.Web.HttpContext.Current.Request;
-            HttpResponse response = System.Web.HttpContext.Current.Response;
-            ISecurityToken token = GetSecurityToken(System.Web.HttpContext.Current); // BasicSecurityToken
+            var httpMethod = Request.HttpMethod;
+            var servletRequest = System.Web.HttpContext.Current.Request;
+            var servletResponse = System.Web.HttpContext.Current.Response;
+
+            if (httpMethod == "GET" || httpMethod == "DELETE")
+            {
+                executeRequest(servletRequest, servletResponse);
+            }
+            else if (httpMethod == "PUT" || httpMethod == "POST")
+            {
+                try
+                {
+                    //checkContentTypes(ALLOWED_CONTENT_TYPES, servletRequest.ContentType);
+                    executeRequest(servletRequest, servletResponse);
+                }
+                catch (ContentTypes.InvalidContentTypeException icte)
+                {
+                    sendError(servletResponse,
+                        new ResponseItem((int)HttpStatusCode.BadRequest, icte.Message));
+                }
+            }
+
+        }
+
+        /// <summary>
+        /// Actual dispatch handling for servlet requests
+        /// </summary>
+        /// <param name="servletRequest"></param>
+        /// <param name="servletResponse"></param>
+        private void executeRequest(HttpRequest servletRequest, HttpResponse servletResponse)
+        {
+            setCharacterEncodings(servletRequest, servletResponse);
+
+            ISecurityToken token = getSecurityToken(System.Web.HttpContext.Current, servletRequest.RawUrl);
             if (token == null)
             {
-                SendSecurityError(response);
+                sendSecurityError(servletResponse);
                 return;
             }
-            BeanConverter converter = GetConverterForRequest(request);
-            if (id1 == JSON_BATCH_ROUTE)
-            {
-                HandleBatchRequest(request, response, token, converter);
-            }
-            else
-            {
-                HandleSingleRequest(request, response, token, converter);
-            }
-        }
-        private void HandleSingleRequest(HttpRequest request, HttpResponse response, ISecurityToken token, BeanConverter converter)
-        {
-            RestfulRequestItem requestItem = new RestfulRequestItem(request, token, converter);
-            ResponseItem responseItem = GetResponseItem(HandleRequestItem(requestItem));
 
-            response.ContentType = converter.GetContentType();
-            if (responseItem != null && responseItem.getError() == null)
+            BeanConverter converter = getConverterForRequest(servletRequest);
+
+            handleSingleRequest(servletRequest, servletResponse, token, converter);
+        }
+
+        protected override void sendError(HttpResponse servletResponse, ResponseItem responseItem)
+        {
+            int errorCode = responseItem.getErrorCode();
+            if (errorCode < 0)
+            {
+                // Map JSON-RPC error codes into HTTP error codes as best we can
+                // TODO: Augment the error message (if missing) with a default
+                switch (errorCode)
+                {
+                    case -32700:
+                    case -32602:
+                    case -32600:
+                        // Parse error, invalid params, and invalid request 
+                        errorCode = (int)HttpStatusCode.BadRequest;
+                        break;
+                    case -32601:
+                        // Procedure doesn't exist
+                        errorCode = (int)HttpStatusCode.NotImplemented;
+                        break;
+                    case -32603:
+                    default:
+                        // Internal server error, or any application-defined error
+                        errorCode = (int)HttpStatusCode.InternalServerError;
+                        break;
+                }
+            }
+            servletResponse.ContentType = ContentTypes.OUTPUT_TEXT_CONTENT_TYPE;
+            servletResponse.StatusCode = responseItem.getErrorCode();
+            servletResponse.StatusDescription = responseItem.getErrorMessage();
+            servletResponse.Output.Write(responseItem.getErrorMessage());
+        }
+
+        private void handleSingleRequest(HttpRequest servletRequest,
+                HttpResponse servletResponse, ISecurityToken token, BeanConverter converter)
+        {
+            RestfulRequestItem requestItem = new RestfulRequestItem(servletRequest, token, converter);
+            var asyncResult = HandleRequestItem(requestItem);
+            
+            // handle just the one case where we can't find a handler
+            if (asyncResult == null)
+            {
+                sendError(servletResponse, new ResponseItem((int)HttpStatusCode.InternalServerError,
+                                    "The service " + requestItem.getService() + " is not implemented"));
+                return;
+            }
+            ResponseItem responseItem = getResponseItem(asyncResult);
+
+            servletResponse.ContentType = converter.GetContentType();
+            if (responseItem.getErrorCode() >= 200 && responseItem.getErrorCode() < 400) 
             {
                 Object resp = responseItem.getResponse();
                 // put single object responses into restfulcollection
@@ -73,11 +144,11 @@ namespace pestaServer.Controllers
                     switch (requestItem.getService())
                     {
                         case IHandlerDispatcher.ACTIVITY_ROUTE:
-                            if(resp is Activity)
+                            if (resp is Activity)
                             {
                                 resp = new RestfulCollection<Activity>((Activity)resp);
                             }
-                            
+
                             break;
                         case IHandlerDispatcher.PEOPLE_ROUTE:
                             if (resp is Person)
@@ -86,55 +157,61 @@ namespace pestaServer.Controllers
                             }
                             break;
                         case IHandlerDispatcher.APPDATA_ROUTE:
-                            resp = new DataCollection(new Dictionary<string, Dictionary<string,string>>{{"entry",(Dictionary<string,string>)resp}});
+                            resp = new DataCollection(new Dictionary<string, Dictionary<string, string>> { { "entry", (Dictionary<string, string>)resp } });
                             break;
                         default:
-                            resp = new Dictionary<string, object> {{"entry", resp}};
+                            resp = new Dictionary<string, object> { { "entry", resp } };
                             break;
                     }
                 }
-                
-                response.Output.Write(converter.ConvertToString(resp, requestItem));
+
+                servletResponse.Output.Write(converter.ConvertToString(resp, requestItem));
             }
             else
             {
-                SendError(response, responseItem);
+                sendError(servletResponse, responseItem);
             }
         }
 
-        private void HandleBatchRequest(HttpRequest request, HttpResponse response, ISecurityToken token, BeanConverter converter)
+        private BeanConverter getConverterForRequest(HttpRequest servletRequest)
         {
-            RestfulRequestItem mainRequest = new RestfulRequestItem(request, token, converter);
-            Dictionary<String, object> responses = new Dictionary<string, object>();
-            Dictionary<String, String> requests = (Dictionary<String, String>)mainRequest.getTypedParameters(typeof(Dictionary<String, String>));
-            foreach (var entry in requests)
-            {
-                string key = entry.Key;
-                JsonObject req = (JsonObject)JsonConvert.Import(entry.Value);
-                RestfulRequestItem requestItem = new RestfulRequestItem(req["url"].ToString(), req["method"].ToString(),"", token, converter);
-                responses.Add(key, GetResponseItem(HandleRequestItem(requestItem)).getResponse());
-            }
-            response.Output.Write(converter.ConvertToString(new Dictionary<string, object> { { "error", false }, { "responses", responses } }, mainRequest));
-        }
-
-        BeanConverter GetConverterForRequest(HttpRequest servletRequest)
-        {
+            String formatString = null;
             BeanConverter converter = null;
+            String contentType = null;
 
-            string formatString = servletRequest.Params[FORMAT_PARAM];
-            string contentType = servletRequest.Headers[IHandlerDispatcher.CONTENT_TYPE];
-
-            if (contentType != null)
+            try
             {
-                if (contentType.Equals("application/json"))
+                formatString = servletRequest.Params[FORMAT_PARAM];
+            }
+            catch (Exception t)
+            {
+                // this happens while testing
+            }
+
+            try
+            {
+                contentType = servletRequest.ContentType;
+            }
+            catch (Exception t)
+            {
+                //this happens while testing
+                //if (logger.isLoggable(Level.FINE)) {
+                //  logger.fine("Unexpected error : content type is null " + t.toString());
+                // }
+            }
+
+
+            if (!string.IsNullOrEmpty(contentType))
+            {
+                if (ContentTypes.ALLOWED_JSON_CONTENT_TYPES.Contains(contentType))
                 {
                     converter = jsonConverter;
                 }
-                else if (contentType.Equals("application/atom+xml"))
+                else if (ContentTypes.ALLOWED_ATOM_CONTENT_TYPES.Contains(contentType))
                 {
                     converter = atomConverter;
                 }
-                else if (contentType.Equals("application/xml"))
+                else if (ContentTypes.ALLOWED_XML_CONTENT_TYPES.Contains(contentType))
                 {
                     converter = xmlConverter;
                 }
@@ -144,7 +221,7 @@ namespace pestaServer.Controllers
                     converter = jsonConverter;
                 }
             }
-            else if (formatString != null)
+            else if (!string.IsNullOrEmpty(formatString))
             {
                 if (formatString.Equals(ATOM_FORMAT))
                 {
@@ -164,12 +241,6 @@ namespace pestaServer.Controllers
                 converter = jsonConverter;
             }
             return converter;
-        }
-
-        protected override void SendError(HttpResponse response, ResponseItem responseItem)
-        {
-            response.StatusCode = responseItem.getError().getHttpErrorCode();
-            response.StatusDescription = responseItem.getErrorMessage();
         }
     }
 }

@@ -21,9 +21,11 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Jayrock.Json;
+using Pesta.Engine.protocol;
+using Pesta.Engine.protocol.conversion;
 using Pesta.Engine.social;
 using Pesta.Engine.social.spi;
-using pestaServer.DataAccess;
+using Pesta.Utilities;
 
 
 namespace pestaServer.Models.social.service
@@ -70,7 +72,7 @@ namespace pestaServer.Models.social.service
             iuserid.MoveNext();
             service.deletePersonData(iuserid.Current, request.getGroup(),
                                      request.getAppId(), request.getFields(), request.getToken());
-            return null;
+            return new JsonObject();
         }
 
         /**
@@ -105,12 +107,12 @@ namespace pestaServer.Models.social.service
             Preconditions<UserId>.requireNotEmpty(userIds, "No userId specified");
             Preconditions<UserId>.requireSingular(userIds, "Multiple userIds not supported");
 
-            Dictionary<String, String> values = (Dictionary<String, String>)request.getTypedParameter("data", typeof(Dictionary<String, String>));
+            Dictionary<String, String> values = request.getTypedParameter<Dictionary<String, String>>("data");
             foreach (String key in values.Keys)
             {
                 if (!isValidKey(key))
                 {
-                    throw new SocialSpiException(ResponseError.BAD_REQUEST,
+                    throw new ProtocolException(ResponseError.BAD_REQUEST,
                                                  "One or more of the app data keys are invalid: " + key);
                 }
             }

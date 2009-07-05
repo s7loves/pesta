@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Jayrock.Json;
+using Pesta.Engine.protocol;
 using Pesta.Engine.social;
 using Pesta.Engine.social.model;
 using Pesta.Engine.social.spi;
@@ -50,17 +51,17 @@ namespace pestaServer.Models.social.service
 
         protected override object handleDelete(RequestItem request)
         {
-            throw new SocialSpiException(ResponseError.BAD_REQUEST, "You can't delete people.");
+            throw new ProtocolException(ResponseError.BAD_REQUEST, "You can't delete people.");
         }
 
         protected override object handlePut(RequestItem request)
         {
-            throw new SocialSpiException(ResponseError.NOT_IMPLEMENTED, "You can't update right now.");
+            throw new ProtocolException(ResponseError.NOT_IMPLEMENTED, "You can't update right now.");
         }
 
         protected override object handlePost(RequestItem request)
         {
-            throw new SocialSpiException(ResponseError.NOT_IMPLEMENTED, "You can't add people right now.");
+            throw new ProtocolException(ResponseError.NOT_IMPLEMENTED, "You can't add people right now.");
         }
 
         /**
@@ -85,10 +86,19 @@ namespace pestaServer.Models.social.service
             }
             if (userIds.Contains(new UserId(UserId.Type.userId,"@supportedFields")))
             {
-                JsonArray supported = JsonContainerConfig.Instance.GetJsonObject(request.getToken().getContainer() ?? "default", "gadgets.features")
+                var supported = JsonContainerConfig.Instance.GetJsonObject(request.getToken().getContainer() ?? "default", "gadgets.features")
                                             .getJSONObject("opensocial-0.8")
                                             .getJSONObject("supportedFields")["person"] as JsonArray;
-                return supported;
+                var collection = new RestfulCollection<object>();
+                if (supported != null && supported.Count > 0)
+                {
+                    foreach (var value in supported)
+                    {
+                        collection.entry.Add(value);
+                    }
+                    collection.totalResults = supported.Count;
+                }
+                return collection;
             }
 
             CollectionOptions options = new CollectionOptions();
@@ -98,7 +108,7 @@ namespace pestaServer.Models.social.service
             options.setFilterOperation(request.getFilterOperation());
             options.setFilterValue(request.getFilterValue());
             options.setFirst(request.getStartIndex());
-            options.setMax(request.GetCount());
+            options.setMax(request.getCount() ?? RequestItem.DEFAULT_COUNT);
 
             if (userIds.Count == 1)
             {
