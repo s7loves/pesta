@@ -18,32 +18,33 @@
  */
 #endregion
 
+using System;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Pesta.Utilities
 {
     [IsJavaEnum]
     public abstract class EnumBaseType<T> where T : EnumBaseType<T>
     {
-        protected static List<T> enumValues = new List<T>();
+        private static readonly HashSet<T> enumValues = new HashSet<T>();
 
         public readonly int Key;
         public readonly string JsonValue;
         public readonly string Value;
 
-        protected EnumBaseType()
+        public EnumBaseType()
         {
+            
         }
-
-        protected EnumBaseType(int key, string value)
+        public EnumBaseType(int key, string value)
         {
             Key = key;
             Value = value;
             enumValues.Add((T)this);
         }
-
-        protected EnumBaseType(string key, string value)
+        public EnumBaseType(string key, string value)
         {
             JsonValue = key;
             Value = value;
@@ -52,7 +53,17 @@ namespace Pesta.Utilities
 
         protected static ReadOnlyCollection<T> GetBaseValues()
         {
-            return enumValues.AsReadOnly();
+            return enumValues.ToList().AsReadOnly();
+        }
+
+        protected static ReadOnlyCollection<String> GetBaseValueStrings()
+        {
+            var list = new List<String>();
+            foreach (T t in enumValues)
+            {
+                list.Add(t.Value);
+            }
+            return list.AsReadOnly();
         }
 
         public static T GetBaseByKey(int key)
@@ -67,7 +78,8 @@ namespace Pesta.Utilities
         {
             foreach (T t in enumValues)
             {
-                if (t.JsonValue.ToLower() == key.ToLower()) return t;
+                if (string.Compare(t.JsonValue, key, StringComparison.InvariantCultureIgnoreCase) == 0)
+                    return t;
             }
             return null;
         }
@@ -76,7 +88,8 @@ namespace Pesta.Utilities
         {
             foreach (T t in enumValues)
             {
-                if (t.Value.ToLower() == value.ToLower()) return t;
+                if (string.Compare(t.Value,value, StringComparison.InvariantCultureIgnoreCase) == 0) 
+                    return t;
             }
             return null;
         }

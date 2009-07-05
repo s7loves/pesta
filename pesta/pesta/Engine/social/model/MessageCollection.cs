@@ -18,48 +18,53 @@
  */
 #endregion
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Runtime.Serialization;
+using System.Xml.Serialization;
 using Pesta.Engine.protocol.conversion;
 using Pesta.Utilities;
 
-
 namespace Pesta.Engine.social.model
 {
-    [DataContract(Namespace = BeanConverter.osNameSpace)]
-    public class Account
+    [XmlRoot(ElementName = "messageCollection", Namespace = BeanConverter.osNameSpace)]
+    [DataContract(Name = "messageCollection", Namespace = BeanConverter.osNameSpace)]
+    public class MessageCollection
     {
         [DataMember(EmitDefaultValue = false)]
-        public String domain { get; set; }
+        public String id { get; set; }
         [DataMember(EmitDefaultValue = false)]
-        public String userId { get; set; }
+        public String title { get; set; }
+        [DataMember]
+        public int total { get; set; }
+        [DataMember]
+        public int unread { get; set; }
         [DataMember(EmitDefaultValue = false)]
-        public String username { get; set; }
-        /**
-       * The fields that represent the account object in json form.
-       *
-       * <p>
-       * All of the fields that an account can have, all fields are required
-       * </p>
-       *
-       */
+        public long? updated { get; set; }
+        [XmlIgnore]
+        public bool updatedSpecified { get { return updated.HasValue; } }
+        [DataMember(EmitDefaultValue = false)]
+        public List<Url> urls { get; set; }
+        
+        [XmlIgnore]
+        public String OUTBOX = "@outbox";
+        [XmlIgnore]
+        public String ALL = "@all";
+
         public class Field : EnumBaseType<Field>
         {
-            /// <summary>
-            /// Initializes a new instance of the Field class.
-            /// </summary>
             public Field(int key, string value)
                 : base(key, value)
             {
 
             }
-            public static readonly Field DOMAIN = new Field(1, "domain");
-            public static readonly Field USER_ID = new Field(2, "userId");
-            public static readonly Field USERNAME = new Field(3, "username");
+            public static readonly Field ID = new Field(1, "id");
+            public static readonly Field TITLE = new Field(2, "title");
+            public static readonly Field TOTAL = new Field(3, "total");
+            public static readonly Field UNREAD = new Field(4, "unread");
+            public static readonly Field UPDATED = new Field(5, "updated");
 
-            public static Field GetByValue(string value)
-            {
-                return GetBaseByValue(value);
-            }
+            public static readonly ReadOnlyCollection<String> ALL_FIELDS = GetBaseValueStrings();
 
             public override String ToString()
             {

@@ -19,25 +19,58 @@
 #endregion
 
 using System;
-using Pesta.Engine.social.core.model;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Runtime.Serialization;
+using System.Text.RegularExpressions;
+using System.Xml.Serialization;
+using Pesta.Engine.protocol.conversion;
 using Pesta.Utilities;
 
 namespace Pesta.Engine.social.model
 {
-    /// <summary>
-    /// Summary description for Message
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
-    /// </para>
-    /// </remarks>
-    [ImplementedBy(typeof(MessageImpl))]
-    public abstract class Message
+    [XmlRoot(ElementName = "message", Namespace = BeanConverter.osNameSpace)]
+    [DataContract(Name = "message", Namespace = BeanConverter.osNameSpace)]
+    public class Message
     {
-        /**
-       * An enumeration of field names in a message.
-       */
+        public Message()
+        {
+            
+        }
+        
+        [DataMember(EmitDefaultValue = false)]
+        public String appUrl { get; set; }
+        [DataMember(EmitDefaultValue = false)] 
+        public String body { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public String bodyId { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public List<String> collectionIds { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public String inReplyTo { get; set; }
+        [DataMember(EmitDefaultValue = false)] 
+        public String title { get; set; }
+        [DataMember(EmitDefaultValue = false)] 
+        public Type type { get; set; }
+        [DataMember(EmitDefaultValue = false)] 
+        public String id { get; set; }
+        [DataMember(EmitDefaultValue = false)] 
+        public List<string> recipients { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public List<String> replies { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public String senderId { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public Status status { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public DateTime timeSent { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public String titleId { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public DateTime updated { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public List<Url> urls { get; set; }
+
         public class Field : EnumBaseType<Field>
         {
             /// <summary>
@@ -53,111 +86,37 @@ namespace Pesta.Engine.social.model
             public static readonly Field TYPE = new Field(3, "type");
             public static readonly Field ID = new Field(4, "id");
 
-            /**
-            * the name of the field.
-            */
-            private readonly String jsonString;
+            public static readonly ReadOnlyCollection<String> ALL_FIELDS = GetBaseValueStrings();
 
-            /**
-            * Create a field based on a name.
-            * @param jsonString the name of the field
-            */
-            protected Field(String jsonString)
+            public static Field GetByValue(string value)
             {
-                this.jsonString = jsonString;
+                return GetBaseByValue(value);
             }
-
 
             public override String ToString()
             {
-                return jsonString;
+                return Value;
             }
         }
-
-        /**
-         * The type of a message
-         */
-        public class Type : EnumBaseType<Type>
+           
+        public enum Type
         {
-            public Type(int key, string value)
-                : base(key, value)
-            {
-
-            }
-            public static readonly Type EMAIL = new Type(1, "EMAIL");
-            public static readonly Type NOTIFICATION = new Type(2, "NOTIFICATION");
-            public static readonly Type PRIVATE_MESSAGE = new Type(3, "PRIVATE_MESSAGE");
-            public static readonly Type PUBLIC_MESSAGE = new Type(4, "PUBLIC_MESSAGE");
-
-            /**
-            * The type of message.
-            */
-            private readonly String jsonString;
-
-            /**
-            * Create a message type based on a string token.
-            * @param jsonString the type of message
-            */
-            public Type(String jsonString)
-            {
-                this.jsonString = jsonString;
-            }
-
-            public override String ToString()
-            {
-                return jsonString;
-            }
+            EMAIL, 
+            NOTIFICATION, 
+            PRIVATE_MESSAGE, 
+            PUBLIC_MESSAGE
         }
 
-        /**
-        * Gets the main text of the message.
-        * @return the main text of the message
-        */
-        public abstract String getBody();
+        public enum Status
+        {
+            NEW, 
+            DELETED, 
+            FLAGGED
+        }
 
-        /**
-        * Sets the main text of the message.
-        * HTML attributes are allowed and are sanitized by the container
-        * @param newBody the main text of the message
-        */
-        public abstract void setBody(String newBody);
-
-
-        public abstract String getId();
-        public abstract void setId(String newId);
-
-        /**
-        * Gets the title of the message.
-        * @return the title of the message
-        */
-        public abstract String getTitle();
-
-        /**
-        * Sets the title of the message.
-        * HTML attributes are allowed and are sanitized by the container.
-        * @param newTitle the title of the message
-        */
-        public abstract void setTitle(String newTitle);
-
-        /**
-        * Gets the type of the message, as specified by opensocial.Message.Type.
-        * @return the type of message (enum Message.Type)
-        */
-        public abstract Type getType();
-
-        /**
-        * Sets the type of the message, as specified by opensocial.Message.Type
-        * @param newType the type of message (enum Message.Type)
-        */
-        public abstract void setType(Type newType);
-
-        /**
-        * TODO implement either a standard 'sanitizing' facility or
-        * define an interface that can be set on this class so
-        * others can plug in their own.
-        * @param htmlStr String to be sanitized.
-        * @return the sanitized HTML String
-        */
-        public abstract String sanitizeHTML(String htmlStr);
+        public String sanitizeHTML(String htmlStr)
+        {
+            return Regex.Replace(htmlStr, @"<(.|\n)*?>", string.Empty);
+        }
     } 
 }

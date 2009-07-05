@@ -17,35 +17,30 @@
  * specific language governing permissions and limitations under the License.
  */
 #endregion
-
-using System.Collections;
-using System.Collections.Generic;
+using System.ComponentModel;
 using System.Runtime.Serialization;
 using Pesta.Engine.protocol.conversion;
 
-namespace Pesta.Engine.social.spi
+namespace Pesta.Engine.social.model
 {
-    [DataContract(Name = "response", Namespace = BeanConverter.osNameSpace)]
-    public abstract class IRestfulCollection
+    [DataContract(Namespace = BeanConverter.osNameSpace)]
+    public enum Drinker
     {
-        [DataMember]
-        public int startIndex { get; set; }
-
-        [DataMember]
-        public int totalResults { get; set; }
-
-        [DataMember]
-        public int itemsPerPage { get; set; }
-
-        [DataMember]
-        public bool isFiltered { get; set; }
-
-        [DataMember]
-        public bool isSorted { get; set; }
-
-        [DataMember]
-        public bool isUpdatedSince { get; set; }
-
-        public abstract object getEntry();
+        [Description("Heavily")]
+        HEAVILY,
+        [Description("No")]
+        NO,
+        [Description("Occasionally")]
+        OCCASIONALLY,
+        [Description("Quit")]
+        QUIT,
+        [Description("Quitting")]
+        QUITTING,
+        [Description("Regularly")]
+        REGULARLY,
+        [Description("Socially")]
+        SOCIALLY,
+        [Description("Yes")]
+        YES
     }
 }

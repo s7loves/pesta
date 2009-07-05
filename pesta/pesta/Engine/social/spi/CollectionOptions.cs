@@ -18,6 +18,7 @@
  */
 #endregion
 using System;
+using Pesta.Engine.protocol;
 
 namespace Pesta.Engine.social.spi
 {
@@ -38,6 +39,24 @@ namespace Pesta.Engine.social.spi
         private String filterValue = "";
         private int first;
         private int max = 1;
+        private DateTime? updatedSince;
+
+        public CollectionOptions()
+        {
+            
+        }
+
+        public CollectionOptions(RequestItem request)
+        {
+            this.sortBy = request.getSortBy();
+            this.sortOrder = request.getSortOrder();
+            this.setFilter(request.getFilterBy());
+            this.setFilterOperation(request.getFilterOperation());
+            this.setFilterValue(request.getFilterValue());
+            this.setFirst(request.getStartIndex());
+            this.setMax(request.getCount() ?? RequestItem.DEFAULT_COUNT);
+            this.setUpdatedSince(request.getUpdatedSince());
+        }
 
         /**
         * This sortBy can be any field of the object being sorted or the special js sort of topFriends.
@@ -151,6 +170,16 @@ namespace Pesta.Engine.social.spi
         public void setMax(int max)
         {
             this.max = max;
+        }
+
+        public DateTime? getUpdatedSince()
+        {
+            return updatedSince;
+        }
+
+        public void setUpdatedSince(DateTime? updatedSince)
+        {
+            this.updatedSince = updatedSince;
         }
 
         // These are overriden so that EasyMock doesn't throw a fit

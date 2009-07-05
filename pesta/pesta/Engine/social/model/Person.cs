@@ -6,7 +6,7 @@
  * regarding copyright ownership. The ASF licenses this file
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
- * with the License. You may obtain a copy of the License at
+ * with the License. You may obtain [DataMember(EmitDefaultValue = false)] copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -20,29 +20,337 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Pesta.Engine.social.core.model;
+using System.Runtime.Serialization;
+using System.Xml.Serialization;
+using Pesta.Engine.protocol.conversion;
 using Pesta.Utilities;
 
 namespace Pesta.Engine.social.model
 {
-    /// <summary>
-    /// Summary description for Person
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
-    /// </para>
-    /// </remarks>
-    [ImplementedBy(typeof(PersonImpl))]
-    public abstract class Person
+    [XmlRoot(ElementName = "person", Namespace = BeanConverter.osNameSpace)]
+    [DataContract(Name = "person", Namespace = BeanConverter.osNameSpace)]
+    public class Person
     {
+        public static readonly String PROFILE_URL_TYPE = "profile";
+
+        public static readonly String THUMBNAIL_PHOTO_TYPE = "thumbnail";
+
+        public enum Gender
+        {
+            female, male
+        }
+        public Person()
+        {
+        }
+
+        public Person(String id, String displayName, Name name)
+        {
+            this.id = id;
+            this.displayName = displayName;
+            this.name = name;
+        }
+
+        [DataMember(EmitDefaultValue = false)]
+        public String aboutMe { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public List<Account> accounts { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public List<String> activities { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public List<Address> addresses { get; set; }
+
+        [DataMember(EmitDefaultValue = false)]
+        public int? age { get; set; }
+        [XmlIgnore]
+        public bool ageSpecified { get { return age.HasValue; } }
+
+        public DateTime? birthday { get; set; }
+        [XmlIgnore]
+        public bool birthdaySpecified { get { return birthday.HasValue; } }
+        [DataMember(Name = "birthday", EmitDefaultValue = false)]
+        private string _birthday { get { return birthday.HasValue ? birthday.Value.ToUniversalTime().ToString("s") : null; } set { birthday = DateTime.Parse(value); } }
+        
+        
+        [DataMember(EmitDefaultValue = false)]
+        public BodyType bodyType { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public List<String> books { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public List<String> cars { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public String children { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public Address currentLocation { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public Drinker? drinker { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public String displayName { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public List<ListField> emails { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public String ethnicity { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public String fashion { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public List<String> food { get; set; }
+
+        [XmlIgnore]
+        public bool genderSpecified { get { return gender.HasValue; } }
+        [DataMember(EmitDefaultValue = false)]
+        public Gender? gender { get; set; }
+        public string _gender 
+        { 
+            get
+            {
+                return gender.HasValue ? gender.ToString() : null;
+            } 
+            set
+            {
+                if (value != null)
+                {
+                    gender = (Gender)Enum.Parse(typeof(Gender), value, true);
+                }
+            } 
+        }
+        
+        [DataMember(EmitDefaultValue = false)]
+        public String happiestWhen { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public bool hasApp { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public List<String> heroes { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public String humor { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public String id { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public List<ListField> ims { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public List<String> interests { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public String jobInterests { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public List<String> languagesSpoken { get; set; }
+
+        public DateTime? updated { get; set; }
+        [DataMember(Name = "updated", EmitDefaultValue = false)]
+        private string _updated { get { return updated.HasValue ? DateUtil.ToString(updated.Value.ToUniversalTime()) : null; } set { updated = DateUtil.Parse(value); } }
+        [XmlIgnore]
+        public bool updatedSpecified { get { return updated.HasValue; } }
+
+        [DataMember(EmitDefaultValue = false)]
+        public String livingArrangement { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public List<LookingFor> lookingFor { get; set; }
+
+        public int? _lookingFor
+        {
+            get
+            {
+                if (lookingFor == null)
+                {
+                    return null;
+                }
+                int result = 0;
+                foreach (var l in lookingFor)
+                {
+                    result |= (int)l;
+                }
+                return result;
+            } 
+            set
+            {
+                if (value == null)
+                {
+                    return;
+                }
+                lookingFor = new List<LookingFor>();
+                if ((value & (int)LookingFor.ACTIVITY_PARTNERS) != 0)
+                {
+                    lookingFor.Add(LookingFor.ACTIVITY_PARTNERS);
+                }
+                if ((value & (int)LookingFor.DATING) != 0)
+                {
+                    lookingFor.Add(LookingFor.DATING);
+                }
+                if ((value & (int)LookingFor.FRIENDS) != 0)
+                {
+                    lookingFor.Add(LookingFor.FRIENDS);
+                }
+                if ((value & (int)LookingFor.NETWORKING) != 0)
+                {
+                    lookingFor.Add(LookingFor.NETWORKING);
+                }
+                if ((value & (int)LookingFor.RANDOM) != 0)
+                {
+                    lookingFor.Add(LookingFor.RANDOM);
+                }
+                if ((value & (int)LookingFor.RELATIONSHIP) != 0)
+                {
+                    lookingFor.Add(LookingFor.RELATIONSHIP);
+                }
+            }
+        }
+        [DataMember(EmitDefaultValue = false)]
+        public List<String> movies { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public List<String> music { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public Name name { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public NetworkPresence networkPresence { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public String nickname { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public List<Organization> organizations { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public String pets { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public List<ListField> phoneNumbers { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public List<ListField> photos { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public String politicalViews { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public Url profileSong { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public Url profileVideo { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public List<String> quotes { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public String relationshipStatus { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public String religion { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public String romance { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public String scaredOf { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public String sexualOrientation { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public Smoker? smoker { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public List<String> sports { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public String status { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public List<String> tags { get; set; }
+        
+        [DataMember(EmitDefaultValue = false)]
+        public long? utcOffset { get; set; }
+        [XmlIgnore]
+        public bool utcOffsetSpecified { get { return utcOffset.HasValue; } }
+
+        [DataMember(EmitDefaultValue = false)]
+        public List<String> turnOffs { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public List<String> turnOns { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public List<String> tvShows { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public List<ListField> urls { get; set; }
+
+        // Note: Not in the opensocial js person object directly
+        [DataMember(EmitDefaultValue = false)]
+        public bool isOwner { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public bool isViewer { get; set; }
+
+        
+
+        [DataMember(EmitDefaultValue = false)]
+        public string profileUrl
+        {
+            get
+            {
+                ListField url = getListFieldWithType(Person.PROFILE_URL_TYPE, urls);
+                return url == null ? null : url.value;
+            }
+            set
+            {
+                ListField url = getListFieldWithType(Person.PROFILE_URL_TYPE, urls);
+                if (url != null)
+                {
+                    url.value = value;
+                }
+                else
+                {
+                    urls = addListField(new Url(value, null, Person.PROFILE_URL_TYPE), urls);
+                }
+            }
+        }
+
+        [DataMember(EmitDefaultValue = false)]
+        public String thumbnailUrl
+        {
+            get
+            {
+                ListField photo = getListFieldWithType(Person.THUMBNAIL_PHOTO_TYPE, photos);
+                return photo == null ? null : photo.value;
+            }
+            set
+            {
+                ListField photo = getListFieldWithType(Person.THUMBNAIL_PHOTO_TYPE, photos);
+                if (photo != null)
+                {
+                    photo.value = value;
+                }
+                else
+                {
+                    photos = addListField(new ListField(Person.THUMBNAIL_PHOTO_TYPE, value), photos);
+                }
+            }
+        }
+
+        public bool DoesLookForExist(LookingFor lkf)
+        {
+            if (lookingFor == null)
+            {
+                return false;
+            }
+            foreach (var entry in lookingFor)
+            {
+                if (entry == lkf)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private static ListField getListFieldWithType(String type, IEnumerable<ListField> list)
+        {
+            if (list != null)
+            {
+                foreach (ListField url in list)
+                {
+                    if (type.ToLower().Equals(url.type))
+                    {
+                        return url;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        private static List<ListField> addListField(ListField field, List<ListField> list)
+        {
+            if (list == null)
+            {
+                list = new List<ListField>();
+            }
+            list.Add(field);
+            return list;
+        }
+
         public class Field : EnumBaseType<Field>
         {
             /// <summary>
-            /// Initializes a new instance of the Person class.
+            /// Initializes [DataMember(EmitDefaultValue = false)] new instance of the Person class.
             /// </summary>
             /// <summary>
-            /// Initializes a new instance of the Field class.
+            /// Initializes [DataMember(EmitDefaultValue = false)] new instance of the Field class.
             /// </summary>
             public Field(int key, string value)
                 : base(key, value)
@@ -160,11 +468,6 @@ namespace Pesta.Engine.social.model
             public static readonly Field URLS = new Field(59, "urls");
 
             /**
-         * The json field that the instance represents.
-         */
-            private readonly String urlString;
-
-            /**
              * The set of required fields.
              */
             public static readonly HashSet<String> DEFAULT_FIELDS = new HashSet<string>
@@ -177,32 +480,22 @@ namespace Pesta.Engine.social.model
             public static readonly ReadOnlyCollection<Field> ALL_FIELDS = GetBaseValues();
 
             /**
-             * a Map to convert json string to Field representations.
+             * [DataMember(EmitDefaultValue = false)] Map to convert json string to Field representations.
              */
             private static Dictionary<String, Field> URL_STRING_TO_FIELD_MAP;
 
-            /**
-             * create a field base on the a json element.
-             *
-             * @param urlString the name of the element
-             */
-            protected Field(String urlString)
+            public static Field GetByValue(string value)
             {
-                this.urlString = urlString;
+                return GetBaseByValue(value);
             }
 
-            /**
-             * emit the field as a json element.
-             *
-             * @return the field name
-             */
             public override String ToString()
             {
-                return this.urlString;
+                return Value;
             }
 
             /**
-             * Converts from a url string (usually passed in the fields= parameter) into the
+             * Converts from [DataMember(EmitDefaultValue = false)] url string (usually passed in the fields= parameter) into the
              * corresponding field enum.
              * @param urlString The string to translate.
              * @return The corresponding person field.
@@ -221,952 +514,5 @@ namespace Pesta.Engine.social.model
             }
         }
 
-        /**
-        * The type of a profile url when represented as a list field.
-        */
-        public static readonly String PROFILE_URL_TYPE = "profile";
-
-        /**
-        * The type of thumbnail photo types when represented as list fields.
-        */
-        public static readonly String THUMBNAIL_PHOTO_TYPE = "thumbnail";
-
-        public abstract String getDisplayName();
-
-        public abstract void setDisplayName(String displayName);
-
-        /**
-        * Enumeration of genders.
-        */
-        public enum Gender
-        {
-            female, male
-        }
-
-
-        /**
-       * Get a general statement about the person, specified as a string. Container support for this
-       * field is OPTIONAL.
-       *
-       * @return the value of aboutMe
-       */
-        public abstract String getAboutMe();
-
-        /**
-         * Set a general statement about the person, specified as a string. Container support for this
-         * field is OPTIONAL.
-         *
-         * @param aboutMe the value of aboutMe
-         */
-        public abstract void setAboutMe(String aboutMe);
-
-        /**
-         * Get the list of online accounts held by this person.
-         * @return a list of Account objects
-         */
-        public abstract List<Account> getAccounts();
-
-        /**
-         * Set the list of online accounts held by this person.
-         * @param accounts a list of Account objects
-         */
-        public abstract void setAccounts(List<Account> accounts);
-
-        /**
-         * Get the person's favorite activities, specified as an List of strings. Container support for
-         * this field is OPTIONAL.
-         *
-         * @return list of activities.
-         */
-        public abstract List<String> getActivities();
-
-        /**
-         * Set the person's favorite activities, specified as an List of strings.
-         *
-         * @param activities a list of activities
-         */
-        public abstract void setActivities(List<String> activities);
-
-        /**
-         * Get addresses associated with the person, specified as an List of Address objects. Container
-         * support for this field is OPTIONAL.
-         *
-         * @return a List of address objects
-         */
-        public abstract List<Address> getAddresses();
-
-        /**
-         * Set addresses associated with the person, specified as an List of Address objects. Container
-         * support for this field is OPTIONAL.
-         *
-         * @param addresses a list of address objects
-         */
-        public abstract void setAddresses(List<Address> addresses);
-
-        /**
-         * Get the person's age, specified as a number. Container support for this field is OPTIONAL.
-         *
-         * @return the persons age
-         */
-        public abstract int? getAge();
-
-        /**
-         * Set the person's age, specified as a number. Container support for this field is OPTIONAL.
-         *
-         * @param age the persons age
-         */
-        public abstract void setAge(int? age);
-
-        /**
-         * Get the person's body characteristics, specified as an BodyType. Container support for this
-         * field is OPTIONAL.
-         *
-         * @return the BodyType
-         */
-        public abstract BodyType getBodyType();
-
-        /**
-         * Set the person's body characteristics, specified as an BodyType. Container support for this
-         * field is OPTIONAL.
-         *
-         * @param bodyType the person's BodyType
-         */
-        public abstract void setBodyType(BodyType bodyType);
-
-        /**
-         * Get the person's favorite books, specified as an List of strings. Container support for this
-         * field is OPTIONAL.
-         *
-         * @return list of books as strings
-         */
-        public abstract List<String> getBooks();
-
-        /**
-         * Set the person's favorite books, specified as an List of strings. Container support for this
-         * field is OPTIONAL.
-         *
-         * @param books a list of the person's books
-         */
-        public abstract void setBooks(List<String> books);
-
-        /**
-         * Get the person's favorite cars, specified as an List of strings. Container support for this
-         * field is OPTIONAL.
-         *
-         * @return the persons favorite cars
-         */
-        public abstract List<String> getCars();
-
-        /**
-         * Set the person's favorite cars, specified as an List of strings. Container support for this
-         * field is OPTIONAL.
-         *
-         * @param cars a list of the persons favorite cars
-         */
-        public abstract void setCars(List<String> cars);
-
-        /**
-         * Get a description of the person's children, specified as a string. Container support for this
-         * field is OPTIONAL.
-         *
-         * @return the persons children
-         */
-        public abstract String getChildren();
-
-        /**
-         * Set a description of the person's children, specified as a string. Container support for this
-         * field is OPTIONAL.
-         *
-         * @param children the persons children
-         */
-        public abstract void setChildren(String children);
-
-        /**
-         * Get the person's current location, specified as an {@link Address}. Container support for this
-         * field is OPTIONAL.
-         *
-         * @return the persons current location
-         */
-        public abstract Address getCurrentLocation();
-
-        /**
-         * Set the person's current location, specified as an {@link Address}. Container support for this
-         * field is OPTIONAL.
-         *
-         * @param currentLocation the persons current location
-         */
-        public abstract void setCurrentLocation(Address currentLocation);
-
-        /**
-         * Get the person's date of birth, specified as a {@link Date} object. Container support for this
-         * field is OPTIONAL.
-         *
-         * @return the person's data of birth
-         */
-        public abstract DateTime? getBirthday();
-
-        /**
-         * Set the person's date of birth, specified as a {@link Date} object. Container support for this
-         * field is OPTIONAL.
-         *
-         * @param birthday the person's data of birth
-         */
-        public abstract void setBirthday(DateTime? birthday);
-
-        /**
-         * Get the person's drinking status, specified as an {@link Enum} with the enum's key referencing
-         * {@link Enum.Drinker}. Container support for this field is OPTIONAL.
-         *
-         * @return the persons drinking status
-         */
-        public abstract EnumTypes.Drinker getDrinker();
-
-        /**
-         * Get the person's drinking status, specified as an {@link Enum} with the enum's key referencing
-         * {@link Enum.Drinker}. Container support for this field is OPTIONAL.
-         *
-         * @param newDrinker the persons drinking status
-         */
-        public abstract void setDrinker(EnumTypes.Drinker newDrinker);
-
-        /**
-         * Get the person's Emails associated with the person.
-         * Container support for this field is OPTIONAL.
-         *
-         * @return a list of the person's emails
-         */
-        public abstract List<ListField> getEmails();
-
-        /**
-         * Set the person's Emails associated with the person.
-         * Container support for this field is OPTIONAL.
-         *
-         * @param emails a list of the person's emails
-         */
-        public abstract void setEmails(List<ListField> emails);
-
-        /**
-         * Get the person's ethnicity, specified as a string. Container support for this field is
-         * OPTIONAL.
-         *
-         * @return the person's ethnicity
-         */
-        public abstract String getEthnicity();
-
-        /**
-         * Set the person's ethnicity, specified as a string. Container support for this field is
-         * OPTIONAL.
-         *
-         * @param ethnicity the person's ethnicity
-         */
-        public abstract void setEthnicity(String ethnicity);
-
-        /**
-         * Get the person's thoughts on fashion, specified as a string. Container support for this field
-         * is OPTIONAL.
-         *
-         * @return the person's thoughts on fashion
-         */
-        public abstract String getFashion();
-
-        /**
-         * Set the person's thoughts on fashion, specified as a string. Container support for this field
-         * is OPTIONAL.
-         *
-         * @param fashion the person's thoughts on fashion
-         */
-        public abstract void setFashion(String fashion);
-
-        /**
-         * Get the person's favorite food, specified as an List of strings. Container support for this
-         * field is OPTIONAL.
-         *
-         * @return the person's favorite food
-         */
-        public abstract List<String> getFood();
-
-        /**
-         * Set the person's favorite food, specified as an List of strings. Container support for this
-         * field is OPTIONAL.
-         *
-         * @param food the person's favorite food
-         */
-        public abstract void setFood(List<String> food);
-
-        /**
-         * Get a person's gender, specified as an {@link Gender}.
-         *
-         * @return the person's gender
-         */
-        public abstract Gender? getGender();
-
-        /**
-         * Set a person's gender, specified as an {@link Gender}.
-         *
-         * @param newGender the person's gender
-         */
-        public abstract void setGender(Gender? newGender);
-
-        /**
-         * Get a description of when the person is happiest, specified as a string. Container support for
-         * this field is OPTIONAL.
-         *
-         * @return a description of when the person is happiest
-         */
-        public abstract String getHappiestWhen();
-
-        /**
-         * Set a description of when the person is happiest, specified as a string. Container support for
-         * this field is OPTIONAL.
-         *
-         * @param happiestWhen a description of when the person is happiest
-         */
-        public abstract void setHappiestWhen(String happiestWhen);
-
-        /**
-         * Get if the person has used the current app. Container support for this field is OPTIONAL.
-         * Has app needs to take account of the context of the application that is performing the
-         * query on this person object.
-         * @return true the current app has been used
-         */
-        public abstract bool? getHasApp();
-
-        /**
-         * Set if the person has used the current app. Container support for this field is OPTIONAL.
-         *
-         * @param hasApp set true the current app has been used
-         */
-        public abstract void setHasApp(bool? hasApp);
-
-        /**
-         * Get a person's favorite heroes, specified as an Array of strings. Container support for this
-         * field is OPTIONAL.
-         *
-         * @return a list of the person's favorite heroes
-         */
-        public abstract List<String> getHeroes();
-
-        /**
-         * Set a person's favorite heroes, specified as an Array of strings. Container support for this
-         * field is OPTIONAL.
-         *
-         * @param heroes a list of the person's favorite heroes
-         */
-        public abstract void setHeroes(List<String> heroes);
-
-        /**
-         * Get the person's thoughts on humor, specified as a string. Container support for this field is
-         * OPTIONAL.
-         *
-         * @return the person's thoughts on humor
-         */
-        public abstract String getHumor();
-
-        /**
-         * Set the person's thoughts on humor, specified as a string. Container support for this field is
-         * OPTIONAL.
-         *
-         * @param humor the person's thoughts on humor
-         */
-        public abstract void setHumor(String humor);
-
-        /**
-         * Get A string ID that can be permanently associated with this person. Container support for this
-         * field is REQUIRED.
-         *
-         * @return the permanent ID of the person
-         */
-        public abstract String getId();
-
-        /**
-         * Set A string ID that can be permanently associated with this person. Container support for this
-         * field is REQUIRED.
-         *
-         * @param id the permanent ID of the person
-         */
-        public abstract void setId(String id);
-
-        /**
-         * Get a list of Instant messaging address for this Person. No official canonicalization rules
-         * exist for all instant messaging addresses, but Service Providers SHOULD remove all whitespace
-         * and convert the address to lowercase, if this is appropriate for the service this IM address is
-         * used for. Instead of the standard Canonical Values for type, this field defines the following
-         * Canonical Values to represent currently popular IM services: aim, gtalk, icq, xmpp, msn, skype,
-         * qq, and yahoo.
-         *
-         * @return A list of IM addresses
-         */
-        public abstract List<ListField> getIms();
-
-        /**
-         * Set a list of Instant messaging address for this Person. No official canonicalization rules
-         * exist for all instant messaging addresses, but Service Providers SHOULD remove all whitespace
-         * and convert the address to lowercase, if this is appropriate for the service this IM address is
-         * used for. Instead of the standard Canonical Values for type, this field defines the following
-         * Canonical Values to represent currently popular IM services: aim, gtalk, icq, xmpp, msn, skype,
-         * qq, and yahoo.
-         *
-         * @param ims a list ListFields representing IM addresses.
-         */
-        public abstract void setIms(List<ListField> ims);
-
-        /**
-         * Get the person's interests, hobbies or passions, specified as an List of strings. Container
-         * support for this field is OPTIONAL.
-         *
-         * @return the person's interests, hobbies or passions
-         */
-        public abstract List<String> getInterests();
-
-        /**
-         * Set the person's interests, hobbies or passions, specified as an List of strings. Container
-         * support for this field is OPTIONAL.
-         *
-         * @param interests the person's interests, hobbies or passions
-         */
-        public abstract void setInterests(List<String> interests);
-
-        /**
-         * Get the Person's favorite jobs, or job interests and skills, specified as a string. Container
-         * support for this field is OPTIONAL
-         *
-         * @return the Person's favorite jobs, or job interests and skills
-         */
-        public abstract String getJobInterests();
-
-        /**
-         * Set the Person's favorite jobs, or job interests and skills, specified as a string. Container
-         * support for this field is OPTIONAL
-         *
-         * @param jobInterests the Person's favorite jobs, or job interests and skills
-         */
-        public abstract void setJobInterests(String jobInterests);
-
-        /**
-         * Get a List of the languages that the person speaks as ISO 639-1 codes, specified as an List of
-         * strings. Container support for this field is OPTIONAL.
-         *
-         * @return a List of the languages that the person speaks
-         */
-        public abstract List<String> getLanguagesSpoken();
-
-        /**
-         * Set a List of the languages that the person speaks as ISO 639-1 codes, specified as an List of
-         * strings. Container support for this field is OPTIONAL.
-         *
-         * @param languagesSpoken a List of the languages that the person speaks
-         */
-        public abstract void setLanguagesSpoken(List<String> languagesSpoken);
-
-        /**
-         * The time this person was last updated.
-         *
-         * @return the last update time
-         */
-        public abstract DateTime? getUpdated();
-
-        /**
-         * Set the time this record was last updated.
-         *
-         * @param updated the last update time
-         */
-        public abstract void setUpdated(DateTime? updated);
-
-        /**
-         * Get a description of the person's living arrangement, specified as a string. Container support
-         * for this field is OPTIONAL.
-         *
-         * @return a description of the person's living arrangement
-         */
-        public abstract String getLivingArrangement();
-
-        /**
-         * Set a description of the person's living arrangement, specified as a string. Container support
-         * for this field is OPTIONAL.
-         *
-         * @param livingArrangement a description of the person's living arrangement
-         */
-        public abstract void setLivingArrangement(String livingArrangement);
-
-        /**
-         * Get a person's statement about who or what they are looking for, or what they are interested in
-         * meeting people for. Specified as an List of {@link Enum} with the enum's key referencing
-         * {@link Enum.LookingFor} Container support for this field is OPTIONAL.
-         *
-         * @return person's statement about who or what they are looking for
-         */
-        public abstract List<EnumTypes.LookingFor> getLookingFor();
-
-        /**
-         * Get a person's statement about who or what they are looking for, or what they are interested in
-         * meeting people for. Specified as an List of {@link Enum} with the enum's key referencing
-         * {@link Enum.LookingFor} Container support for this field is OPTIONAL.
-         *
-         * @param lookingFor person's statement about who or what they are looking for
-         */
-        public abstract void setLookingFor(List<EnumTypes.LookingFor> lookingFor);
-
-        /**
-         * Get the Person's favorite movies, specified as an List of strings. Container support for this
-         * field is OPTIONAL.
-         *
-         * @return the Person's favorite movies
-         */
-        public abstract List<String> getMovies();
-
-        /**
-         * Set the Person's favorite movies, specified as an List of strings. Container support for this
-         * field is OPTIONAL.
-         *
-         * @param movies the Person's favorite movies
-         */
-        public abstract void setMovies(List<String> movies);
-
-        /**
-         * Get the Person's favorite music, specified as an List of strings Container support for this
-         * field is OPTIONAL.
-         *
-         * @return Person's favorite music
-         */
-        public abstract List<String> getMusic();
-
-        /**
-         * Set the Person's favorite music, specified as an List of strings Container support for this
-         * field is OPTIONAL.
-         *
-         * @param music Person's favorite music
-         */
-        public abstract void setMusic(List<String> music);
-
-        /**
-         * Get the person's name Container support for this field is REQUIRED.
-         *
-         * @return the person's name
-         */
-        public abstract Name getName();
-
-        /**
-         * Set the person's name Container support for this field is REQUIRED.
-         *
-         * @param name the person's name
-         */
-        public abstract void setName(Name name);
-
-        /**
-         * Get the person's current network status. Specified as an {@link Enum} with the enum's key
-         * referencing {@link Enum.Presence}. Container support for this field is OPTIONAL.
-         *
-         * @return the person's current network status
-         */
-        public abstract EnumTypes.NetworkPresence getNetworkPresence();
-
-        /**
-         * Set the person's current network status. Specified as an {@link Enum} with the enum's key
-         * referencing {@link Enum.Presence}. Container support for this field is OPTIONAL.
-         *
-         * @param networkPresence the person's current network status
-         */
-        public abstract void setNetworkPresence(EnumTypes.NetworkPresence networkPresence);
-
-        /**
-         * Get the person's nickname. Container support for this field is REQUIRED.
-         *
-         * @return the person's nickname.
-         */
-        public abstract String getNickname();
-
-        /**
-         * Set the the person's nickname. Container support for this field is REQUIRED.
-         *
-         * @param nickname the person's nickname.
-         */
-        public abstract void setNickname(String nickname);
-
-        /**
-         * Get a list of current or past organizational affiliations of this Person.
-         * @return a list of Organization objects
-         */
-        public abstract List<Organization> getOrganizations();
-
-        /**
-         * Set a list of current or past organizational affiliations of this Person.
-         * @param organizations a list of Organisation objects
-         */
-        public abstract void setOrganizations(List<Organization> organizations);
-
-        /**
-         * Get a description of the person's pets Container support for this field is OPTIONAL.
-         *
-         * @return a description of the person's pets
-         */
-        public abstract String getPets();
-
-        /**
-         * Set a description of the person's pets Container support for this field is OPTIONAL.
-         *
-         * @param pets a description of the person's pets
-         */
-        public abstract void setPets(String pets);
-
-        /**
-         * Get the Phone numbers associated with the person.
-         *
-         * @return the Phone numbers associated with the person
-         */
-        public abstract List<ListField> getPhoneNumbers();
-
-        /**
-         * Set the Phone numbers associated with the person.
-         *
-         * @param phoneNumbers the Phone numbers associated with the person
-         */
-        public abstract void setPhoneNumbers(List<ListField> phoneNumbers);
-
-        /**
-         * URL of a photo of this person. The value SHOULD be a canonicalized URL, and MUST point to an
-         * actual image file (e.g. a GIF, JPEG, or PNG image file) rather than to a web page containing an
-         * image. Service Providers MAY return the same image at different sizes, though it is recognized
-         * that no standard for describing images of various sizes currently exists. Note that this field
-         * SHOULD NOT be used to send down arbitrary photos taken by this user, but specifically profile
-         * photos of the contact suitable for display when describing the contact.
-         *
-         * @return a list of Photos
-         */
-        public abstract List<ListField> getPhotos();
-
-        /**
-         * Set a list of Photos for the person.
-         * @see Person.getPhotos()
-         * @param photos a list of photos.
-         */
-        public abstract void setPhotos(List<ListField> photos);
-
-        /**
-         * Get the Person's political views, specified as a string. Container support for this field is
-         * OPTIONAL.
-         *
-         * @return the Person's political views
-         */
-        public abstract String getPoliticalViews();
-
-        /**
-         * Set the Person's political views, specified as a string. Container support for this field is
-         * OPTIONAL.
-         *
-         * @param politicalViews the Person's political views
-         */
-        public abstract void setPoliticalViews(String politicalViews);
-
-        /**
-         * Get the Person's profile song, specified as an {@link Url}. Container support for this field
-         * is OPTIONAL.
-         *
-         * @return the Person's profile song
-         */
-        public abstract Url getProfileSong();
-
-        /**
-         * Set the Person's profile song, specified as an {@link Url}. Container support for this field
-         * is OPTIONAL.
-         *
-         * @param profileSong the Person's profile song
-         */
-        public abstract void setProfileSong(Url profileSong);
-
-        /**
-         * Get the Person's profile video. Container support for this field is OPTIONAL.
-         *
-         * @return the Person's profile video
-         */
-        public abstract Url getProfileVideo();
-
-        /**
-         * Set the Person's profile video. Container support for this field is OPTIONAL.
-         *
-         * @param profileVideo the Person's profile video
-         */
-        public abstract void setProfileVideo(Url profileVideo);
-
-        /**
-         * Get the person's favorite quotes Container support for this field is OPTIONAL.
-         *
-         * @return the person's favorite quotes
-         */
-        public abstract List<String> getQuotes();
-
-        /**
-         * Set the person's favorite quotes. Container support for this field is OPTIONAL.
-         *
-         * @param quotes the person's favorite quotes
-         */
-        public abstract void setQuotes(List<String> quotes);
-
-        /**
-         * Get the person's relationship status. Container support for this field is OPTIONAL.
-         *
-         * @return the person's relationship status
-         */
-        public abstract String getRelationshipStatus();
-
-        /**
-         * Set the person's relationship status. Container support for this field is OPTIONAL.
-         *
-         * @param relationshipStatus the person's relationship status
-         */
-        public abstract void setRelationshipStatus(String relationshipStatus);
-
-        /**
-         * Get the person's relgion or religious views. Container support for this field is OPTIONAL.
-         *
-         * @return the person's relgion or religious views
-         */
-        public abstract String getReligion();
-
-        /**
-         * Set the person's relgion or religious views. Container support for this field is OPTIONAL.
-         *
-         * @param religion the person's relgion or religious views
-         */
-        public abstract void setReligion(String religion);
-
-        /**
-         * Get the person's comments about romance. Container support for this field is OPTIONAL.
-         *
-         * @return the person's comments about romance,
-         */
-        public abstract String getRomance();
-
-        /**
-         * Set a the person's comments about romance, Container support for this field is OPTIONAL.
-         *
-         * @param romance the person's comments about romance,
-         */
-        public abstract void setRomance(String romance);
-
-        /**
-         * Get what the person is scared of Container support for this field is OPTIONAL.
-         *
-         * @return what the person is scared of
-         */
-        public abstract String getScaredOf();
-
-        /**
-         * Set what the person is scared of Container support for this field is OPTIONAL.
-         *
-         * @param scaredOf what the person is scared of
-         */
-        public abstract void setScaredOf(String scaredOf);
-
-        /**
-         * Get the person's sexual orientation. Container support for this field is OPTIONAL.
-         *
-         * @return the person's sexual orientation
-         */
-        public abstract String getSexualOrientation();
-
-        /**
-         * Set the person's sexual orientation Container support for this field is OPTIONAL.
-         *
-         * @param sexualOrientation the person's sexual orientation
-         */
-        public abstract void setSexualOrientation(String sexualOrientation);
-
-        /**
-         * Get the person's smoking status. Container support for this field is OPTIONAL.
-         *
-         * @return the person's smoking status
-         */
-        public abstract EnumTypes.Smoker getSmoker();
-
-        /**
-         * Set the person's smoking status. Container support for this field is OPTIONAL.
-         *
-         * @param newSmoker the person's smoking status
-         */
-        public abstract void setSmoker(EnumTypes.Smoker newSmoker);
-
-        /**
-         * Get the person's favorite sports. Container support for this field is OPTIONAL.
-         *
-         * @return the person's favorite sports
-         */
-        public abstract List<String> getSports();
-
-        /**
-         * Set the person's favorite sports. Container support for this field is OPTIONAL.
-         *
-         * @param sports the person's favorite sports
-         */
-        public abstract void setSports(List<String> sports);
-
-        /**
-         * Get the person's status, headline or shoutout. Container support for this field is OPTIONAL.
-         *
-         * @return the person's status, headline or shoutout
-         */
-        public abstract String getStatus();
-
-        /**
-         * Set the person's status, headline or shoutout. Container support for this field is OPTIONAL.
-         *
-         * @param status the person's status, headline or shoutout
-         */
-        public abstract void setStatus(String status);
-
-        /**
-         * Get arbitrary tags about the person. Container support for this field is OPTIONAL.
-         *
-         * @return arbitrary tags about the person.
-         */
-        public abstract List<String> getTags();
-
-        /**
-         * Set arbitrary tags about the person. Container support for this field is OPTIONAL.
-         *
-         * @param tags arbitrary tags about the person.
-         */
-        public abstract void setTags(List<String> tags);
-
-        /**
-         * Get the Person's time zone, specified as the difference in minutes between Greenwich Mean Time
-         * (GMT) and the user's local time. Container support for this field is OPTIONAL.
-         *
-         * @return the Person's time zone
-         */
-        public abstract long? getUtcOffset();
-
-        /**
-         * Set the Person's time zone, specified as the difference in minutes between Greenwich Mean Time
-         * (GMT) and the user's local time. Container support for this field is OPTIONAL.
-         *
-         * @param utcOffset the Person's time zone
-         */
-        public abstract void setUtcOffset(long? utcOffset);
-
-        /**
-         * Get the person's turn offs. Container support for this field is OPTIONAL.
-         *
-         * @return the person's turn offs
-         */
-        public abstract List<String> getTurnOffs();
-
-        /**
-         * Set the person's turn offs. Container support for this field is OPTIONAL.
-         *
-         * @param turnOffs the person's turn offs
-         */
-        public abstract void setTurnOffs(List<String> turnOffs);
-
-        /**
-         * Get the person's turn ons. Container support for this field is OPTIONAL.
-         *
-         * @return the person's turn ons
-         */
-        public abstract List<String> getTurnOns();
-
-        /**
-         * Set the person's turn ons. Container support for this field is OPTIONAL.
-         *
-         * @param turnOns the person's turn ons
-         */
-        public abstract void setTurnOns(List<String> turnOns);
-
-        /**
-         * Get the person's favorite TV shows. Container support for this field is OPTIONAL.
-         *
-         * @return the person's favorite TV shows.
-         */
-        public abstract List<String> getTvShows();
-
-        /**
-         * Set the person's favorite TV shows. Container support for this field is OPTIONAL.
-         *
-         * @param tvShows the person's favorite TV shows.
-         */
-        public abstract void setTvShows(List<String> tvShows);
-
-        /**
-         * Get the URLs related to the person, their webpages, or feeds Container support for this field
-         * is OPTIONAL.
-         *
-         * @return the URLs related to the person, their webpages, or feeds
-         */
-        public abstract List<ListField> getUrls();
-
-        /**
-         * Set the URLs related to the person, their webpages, or feeds Container support for this field
-         * is OPTIONAL.
-         *
-         * @param urls the URLs related to the person, their webpages, or feeds
-         */
-        public abstract void setUrls(List<ListField> urls);
-
-        /**
-         * @return true if this person object represents the owner of the current page.
-         */
-        public abstract bool? getIsOwner();
-
-        /**
-         * Set the owner flag.
-         * @param isOwner the isOwnerflag
-         */
-        public abstract void setIsOwner(bool? isOwner);
-
-        /**
-         * Returns true if this person object represents the currently logged in user.
-         * @return true if the person accessing this object is a viewer.
-         */
-        public abstract bool? getIsViewer();
-
-        /**
-         * Returns true if this person object represents the currently logged in user.
-         * @param isViewer the isViewer Flag
-         */
-        public abstract void setIsViewer(bool? isViewer);
-
-
-        // Proxied fields
-
-        /**
-         * Get the person's profile URL. This URL must be fully qualified. Relative URLs will not work in
-         * gadgets. This field MUST be stored in the urls list with a type of "profile".
-         *
-         * Container support for this field is OPTIONAL.
-         *
-         * @return the person's profile URL
-         */
-        public abstract String getProfileUrl();
-
-        /**
-         * Set the person's profile URL. This URL must be fully qualified. Relative URLs will not work in
-         * gadgets. This field MUST be stored in the urls list with a type of "profile".
-         *
-         * Container support for this field is OPTIONAL.
-         *
-         * @param profileUrl the person's profile URL
-         */
-        public abstract void setProfileUrl(String profileUrl);
-
-        /**
-         * Get the person's photo thumbnail URL, specified as a string. This URL must be fully qualified.
-         * Relative URLs will not work in gadgets.
-         * This field MUST be stored in the photos list with a type of "thumbnail".
-         *
-         * Container support for this field is OPTIONAL.
-         *
-         * @return the person's photo thumbnail URL
-         */
-        public abstract String getThumbnailUrl();
-
-        /**
-         * Set the person's photo thumbnail URL, specified as a string. This URL must be fully qualified.
-         * Relative URLs will not work in gadgets.
-         * This field MUST be stored in the photos list with a type of "thumbnail".
-         *
-         * Container support for this field is OPTIONAL.
-         *
-         * @param thumbnailUrl the person's photo thumbnail URL
-         */
-        public abstract void setThumbnailUrl(String thumbnailUrl);
     } 
 }

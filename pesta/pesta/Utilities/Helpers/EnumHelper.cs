@@ -17,35 +17,32 @@
  * specific language governing permissions and limitations under the License.
  */
 #endregion
-
-using System.Collections;
+using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
-using Pesta.Engine.protocol.conversion;
+using System.ComponentModel;
+using System.Linq;
+using System.Text;
+using Pesta.Engine.social.model;
 
-namespace Pesta.Engine.social.spi
+namespace Pesta.Utilities.Helpers
 {
-    [DataContract(Name = "response", Namespace = BeanConverter.osNameSpace)]
-    public abstract class IRestfulCollection
+    public static class EnumHelper
     {
-        [DataMember]
-        public int startIndex { get; set; }
+        /// <summary>
+        /// Returns string specified by DescriptionAttribute, otherwise do the usual ToString()
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static string ToDescriptionString(this Enum obj)
+        {
+            var attribs = (DescriptionAttribute[])obj.GetType().GetField(obj.ToString()).GetCustomAttributes(typeof (DescriptionAttribute), false);
+            return attribs.Length > 0 ? attribs[0].Description : obj.ToString();
+        }
 
-        [DataMember]
-        public int totalResults { get; set; }
-
-        [DataMember]
-        public int itemsPerPage { get; set; }
-
-        [DataMember]
-        public bool isFiltered { get; set; }
-
-        [DataMember]
-        public bool isSorted { get; set; }
-
-        [DataMember]
-        public bool isUpdatedSince { get; set; }
-
-        public abstract object getEntry();
+        public static int ToInt(this Enum obj)
+        {
+            return Convert.ToInt32(obj);
+        }
     }
 }
+

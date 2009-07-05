@@ -42,7 +42,16 @@
     <Reference Include="System.Data.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Runtime.Serialization">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.ServiceModel.Web">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.XML" />
   </ItemGroup>
@@ -183,31 +192,33 @@
     <Compile Include="Engine\auth\AnonymousAuthenticationHandler.cs" />
     <Compile Include="Engine\common\uri\Uri.cs" />
     <Compile Include="Engine\common\uri\UriBuilder.cs" />
-    <Compile Include="Engine\social\core\model\AccountImpl.cs" />
-    <Compile Include="Engine\social\core\model\ActivityImpl.cs" />
-    <Compile Include="Engine\social\core\model\AddressImpl.cs" />
-    <Compile Include="Engine\social\core\model\BodyTypeImpl.cs" />
-    <Compile Include="Engine\social\core\model\EnumImpl.cs" />
-    <Compile Include="Engine\social\core\model\ListFieldImpl.cs" />
-    <Compile Include="Engine\social\core\model\MediaItemImpl.cs" />
-    <Compile Include="Engine\social\core\model\MessageImpl.cs" />
-    <Compile Include="Engine\social\core\model\NameImpl.cs" />
-    <Compile Include="Engine\social\core\model\OrganizationImpl.cs" />
-    <Compile Include="Engine\social\core\model\PersonImpl.cs" />
-    <Compile Include="Engine\social\core\model\UrlImpl.cs" />
+    <Compile Include="Engine\protocol\ContentTypes.cs" />
+    <Compile Include="Engine\protocol\conversion\BeanAtomConverter.cs" />
+    <Compile Include="Engine\protocol\conversion\BeanConverter.cs" />
+    <Compile Include="Engine\protocol\conversion\BeanJsonConverter.cs" />
+    <Compile Include="Engine\protocol\conversion\BeanXmlConverter.cs" />
+    <Compile Include="Engine\protocol\conversion\DataContractJSConverter.cs" />
+    <Compile Include="Engine\protocol\conversion\DictionarySerializer.cs" />
+    <Compile Include="Engine\protocol\conversion\JsonSurrogate.cs" />
+    <Compile Include="Engine\protocol\ProtocolException.cs" />
+    <Compile Include="Engine\protocol\RequestItem.cs" />
     <Compile Include="Engine\social\core\oauth\OAuthConsumerRequestAuthenticationHandler.cs" />
     <Compile Include="Engine\social\core\oauth\OAuthSecurityToken.cs" />
     <Compile Include="Engine\social\model\Account.cs" />
     <Compile Include="Engine\social\model\Activity.cs" />
     <Compile Include="Engine\social\model\Address.cs" />
     <Compile Include="Engine\social\model\BodyType.cs" />
-    <Compile Include="Engine\social\model\Enums.cs" />
+    <Compile Include="Engine\social\model\Drinker.cs" />
     <Compile Include="Engine\social\model\ListField.cs" />
+    <Compile Include="Engine\social\model\LookingFor.cs" />
     <Compile Include="Engine\social\model\MediaItem.cs" />
     <Compile Include="Engine\social\model\Message.cs" />
+    <Compile Include="Engine\social\model\MessageCollection.cs" />
     <Compile Include="Engine\social\model\Name.cs" />
+    <Compile Include="Engine\social\model\NetworkPresence.cs" />
     <Compile Include="Engine\social\model\Organization.cs" />
     <Compile Include="Engine\social\model\Person.cs" />
+    <Compile Include="Engine\social\model\Smoker.cs" />
     <Compile Include="Engine\social\model\Url.cs" />
     <Compile Include="Engine\social\oauth\IOAuthLookupService.cs" />
     <Compile Include="Engine\social\oauth\SampleContainerOAuthLookupService.cs" />
@@ -259,10 +270,14 @@
     </Compile>
     <Compile Include="Utilities\ASPNETMVC\HttpCompressionModule.cs" />
     <Compile Include="Utilities\ASPNETMVC\StaticFileHandler.cs" />
+    <Compile Include="Utilities\DateUtil.cs" />
     <Compile Include="Utilities\Dynamic.cs" />
+    <Compile Include="Utilities\Helpers\EnumHelper.cs" />
+    <Compile Include="Utilities\Helpers\JSONHelper.cs" />
+    <Compile Include="Utilities\Helpers\MD5Helper.cs" />
     <Compile Include="Utilities\Locale.cs" />
-    <Compile Include="Utilities\MD5Helper.cs" />
     <Compile Include="Utilities\PestaSettings.cs" />
+    <Compile Include="Utilities\Preconditions.cs" />
     <Compile Include="Utilities\Provider.cs" />
     <Compile Include="Utilities\Singleton.cs" />
     <Compile Include="Utilities\UnixTime.cs" />

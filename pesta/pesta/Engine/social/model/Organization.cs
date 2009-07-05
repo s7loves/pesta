@@ -18,22 +18,83 @@
  */
 #endregion
 using System;
-using Pesta.Engine.social.core.model;
+using System.Runtime.Serialization;
+using Pesta.Engine.protocol.conversion;
 using Pesta.Utilities;
 
 namespace Pesta.Engine.social.model
 {
-    /// <summary>
-    /// Summary description for Organization
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
-    /// </para>
-    /// </remarks>
-    [ImplementedBy(typeof(OrganizationImpl))]
-    public abstract class Organization
+    [DataContract(Namespace = BeanConverter.osNameSpace)]
+    public class Organization
     {
+        public Organization()
+        {
+            
+        }
+        public Organization(Address address, String description, DateTime? endDate, String field, String name,
+            String salary, DateTime? startDate, String subField, String title, String webpage, Organization.Type type)
+        {
+            this.address = address;
+            this.description = description;
+            this.endDate = endDate;
+            this.field = field;
+            this.name = name;
+            this.salary = salary;
+            this.startDate = startDate;
+            this.subField = subField;
+            this.title = title;
+            this.webpage = webpage;
+            this.type = type.ToString();
+        }
+        [DataMember(EmitDefaultValue = false)] public Address address { get; set; }
+        [DataMember(EmitDefaultValue = false)] public String description { get; set; }
+
+        public DateTime? endDate { get; set; }
+        [DataMember(Name = "endDate")]
+        private string _endDate
+        {
+            get
+            {
+                if (endDate.HasValue)
+                {
+                    return DateUtil.ToString(endDate.Value.ToUniversalTime());
+                }
+                return null;
+            }
+            set
+            {
+                endDate = DateUtil.Parse(value);
+            }
+        }
+        
+        [DataMember(EmitDefaultValue = false)] public String field { get; set; }
+        [DataMember(EmitDefaultValue = false)] public String name { get; set; }
+        [DataMember(EmitDefaultValue = false)] public String salary { get; set; }
+
+        public DateTime? startDate { get; set; }
+        [DataMember(Name = "startDate")]
+        private string _startDate
+        {
+            get
+            {
+                if (startDate.HasValue)
+                {
+                    return DateUtil.ToString(startDate.Value.ToUniversalTime());
+                }
+                return null;
+            } 
+            set
+            {
+                startDate = DateUtil.Parse(value);
+            }
+        }
+       
+        [DataMember(EmitDefaultValue = false)] public String subField { get; set; }
+        [DataMember(EmitDefaultValue = false)] public String title { get; set; }
+        [DataMember(EmitDefaultValue = false)] public String webpage { get; set; }
+        [DataMember(EmitDefaultValue = false)] public String type { get; set; }
+        [DataMember(EmitDefaultValue = false)] public bool? primary { get; set; }
+
         /**
         * Describes a current or past organizational affiliation of this contact. Service Providers that
         * support only a single Company Name and Job Title field should represent them with a single
@@ -85,223 +146,21 @@ namespace Pesta.Engine.social.model
             /** the name of the primary field. */
             public static readonly Field PRIMARY = new Field(12, "primary");
 
-            /**
-            * the name of this field.
-            */
-            private readonly String jsonString;
-
-            /**
-            * Construct a field based on the name of the field.
-            *
-            * @param jsonString the name of the field
-            */
-            protected Field(String jsonString)
+            public static Field GetByValue(string value)
             {
-                this.jsonString = jsonString;
+                return GetBaseByValue(value);
             }
 
             public override String ToString()
             {
-                return jsonString;
+                return Value;
             }
         }
 
-        /**
-        * Get the address of the organization, specified as an Address. Container support for this field
-        * is OPTIONAL.
-        *
-        * @return the Address of the organization
-        */
-        public abstract Address getAddress();
-
-        /**
-        * Set the address of the organization, specified as an Address. Container support for this field
-        * is OPTIONAL.
-        *
-        * @param address the address of the organization
-        */
-        public abstract void setAddress(Address address);
-
-        /**
-        * Get a description or notes about the person's work in the organization, specified as a string.
-        * This could be the courses taken by a student, or a more detailed description about a
-        * Organization role. Container support for this field is OPTIONAL.
-        *
-        * @return a description about the persons work in the organization
-        */
-        public abstract String getDescription();
-
-        /**
-        * Set a description or notes about the person's work in the organization, specified as a string.
-        * This could be the courses taken by a student, or a more detailed description about a
-        * Organization role. Container support for this field is OPTIONAL.
-        *
-        * @param description a description about the persons work in the organization
-        */
-        public abstract void setDescription(String description);
-
-        /**
-        * Get the date the person stopped at the organization, specified as a Date. A null date indicates
-        * that the person is still involved with the organization. Container support for this field is
-        * OPTIONAL.
-        *
-        * @return the date the person stopped at the organization
-        */
-        public abstract DateTime? getEndDate();
-
-        /**
-        * Set the date the person stopped at the organization, specified as a Date. A null date indicates
-        * that the person is still involved with the organization. Container support for this field is
-        * OPTIONAL.
-        *
-        * @param endDate the date the person stopped at the organization
-        */
-        public abstract void setEndDate(DateTime? endDate);
-
-        /**
-        * Get the field the organization is in, specified as a string. This could be the degree pursued
-        * if the organization is a school. Container support for this field is OPTIONAL.
-        *
-        * @return the field the organization is in
-        */
-        public abstract String getField();
-
-        /**
-        * Set the field the organization is in, specified as a string. This could be the degree pursued
-        * if the organization is a school. Container support for this field is OPTIONAL.
-        *
-        * @param field the field the organization is in
-        */
-        public abstract void setField(String field);
-
-        /**
-        * Get the name of the organization, specified as a string. For example, could be a school name or
-        * a job company. Container support for this field is OPTIONAL.
-        *
-        * @return the name of the organization
-        */
-        public abstract String getName();
-
-        /**
-        * Set the name of the organization, specified as a string. For example, could be a school name or
-        * a job company. Container support for this field is OPTIONAL.
-        *
-        * @param name the name of the organization
-        */
-        public abstract void setName(String name);
-
-        /**
-        * Get the salary the person receives from the organization, specified as a string. Container
-        * support for this field is OPTIONAL.
-        *
-        * @return the salary the person receives
-        */
-        public abstract String getSalary();
-
-        /**
-        * Set the salary the person receives from the organization, specified as a string. Container
-        * support for this field is OPTIONAL.
-        *
-        * @param salary the salary the person receives
-        */
-        public abstract void setSalary(String salary);
-
-        /**
-        * Get the date the person started at the organization, specified as a Date. Container support for
-        * this field is OPTIONAL.
-        *
-        * @return the start date at the organization
-        */
-        public abstract DateTime? getStartDate();
-
-        /**
-        * Set the date the person started at the organization, specified as a Date. Container support for
-        * this field is OPTIONAL.
-        *
-        * @param startDate the start date at the organization
-        */
-        public abstract void setStartDate(DateTime? startDate);
-
-        /**
-        * Get the subfield the Organization is in, specified as a string. Container support for this
-        * field is OPTIONAL.
-        *
-        * @return the subfield the Organization is in
-        */
-        public abstract String getSubField();
-
-        /**
-        * Set the subfield the Organization is in, specified as a string. Container support for this
-        * field is OPTIONAL.
-        *
-        * @param subField the subfield the Organization is in
-        */
-        public abstract void setSubField(String subField);
-
-        /**
-        * Get the title or role the person has in the organization, specified as a string. This could be
-        * graduate student, or software engineer. Container support for this field is OPTIONAL.
-        *
-        * @return the title or role the person has in the organization
-        */
-        public abstract String getTitle();
-
-        /**
-        * Set the title or role the person has in the organization, specified as a string. This could be
-        * graduate student, or software engineer. Container support for this field is OPTIONAL.
-        *
-        * @param title the title or role the person has in the organization
-        */
-        public abstract void setTitle(String title);
-
-        /**
-        * Get a webpage related to the organization, specified as a string. Container support for this
-        * field is OPTIONAL.
-        *
-        * @return the URL of a webpage related to the organization
-        */
-        public abstract String getWebpage();
-
-        /**
-        * Get a webpage related to the organization, specified as a string. Container support for this
-        * field is OPTIONAL.
-        *
-        * @param webpage the URL of a webpage related to the organization
-        */
-        public abstract void setWebpage(String webpage);
-
-        /**
-        * Get the type of field for this instance, usually used to label the preferred function of the
-        * given contact information. The type of organization, with Canonical Values <em>job</em> and
-        * <em>school</em>.
-        *
-        * @return the type of the field
-        */
-        public abstract String getType();
-
-        /**
-        * Set the type of field for this instance, usually used to label the preferred function of the
-        * given contact information. The type of organization, with Canonical Values <em>job</em> and
-        * <em>school</em>.
-        *
-        * @param type the type of the field
-        */
-        public abstract void setType(String type);
-
-        /**
-        * Get Boolean value indicating whether this instance of the Plural Field is the primary or
-        * preferred Organization.
-        *
-        * @return true if this is a primary or preferred value
-        */
-        public abstract bool? getPrimary();
-
-        /**
-        * Set Boolean value indicating whether this instance of the Plural Field is the primary or
-        * preferred Organization.
-        *
-        * @param primary true if this is a primary or preferred value
-        */
-        public abstract void setPrimary(bool? primary);
+        public enum Type
+        {
+            Job,
+            School
+        }
     } 
 }

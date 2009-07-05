@@ -19,22 +19,44 @@
 #endregion
 
 using System;
-using Pesta.Engine.social.core.model;
+using System.Runtime.Serialization;
+using System.Xml.Serialization;
+using Pesta.Engine.protocol.conversion;
 using Pesta.Utilities;
 
 namespace Pesta.Engine.social.model
 {
-    /// <summary>
-    /// Summary description for Name
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
-    /// </para>
-    /// </remarks>
-    [ImplementedBy(typeof(NameImpl))]
-    public abstract class Name
+    [XmlRoot(ElementName = "name", Namespace = BeanConverter.osNameSpace)]
+    [DataContract(Name = "name", Namespace = BeanConverter.osNameSpace)]
+    public class Name
     {
+        [DataMember(EmitDefaultValue = false)] 
+        public String additionalName { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public String familyName { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public String givenName { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public String honorificPrefix { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public String honorificSuffix { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public String formatted { get; set; }
+
+        public Name()
+        {
+            
+        }
+        public Name(String formatted)
+        {
+            this.formatted = formatted;
+        }
+
+        public Name(string firstName, string lastName)
+        {
+            this.formatted = firstName + " " + lastName;
+        }
+
         public class Field : EnumBaseType<Field>
         {
             /// <summary>
@@ -43,7 +65,6 @@ namespace Pesta.Engine.social.model
             public Field(int key, string value)
                 : base(key, value)
             {
-
             }
             public static readonly Field ADDITIONAL_NAME = new Field(1, "additionalName");
             public static readonly Field FAMILY_NAME = new Field(2, "familyName");
@@ -52,41 +73,15 @@ namespace Pesta.Engine.social.model
             public static readonly Field HONORIFIC_SUFFIX = new Field(5, "honorificSuffix");
             public static readonly Field FORMATTED = new Field(6, "formatted");
 
-            private readonly String jsonString;
-
-            protected Field(String jsonString)
+            public static Field GetByValue(string value)
             {
-                this.jsonString = jsonString;
+                return GetBaseByValue(value);
             }
 
             public override String ToString()
             {
-                return jsonString;
+                return Value;
             }
         }
-
-        public abstract String getFormatted();
-
-        public abstract void setFormatted(String formatted);
-
-        public abstract String getAdditionalName();
-
-        public abstract void setAdditionalName(String additionalName);
-
-        public abstract String getFamilyName();
-
-        public abstract void setFamilyName(String familyName);
-
-        public abstract String getGivenName();
-
-        public abstract void setGivenName(String givenName);
-
-        public abstract String getHonorificPrefix();
-
-        public abstract void setHonorificPrefix(String honorificPrefix);
-
-        public abstract String getHonorificSuffix();
-
-        public abstract void setHonorificSuffix(String honorificSuffix);
     } 
 }
