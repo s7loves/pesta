@@ -35,21 +35,13 @@
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Elmah, Version=1.0.10617.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\OpenSocial\elmah\bin\net-3.5\Release\Elmah.dll</HintPath>
-    </Reference>
     <Reference Include="IKVM.OpenJDK.ClassLibrary, Version=0.38.0.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\ikvm\ikvm-0.38.0.0\bin\IKVM.OpenJDK.ClassLibrary.dll</HintPath>
+      <HintPath>J:\ikvm\ikvm-0.38.0.0\bin\IKVM.OpenJDK.ClassLibrary.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.Runtime, Version=0.38.0.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\ikvm\ikvm-0.38.0.0\bin\IKVM.Runtime.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.Runtime.JNI, Version=0.38.0.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\ikvm\ikvm-0.38.0.0\bin\IKVM.Runtime.JNI.dll</HintPath>
+      <HintPath>J:\ikvm\ikvm-0.38.0.0\bin\IKVM.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Build.Engine" />
     <Reference Include="Microsoft.Build.Framework" />
@@ -57,7 +49,7 @@
     <Reference Include="Microsoft.Build.Utilities" />
     <Reference Include="shindig, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\ikvm\ikvm-0.38.0.0\bin\shindig.dll</HintPath>
+      <HintPath>..\..\pestaServer\pestaServer - Copy\bin\shindig.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -103,7 +95,9 @@
     <Reference Include="System.Web.Mobile" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActionFilters\AuthenticationFilter.cs" />
     <Compile Include="ActionFilters\CompressFilter.cs" />
+    <Compile Include="ActionFilters\MinifyFilter.cs" />
     <Compile Include="Controllers\apiController.cs" />
     <Compile Include="Controllers\concatController.cs" />
     <Compile Include="Controllers\errorController.cs" />
@@ -243,16 +237,12 @@
     <Compile Include="Models\gadgets\variables\Substitutions.cs" />
     <Compile Include="Models\gadgets\variables\UserPrefSubstituter.cs" />
     <Compile Include="Models\gadgets\variables\VariableSubstituter.cs" />
-    <Compile Include="Models\social\core\util\BeanAtomConverter.cs" />
-    <Compile Include="Models\social\core\util\BeanJsonConverter.cs" />
-    <Compile Include="Models\social\core\util\BeanXmlConverter.cs" />
     <Compile Include="Models\social\service\ActivityHandler.cs" />
     <Compile Include="Models\social\service\AppDataHandler.cs" />
-    <Compile Include="Models\social\service\BeanConverter.cs" />
     <Compile Include="Models\social\service\DataRequestHandler.cs" />
     <Compile Include="Models\social\service\IHandlerDispatcher.cs" />
+    <Compile Include="Models\social\service\MessageHandler.cs" />
     <Compile Include="Models\social\service\PersonHandler.cs" />
-    <Compile Include="Models\social\service\RequestItem.cs" />
     <Compile Include="Models\social\service\ResponseItem.cs" />
     <Compile Include="Models\social\service\RestfulRequestItem.cs" />
     <Compile Include="Models\social\service\RpcRequestItem.cs" />
@@ -461,16 +451,17 @@
     <None Include="config\certs\myrsacert.pfx" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\pesta\pesta\pesta.csproj">
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\pesta\pesta.csproj">
       <Project>{6CD14C34-807B-4C7B-B110-79AFCF65E49B}</Project>
       <Name>pesta</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-  </ItemGroup>
-  <ItemGroup>
     <Folder Include="Models\common\auth\" />
     <Folder Include="Models\gadgets\parse\" />
+    <Folder Include="Models\social\core\util\" />
     <Folder Include="Views\Shared\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
@@ -480,7 +471,7 @@
   <Target Name="BeforeBuild">
   </Target>
   <Target Name="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
-    <YuiCompress Files="@(JavaScriptContent)" Type="JS" />
+    <!--YuiCompress Files="@(JavaScriptContent)" Type="JS" /-->
     <!--YuiCompress Files="@(CssContent)" Type="CSS" /-->
     <AspNetCompiler VirtualPath="temp" PhysicalPath="$(ProjectDir)\..\$(ProjectName)" />
   </Target>

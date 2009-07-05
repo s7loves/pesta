@@ -22,17 +22,11 @@ using System.IO;
 using System.Collections.Generic;
 using System.Web;
 using Pesta.Engine.auth;
+using Pesta.Engine.protocol;
+using Pesta.Engine.protocol.conversion;
 
 namespace pestaServer.Models.social.service
 {
-    /// <summary>
-    /// Summary description for RestfulRequestItem
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
-    /// </para>
-    /// </remarks>
     public class RestfulRequestItem : RequestItem
     {
         private const String X_HTTP_METHOD_OVERRIDE = "X-HTTP-Method-Override";
@@ -205,16 +199,16 @@ namespace pestaServer.Models.social.service
             }
         }
 
-        public override object getTypedParameter(String parameterName, Type dataTypeClass)
+        public override T getTypedParameter<T>(String parameterName)
         {
             // We assume the the only typed parameter in a restful request is the post-content
             // and so we simply ignore the parameter name
-            return getTypedParameters(dataTypeClass);
+            return getTypedParameters<T>();
         }
 
-        public override object getTypedParameters(Type dataTypeClass)
+        public override T getTypedParameters<T>()
         {
-            return converter.ConvertToObject(postData, dataTypeClass);
+            return converter.ConvertToObject<T>(postData);
         }
 
         public Dictionary<String, HashSet<String>> GetParameters()

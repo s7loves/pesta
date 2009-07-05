@@ -21,6 +21,8 @@ using System;
 using Jayrock.Json;
 using System.Collections.Generic;
 using Pesta.Engine.auth;
+using Pesta.Engine.protocol;
+using Pesta.Engine.protocol.conversion;
 using Pesta.Engine.social;
 using Pesta.Engine.social.spi;
 
@@ -70,7 +72,7 @@ namespace pestaServer.Models.social.service
             }
             catch (JsonException je)
             {
-                throw new SocialSpiException(ResponseError.BAD_REQUEST, je.Message, je);
+                throw new ProtocolException(ResponseError.BAD_REQUEST, je.Message);
             }
         }
 
@@ -82,7 +84,7 @@ namespace pestaServer.Models.social.service
             }
             catch (JsonException je)
             {
-                throw new SocialSpiException(ResponseError.BAD_REQUEST, je.Message, je);
+                throw new ProtocolException(ResponseError.BAD_REQUEST, je.Message);
             }
         }
 
@@ -109,25 +111,25 @@ namespace pestaServer.Models.social.service
             }
             catch (JsonException je)
             {
-                throw new SocialSpiException(ResponseError.BAD_REQUEST, je.Message, je);
+                throw new ProtocolException(ResponseError.BAD_REQUEST, je.Message);
             }
         }
 
-        public override object getTypedParameter(String parameterName, Type dataTypeClass)
+        public override T getTypedParameter<T>(String parameterName)
         {
             try
             {
-                return converter.ConvertToObject(data[parameterName].ToString(), dataTypeClass);
+                return converter.ConvertToObject<T>(data[parameterName].ToString());
             }
             catch (JsonException je)
             {
-                throw new SocialSpiException(ResponseError.BAD_REQUEST, je.Message, je);
+                throw new ProtocolException(ResponseError.BAD_REQUEST, je.Message);
             }
         }
 
-        public override object getTypedParameters(Type dataTypeClass)
+        public override T getTypedParameters<T>()
         {
-            return converter.ConvertToObject(data.ToString(), dataTypeClass);
+            throw new NotImplementedException();
         }
 
 

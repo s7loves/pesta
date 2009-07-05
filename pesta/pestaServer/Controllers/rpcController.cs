@@ -26,40 +26,43 @@ using Jayrock.Json;
 using Jayrock.Json.Conversion;
 using Pesta.Engine.auth;
 using Pesta.Engine.common.util;
-using Pesta.Engine.social;
+using Pesta.Engine.protocol;
 using Pesta.Engine.social.spi;
 using pestaServer.ActionFilters;
-using pestaServer.Models.social.core.util;
 using pestaServer.Models.social.service;
 
 namespace pestaServer.Controllers
 {
-    public class RpcController : ApiController
+    public class rpcController : ApiController
     {
-        //
-        // GET: /rpc/
+        private static readonly String REQUEST_PARAM = "request";
+
+        private static readonly int SC_JSON_PARSE_ERROR = -32700;
+
         [CompressFilter]
+        [AuthenticationFilter]
         public void Index()
         {
             HttpRequest request = System.Web.HttpContext.Current.Request;
             HttpResponse response = System.Web.HttpContext.Current.Response;
             string method = request.HttpMethod;
+
             if (method == "POST")
             {
-                ISecurityToken token = GetSecurityToken(System.Web.HttpContext.Current);
+                ISecurityToken token = getSecurityToken(System.Web.HttpContext.Current, Request.RawUrl);
                 if (token == null)
                 {
-                    SendSecurityError(response);
+                    sendSecurityError(response);
                     return;
                 }
 
                 setCharacterEncodings(request, response);
-                response.ContentType = "application/json";
+                Response.ContentType = "application/json";
 
                 try
                 {
                     String content;
-                    using (StreamReader reader = new StreamReader(request.InputStream))
+                    using (StreamReader reader = new StreamReader(Request.InputStream))
                     {
                         content = reader.ReadToEnd();
                     }
@@ -68,35 +71,35 @@ namespace pestaServer.Controllers
                     {
                         // Is a batch
                         JsonArray batch = JsonConvert.Import(content) as JsonArray;
-                        DispatchBatch(batch, response, token);
+                        dispatchBatch(batch, response, token);
                     }
                     else
                     {
                         JsonObject requestObj = JsonConvert.Import(content) as JsonObject;
-                        Dispatch(requestObj, response, token);
+                        dispatch(requestObj, response, token);
                     }
                 }
-                catch (JsonException je)
+                catch (Exception je)
                 {
-                    SendBadRequest(je, response);
+                    sendBadRequest(je, response);
                 }
             }
             else if (method == "GET")
             {
-                ISecurityToken token = GetSecurityToken(System.Web.HttpContext.Current);
+                ISecurityToken token = getSecurityToken(System.Web.HttpContext.Current, Request.RawUrl);
                 if (token == null)
                 {
-                    SendSecurityError(response);
+                    sendSecurityError(response);
                     return;
                 }
-                
+
                 setCharacterEncodings(request, response);
                 JsonObject requestObj = JsonConversionUtil.FromRequest(request);
-                Dispatch(requestObj, response, token);
+                dispatch(requestObj, response, token);
             }
         }
 
-        private void DispatchBatch(JsonArray batch, HttpResponse servletResponse, ISecurityToken token)
+        protected void dispatchBatch(JsonArray batch, HttpResponse response, ISecurityToken token)
         {
             // Use linked hash map to preserve order
             List<IAsyncResult> responses = new List<IAsyncResult>(batch.Length);
@@ -114,7 +117,7 @@ namespace pestaServer.Controllers
 
             // Resolve each Future into a response.
             // TODO: should use shared deadline across each request
-            JsonArray result = new JsonArray();
+            List<Object> result = new List<object>();
             for (int i = 0; i < batch.Length; i++)
             {
                 JsonObject batchObj = batch.GetObject(i);
@@ -123,12 +126,12 @@ namespace pestaServer.Controllers
                 {
                     key = batchObj["id"] as String;
                 }
-                result.Put(GetJsonResponse(key, GetResponseItem(responses[i])));
+                result.Add(getJsonResponse(key, getResponseItem(responses[i])));
             }
-            servletResponse.Output.Write(result.ToString());
+            response.Output.Write(jsonConverter.ConvertToString(result));
         }
 
-        private void Dispatch(JsonObject request, HttpResponse servletResponse, ISecurityToken token)
+        private void dispatch(JsonObject request, HttpResponse servletResponse, ISecurityToken token)
         {
             String key = null;
             if (request.Contains("id"))
@@ -139,87 +142,118 @@ namespace pestaServer.Controllers
 
             // Resolve each Future into a response.
             // TODO: should use shared deadline across each request
-            ResponseItem response = GetResponseItem(HandleRequestItem(requestItem));
-            JsonObject result = GetJsonResponse(key, response);
+            ResponseItem response = getResponseItem(HandleRequestItem(requestItem));
+            Object result = getJsonResponse(key, response);
 
-            servletResponse.Output.Write(result.ToString());
+            servletResponse.Output.Write(jsonConverter.ConvertToString(result));
         }
 
-        private static JsonObject GetJsonResponse(String key, ResponseItem responseItem)
+        Object getJsonResponse(String key, ResponseItem responseItem)
         {
-            JsonObject result = new JsonObject();
+            var result = new Dictionary<string, object>();
             if (key != null)
             {
-                result.Put("id", key);
+                result.Add("id", key);
             }
-            if (responseItem.getError() != null)
+            if (responseItem.getErrorCode() < 200 ||
+                    responseItem.getErrorCode() >= 400)
             {
-                result.Put("error", GetErrorJson(responseItem));
+                result.Add("error", getErrorJson(responseItem));
             }
             else
             {
                 Object response = responseItem.getResponse();
-                JsonObject converted = (JsonObject)BeanJsonConverter.ConvertToJson(response);
-
-                if (response is DataCollection)
+                if (response != null &&
+                    response is DataCollection)
                 {
-                    if (converted.Contains("entry"))
-                    {
-                        result.Put("data", converted["entry"]);
-                    }
+                    result.Add("data", ((DataCollection)response).entry);
                 }
-                else if (response != null &&
-                    response.GetType().IsGenericType &&
-                    response.GetType().GetGenericTypeDefinition() == typeof(RestfulCollection<>))
+                else if (response != null && (response is IRestfulCollection))
                 {
-                    JsonObject map = new JsonObject();
-                    IRestfulCollection collection = (IRestfulCollection) response;
-                    map.Put("startIndex", collection.getStartIndex());
-                    map.Put("totalResults", collection.getTotalResults());
-                    map.Put("list", converted["entry"]);
-                    result.Put("data", map);
+                    var map = new Dictionary<string, object>();
+                    var collection = (IRestfulCollection)response;
+                    map.Add("startIndex", collection.startIndex);
+                    map.Add("totalResults", collection.totalResults);
+                    map.Add("list", collection.getEntry());
+                    result.Add("data", map);
                 }
                 else
                 {
-                    result.Put("data", converted);
+                    result.Add("data", response);
                 }
+                
             }
             return result;
         }
 
-        private void SendBadRequest(Exception t, HttpResponse response)
-        {
-            SendError(response, new ResponseItem(ResponseError.BAD_REQUEST,
-                                                 "Invalid batch - " + t.Message));
-        }
+        private static readonly Dictionary<int, String> errorTitles = new Dictionary<int, string>
+                    {
+                        {(int)HttpStatusCode.NotImplemented, "notImplemented"},
+                        {(int)HttpStatusCode.Unauthorized, "unauthorized"},
+                        {(int)HttpStatusCode.Forbidden, "forbidden"},
+                        {(int)HttpStatusCode.BadRequest, "badRequest"},
+                        {(int)HttpStatusCode.InternalServerError, "internalError"},
+                        {(int)HttpStatusCode.ExpectationFailed, "limitExceeded"}
+                    };
 
-        private static JsonObject GetErrorJson(ResponseItem responseItem)
+        private Object getErrorJson(ResponseItem responseItem)
         {
-            JsonObject error = new JsonObject();
-            error.Put("code", responseItem.getError().getHttpErrorCode());
+            Dictionary<String, Object> error = new Dictionary<String, Object>();
+            error.Add("code", responseItem.getErrorCode());
 
-            String message = responseItem.getError().ToString();
-            if (!String.IsNullOrEmpty(responseItem.getErrorMessage()))
+            String message = errorTitles[responseItem.getErrorCode()];
+            if (message == null)
             {
-                message += ": " + responseItem.getErrorMessage();
+                message = responseItem.getErrorMessage();
             }
-            error.Put("message", message);
+            else
+            {
+                if (!string.IsNullOrEmpty(responseItem.getErrorMessage()))
+                {
+                    message += ": " + responseItem.getErrorMessage();
+                }
+            }
+
+            if (!string.IsNullOrEmpty(message))
+            {
+                error.Add("message", message);
+            }
+
+            if (responseItem.getResponse() != null)
+            {
+                error.Add("data", responseItem.getResponse());
+            }
+
             return error;
         }
 
-        protected override void SendError(HttpResponse response, ResponseItem responseItem)
+        protected override void sendError(HttpResponse servletResponse, ResponseItem responseItem)
         {
             try
             {
-                JsonObject error = GetErrorJson(responseItem);
-                response.Output.Write(error.ToString());
+                Object error = getErrorJson(responseItem);
+                Response.Output.Write(error.ToString());
             }
             catch (JsonException je)
             {
                 // This really shouldn't ever happen
-                response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                response.StatusDescription = "Error generating error response " + je.Message;
+                Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                Response.StatusDescription = "Error generating error response " + je.Message;
             }
         }
+
+        private void sendBadRequest(Exception t, HttpResponse response)
+        {
+            sendError(response, new ResponseItem((int)HttpStatusCode.BadRequest,
+                "Invalid batch - " + t.Message));
+        }
+
+        private void sendJsonParseError(JsonException e, HttpResponse response)
+        {
+            sendError(response, new ResponseItem(SC_JSON_PARSE_ERROR,
+                "Invalid JSON - " + e.Message));
+        }
     }
+
+
 }

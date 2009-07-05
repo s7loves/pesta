@@ -18,19 +18,22 @@
  */
 #endregion
 using System;
-using System.Web;
+using System.Linq;
+using System.Net;
 using System.Collections.Generic;
 using Jayrock.Json;
 using Jayrock.Json.Conversion;
-using System.IO;
 using Pesta.Engine.auth;
+using Pesta.Engine.common;
+using Pesta.Engine.protocol;
+using Pesta.Engine.protocol.conversion;
 using Pesta.Engine.social;
 using Pesta.Engine.social.model;
 using Pesta.Engine.social.spi;
-using pestaServer.Models.social.core.util;
 using pestaServer.Models.social.service;
+using Activity=Pesta.Engine.social.model.Activity;
 
-    /// <summary>
+/// <summary>
     /// Summary description for JsonDbOpensocialService
     /// </summary>
     /// <remarks>
@@ -38,27 +41,22 @@ using pestaServer.Models.social.service;
     ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
     /// </para>
     /// </remarks>
-    public class JsonDbOpensocialService : IPersonService, IActivityService, IAppDataService
+    public class JsonDbOpensocialService : IPersonService, IActivityService, IAppDataService, IMessagesService
     {
-        private const string Jsondb = "gadgets/files/sampledata/canonicaldb.json";
-        private readonly static string DbLocation = HttpContext.Current.Server.MapPath(HttpContext.Current.Request.ApplicationPath) + Jsondb;
         public readonly static JsonDbOpensocialService Instance = new JsonDbOpensocialService();
 
         private JsonDbOpensocialService()
         {
-            using (StreamReader reader = new StreamReader(DbLocation))
-            {
-                String content = reader.ReadToEnd();
-                this.db = JsonConvert.Import(content) as JsonObject;
-            }
-            this.converter = new BeanJsonConverter();
+            String content = ResourceLoader.GetContent(SampleContainerHandler.Jsondb);
+            db = JsonConvert.Import(content) as JsonObject;
+            converter = new BeanJsonConverter();
         }
         private class NameComparator : IComparer<Person>
         {
             public int Compare(Person person, Person person1)
             {
-                String name = person.getName().getFormatted();
-                String name1 = person1.getName().getFormatted();
+                String name = person.name.formatted;
+                String name1 = person1.name.formatted;
                 return name.CompareTo(name1);
             }
         }
@@ -76,7 +74,7 @@ using pestaServer.Models.social.service;
         /**
         * db["activities"] -> Array<Person>
         */
-        private static readonly String PEOPLE_TABLE = "people";
+    public static readonly String PEOPLE_TABLE = "people";
 
         /**
         * db["people"] -> Dictionary<Person.Id, Array<Activity>>
@@ -92,6 +90,16 @@ using pestaServer.Models.social.service;
         * db["friendLinks"] -> Dictionary<Person.Id, Array<Person.Id>>
         */
         private static readonly String FRIEND_LINK_TABLE = "friendLinks";
+
+        /**
+        * db["messages"] -> Map<Person.Id, Array<Message>>
+        */
+        private static readonly String MESSAGE_TABLE = "messages";
+
+        /**
+        * db["passwords"] -> Map<Person.Id, String>
+        */
+        private static readonly String PASSWORDS_TABLE = "passwords";
 
         public JsonObject getDb()
         {
@@ -136,7 +144,7 @@ using pestaServer.Models.social.service;
             }
             catch (Exception je)
             {
-                throw new SocialSpiException(ResponseError.INTERNAL_ERROR, je.Message, je);
+                throw new ProtocolException(ResponseError.INTERNAL_ERROR, je.Message);
             }
         }
 
@@ -167,7 +175,7 @@ using pestaServer.Models.social.service;
             }
             catch (Exception je)
             {
-                throw new SocialSpiException(ResponseError.INTERNAL_ERROR, je.Message, je);
+                throw new ProtocolException(ResponseError.INTERNAL_ERROR, je.Message);
             }
         }
 
@@ -191,11 +199,11 @@ using pestaServer.Models.social.service;
                         }
                     }
                 }
-                throw new SocialSpiException(ResponseError.BAD_REQUEST, "Activity not found");
+                throw new ProtocolException(ResponseError.BAD_REQUEST, "Activity not found");
             }
             catch (Exception je)
             {
-                throw new SocialSpiException(ResponseError.INTERNAL_ERROR, je.Message, je);
+                throw new ProtocolException(ResponseError.INTERNAL_ERROR, je.Message);
             }
         }
 
@@ -230,7 +238,7 @@ using pestaServer.Models.social.service;
             }
             catch (Exception je)
             {
-                throw new SocialSpiException(ResponseError.INTERNAL_ERROR, je.Message, je);
+                throw new ProtocolException(ResponseError.INTERNAL_ERROR, je.Message);
             }
         }
 
@@ -255,7 +263,7 @@ using pestaServer.Models.social.service;
             }
             catch (Exception je)
             {
-                throw new SocialSpiException(ResponseError.INTERNAL_ERROR, je.Message, je);
+                throw new ProtocolException(ResponseError.INTERNAL_ERROR, je.Message);
             }
         }
 
@@ -304,7 +312,7 @@ using pestaServer.Models.social.service;
             }
             catch (Exception je)
             {
-                throw new SocialSpiException(ResponseError.INTERNAL_ERROR, je.Message, je);
+                throw new ProtocolException(ResponseError.INTERNAL_ERROR, je.Message);
             }
         }
 
@@ -325,11 +333,11 @@ using pestaServer.Models.social.service;
                         }
                     }
                 }
-                throw new SocialSpiException(ResponseError.BAD_REQUEST, "Person not found");
+                throw new ProtocolException(ResponseError.BAD_REQUEST, "Person not found");
             }
             catch (Exception je)
             {
-                throw new SocialSpiException(ResponseError.INTERNAL_ERROR, je.Message, je);
+                throw new ProtocolException(ResponseError.INTERNAL_ERROR, je.Message);
             }
         }
 
@@ -373,7 +381,7 @@ using pestaServer.Models.social.service;
             }
             catch (Exception je)
             {
-                throw new SocialSpiException(ResponseError.INTERNAL_ERROR, je.Message, je);
+                throw new ProtocolException(ResponseError.INTERNAL_ERROR, je.Message);
             }
         }
 
@@ -400,7 +408,7 @@ using pestaServer.Models.social.service;
             }
             catch (Exception je)
             {
-                throw new SocialSpiException(ResponseError.INTERNAL_ERROR, je.Message, je);
+                throw new ProtocolException(ResponseError.INTERNAL_ERROR, je.Message);
             }
         }
 
@@ -427,7 +435,7 @@ using pestaServer.Models.social.service;
             }
             catch (Exception je)
             {
-                throw new SocialSpiException(ResponseError.INTERNAL_ERROR, je.Message, je);
+                throw new ProtocolException(ResponseError.INTERNAL_ERROR, je.Message);
             }
         }
 
@@ -489,7 +497,7 @@ using pestaServer.Models.social.service;
                 fields.CopyTo(datafields);
                 inobject = new JsonObject(inobject, datafields);
             }
-            return converter.ConvertToObject(inobject.ToString(), typeof(Activity)) as Activity;
+            return converter.ConvertToObject<Activity>(inobject.ToString());
         }
 
         private JsonObject ConvertFromActivity(Activity activity, HashSet<String> fields)
@@ -507,6 +515,125 @@ using pestaServer.Models.social.service;
                 fields.CopyTo(datafields);
                 inobject = new JsonObject(inobject, datafields);
             }
-            return converter.ConvertToObject(inobject.ToString(), typeof(Person)) as Person;
+            return converter.ConvertToObject<Person>(inobject.ToString());
+        }
+
+        public RestfulCollection<MessageCollection> getMessageCollections(UserId userId, IEnumerable<string> fields, CollectionOptions options, ISecurityToken token)
+        {
+            try 
+            {
+                List<MessageCollection> result = new List<MessageCollection>();
+                JsonObject messageCollections = db.getJSONObject(MESSAGE_TABLE).getJSONObject(
+                userId.getUserId(token));
+                foreach(String msgCollId in messageCollections.Names)
+                {
+                    JsonObject msgColl = messageCollections.getJSONObject(msgCollId);
+                    msgColl.Put("id", msgCollId);
+                    JsonArray messages = (JsonArray)msgColl["messages"];
+                    int numMessages = (messages == null) ? 0 : messages.Length;
+                    msgColl.Put("total", numMessages.ToString());
+                    msgColl.Put("unread", numMessages.ToString());
+
+                    result.Add(filterFields<MessageCollection>(msgColl, fields));
+                }
+                return new RestfulCollection<MessageCollection>(result);
+            } 
+            catch (JsonException je) 
+            {
+                throw new ProtocolException((int)HttpStatusCode.InternalServerError, je.Message, je);
+            }
+        }
+
+        public MessageCollection createMessageCollection(UserId userId, MessageCollection msgCollection, ISecurityToken token)
+        {
+            throw new ProtocolException((int)HttpStatusCode.NotImplemented,
+                                "this functionality is not yet available");
+        }
+
+        public void modifyMessageCollection(UserId userId, MessageCollection msgCollection, ISecurityToken token)
+        {
+            throw new ProtocolException((int)HttpStatusCode.NotImplemented,
+                            "this functionality is not yet available");
+        }
+
+        public void deleteMessageCollection(UserId userId, string msgCollId, ISecurityToken token)
+        {
+            throw new ProtocolException((int)HttpStatusCode.NotImplemented,
+                                "this functionality is not yet available");
+        }
+
+        public RestfulCollection<Message> getMessages(UserId userId, string msgCollId, IEnumerable<string> fields, IEnumerable<string> msgIds, CollectionOptions options, ISecurityToken token)
+        {
+            try 
+            {
+                List<Message> result = new List<Message>();
+                JsonArray messages = db.getJSONObject(MESSAGE_TABLE)
+                                        .getJSONObject(userId.getUserId(token))
+                                        .getJSONObject(msgCollId)["messages"] as JsonArray;
+
+                // TODO: special case @all
+
+                if (messages == null) 
+                {
+                    throw new ProtocolException((int)HttpStatusCode.BadRequest, "message collection"
+                                        + msgCollId + " not found");
+                }
+
+                // TODO: filter and sort outbox.
+                for (int i = 0; i < messages.Length; i++) 
+                {
+                    JsonObject msg = messages.GetObject(i);
+                    result.Add(filterFields<Message>(msg, fields));
+                }
+                return new RestfulCollection<Message>(result);
+            } 
+            catch (JsonException je) 
+            {
+                throw new ProtocolException((int)HttpStatusCode.InternalServerError, je.Message, je);
+            }
+        }
+
+        public void createMessage(UserId userId, string appId, string msgCollId, Message message, ISecurityToken token)
+        {
+            foreach(var recipient in message.recipients) 
+            {
+                try 
+                {
+                    JsonArray outbox = (JsonArray)db.getJSONObject(MESSAGE_TABLE)[recipient];
+                    if (outbox == null) 
+                    {
+                        outbox = new JsonArray();
+                        db.getJSONObject(MESSAGE_TABLE).Put(recipient, outbox);
+                    }
+
+                    outbox.Put(message);
+                } 
+                catch (JsonException je) 
+                {
+                    throw new ProtocolException((int)HttpStatusCode.InternalServerError, je.Message, je);
+                }
+            }
+        }
+
+        public void deleteMessages(UserId userId, string msgCollId, HashSet<string> ids, ISecurityToken token)
+        {
+            throw new ProtocolException((int)HttpStatusCode.NotImplemented,
+                            "this functionality is not yet available");
+        }
+
+        public void modifyMessage(UserId userId, string msgCollId, string messageId, Message message, ISecurityToken token)
+        {
+            throw new ProtocolException((int)HttpStatusCode.NotImplemented,
+                            "this functionality is not yet available");
+        }
+
+        private  T filterFields<T>(JsonObject obj, IEnumerable<String> fields)
+        {
+            if (fields.Count() != 0) 
+            {
+                // Create a copy with just the specified fields
+                obj = new JsonObject(obj, fields.ToArray());
+            }
+            return converter.ConvertToObject<T>(obj.ToString());
         }
     }

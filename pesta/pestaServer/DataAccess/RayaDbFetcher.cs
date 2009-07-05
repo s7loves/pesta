@@ -22,7 +22,6 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using Pesta.DataAccess;
-using Pesta.Engine.social.core.model;
 using Pesta.Engine.social.model;
 using Pesta.Engine.social.spi;
 using Pesta.Utilities;
@@ -54,12 +53,12 @@ namespace pestaServer.DataAccess
 
         public bool CreateActivity(string personId, Activity activity, string appId) 
         {
-            string _title = (activity.getTitle() ?? "").Trim();
+            string _title = (activity.title ?? "").Trim();
             if (string.IsNullOrEmpty(_title)) 
             {
                 throw new Exception("Invalid activity: empty title");
             }
-            string _body = (activity.getBody() ?? "").Trim();
+            string _body = (activity.body ?? "").Trim();
             var _time = UnixTime.ConvertToUnixTimestamp(DateTime.UtcNow);
             var act = new activity
                           {
@@ -74,7 +73,7 @@ namespace pestaServer.DataAccess
             if (Db.GetChangeSet().Inserts.Count != 0)
                 return false;
         
-            var _mediaItems = activity.getMediaItems();
+            var _mediaItems = activity.mediaItems;
             if (_mediaItems.Count != 0)
             {
                 foreach (var _mediaItem in _mediaItems) 
@@ -82,9 +81,9 @@ namespace pestaServer.DataAccess
                     var actm = new activity_media_item
                                    {
                                        activity_id = act.id,
-                                       media_type = _mediaItem.getType().Value,
-                                       mime_type = _mediaItem.getMimeType(),
-                                       url = _mediaItem.getUrl()
+                                       media_type = _mediaItem.type.ToString().ToLower(),
+                                       mime_type = _mediaItem.mimeType,
+                                       url = _mediaItem.url
                                    };
                     if (!string.IsNullOrEmpty(actm.mime_type) && 
                         !string.IsNullOrEmpty(actm.url)) 
@@ -130,7 +129,7 @@ namespace pestaServer.DataAccess
             var _res = Db.activity_media_items.Where(x=>x.activity_id == activityId).Select(x=> new{x.mime_type,x.media_type,x.url});
             foreach (var _re in _res)
             {
-                _media.Add(new MediaItemImpl(_re.mime_type, EnumBaseType<MediaItem.Type>.GetBaseByKey(Convert.ToInt32(_re.media_type)),_re.url));
+                _media.Add(new MediaItem(_re.mime_type, (MediaItem.Type)Enum.Parse(typeof(MediaItem.Type), _re.media_type, true), _re.url));
             }
             return _media;
         }
@@ -232,165 +231,153 @@ namespace pestaServer.DataAccess
             foreach (var p in persons)
             {
                 int personId = p.id;
-                var name = new NameImpl();
-                var person = new PersonImpl();
+                var name = new Name();
+                var person = new Person();
                 
-                name.setGivenName(p.first_name);
-                name.setFamilyName(p.last_name);
-                name.setFormatted(p.first_name + " " + p.last_name);
-                person.setDisplayName(name.getFormatted());
-                person.setName(name);
-                person.setId(personId.ToString());
+                name.givenName = p.first_name;
+                name.familyName = p.last_name;
+                name.formatted = p.first_name + " " + p.last_name;
+                person.displayName = name.formatted;
+                person.name = name;
+                person.id = personId.ToString();
                 if (fields.Contains("about_me") || fields.Contains("@all"))
                 {
-                    person.setAboutMe(p.about_me);
+                    person.aboutMe = p.about_me;
                 }
                 if (fields.Contains("age") || fields.Contains("@all"))
                 {
-                    person.setAge(p.age);
+                    person.age = p.age;
                 }
                 if (fields.Contains("children") || fields.Contains("@all"))
                 {
-                    person.setChildren(p.children);
+                    person.children = p.children;
                 }
                 if (fields.Contains("date_of_birth") || fields.Contains("@all"))
                 {
-                    if (p.date_of_birth.HasValue)
-                        person.setBirthday(new DateTime(p.date_of_birth.Value));
+                    person.birthday = p.date_of_birth;
                 }
                 if (fields.Contains("ethnicity") || fields.Contains("@all"))
                 {
-                    person.setEthnicity(p.ethnicity);
+                    person.ethnicity = p.ethnicity;
                 }
                 if (fields.Contains("fashion") || fields.Contains("@all"))
                 {
-                    person.setFashion(p.fashion);
+                    person.fashion = p.fashion;
                 }
                 if (fields.Contains("happiest_when") || fields.Contains("@all"))
                 {
-                    person.setHappiestWhen(p.happiest_when);
+                    person.happiestWhen = p.happiest_when;
                 }
                 if (fields.Contains("humor") || fields.Contains("@all"))
                 {
-                    person.setHumor(p.humor);
+                    person.humor = p.humor;
                 }
                 if (fields.Contains("job_interests") || fields.Contains("@all"))
                 {
-                    person.setJobInterests(p.job_interests);
+                    person.jobInterests = p.job_interests;
                 }
                 if (fields.Contains("living_arrangement") || fields.Contains("@all"))
                 {
-                    person.setLivingArrangement(p.living_arrangement);
+                    person.livingArrangement = p.living_arrangement;
                 }
                 if (fields.Contains("looking_for") || fields.Contains("@all"))
                 {
-                    if (!string.IsNullOrEmpty(p.looking_for))
-                    {
-                        string[] lookingfors = p.looking_for.Split(',');
-                        var lfs = new List<EnumTypes.LookingFor>();
-                        foreach (var s in lookingfors)
-                        {
-                            lfs.Add(EnumBaseType<EnumTypes.LookingFor>.GetBaseByKey(s));
-                        }
-                        person.setLookingFor(lfs);
-                    }
+                    person._lookingFor = p.looking_for;
                 }
                 if (fields.Contains("nickname") || fields.Contains("@all"))
                 {
-                    person.setNickname(p.nickname);
+                    person.nickname = p.nickname;
                 }
                 if (fields.Contains("pets") || fields.Contains("@all"))
                 {
-                    person.setPets(p.pets);
+                    person.pets = p.pets;
                 }
                 if (fields.Contains("political_views") || fields.Contains("@all"))
                 {
-                    person.setPoliticalViews(p.political_views);
+                    person.politicalViews = p.political_views;
                 }
                 if (fields.Contains("profile_song") || fields.Contains("@all"))
                 {
                     if (!string.IsNullOrEmpty(p.profile_song))
                     {
-                        person.setProfileSong(new UrlImpl(p.profile_song, "", ""));
+                        person.profileSong = new Url(p.profile_song, "", "");
                     }
                 }
                 if (fields.Contains("profileUrl") || fields.Contains("@all"))
                 {
-                    person.setProfileUrl(urlPrefix + "/profile/" + personId);
+                    person.profileUrl = urlPrefix + "/profile/" + personId;
                 }
                 if (fields.Contains("profile_video") || fields.Contains("@all"))
                 {
                     if (!string.IsNullOrEmpty(p.profile_video))
                     {
-                        person.setProfileVideo(new UrlImpl(p.profile_video, "", ""));
+                        person.profileVideo = new Url(p.profile_video, "", "");
                     }
                 }
                 if (fields.Contains("relationship_status") || fields.Contains("@all"))
                 {
-                    person.setRelationshipStatus(p.relationship_status);
+                    person.relationshipStatus = p.relationship_status;
                 }
                 if (fields.Contains("religion") || fields.Contains("@all"))
                 {
-                    person.setReligion(p.religion);
+                    person.religion = p.religion;
                 }
                 if (fields.Contains("romance") || fields.Contains("@all"))
                 {
-                    person.setRomance(p.romance);
+                    person.romance = p.romance;
                 }
                 if (fields.Contains("scared_of") || fields.Contains("@all"))
                 {
-                    person.setScaredOf(p.scared_of);
+                    person.scaredOf = p.scared_of;
                 }
                 if (fields.Contains("sexual_orientation") || fields.Contains("@all"))
                 {
-                    person.setSexualOrientation(p.sexual_orientation);
+                    person.sexualOrientation = p.sexual_orientation;
                 }
                 if (fields.Contains("status") || fields.Contains("@all"))
                 {
-                    person.setStatus(p.status);
+                    person.status = p.status;
                 }
                 if (fields.Contains("thumbnailUrl") || fields.Contains("@all"))
                 {
-                    person.setThumbnailUrl(!string.IsNullOrEmpty(p.thumbnail_url) ? urlPrefix + p.thumbnail_url : "");
+                    person.thumbnailUrl = !string.IsNullOrEmpty(p.thumbnail_url) ? urlPrefix + p.thumbnail_url : "";
                     if (!string.IsNullOrEmpty(p.thumbnail_url))
                     {
-                        person.setPhotos(new List<ListField>
+                        person.photos = new List<ListField>
                                               {
-                                                  new UrlImpl(urlPrefix + p.thumbnail_url, "thumbnail", "thumbnail")
-                                              });
+                                                  new Url(urlPrefix + p.thumbnail_url, "thumbnail", "thumbnail")
+                                              };
                     }
                 }
                 if (fields.Contains("time_zone") || fields.Contains("@all"))
                 {
-                    person.setUtcOffset(p.time_zone); // force "-00:00" utc-offset format
+                    person.utcOffset = p.time_zone; // force "-00:00" utc-offset format
                 }
                 if (fields.Contains("drinker") || fields.Contains("@all"))
                 {
                     if (!String.IsNullOrEmpty(p.drinker))
                     {
-                        person.setDrinker(EnumBaseType<EnumTypes.Drinker>.GetBaseByKey(p.drinker));
+                        person.drinker = (Drinker)Enum.Parse(typeof(Drinker), p.drinker);
                     }
                 }
                 if (fields.Contains("gender") || fields.Contains("@all"))
                 {
                     if (!String.IsNullOrEmpty(p.gender))
                     {
-                        person.setGender(p.gender.ToLower() == Person.Gender.male.ToString()
-                                              ? Person.Gender.male
-                                              : Person.Gender.female);
+                        person.gender = (Person.Gender)Enum.Parse(typeof(Person.Gender), p.gender, true);
                     }
                 }
                 if (fields.Contains("smoker") || fields.Contains("@all"))
                 {
                     if (!String.IsNullOrEmpty(p.smoker))
                     {
-                        person.setSmoker(EnumBaseType<EnumTypes.Smoker>.GetBaseByKey(p.smoker));
+                        person.smoker = (Smoker)Enum.Parse(typeof(Smoker), p.smoker); 
                     }
                 }
                 if (fields.Contains("activities") || fields.Contains("@all"))
                 {
                     var activities = Db.person_activities.Where(a => a.person_id == personId).Select(a => a.activity);
-                    person.setActivities(activities.ToList());
+                    person.activities = activities.ToList();
                 }
 
                 if (fields.Contains("addresses") || fields.Contains("@all"))
@@ -406,20 +393,20 @@ namespace pestaServer.DataAccess
                         {
                             _row.unstructured_address = (_row.street_address + " " + _row.region + " " + _row.country).Trim();
                         }
-                        var _addres = new AddressImpl(_row.unstructured_address);
-                        _addres.setCountry(_row.country);
-                        _addres.setLatitude(_row.latitude);
-                        _addres.setLongitude(_row.longitude);
-                        _addres.setLocality(_row.locality);
-                        _addres.setPostalCode(_row.postal_code);
-                        _addres.setRegion(_row.region);
-                        _addres.setStreetAddress(_row.street_address);
-                        _addres.setType(_row.address_type);
+                        var _addres = new Address(_row.unstructured_address);
+                        _addres.country = _row.country;
+                        _addres.latitude = _row.latitude;
+                        _addres.longitude = _row.longitude;
+                        _addres.locality = _row.locality;
+                        _addres.postalCode = _row.postal_code;
+                        _addres.region = _row.region;
+                        _addres.streetAddress = _row.street_address;
+                        _addres.type = _row.address_type;
                         //FIXME quick and dirty hack to demo PC
-                        _addres.setPrimary(true);
+                        _addres.primary = true;
                         _addresses.Add(_addres);
                     }
-                    person.setAddresses(_addresses);
+                    person.addresses = _addresses;
                 }
 
                 if (fields.Contains("bodyType") || fields.Contains("@all"))
@@ -427,28 +414,28 @@ namespace pestaServer.DataAccess
                     var _row = Db.person_body_types.Where(x => x.person_id == personId).SingleOrDefault();
                     if (_row != null)
                     {
-                        BodyTypeImpl _bodyType = new BodyTypeImpl();
-                        _bodyType.setBuild(_row.build);
-                        _bodyType.setEyeColor(_row.eye_color);
-                        _bodyType.setHairColor(_row.hair_color);
+                        BodyType _bodyType = new BodyType();
+                        _bodyType.build = _row.build;
+                        _bodyType.eyeColor = _row.eye_color;
+                        _bodyType.hairColor = _row.hair_color;
                         if (_row.height.HasValue)
-                            _bodyType.setHeight(float.Parse(_row.height.Value.ToString()));
+                            _bodyType.height = float.Parse(_row.height.Value.ToString());
                         if (_row.weight.HasValue)
-                            _bodyType.setWeight(float.Parse(_row.weight.Value.ToString()));
-                        person.setBodyType(_bodyType);
+                            _bodyType.weight = float.Parse(_row.weight.Value.ToString());
+                        person.bodyType = _bodyType;
                     }
                 }
 
                 if (fields.Contains("books") || fields.Contains("@all"))
                 {
                     var books = Db.person_books.Where(x => x.person_id == personId).Select(x => x.book);
-                    person.setBooks(books.ToList());
+                    person.books = books.ToList();
                 }
 
                 if (fields.Contains("cars") || fields.Contains("@all"))
                 {
                     var _cars = Db.person_cars.Where(x => x.person_id == personId).Select(x => x.car);
-                    person.setCars(_cars.ToList());
+                    person.cars = _cars.ToList();
                 }
 
                 if (fields.Contains("currentLocation") || fields.Contains("@all"))
@@ -462,16 +449,16 @@ namespace pestaServer.DataAccess
                         {
                             _row.unstructured_address = (_row.street_address + " " + _row.region + " " + _row.country).Trim();
                         }
-                        var _addres = new AddressImpl(_row.unstructured_address);
-                        _addres.setCountry(_row.country);
-                        _addres.setLatitude(_row.latitude);
-                        _addres.setLongitude(_row.longitude);
-                        _addres.setLocality(_row.locality);
-                        _addres.setPostalCode(_row.postal_code);
-                        _addres.setRegion(_row.region);
-                        _addres.setStreetAddress(_row.street_address);
-                        _addres.setType(_row.address_type);
-                        person.setCurrentLocation(_addres);
+                        var _addres = new Address(_row.unstructured_address);
+                        _addres.country = _row.country;
+                        _addres.latitude = _row.latitude;
+                        _addres.longitude = _row.longitude;
+                        _addres.locality = _row.locality;
+                        _addres.postalCode = _row.postal_code;
+                        _addres.region = _row.region;
+                        _addres.streetAddress = _row.street_address;
+                        _addres.type = _row.address_type;
+                        person.currentLocation = _addres;
                     }
                 }
 
@@ -481,27 +468,27 @@ namespace pestaServer.DataAccess
                     List<ListField> _emailList = new List<ListField>();
                     foreach (person_email _email in _emails)
                     {
-                        _emailList.Add(new ListFieldImpl(_email.email_type, _email.address)); // TODO: better email canonicalization; remove dups
+                        _emailList.Add(new ListField(_email.email_type, _email.address)); // TODO: better email canonicalization; remove dups
                     }
-                    person.setEmails(_emailList);
+                    person.emails = _emailList;
                 }
 
                 if (fields.Contains("food") || fields.Contains("@all"))
                 {
                     var _foods = Db.person_foods.Where(x => x.person_id == personId).Select(x => x.food);
-                    person.setFood(_foods.ToList());
+                    person.food = _foods.ToList();
                 }
 
                 if (fields.Contains("heroes") || fields.Contains("@all"))
                 {
                     var _strings = Db.person_heroes.Where(x => x.person_id == personId).Select(x => x.hero);
-                    person.setHeroes(_strings.ToList());
+                    person.heroes = _strings.ToList();
                 }
 
                 if (fields.Contains("interests") || fields.Contains("@all"))
                 {
                     var _strings = Db.person_interests.Where(x => x.person_id == personId).Select(x => x.interest);
-                    person.setInterests(_strings.ToList());
+                    person.interests = _strings.ToList();
                 }
                 List<Organization> _organizations = new List<Organization>();
                 bool _fetchedOrg = false;
@@ -513,19 +500,19 @@ namespace pestaServer.DataAccess
                         Select(x => x.a);
                     foreach (var _row in _org)
                     {
-                        var _organization = new OrganizationImpl();
-                        _organization.setDescription(_row.description);
+                        var _organization = new Organization();
+                        _organization.description = _row.description;
                         if (_row.end_date.HasValue)
-                            _organization.setEndDate(new DateTime(_row.end_date.Value));
-                        _organization.setField(_row.field);
-                        _organization.setName(_row.name);
-                        _organization.setSalary(_row.salary);
+                            _organization.endDate = _row.end_date;
+                        _organization.field = _row.field;
+                        _organization.name = _row.name;
+                        _organization.salary = _row.salary;
                         if (_row.start_date.HasValue)
-                            _organization.setStartDate(new DateTime(_row.start_date.Value));
-                        _organization.setSubField(_row.sub_field);
-                        _organization.setTitle(_row.title);
-                        _organization.setWebpage(_row.webpage);
-                        _organization.setType("job");
+                            _organization.startDate = _row.start_date;
+                        _organization.subField = _row.sub_field;
+                        _organization.title = _row.title;
+                        _organization.webpage = _row.webpage;
+                        _organization.type = "job";
                         if (_row.address_id.HasValue)
                         {
                             int addressid = _row.address_id.Value;
@@ -534,16 +521,16 @@ namespace pestaServer.DataAccess
                             {
                                 _res3.unstructured_address = (_res3.street_address + " " + _res3.region + " " + _res3.country).Trim();
                             }
-                            var _addres = new AddressImpl(_res3.unstructured_address);
-                            _addres.setCountry(_res3.country);
-                            _addres.setLatitude(_res3.latitude);
-                            _addres.setLongitude(_res3.longitude);
-                            _addres.setLocality(_res3.locality);
-                            _addres.setPostalCode(_res3.postal_code);
-                            _addres.setRegion(_res3.region);
-                            _addres.setStreetAddress(_res3.street_address);
-                            _addres.setType(_res3.address_type);
-                            _organization.setAddress(_addres);
+                            var _addres = new Address(_res3.unstructured_address);
+                            _addres.country = _res3.country;
+                            _addres.latitude = _res3.latitude;
+                            _addres.longitude = _res3.longitude;
+                            _addres.locality = _res3.locality;
+                            _addres.postalCode = _res3.postal_code;
+                            _addres.region = _res3.region;
+                            _addres.streetAddress = _res3.street_address;
+                            _addres.type = _res3.address_type;
+                            _organization.address = _addres;
                         }
                         _organizations.Add(_organization);
                     }
@@ -558,19 +545,19 @@ namespace pestaServer.DataAccess
                         Select(x => x.a);
                     foreach (var _row in _res2)
                     {
-                        var _organization = new OrganizationImpl();
-                        _organization.setDescription(_row.description);
+                        var _organization = new Organization();
+                        _organization.description = _row.description;
                         if (_row.end_date.HasValue)
-                            _organization.setEndDate(new DateTime(_row.end_date.Value));
-                        _organization.setField(_row.field);
-                        _organization.setName(_row.name);
-                        _organization.setSalary(_row.salary);
+                            _organization.endDate = _row.end_date;
+                        _organization.field = _row.field;
+                        _organization.name = _row.name;
+                        _organization.salary = _row.salary;
                         if (_row.start_date.HasValue)
-                            _organization.setStartDate(new DateTime(_row.start_date.Value));
-                        _organization.setSubField(_row.sub_field);
-                        _organization.setTitle(_row.title);
-                        _organization.setWebpage(_row.webpage);
-                        _organization.setType("school");
+                            _organization.startDate = _row.start_date;
+                        _organization.subField = _row.sub_field;
+                        _organization.title = _row.title;
+                        _organization.webpage = _row.webpage;
+                        _organization.type = "school";
                         if (_row.address_id.HasValue)
                         {
                             int addressid = _row.address_id.Value;
@@ -579,16 +566,16 @@ namespace pestaServer.DataAccess
                             {
                                 _res3.unstructured_address = (_res3.street_address + " " + _res3.region + " " + _res3.country).Trim();
                             }
-                            var _addres = new AddressImpl(_res3.unstructured_address);
-                            _addres.setCountry(_res3.country);
-                            _addres.setLatitude(_res3.latitude);
-                            _addres.setLongitude(_res3.longitude);
-                            _addres.setLocality(_res3.locality);
-                            _addres.setPostalCode(_res3.postal_code);
-                            _addres.setRegion(_res3.region);
-                            _addres.setStreetAddress(_res3.street_address);
-                            _addres.setType(_res3.address_type);
-                            _organization.setAddress(_addres);
+                            var _addres = new Address(_res3.unstructured_address);
+                            _addres.country = _res3.country;
+                            _addres.latitude = _res3.latitude;
+                            _addres.longitude = _res3.longitude;
+                            _addres.locality = _res3.locality;
+                            _addres.postalCode = _res3.postal_code;
+                            _addres.region = _res3.region;
+                            _addres.streetAddress = _res3.street_address;
+                            _addres.type = _res3.address_type;
+                            _organization.address = _addres;
                         }
                         _organizations.Add(_organization);
                     }
@@ -596,19 +583,19 @@ namespace pestaServer.DataAccess
                 }
                 if (_fetchedOrg)
                 {
-                    person.setOrganizations(_organizations);
+                    person.organizations = _organizations;
                 }
                 //TODO languagesSpoken, currently missing the languages / countries tables so can"t do this yet
 
                 if (fields.Contains("movies") || fields.Contains("@all"))
                 {
                     var _strings = Db.person_movies.Where(x => x.person_id == personId).Select(x => x.movie);
-                    person.setMovies(_strings.ToList());
+                    person.movies = _strings.ToList();
                 }
                 if (fields.Contains("music") || fields.Contains("@all"))
                 {
                     var _strings = Db.person_musics.Where(x => x.person_id == personId).Select(x => x.music);
-                    person.setMusic(_strings.ToList());
+                    person.music = _strings.ToList();
                 }
                 if (fields.Contains("phoneNumbers") || fields.Contains("@all"))
                 {
@@ -616,9 +603,9 @@ namespace pestaServer.DataAccess
                     var _numbers = Db.person_phone_numbers.Where(x => x.person_id == personId);
                     foreach (var _number in _numbers)
                     {
-                        numList.Add(new ListFieldImpl(_number.number_type, _number.number));
+                        numList.Add(new ListField(_number.number_type, _number.number));
                     }
-                    person.setPhoneNumbers(numList);
+                    person.phoneNumbers = numList;
                 }
                 /*
                 if (_fields.Contains("ims") || _fields.Contains("@all")) 
@@ -629,7 +616,7 @@ namespace pestaServer.DataAccess
                     {
                     _ims[] = new Im(_value, _type);
                     }
-                    _person.setIms(_ims);
+                    _person.Ims = _ims;
                 }
                 if (_fields.Contains("accounts") || _fields.Contains("@all")) {
                 _accounts = array();
@@ -637,33 +624,33 @@ namespace pestaServer.DataAccess
                 while (list(_domain, _userid, _username) = @mysqli_fetch_row(_res2)) {
                 _accounts[] = new Account(_domain, _userid, _username);
                 }
-                _person.setAccounts(_accounts);
+                _person.Accounts = _accounts;
                 }*/
                 if (fields.Contains("quotes") || fields.Contains("@all"))
                 {
                     var _strings = Db.person_quotes.Where(x => x.person_id == personId).Select(x => x.quote);
-                    person.setQuotes(_strings.ToList());
+                    person.quotes = _strings.ToList();
                 }
                 if (fields.Contains("sports") || fields.Contains("@all"))
                 {
                     var _strings = Db.person_sports.Where(x => x.person_id == personId).Select(x => x.sport);
-                    person.setSports(_strings.ToList());
+                    person.sports = _strings.ToList();
                 }
                 if (fields.Contains("tags") || fields.Contains("@all"))
                 {
                     var _strings = Db.person_tags.Where(x => x.person_id == personId).Select(x => x.tag);
-                    person.setTags(_strings.ToList());
+                    person.tags = _strings.ToList();
                 }
 
                 if (fields.Contains("turnOns") || fields.Contains("@all"))
                 {
                     var _strings = Db.person_turn_ons.Where(x => x.person_id == personId).Select(x => x.turn_on);
-                    person.setTurnOns(_strings.ToList());
+                    person.turnOns = _strings.ToList();
                 }
                 if (fields.Contains("turnOffs") || fields.Contains("@all"))
                 {
                     var _strings = Db.person_turn_offs.Where(x => x.person_id == personId).Select(x => x.turn_off);
-                    person.setTurnOffs(_strings.ToList());
+                    person.turnOffs = _strings.ToList();
                 }
                 
                 if (fields.Contains("urls") || fields.Contains("@all"))
@@ -672,11 +659,11 @@ namespace pestaServer.DataAccess
                     List<ListField> urllist = new List<ListField>();
                     foreach (string s in _strings)
                     {
-                        var url = new UrlImpl(s, null, null);
+                        var url = new Url(s, null, null);
                         urllist.Add(url);
                     }
-                    urllist.Add(new UrlImpl(urlPrefix + "/profile/" + personId, null, "profile"));
-                    person.setUrls(urllist);
+                    //urllist.Add(new Url(urlPrefix + "/profile/" + personId, null, "profile"));
+                    person.urls = urllist;
                 }
                  
                 _ret.Add(personId.ToString(), person);

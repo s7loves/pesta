@@ -35,8 +35,8 @@ namespace pestaServer.Controllers
         [CompressFilter]
         public void Index()
         {
-            HttpRequestWrapper request = new HttpRequestWrapper(System.Web.HttpContext.Current);
-            HttpResponseWrapper response = new HttpResponseWrapper(System.Web.HttpContext.Current.Response);
+            var request = new HttpRequestWrapper(System.Web.HttpContext.Current);
+            var response = new HttpResponseWrapper(System.Web.HttpContext.Current.Response);
             try
             {
                 makeRequestHandler.Fetch(request, response);

@@ -18,65 +18,70 @@
  */
 #endregion
 using System;
+using System.Collections.Generic;
+using System.Net;
 using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using Pesta.Engine.auth;
+using Pesta.Engine.protocol;
+using Pesta.Engine.protocol.conversion;
 using Pesta.Engine.social;
 using Pesta.Engine.social.spi;
-using pestaServer.Models.social.core.util;
 using pestaServer.Models.social.service;
 
 namespace pestaServer.Controllers
 {
     public abstract class ApiController : Controller
     {
+        protected static readonly String FORMAT_PARAM = "format";
+        protected static readonly String JSON_FORMAT = "json";
+        protected static readonly String ATOM_FORMAT = "atom";
+        protected static readonly String XML_FORMAT = "xml";
         private const String DEFAULT_ENCODING = "UTF-8";
         private readonly IHandlerDispatcher dispatcher;
         protected readonly BeanJsonConverter jsonConverter;
         protected readonly BeanConverter xmlConverter;
         protected readonly BeanConverter atomConverter;
 
-        /// <summary>
-        /// Initializes a new instance of the ApiServlet class.
-        protected ApiController()
+        public ApiController()
         {
             jsonConverter = new BeanJsonConverter();
             xmlConverter = new BeanXmlConverter();
             atomConverter = new BeanAtomConverter();
-            dispatcher = new StandardHandlerDispatcher(new PersonHandler(), new ActivityHandler(), new AppDataHandler());
+            dispatcher = new StandardHandlerDispatcher(
+                new PersonHandler(), 
+                new ActivityHandler(), 
+                new AppDataHandler(),
+                new MessageHandler());
         }
-        protected abstract void SendError(HttpResponse response, ResponseItem responseItem);
 
-        protected static ISecurityToken GetSecurityToken(HttpContext context)
+        public static void checkContentTypes(IEnumerable<String> allowedContentTypes, String contentType)
         {
-            return new AuthInfo(context, context.Request.RawUrl).getSecurityToken();
+            ContentTypes.checkContentTypes(allowedContentTypes, contentType, true);
         }
 
-        protected void SendSecurityError(HttpResponse response)
+        protected static ISecurityToken getSecurityToken(HttpContext context, string rawUrl)
         {
-            SendError(response, new ResponseItem(ResponseError.UNAUTHORIZED,
-                                                 "The request did not have a proper security token nor oauth message and unauthenticated "
-                                                 + "requests are not allowed"));
+            return new AuthInfo(context, rawUrl).getSecurityToken();
         }
 
-        /**
-       * Delivers a request item to the appropriate DataRequestHandler.
-       */
+        protected abstract void sendError(HttpResponse servletResponse, ResponseItem responseItem);
+
+        protected void sendSecurityError(HttpResponse servletResponse)
+        {
+            sendError(servletResponse, new ResponseItem((int)HttpStatusCode.Unauthorized,
+                    "The request did not have a proper security token nor oauth message and unauthenticated "
+                        + "requests are not allowed"));
+        }
         protected IAsyncResult HandleRequestItem(RequestItem requestItem)
         {
             DataRequestHandler handler = dispatcher.getHandler(requestItem.getService());
-            if (handler == null)
-            {
-                throw new SocialSpiException(ResponseError.NOT_IMPLEMENTED,
-                                             "The service " + requestItem.getService() + " is not implemented");
-            }
-            
-            return handler.handleItem(requestItem);
+            return handler == null ? null : handler.handleItem(requestItem);
         }
 
-        protected ResponseItem GetResponseItem(IAsyncResult future)
+        protected ResponseItem getResponseItem(IAsyncResult future)
         {
             ResponseItem response;
             try
@@ -87,32 +92,30 @@ namespace pestaServer.Controllers
                 object res = del.EndInvoke(result);
                 response = new ResponseItem(res);
             }
-            catch (Exception e)
+            catch (Exception ie)
             {
-                response = responseItemFromException(e);
+                response = responseItemFromException(ie);
             }
-
             return response;
         }
 
-        protected ResponseItem responseItemFromException(Exception t)
+        protected ResponseItem responseItemFromException(Exception ex)
         {
-            if (t is SocialSpiException)
+            if (ex is ProtocolException)
             {
-                SocialSpiException spe = (SocialSpiException)t;
-                return new ResponseItem(spe.getError(), spe.Message);
+                ProtocolException pe = (ProtocolException)ex;
+                return new ResponseItem(pe.getCode(), pe.Message, pe.getResponse());
             }
-            return new ResponseItem(ResponseError.INTERNAL_ERROR, t.Message);
+            return new ResponseItem((int)HttpStatusCode.InternalServerError, ex.Message);
         }
 
-        protected void setCharacterEncodings(HttpRequest request, HttpResponse response)
+        protected void setCharacterEncodings(HttpRequest servletRequest, HttpResponse servletResponse)
         {
-            if (string.IsNullOrEmpty(request.ContentEncoding.EncodingName))
+            if (servletRequest.ContentEncoding == null)
             {
-                request.ContentEncoding = Encoding.GetEncoding(DEFAULT_ENCODING);
+                servletRequest.ContentEncoding = Encoding.UTF8;
             }
-            response.ContentEncoding = Encoding.GetEncoding(DEFAULT_ENCODING);
+            servletResponse.ContentEncoding = Encoding.UTF8;
         }
-
     }
 }

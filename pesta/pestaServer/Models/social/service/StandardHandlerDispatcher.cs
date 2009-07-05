@@ -44,12 +44,14 @@ namespace pestaServer.Models.social.service
 
 
         public StandardHandlerDispatcher(PersonHandler personHandlerProvider,
-                                         ActivityHandler activityHandlerProvider, AppDataHandler appDataHandlerProvider)
+                                         ActivityHandler activityHandlerProvider, AppDataHandler appDataHandlerProvider,
+                                         MessageHandler messageHandlerProvider)
             : this(new Dictionary<string, DataRequestHandler>() 
                        { 
                            {PEOPLE_ROUTE, personHandlerProvider},
                            {ACTIVITY_ROUTE, activityHandlerProvider},
-                           {APPDATA_ROUTE, appDataHandlerProvider}
+                           {APPDATA_ROUTE, appDataHandlerProvider},
+                           {MESSAGE_ROUTE, messageHandlerProvider}
                        }
                 )
         {
@@ -60,7 +62,8 @@ namespace pestaServer.Models.social.service
         * Creates a dispatcher with a custom list of handlers.
         * @param handlers a map of handlers by service name
         */
-        public StandardHandlerDispatcher(Dictionary<String, DataRequestHandler> handlers)
+
+        private StandardHandlerDispatcher(Dictionary<String, DataRequestHandler> handlers)
         {
             this.handlers = handlers;
         }
