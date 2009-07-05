@@ -18,22 +18,21 @@
  */
 #endregion
 using System;
-using Pesta.Engine.social.core.model;
+using System.Runtime.Serialization;
+using Pesta.Engine.protocol.conversion;
 using Pesta.Utilities;
 
 namespace Pesta.Engine.social.model
 {
-    /// <summary>
-    /// Summary description for BodyType
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
-    /// </para>
-    /// </remarks>
-    [ImplementedBy(typeof(BodyTypeImpl))]
-    public abstract class BodyType
+    [DataContract(Namespace = BeanConverter.osNameSpace)]
+    public class BodyType
     {
+        [DataMember(EmitDefaultValue = false)] public String build { get; set; }
+        [DataMember(EmitDefaultValue = false)] public String eyeColor { get; set; }
+        [DataMember(EmitDefaultValue = false)] public String hairColor { get; set; }
+        [DataMember(EmitDefaultValue = false)] public float? height { get; set; }
+        [DataMember(EmitDefaultValue = false)] public float? weight { get; set; }
+
         /**
         * The fields that represent the person object in serialized form.
         */
@@ -58,110 +57,15 @@ namespace Pesta.Engine.social.model
             /** the field name for weight. */
             public static readonly Field WEIGHT = new Field(5, "weight");
 
-            /**
-            * The field name that the instance represents.
-            */
-            private readonly String jsonString;
-
-            /**
-            * create a field base on the a json element.
-            *
-            * @param jsonString the name of the element
-            */
-            protected Field(String jsonString)
+            public static Field GetByValue(string value)
             {
-                this.jsonString = jsonString;
+                return GetBaseByValue(value);
             }
 
-            /**
-            * emit the field as a json element.
-            *
-            * @return the field name
-            */
             public override String ToString()
             {
-                return jsonString;
+                return Value;
             }
         }
-
-        /**
-        * The build of the person's body, specified as a string. Container support for this field is
-        * OPTIONAL.
-        *
-        * @return the build of the person's body
-        */
-        public abstract String getBuild();
-
-        /**
-        * The build of the person's body, specified as a string. Container support for this field is
-        * OPTIONAL.
-        *
-        * @param build the build of the person's body
-        */
-        public abstract void setBuild(String build);
-
-        /**
-        * The eye color of the person, specified as a string. Container support for this field is
-        * OPTIONAL.
-        *
-        * @return the eye color of the person
-        */
-        public abstract String getEyeColor();
-
-        /**
-        * The eye color of the person, specified as a string. Container support for this field is
-        * OPTIONAL.
-        *
-        * @param eyeColor the eye color of the person
-        */
-        public abstract void setEyeColor(String eyeColor);
-
-        /**
-        * The hair color of the person, specified as a string. Container support for this field is
-        * OPTIONAL.
-        *
-        * @return the hair color of the person
-        */
-        public abstract String getHairColor();
-
-        /**
-        * The hair color of the person, specified as a string. Container support for this field is
-        * OPTIONAL.
-        *
-        * @param hairColor the hair color of the person
-        */
-        public abstract void setHairColor(String hairColor);
-
-        /**
-        * The height of the person in meters, specified as a number. Container support for this field is
-        * OPTIONAL.
-        *
-        * @return the height of the person in meters
-        */
-        public abstract float? getHeight();
-
-        /**
-        * The height of the person in meters, specified as a number. Container support for this field is
-        * OPTIONAL.
-        *
-        * @param height the height of the person in meters
-        */
-        public abstract void setHeight(float height);
-
-        /**
-        * The weight of the person in kilograms, specified as a number. Container support for this field
-        * is OPTIONAL.
-        *
-        * @return the weight of the person in kilograms
-        */
-        public abstract float? getWeight();
-
-        /**
-        * The weight of the person in kilograms, specified as a number. Container support for this field
-        * is OPTIONAL.
-        *
-        * @param weight weight of the person in kilograms
-        */
-        public abstract void setWeight(float weight);
     } 
 }

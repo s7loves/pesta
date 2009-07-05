@@ -20,28 +20,22 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
+using Pesta.Engine.protocol.conversion;
 
 namespace Pesta.Engine.social.spi
 {
-    /// <summary>
-    /// Summary description for RestfulCollection
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
-    /// </para>
-    /// </remarks>
+    [DataContract(Name = "response", Namespace = BeanConverter.osNameSpace)]
     public class RestfulCollection<T> : IRestfulCollection
     {
-        private List<T> entry;
-        private int startIndex;
-        private int totalResults;
+        [DataMember]
+        public List<T> entry { get; set; }
 
-        private bool filtered = true;
-        private bool sorted = true;
-        private bool updatedSince = true;
-
-        public RestfulCollection(List<T> entry)
+        public RestfulCollection()
+            : this(new List<T>(), 0, 0)
+        {
+        }
+        public RestfulCollection(ICollection<T> entry)
             : this(entry, 0, entry.Count)
         {
         }
@@ -51,71 +45,19 @@ namespace Pesta.Engine.social.spi
         {
         }
 
-        public RestfulCollection(List<T> entry, int startIndex, int totalResults)
+        public RestfulCollection(IEnumerable<T> entry, int startIndex, int totalResults)
         {
-            this.entry = entry;
+            this.entry = new List<T>(entry);
             this.startIndex = startIndex;
             this.totalResults = totalResults;
+            isFiltered = true;
+            isSorted = true;
+            isUpdatedSince = true;
         }
 
-        public IList getEntry()
+        public override object getEntry()
         {
             return entry;
-        }
-
-        public void setEntry(List<T> _entry)
-        {
-            entry = _entry;
-        }
-
-        public int getStartIndex()
-        {
-            return startIndex;
-        }
-
-        public void setStartIndex(int _startIndex)
-        {
-            startIndex = _startIndex;
-        }
-
-        public int getTotalResults()
-        {
-            return totalResults;
-        }
-
-        public void setTotalResults(int _totalResults)
-        {
-            totalResults = _totalResults;
-        }
-
-        public bool isFiltered()
-        {
-            return filtered;
-        }
-
-        public void setFiltered(bool _filtered)
-        {
-            filtered = _filtered;
-        }
-
-        public bool isSorted()
-        {
-            return sorted;
-        }
-
-        public void setSorted(bool _sorted)
-        {
-            sorted = _sorted;
-        }
-
-        public bool isUpdatedSince()
-        {
-            return updatedSince;
-        }
-
-        public void setUpdatedSince(bool _updatedSince)
-        {
-            updatedSince = _updatedSince;
         }
     }
 }

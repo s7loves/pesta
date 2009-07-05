@@ -18,22 +18,48 @@
  */
 #endregion
 using System;
-using Pesta.Engine.social.core.model;
+using System.Runtime.Serialization;
+using Pesta.Engine.protocol.conversion;
 using Pesta.Utilities;
 
 namespace Pesta.Engine.social.model
 {
-    /// <summary>
-    /// Summary description for Address
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
-    /// </para>
-    /// </remarks>
-    [ImplementedBy(typeof(AddressImpl))]
-    public abstract class Address
+    [DataContract(Namespace = BeanConverter.osNameSpace)]
+    public class Address
     {
+        public Address()
+        {
+            
+        }
+        public Address(String formatted)
+        {
+            this.formatted = formatted;
+        }
+
+        public Address(String country, double? latitude, double? longitude, String locality, String postalCode,
+            String region, String streetAddress, String type)
+        {
+            this.country = country;
+            this.latitude = latitude;
+            this.longitude = longitude;
+            this.locality = locality;
+            this.postalCode = postalCode;
+            this.region = region;
+            this.streetAddress = streetAddress;
+            this.type = type;
+        }
+
+        [DataMember(EmitDefaultValue = false)] public String country { get; set; }
+        [DataMember(EmitDefaultValue = false)] public double? latitude { get; set; }
+        [DataMember(EmitDefaultValue = false)] public double? longitude { get; set; }
+        [DataMember(EmitDefaultValue = false)] public String locality { get; set; }
+        [DataMember(EmitDefaultValue = false)] public String postalCode { get; set; }
+        [DataMember(EmitDefaultValue = false)] public String region { get; set; }
+        [DataMember(EmitDefaultValue = false)] public String streetAddress { get; set; }
+        [DataMember(EmitDefaultValue = false)] public String type { get; set; }
+        [DataMember(EmitDefaultValue = false)] public String formatted { get; set; }
+        [DataMember(EmitDefaultValue = false)] public bool primary { get; set; }
+
         /**
        * The fields that represent the address object in json form.
        */
@@ -67,180 +93,15 @@ namespace Pesta.Engine.social.model
             /** the field name for primary. */
             public static readonly Field PRIMARY = new Field(10, "primary");
 
-            /**
-            * The json field that the instance represents.
-            */
-            private readonly String jsonString;
-
-            /**
-            * create a field base on the a json element.
-            *
-            * @param jsonString the name of the element
-            */
-            protected Field(String jsonString)
+            public static Field GetByValue(string value)
             {
-                this.jsonString = jsonString;
+                return GetBaseByValue(value);
             }
 
-            /**
-            * emit the field as a json element.
-            *
-            * @return the field name
-            */
             public override String ToString()
             {
-                return jsonString;
+                return Value;
             }
         }
-
-        /**
-        * Get the country.
-        *
-        * @return the country
-        */
-        public abstract String getCountry();
-
-        /**
-        * Set the country.
-        *
-        * @param country the country
-        */
-        public abstract void setCountry(String country);
-
-        /**
-        * Get the latitude.
-        *
-        * @return latitude
-        */
-        public abstract float? getLatitude();
-
-        /**
-        * Set the latitude.
-        *
-        * @param latitude latitude
-        */
-        public abstract void setLatitude(float? latitude);
-
-        /**
-        * Get the locality.
-        *
-        * @return the locality
-        */
-        public abstract String getLocality();
-
-        /**
-        * Set the locality.
-        *
-        * @param locality the locality
-        */
-        public abstract void setLocality(String locality);
-
-        /**
-        * Get the longitude of the address in degrees.
-        *
-        * @return the longitude of the address in degrees
-        */
-        public abstract float? getLongitude();
-
-        /**
-        * Set the longitude of the address in degrees.
-        *
-        * @param longitude the longitude of the address in degrees.
-        */
-        public abstract void setLongitude(float? longitude);
-
-        /**
-        * Get the Postal code for the address.
-        *
-        * @return the postal code for the address
-        */
-        public abstract String getPostalCode();
-
-        /**
-        * Set the postal code for the address.
-        *
-        * @param postalCode the postal code
-        */
-        public abstract void setPostalCode(String postalCode);
-
-        /**
-        * Get the region.
-        *
-        * @return the region
-        */
-        public abstract String getRegion();
-
-        /**
-        * Set the region.
-        *
-        * @param region the region
-        */
-        public abstract void setRegion(String region);
-
-        /**
-        * Get the street address.
-        *
-        * @return the street address
-        */
-        public abstract String getStreetAddress();
-
-        /**
-        * Set the street address.
-        *
-        * @param streetAddress the street address
-        */
-        public abstract void setStreetAddress(String streetAddress);
-
-        /**
-        * Get the type of label of the address.
-        *
-        * @return the type or label of the address
-        */
-        public abstract String getType();
-
-        /**
-        * Get the type of label of the address.
-        *
-        * @param type the type of label of the address.
-        */
-        public abstract void setType(String type);
-
-        /**
-        * Get the formatted address.
-        *
-        * @return the formatted address
-        */
-        public abstract String getFormatted();
-
-        /**
-        * Set the formatted address.
-        *
-        * @param formatted the formatted address
-        */
-        public abstract void setFormatted(String formatted);
-
-        /**
-        * <p>
-        * Get a bool value indicating whether this instance of the Plural Field is the primary or
-        * preferred value of for this field, e.g. the preferred mailing address. Service Providers MUST
-        * NOT mark more than one instance of the same Plural Field as primary="true", and MAY choose not
-        * to mark any fields as primary, if this information is not available. Introduced in v0.8.1
-        * </p><p>
-        * The service provider may wish to share the address instance between items and primary related
-        * to the address from which this came, so if the address came from an Organization, primary
-        * relates to the primary address of the organization, and not necessary the primary address of
-        * all addresses.
-        * </p><p>
-        * If the address is not part of a list (eg Person.location ) primary has no meaning.
-        * <p>
-        * @return true if the instance if the primary instance.
-        */
-        public abstract bool? getPrimary();
-
-        /**
-        * @see Address.getPrimary()
-        * @param primary set the Primary status of this Address.
-        */
-        public abstract void setPrimary(bool? primary);
     } 
 }

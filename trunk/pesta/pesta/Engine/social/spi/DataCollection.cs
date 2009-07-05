@@ -18,21 +18,19 @@
  */
 #endregion
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Xml;
+using System.Xml.Schema;
+using System.Xml.Serialization;
+using Pesta.Engine.protocol.conversion;
 
 namespace Pesta.Engine.social.spi
 {
-    /// <summary>
-    /// Summary description for DataCollection
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
-    /// </para>
-    /// </remarks>
-    public class DataCollection
+    [XmlRoot("appData", Namespace = BeanConverter.osNameSpace)]
+    public class DataCollection : IRestfulCollection, IXmlSerializable
     {
-        private Dictionary<String, Dictionary<String, String>> entry;
+        public Dictionary<String, Dictionary<String, String>> entry { get; set; }
 
         public DataCollection(Dictionary<String, Dictionary<String, String>> entry)
             :this()
@@ -48,15 +46,42 @@ namespace Pesta.Engine.social.spi
             entry = new Dictionary<string, Dictionary<string, string>>();
         }
 
+        #region Implementation of IXmlSerializable
 
-        public Dictionary<String, Dictionary<String, String>> getEntry()
+        public XmlSchema GetSchema()
         {
-            return entry;
+            return null;
         }
 
-        public void setEntry(Dictionary<String, Dictionary<String, String>> _entry)
+        public void ReadXml(XmlReader reader)
         {
-            entry = _entry;
+            throw new NotImplementedException();
+        }
+
+        public void WriteXml(XmlWriter writer)
+        {
+            foreach (var e in entry)
+            {
+                writer.WriteStartElement("entry");
+                writer.WriteElementString("key", e.Key);
+                writer.WriteStartElement("value");
+                foreach (var item in e.Value)
+                {
+                    writer.WriteStartElement("entry");
+                    writer.WriteElementString("key", item.Key);
+                    writer.WriteElementString("value", item.Value);
+                    writer.WriteEndElement(); // entry
+                }
+                writer.WriteEndElement(); // value
+                writer.WriteEndElement(); // entry
+            }
+        }
+
+        #endregion
+
+        public override object getEntry()
+        {
+            throw new NotImplementedException();
         }
     }
 }

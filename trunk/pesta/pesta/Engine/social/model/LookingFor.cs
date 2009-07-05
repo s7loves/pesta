@@ -6,7 +6,7 @@
  * regarding copyright ownership. The ASF licenses this file
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
- * with the License. You may obtain a copy of the License at
+ * with the License. You may obtain [DataMember(EmitDefaultValue = false)] copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -17,35 +17,28 @@
  * specific language governing permissions and limitations under the License.
  */
 #endregion
-
-using System.Collections;
-using System.Collections.Generic;
+using System;
+using System.ComponentModel;
 using System.Runtime.Serialization;
 using Pesta.Engine.protocol.conversion;
 
-namespace Pesta.Engine.social.spi
+namespace Pesta.Engine.social.model
 {
-    [DataContract(Name = "response", Namespace = BeanConverter.osNameSpace)]
-    public abstract class IRestfulCollection
+    [DataContract(Namespace = BeanConverter.osNameSpace)]
+    [Flags]
+    public enum LookingFor
     {
-        [DataMember]
-        public int startIndex { get; set; }
-
-        [DataMember]
-        public int totalResults { get; set; }
-
-        [DataMember]
-        public int itemsPerPage { get; set; }
-
-        [DataMember]
-        public bool isFiltered { get; set; }
-
-        [DataMember]
-        public bool isSorted { get; set; }
-
-        [DataMember]
-        public bool isUpdatedSince { get; set; }
-
-        public abstract object getEntry();
+        [Description("Dating")]
+        DATING = 1,
+        [Description("Friends")]
+        FRIENDS = 2,
+        [Description("Relationship")]
+        RELATIONSHIP = 4,
+        [Description("Networking")]
+        NETWORKING = 8,
+        [Description("Activity Partners")]
+        ACTIVITY_PARTNERS = 16,
+        [Description("Random")]
+        RANDOM = 32
     }
 }

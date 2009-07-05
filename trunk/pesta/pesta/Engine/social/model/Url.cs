@@ -18,32 +18,50 @@
  */
 #endregion  
 using System;
-using Pesta.Engine.social.core.model;
+using System.Runtime.Serialization;
+using Pesta.Engine.protocol.conversion;
 using Pesta.Utilities;
 
 namespace Pesta.Engine.social.model
 {
-    /// <summary>
-    /// Summary description for Url
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
-    /// </para>
-    /// </remarks>
-    [ImplementedBy(typeof(UrlImpl))]
-    public interface Url : ListField
+    [DataContract(Namespace = BeanConverter.osNameSpace)]
+    public class Url : ListField
     {
-        /**
-        * Get the text associated with the link.
-        * @return the link text
-        */
-        String getLinkText();
+        public new class Field : EnumBaseType<Field>
+        {
+            public Field(int key, string value)
+                : base(key, value)
+            {
+            }
+            /** the name of the value field. */
+            public static readonly Field VALUE = new Field(1, "value");
+            /** the name of the linkText field. */
+            public static readonly Field LINK_TEXT = new Field(2, "linkText");
+            /** the name of the type field. */
+            public static readonly Field TYPE = new Field(3, "type");
 
-        /**
-        * Set the Link text associated with the link.
-        * @param linkText the link text
-        */
-        void setLinkText(String linkText);
+            public static Field GetByValue(string value)
+            {
+                return GetBaseByValue(value);
+            }
+
+            public override String ToString()
+            {
+                return Value;
+            }
+        }
+
+        [DataMember]
+        private String linkText;
+
+        public Url()
+        {
+            
+        }
+        public Url(String value, String linkText, String type)
+            : base(type, value)
+        {
+            this.linkText = linkText;
+        }
     } 
 }

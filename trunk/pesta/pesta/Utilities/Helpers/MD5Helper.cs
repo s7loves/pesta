@@ -32,34 +32,36 @@ using System;
 using System.Text;
 using System.Security.Cryptography;
 
-	/// <summary>
-	/// Provides methods to get a MD5 hash from a string or byte array.
-	/// </summary>
-	public class MD5Helper
-	{
+namespace Pesta.Utilities.Helpers
+{
+    /// <summary>
+    /// Provides methods to get a MD5 hash from a string or byte array.
+    /// </summary>
+    public class MD5Helper
+    {
         /// <summary>
         /// Gets the hash.
         /// </summary>
         /// <param name="data">The data.</param>
         /// <returns></returns>
-		public static string GetHash(string data)
-		{
-			byte[] b = System.Text.Encoding.Default.GetBytes(data);
+        public static string GetHash(string data)
+        {
+            byte[] b = System.Text.Encoding.Default.GetBytes(data);
 
-			return GetHash(b);
-		}
+            return GetHash(b);
+        }
 
         /// <summary>
         /// Gets the hash.
         /// </summary>
         /// <param name="data">The data.</param>
         /// <returns></returns>
-		public static string GetHash(byte[] data)
-		{
-			// This is one implementation of the abstract class MD5.
-			MD5 md5 = new MD5CryptoServiceProvider();
+        public static string GetHash(byte[] data)
+        {
+            // This is one implementation of the abstract class MD5.
+            MD5 md5 = new MD5CryptoServiceProvider();
 
-			return BitConverter.ToString(md5.ComputeHash(data)).Replace("-", String.Empty); 
-		}
-	}
-
+            return BitConverter.ToString(md5.ComputeHash(data)).Replace("-", String.Empty); 
+        }
+    }
+}
