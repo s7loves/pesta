@@ -303,6 +303,7 @@
     <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="DataAccess\canonicaldb.json" />
     <None Include="DataAccess\LinqRaya.dbml.layout">
       <DependentUpon>LinqRaya.dbml</DependentUpon>
     </None>
