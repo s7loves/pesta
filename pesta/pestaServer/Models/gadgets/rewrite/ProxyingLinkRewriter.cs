@@ -24,14 +24,6 @@ using Uri=Pesta.Engine.common.uri.Uri;
 
 namespace pestaServer.Models.gadgets.rewrite
 {
-    /// <summary>
-    /// Summary description for ProxyingLinkRewriter
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
-    /// </para>
-    /// </remarks>
     public class ProxyingLinkRewriter : ILinkRewriter
     {
         private readonly String prefix;
@@ -73,10 +65,7 @@ namespace pestaServer.Models.gadgets.rewrite
                     }
                     return result;
                 }
-                else
-                {
-                    return uri.ToString();
-                }
+                return uri.ToString();
             }
             catch
             {

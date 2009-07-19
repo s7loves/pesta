@@ -29,7 +29,6 @@ using System.Linq;
 
 namespace pestaServer.Models.gadgets.render
 {
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
     public class Renderer
     {
         private readonly Processor processor;

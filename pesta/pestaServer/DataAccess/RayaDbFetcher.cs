@@ -28,7 +28,6 @@ using Pesta.Utilities;
 
 namespace pestaServer.DataAccess
 {
-    ///  Apache Software License 2.0 2008 Partuza! ported to Pesta by Sean Lin M.T. (my6solutions.com)
     public class RayaDbFetcher : IDisposable
     {
         private readonly LinqRayaDataContext Db;
@@ -223,7 +222,7 @@ namespace pestaServer.DataAccess
 
         public Dictionary<string,Person> GetPeople(HashSet<String> ids, HashSet<String> fields, CollectionOptions options)
         {
-            var _ret = new Dictionary<string, Person>();
+            var result = new Dictionary<string, Person>();
             var persons = Db.persons.Where(x => ids.AsEnumerable().Contains(x.id.ToString()));
 
             // TODO filter first then fill dictionary
@@ -254,7 +253,10 @@ namespace pestaServer.DataAccess
                 }
                 if (fields.Contains("date_of_birth") || fields.Contains("@all"))
                 {
-                    person.birthday = p.date_of_birth;
+                    if (p.date_of_birth.HasValue)
+                    {
+                        person.birthday = UnixTime.ConvertFromUnixTimestamp(p.date_of_birth.Value);
+                    }
                 }
                 if (fields.Contains("ethnicity") || fields.Contains("@all"))
                 {
@@ -503,12 +505,12 @@ namespace pestaServer.DataAccess
                         var _organization = new Organization();
                         _organization.description = _row.description;
                         if (_row.end_date.HasValue)
-                            _organization.endDate = _row.end_date;
+                            _organization.endDate = UnixTime.ConvertFromUnixTimestamp(_row.end_date.Value);
                         _organization.field = _row.field;
                         _organization.name = _row.name;
                         _organization.salary = _row.salary;
                         if (_row.start_date.HasValue)
-                            _organization.startDate = _row.start_date;
+                            _organization.startDate = UnixTime.ConvertFromUnixTimestamp(_row.start_date.Value);
                         _organization.subField = _row.sub_field;
                         _organization.title = _row.title;
                         _organization.webpage = _row.webpage;
@@ -548,12 +550,12 @@ namespace pestaServer.DataAccess
                         var _organization = new Organization();
                         _organization.description = _row.description;
                         if (_row.end_date.HasValue)
-                            _organization.endDate = _row.end_date;
+                            _organization.endDate = UnixTime.ConvertFromUnixTimestamp(_row.end_date.Value);
                         _organization.field = _row.field;
                         _organization.name = _row.name;
                         _organization.salary = _row.salary;
                         if (_row.start_date.HasValue)
-                            _organization.startDate = _row.start_date;
+                            _organization.startDate = UnixTime.ConvertFromUnixTimestamp(_row.start_date.Value);
                         _organization.subField = _row.sub_field;
                         _organization.title = _row.title;
                         _organization.webpage = _row.webpage;
@@ -666,10 +668,10 @@ namespace pestaServer.DataAccess
                     person.urls = urllist;
                 }
                  
-                _ret.Add(personId.ToString(), person);
+                result.Add(personId.ToString(), person);
             } // foreach
 
-            return _ret;  
+            return result;  
         }
     }
 }

@@ -27,8 +27,6 @@ using System.Web.Mvc;
 using Pesta.Engine.auth;
 using Pesta.Engine.protocol;
 using Pesta.Engine.protocol.conversion;
-using Pesta.Engine.social;
-using Pesta.Engine.social.spi;
 using pestaServer.Models.social.service;
 
 namespace pestaServer.Controllers
@@ -39,7 +37,6 @@ namespace pestaServer.Controllers
         protected static readonly String JSON_FORMAT = "json";
         protected static readonly String ATOM_FORMAT = "atom";
         protected static readonly String XML_FORMAT = "xml";
-        private const String DEFAULT_ENCODING = "UTF-8";
         private readonly IHandlerDispatcher dispatcher;
         protected readonly BeanJsonConverter jsonConverter;
         protected readonly BeanConverter xmlConverter;

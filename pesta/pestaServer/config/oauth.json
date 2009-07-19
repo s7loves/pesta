@@ -20,7 +20,7 @@
 {
   "http://localhost:32974/content/widgets/gmailContacts.xml" : {
     "gmail" : {
-      "consumer_key" : "baizura.com",
+      "consumer_key" : "my6solutions.com",
       "consumer_secret" : "XWMtLyKdDqRSSUoyFejbdDrq",
       "key_type" : "HMAC_SYMMETRIC"
     }

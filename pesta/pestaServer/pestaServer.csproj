@@ -447,8 +447,9 @@
     <Content Include="robots.txt" />
     <Content Include="Views\error\NotFound.aspx" />
     <Content Include="Views\error\Unknown.aspx" />
-    <None Include="Content\features\opensocial-templates\README" />
     <None Include="config\certs\myrsacert.pfx" />
+    <None Include="Content\features\opensocial-templates\README" />
+    <None Include="Content\features\README" />
   </ItemGroup>
   <ItemGroup>
   </ItemGroup>
@@ -459,6 +460,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Content\features\jquery\" />
+    <Folder Include="Content\features\mocks\" />
     <Folder Include="Models\common\auth\" />
     <Folder Include="Models\gadgets\parse\" />
     <Folder Include="Models\social\core\util\" />

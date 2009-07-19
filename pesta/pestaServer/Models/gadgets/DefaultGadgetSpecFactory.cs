@@ -28,14 +28,6 @@ using URI = System.Uri;
 
 namespace pestaServer.Models.gadgets
 {
-    /// <summary>
-    /// Summary description for DefaultGadgetSpecFactory
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
-    /// </para>
-    /// </remarks>
     public class DefaultGadgetSpecFactory : IGadgetSpecFactory
     {
         public static readonly String CACHE_NAME = "gadgetSpecs";
