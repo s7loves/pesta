@@ -99,7 +99,7 @@
     "profile" : {
       "isOnlyVisible" : false,
       "urlTemplate" : "http://%host%/gadgets/profile?{var}",
-      "aliases": ["DASHBOARD", "default"]
+      "aliases": ["DASHBOARD", "default", "home"]
     },
     "canvas" : {
       "isOnlyVisible" : true,

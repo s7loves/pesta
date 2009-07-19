@@ -126,7 +126,7 @@ namespace pestaServer.Controllers
                 {
                     key = batchObj["id"] as String;
                 }
-                result.Add(getJsonResponse(key, getResponseItem(responses[i])));
+                result.Add(getJsonResponse(key, getResponseItem(responses[i]), null));
             }
             response.Output.Write(jsonConverter.ConvertToString(result));
         }
@@ -143,12 +143,12 @@ namespace pestaServer.Controllers
             // Resolve each Future into a response.
             // TODO: should use shared deadline across each request
             ResponseItem response = getResponseItem(HandleRequestItem(requestItem));
-            Object result = getJsonResponse(key, response);
+            Object result = getJsonResponse(key, response, requestItem);
 
             servletResponse.Output.Write(jsonConverter.ConvertToString(result));
         }
 
-        Object getJsonResponse(String key, ResponseItem responseItem)
+        Object getJsonResponse(String key, ResponseItem responseItem, RpcRequestItem requestItem)
         {
             var result = new Dictionary<string, object>();
             if (key != null)
@@ -174,6 +174,10 @@ namespace pestaServer.Controllers
                     var collection = (IRestfulCollection)response;
                     map.Add("startIndex", collection.startIndex);
                     map.Add("totalResults", collection.totalResults);
+                    if (requestItem != null && requestItem.getCount() != null)
+                    {
+                        map.Add("itemsPerPage", requestItem.getCount());
+                    }
                     map.Add("list", collection.getEntry());
                     result.Add("data", map);
                 }

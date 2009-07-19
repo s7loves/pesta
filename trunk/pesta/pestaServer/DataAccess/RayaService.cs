@@ -139,7 +139,7 @@ using pestaServer.DataAccess;
                 var person = getPeople(new HashSet<UserId> {userId}, groupId, new CollectionOptions(), fields,
                                              token);
                 if (person.entry.Count == 1)
-                    return (Person)person.entry[0];
+                    return person.entry[0];
 
                 throw new ProtocolException(ResponseError.BAD_REQUEST, "Person not found");
             }

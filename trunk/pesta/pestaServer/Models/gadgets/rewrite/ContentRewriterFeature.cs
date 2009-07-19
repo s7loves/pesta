@@ -27,31 +27,26 @@ namespace pestaServer.Models.gadgets.rewrite
     /// <summary>
     /// Summary description for ContentRewriterFeature
     /// </summary>
-    /// <remarks>
-    /// <para>
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
-    /// </para>
-    /// </remarks>
     public class ContentRewriterFeature
     {
-        private static readonly String INCLUDE_URLS = "include-urls";
-        private static readonly String EXCLUDE_URLS = "exclude-urls";
-        private static readonly String INCLUDE_TAGS = "include-tags";
-        private static readonly String EXPIRES = "expires";
+        private const String INCLUDE_URLS = "include-urls";
+        private const String EXCLUDE_URLS = "exclude-urls";
+        private const String INCLUDE_TAGS = "include-tags";
+        private const String EXPIRES = "expires";
 
-        public static readonly String EXPIRES_DEFAULT = "HTTP";
+        private static readonly String EXPIRES_DEFAULT = "HTTP";
 
         // Use tree set to maintain order for fingerprint
-        private HashSet<String> includeTags;
+        private readonly HashSet<String> includeTags;
 
-        private bool includeAll;
-        private bool includeNone;
+        private readonly bool includeAll;
+        private readonly bool includeNone;
 
-        private Regex include;
-        private Regex exclude;
+        private readonly Regex include;
+        private readonly Regex exclude;
 
         // If null then dont enforce a min TTL for proxied content. Use contents headers
-        private int? expires;
+        private readonly int? expires;
 
         private int? fingerprint;
 
@@ -93,8 +88,8 @@ namespace pestaServer.Models.gadgets.rewrite
                 {
                     excludeRegex = normalizeParam(f.getParams()[EXCLUDE_URLS], null);
                 }
-                String includeTagList = f.getParams()[INCLUDE_TAGS];
-                if (includeTagList != null)
+                String includeTagList;
+                if (f.getParams().TryGetValue(INCLUDE_TAGS, out includeTagList))
                 {
                     HashSet<String> tags = new HashSet<String>();
                     foreach (String tag in includeTagList.Split(','))

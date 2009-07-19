@@ -32,7 +32,7 @@
     "profile" : {
       "isOnlyVisible" : false,
       "urlTemplate" : "http://raya.my6solutions.com/profile/{var}",
-      "aliases": ["DASHBOARD", "default"]
+      "aliases": ["DASHBOARD", "default", "home"]
     },
     "canvas" : {
       "isOnlyVisible" : true,
@@ -60,7 +60,9 @@
     "domain" : "pesta",
     "enableCaja" : false,
     "supportedFields" : {
-       "person" : ["id", {"name" : ["familyName", "givenName", "unstructured"]}, "thumbnailUrl", "profileUrl"],
+       "person" : ["id", {"name" : ["familyName", "givenName", "unstructured"]}, 
+                    "thumbnailUrl", "profileUrl","gender","addresses","urls","currentLocation","bodyType",
+                    "schools","addresses"],
        "activity" : ["id", "title"]
     }
   },

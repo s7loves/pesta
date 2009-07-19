@@ -37,7 +37,6 @@ using Uri=Pesta.Engine.common.uri.Uri;
 
 namespace pestaServer.Models.gadgets.render
 {
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
     public class RenderingContentRewriter : ContentRewriter
     {
         
@@ -145,7 +144,6 @@ namespace pestaServer.Models.gadgets.render
                 Element baseTag = headTag.getOwnerDocument().createElement("base");
                 baseTag.setAttribute("href", baseUrl.ToString());
                 headTag.insertBefore(baseTag, headTag.getFirstChild());
-
             }
         }
 
@@ -287,7 +285,6 @@ namespace pestaServer.Models.gadgets.render
                 {
                     libs.Add(item);
                 }
-                
             }
 
             HashSet<String> unsupported = new HashSet<String>();
@@ -300,15 +297,7 @@ namespace pestaServer.Models.gadgets.render
             if (unsupported.Count != 0)
             {
                 // Remove non-required libs
-                
-                foreach (String missing in unsupported)
-                {
-                    if (!features[missing].getRequired())
-                    {
-                        unsupported.Remove(missing);
-                    }
-                }
-                
+                unsupported.RemoveWhere(x => !features[x].getRequired());
 
                 // Throw error with full list of unsupported libraries
                 if (unsupported.Count != 0) 

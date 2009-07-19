@@ -29,14 +29,6 @@ using pestaServer.Models.common;
 
 namespace pestaServer.Models.social.service
 {
-    /// <summary>
-    /// Summary description for PersonHandler
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
-    /// </para>
-    /// </remarks>
     public class PersonHandler : DataRequestHandler
     {
         private readonly IPersonService personService;
@@ -84,6 +76,8 @@ namespace pestaServer.Models.social.service
             {
                 throw new ArgumentException("Cannot fetch personIds for multiple userIds");
             }
+
+            // handle supportedFields request
             if (userIds.Contains(new UserId(UserId.Type.userId,"@supportedFields")))
             {
                 var supported = JsonContainerConfig.Instance.GetJsonObject(request.getToken().getContainer() ?? "default", "gadgets.features")
@@ -135,12 +129,22 @@ namespace pestaServer.Models.social.service
                     personIds.Add(new UserId(UserId.Type.userId, pid));
                 }
                 // Every other case is a collection response of optional person ids
-                return personService.getPeople(personIds, new GroupId(GroupId.Type.self, null),
+                var result = personService.getPeople(personIds, new GroupId(GroupId.Type.self, null),
                                                options, fields, request.getToken());
+                if (request.getCount() != null)
+                {
+                    result.itemsPerPage = request.getCount().Value;
+                }
+                return result;
             }
 
             // Every other case is a collection response.
-            return personService.getPeople(userIds, groupId, options, fields, request.getToken());
+            var result2 = personService.getPeople(userIds, groupId, options, fields, request.getToken());
+            if (request.getCount() != null)
+            {
+                result2.itemsPerPage = request.getCount().Value;
+            }
+            return result2; 
         }
     }
 }

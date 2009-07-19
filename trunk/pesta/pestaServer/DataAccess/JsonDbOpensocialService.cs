@@ -18,9 +18,11 @@
  */
 #endregion
 using System;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Collections.Generic;
+using System.Web;
 using Jayrock.Json;
 using Jayrock.Json.Conversion;
 using Pesta.Engine.auth;
@@ -33,21 +35,24 @@ using Pesta.Engine.social.spi;
 using pestaServer.Models.social.service;
 using Activity=Pesta.Engine.social.model.Activity;
 
-/// <summary>
-    /// Summary description for JsonDbOpensocialService
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
-    /// </para>
-    /// </remarks>
     public class JsonDbOpensocialService : IPersonService, IActivityService, IAppDataService, IMessagesService
     {
+        private const string Jsondb = "gadgets/files/sampledata/canonicaldb.json";
+        private readonly static string DbLocation = HttpContext.Current.Server.MapPath(HttpContext.Current.Request.ApplicationPath) + Jsondb;
         public readonly static JsonDbOpensocialService Instance = new JsonDbOpensocialService();
 
         private JsonDbOpensocialService()
         {
-            String content = ResourceLoader.GetContent(SampleContainerHandler.Jsondb);
+            String content;
+            using (StreamReader reader = new StreamReader(DbLocation))
+            {
+                content = reader.ReadToEnd();
+            }
+            // if one doesn't exist try the embedded one
+            if (string.IsNullOrEmpty(content))
+            {
+                content = ResourceLoader.GetContent(SampleContainerHandler.Jsondb);
+            }
             db = JsonConvert.Import(content) as JsonObject;
             converter = new BeanJsonConverter();
         }

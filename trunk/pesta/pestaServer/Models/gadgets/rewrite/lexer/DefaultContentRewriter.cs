@@ -32,11 +32,6 @@ namespace pestaServer.Models.gadgets.rewrite.lexer
     /// <summary>
     /// Default implementation of content rewriting.
     /// </summary>
-    /// <remarks>
-    /// <para>
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
-    /// </para>
-    /// </remarks>
     public class DefaultContentRewriter : IContentRewriter
     {
         private readonly IGadgetSpecFactory _specFactory;
