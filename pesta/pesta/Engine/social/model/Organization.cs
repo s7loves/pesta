@@ -51,7 +51,7 @@ namespace Pesta.Engine.social.model
 
         public DateTime? endDate { get; set; }
         [DataMember(Name = "endDate")]
-        private string _endDate
+        public string _endDate
         {
             get
             {
@@ -73,7 +73,7 @@ namespace Pesta.Engine.social.model
 
         public DateTime? startDate { get; set; }
         [DataMember(Name = "startDate")]
-        private string _startDate
+        public string _startDate
         {
             get
             {

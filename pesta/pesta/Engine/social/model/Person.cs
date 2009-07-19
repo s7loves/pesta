@@ -96,8 +96,8 @@ namespace Pesta.Engine.social.model
 
         [XmlIgnore]
         public bool genderSpecified { get { return gender.HasValue; } }
-        [DataMember(EmitDefaultValue = false)]
         public Gender? gender { get; set; }
+        [DataMember(Name = "gender", EmitDefaultValue = false)]
         public string _gender 
         { 
             get
@@ -116,7 +116,7 @@ namespace Pesta.Engine.social.model
         [DataMember(EmitDefaultValue = false)]
         public String happiestWhen { get; set; }
         [DataMember(EmitDefaultValue = false)]
-        public bool hasApp { get; set; }
+        public bool? hasApp { get; set; }
         [DataMember(EmitDefaultValue = false)]
         public List<String> heroes { get; set; }
         [DataMember(EmitDefaultValue = false)]
@@ -197,8 +197,22 @@ namespace Pesta.Engine.social.model
         public List<String> music { get; set; }
         [DataMember(EmitDefaultValue = false)]
         public Name name { get; set; }
-        [DataMember(EmitDefaultValue = false)]
-        public NetworkPresence networkPresence { get; set; }
+        public NetworkPresence? networkPresence { get; set; }
+        [DataMember(Name = "networkPresence", EmitDefaultValue = false)]
+        public string _networkPresence
+        {
+            get
+            {
+                return networkPresence.HasValue ? networkPresence.ToString() : null;
+            }
+            set
+            {
+                if (value != null)
+                {
+                    networkPresence = (NetworkPresence)Enum.Parse(typeof(NetworkPresence), value, true);
+                }
+            }
+        }
         [DataMember(EmitDefaultValue = false)]
         public String nickname { get; set; }
         [DataMember(EmitDefaultValue = false)]
@@ -263,19 +277,19 @@ namespace Pesta.Engine.social.model
         {
             get
             {
-                ListField url = getListFieldWithType(Person.PROFILE_URL_TYPE, urls);
+                ListField url = getListFieldWithType(PROFILE_URL_TYPE, urls);
                 return url == null ? null : url.value;
             }
             set
             {
-                ListField url = getListFieldWithType(Person.PROFILE_URL_TYPE, urls);
+                ListField url = getListFieldWithType(PROFILE_URL_TYPE, urls);
                 if (url != null)
                 {
                     url.value = value;
                 }
                 else
                 {
-                    urls = addListField(new Url(value, null, Person.PROFILE_URL_TYPE), urls);
+                    urls = addListField(new Url(value, null, PROFILE_URL_TYPE), urls);
                 }
             }
         }
@@ -285,19 +299,19 @@ namespace Pesta.Engine.social.model
         {
             get
             {
-                ListField photo = getListFieldWithType(Person.THUMBNAIL_PHOTO_TYPE, photos);
+                ListField photo = getListFieldWithType(THUMBNAIL_PHOTO_TYPE, photos);
                 return photo == null ? null : photo.value;
             }
             set
             {
-                ListField photo = getListFieldWithType(Person.THUMBNAIL_PHOTO_TYPE, photos);
+                ListField photo = getListFieldWithType(THUMBNAIL_PHOTO_TYPE, photos);
                 if (photo != null)
                 {
                     photo.value = value;
                 }
                 else
                 {
-                    photos = addListField(new ListField(Person.THUMBNAIL_PHOTO_TYPE, value), photos);
+                    photos = addListField(new ListField(THUMBNAIL_PHOTO_TYPE, value), photos);
                 }
             }
         }
@@ -346,12 +360,6 @@ namespace Pesta.Engine.social.model
 
         public class Field : EnumBaseType<Field>
         {
-            /// <summary>
-            /// Initializes [DataMember(EmitDefaultValue = false)] new instance of the Person class.
-            /// </summary>
-            /// <summary>
-            /// Initializes [DataMember(EmitDefaultValue = false)] new instance of the Field class.
-            /// </summary>
             public Field(int key, string value)
                 : base(key, value)
             {

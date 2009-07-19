@@ -18,17 +18,12 @@
  */
 #endregion
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Reflection;
-using System.Web;
 using System.Xml;
-using Jayrock.Json;
 using Pesta.Engine.social;
 using Pesta.Engine.social.model;
 using Pesta.Engine.social.spi;
-using Pesta.Utilities;
 using Activity=Pesta.Engine.social.model.Activity;
 using MediaItem=Pesta.Engine.social.model.MediaItem;
 using Message=Pesta.Engine.social.model.Message;

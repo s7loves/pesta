@@ -234,46 +234,16 @@
     <Compile Include="Engine\social\spi\RestfulCollection.cs" />
     <Compile Include="Engine\social\spi\SocialSpiException.cs" />
     <Compile Include="Engine\social\spi\UserId.cs" />
-    <Compile Include="Libraries\HtmlAgilityPack\crc32.cs" />
-    <Compile Include="Libraries\HtmlAgilityPack\EncodingFoundException.cs" />
-    <Compile Include="Libraries\HtmlAgilityPack\HtmlAttribute.cs" />
-    <Compile Include="Libraries\HtmlAgilityPack\HtmlAttributeCollection.cs" />
-    <Compile Include="Libraries\HtmlAgilityPack\HtmlCmdLine.cs" />
-    <Compile Include="Libraries\HtmlAgilityPack\HtmlCommentNode.cs" />
-    <Compile Include="Libraries\HtmlAgilityPack\HtmlConsoleListener.cs" />
-    <Compile Include="Libraries\HtmlAgilityPack\HtmlDocument.cs" />
-    <Compile Include="Libraries\HtmlAgilityPack\HtmlElementFlag.cs" />
-    <Compile Include="Libraries\HtmlAgilityPack\HtmlEntity.cs" />
-    <Compile Include="Libraries\HtmlAgilityPack\HtmlNameTable.cs" />
-    <Compile Include="Libraries\HtmlAgilityPack\HtmlNode.cs" />
-    <Compile Include="Libraries\HtmlAgilityPack\HtmlNodeCollection.cs" />
-    <Compile Include="Libraries\HtmlAgilityPack\HtmlNodeNavigator.cs" />
-    <Compile Include="Libraries\HtmlAgilityPack\HtmlNodeType.cs" />
-    <Compile Include="Libraries\HtmlAgilityPack\HtmlParseError.cs" />
-    <Compile Include="Libraries\HtmlAgilityPack\HtmlParseErrorCode.cs" />
-    <Compile Include="Libraries\HtmlAgilityPack\HtmlTextNode.cs" />
-    <Compile Include="Libraries\HtmlAgilityPack\HtmlWeb.cs" />
-    <Compile Include="Libraries\HtmlAgilityPack\HtmlWebException.cs" />
-    <Compile Include="Libraries\HtmlAgilityPack\IOLibrary.cs" />
-    <Compile Include="Libraries\HtmlAgilityPack\MixedCodeDocument.cs" />
-    <Compile Include="Libraries\HtmlAgilityPack\MixedCodeDocumentCodeFragment.cs" />
-    <Compile Include="Libraries\HtmlAgilityPack\MixedCodeDocumentFragment.cs" />
-    <Compile Include="Libraries\HtmlAgilityPack\MixedCodeDocumentFragmentList.cs" />
-    <Compile Include="Libraries\HtmlAgilityPack\MixedCodeDocumentFragmentType.cs" />
-    <Compile Include="Libraries\HtmlAgilityPack\MixedCodeDocumentTextFragment.cs" />
-    <Compile Include="Libraries\HtmlAgilityPack\NameValuePair.cs" />
-    <Compile Include="Libraries\HtmlAgilityPack\NameValuePairList.cs" />
     <Compile Include="Libraries\oauth\Constants.cs" />
     <Compile Include="Libraries\oauth\Rfc3986.cs" />
     <Compile Include="Libraries\oauth\signature\RSA_SHA1.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Utilities\ASPNETMVC\HttpCompressionModule.cs" />
     <Compile Include="Utilities\ASPNETMVC\StaticFileHandler.cs" />
     <Compile Include="Utilities\DateUtil.cs" />
     <Compile Include="Utilities\Dynamic.cs" />
+    <Compile Include="Utilities\Helpers\DateHelper.cs" />
     <Compile Include="Utilities\Helpers\EnumHelper.cs" />
-    <Compile Include="Utilities\Helpers\JSONHelper.cs" />
     <Compile Include="Utilities\Helpers\MD5Helper.cs" />
     <Compile Include="Utilities\Locale.cs" />
     <Compile Include="Utilities\PestaSettings.cs" />
@@ -307,10 +277,6 @@
     <None Include="DataAccess\LinqRaya.dbml.layout">
       <DependentUpon>LinqRaya.dbml</DependentUpon>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Engine\gadgets\http\" />
-    <Folder Include="Engine\gadgets\oauth\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

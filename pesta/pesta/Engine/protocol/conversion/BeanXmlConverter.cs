@@ -19,15 +19,11 @@
 #endregion
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.IO;
-using System.Runtime.Serialization;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
-using Pesta.Engine.social.model;
 using Pesta.Engine.social.spi;
-using Pesta.Utilities;
 
 namespace Pesta.Engine.protocol.conversion
 {
