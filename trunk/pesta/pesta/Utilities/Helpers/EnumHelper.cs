@@ -18,11 +18,7 @@
  */
 #endregion
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using Pesta.Engine.social.model;
 
 namespace Pesta.Utilities.Helpers
 {
@@ -42,6 +38,22 @@ namespace Pesta.Utilities.Helpers
         public static int ToInt(this Enum obj)
         {
             return Convert.ToInt32(obj);
+        }
+
+        /// <summary>
+        /// Parse a string to specified enum, will throw an exception if string is null or empty
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public static T ToEnum<T>(this string obj)
+        {
+            if (string.IsNullOrEmpty(obj))
+            {
+                throw new InvalidOperationException("string empty while trying to convert to enum " + typeof(T).Name);
+            }
+
+            return (T) Enum.Parse(typeof (T), obj);
         }
     }
 }

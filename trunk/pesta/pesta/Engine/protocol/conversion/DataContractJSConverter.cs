@@ -1,4 +1,23 @@
-﻿using System;
+﻿#region License, Terms and Conditions
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain [DataMember(EmitDefaultValue = false)] copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
+#endregion
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
@@ -23,28 +42,36 @@ namespace Pesta.Engine.protocol.conversion
             foreach (var info in properties)
             {
                 var value = info.GetValue(obj, null);
-                if (info.IsDefined(typeof(DataMemberAttribute), false) && value != null)
+                if (value == null)
                 {
-                    var valueType = value.GetType();
-                    // following needed, otherwise enums are serialised into numbers
-                    if (valueType.IsEnum)
-                    {
-                        value = value.ToString();
-                    }
-                    // handle scenario where only one entry
-                    else if (typeof(IRestfulCollection).IsAssignableFrom(type) &&
-                                typeof(IList).IsAssignableFrom(valueType))
-                    {
-                        var entry = ((IList) value);
-
-                        if (entry.Count == 1)
-                        {
-                            result.Add(info.Name, entry[0]);
-                            continue;
-                        }
-                    }
-                    result.Add(info.Name, value);
+                    continue;
                 }
+                var attribs = (DataMemberAttribute[])info.GetCustomAttributes(typeof(DataMemberAttribute), false);
+                if (attribs.Length == 0)
+                {
+                    continue;
+                }
+                string elementName = attribs[0].Name ?? info.Name;
+                
+                var valueType = value.GetType();
+                // following needed, otherwise enums are serialised into numbers
+                if (valueType.IsEnum)
+                {
+                    value = value.ToString();
+                }
+                // handle scenario where only one entry
+                else if (typeof(IRestfulCollection).IsAssignableFrom(type) &&
+                            typeof(IList).IsAssignableFrom(valueType))
+                {
+                    var entry = ((IList) value);
+
+                    if (entry.Count == 1)
+                    {
+                        result.Add(elementName, entry[0]);
+                        continue;
+                    }
+                }
+                result.Add(elementName, value);
             }
             return result;
         }

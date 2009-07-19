@@ -24,7 +24,6 @@ using URI = System.Uri;
 
 namespace Pesta.Engine.common.uri
 {
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
     public class Uri 
     {
         private readonly String text;
@@ -168,9 +167,10 @@ namespace Pesta.Engine.common.uri
                 return null;
             }
             
-            //URI result = null;
-            //URI.TryCreate(this.toJavaUri(), other.toJavaUri(), out result);
-            return fromJavaUri(new URI(this.toJavaUri(),other.ToString()));
+            URI result = null;
+            URI.TryCreate(this.toJavaUri(), other.toJavaUri(), out result);
+            return fromJavaUri(result);
+            //return fromJavaUri(new URI(this.toJavaUri(),other.ToString()));
         }
 
         /**

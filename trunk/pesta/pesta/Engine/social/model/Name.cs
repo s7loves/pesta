@@ -33,9 +33,9 @@ namespace Pesta.Engine.social.model
         [DataMember(EmitDefaultValue = false)] 
         public String additionalName { get; set; }
         [DataMember(EmitDefaultValue = false)]
-        public String familyName { get; set; }
+        public String familyName { get; set; } // last name
         [DataMember(EmitDefaultValue = false)]
-        public String givenName { get; set; }
+        public String givenName { get; set; }  // first name
         [DataMember(EmitDefaultValue = false)]
         public String honorificPrefix { get; set; }
         [DataMember(EmitDefaultValue = false)]
@@ -47,14 +47,11 @@ namespace Pesta.Engine.social.model
         {
             
         }
-        public Name(String formatted)
-        {
-            this.formatted = formatted;
-        }
-
         public Name(string firstName, string lastName)
         {
-            this.formatted = firstName + " " + lastName;
+            formatted = firstName + " " + lastName;
+            familyName = lastName;
+            givenName = firstName;
         }
 
         public class Field : EnumBaseType<Field>

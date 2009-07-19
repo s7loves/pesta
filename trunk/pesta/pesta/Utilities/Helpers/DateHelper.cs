@@ -1,4 +1,4 @@
-#region License, Terms and Conditions
+﻿#region License, Terms and Conditions
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -18,32 +18,32 @@
  */
 #endregion
 using System;
-using System.IO;
-using System.Reflection;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
-namespace Pesta.Engine.common
+namespace Pesta.Utilities.Helpers
 {
-    /// <summary> Handles loading contents from resource and file system files.</summary>
-    public static class ResourceLoader
+    public static class DateHelper
     {
-        public static String GetContent(String resource)
+        /// <summary>
+        /// Convert .NET time to Unix Time
+        /// </summary>
+        /// <param name="thetime"></param>
+        /// <returns></returns>
+        public static long ToUnixTime(this DateTime thetime)
         {
-            Assembly assembly = Assembly.GetExecutingAssembly();
-            Stream s = assembly.GetManifestResourceStream(resource);
-            if (s == null)
-            {
-                throw new FileNotFoundException("Can not locate resource: " + resource);
-            }
-
-            StreamReader sr = new StreamReader(s);
-            String retval = sr.ReadToEnd();
-            s.Close();
-            return retval;
+            return UnixTime.ConvertToUnixTimestamp(thetime);
         }
 
-        public static String GetContent(FileInfo file)
+        /// <summary>
+        /// Convert Unix Time to .NET time
+        /// </summary>
+        /// <param name="thetime"></param>
+        /// <returns></returns>
+        public static DateTime FromUnixTime(this long thetime)
         {
-            return file.OpenText().ReadToEnd();
+            return UnixTime.ConvertFromUnixTimestamp(thetime);
         }
     }
 }

@@ -68,17 +68,17 @@ namespace ASPNETMVC.Utilities
                 string fileExtension = file.Extension.ToLower();
 
                 // Do we handle such file types?
-                if (Array.BinarySearch<string>(FILE_TYPES, fileExtension) >= 0)
+                if (Array.BinarySearch(FILE_TYPES, fileExtension) >= 0)
                 {
                     // Yes we do. 
 
                     // If this is a binary file like image, then we won't compress it.
-                    if (Array.BinarySearch<string>(COMPRESS_FILE_TYPES, fileExtension) < 0)
+                    if (Array.BinarySearch(COMPRESS_FILE_TYPES, fileExtension) < 0)
                         compressionType = ResponseCompressionType.None;
 
                     // If the response bytes are already cached, then deliver the bytes directly from cache
-                    string cacheKey = typeof(StaticFileHandler).ToString() + ":"
-                        + compressionType.ToString()
+                    string cacheKey = typeof(StaticFileHandler) + ":"
+                        + compressionType
                         + ":" + physicalFilePath;
 
                     if (DeliverFromCache(context, request, response, 
@@ -100,7 +100,7 @@ namespace ASPNETMVC.Utilities
                             {
                                 ReadFileData(compressionType, file, memoryStream);
 
-                                this.CacheAndDeliver(context, request, response, physicalFilePath, 
+                                CacheAndDeliver(context, request, response, physicalFilePath, 
                                     compressionType, cacheKey, memoryStream, file);
                             }
                         }
@@ -112,7 +112,7 @@ namespace ASPNETMVC.Utilities
                 }
                 else
                 {
-                    this.TransmitFileUsingHttpResponse(request, response, physicalFilePath, compressionType, file);
+                    TransmitFileUsingHttpResponse(request, response, physicalFilePath, compressionType, file);
                 }
 
                 return new HttpAsyncResult(callback, state, true, null, null);
@@ -124,7 +124,7 @@ namespace ASPNETMVC.Utilities
                 {
                     HttpException h = x as HttpException;
                     response.StatusCode = h.GetHttpCode();
-                    Debug.WriteLine(h.Message);
+                    //Debug.WriteLine(h.Message);
                 }
                 return new HttpAsyncResult(callback, state, true, null, x);
             }
@@ -261,10 +261,6 @@ namespace ASPNETMVC.Utilities
                 response.TransmitFile(physicalFilePath);
 
                 Debug.WriteLine("TransmitFile: " + request.FilePath);
-            }
-            else
-            {
-                throw new HttpException((int)HttpStatusCode.NotFound, request.FilePath + " Not Found");
             }
         }
 
