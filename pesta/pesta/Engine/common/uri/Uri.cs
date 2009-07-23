@@ -19,6 +19,7 @@
 #endregion
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using URI = System.Uri;
 
@@ -159,18 +160,181 @@ namespace Pesta.Engine.common.uri
         * @param other The url to resolve against.
         * @return The new url.
         */
-        public Uri resolve(Uri other) 
+        public Uri resolve(Uri relative) 
         {
-            // TODO: We can probably make this more efficient by implementing resolve ourselves.
-            if (other == null) 
+            if (relative == null)
             {
                 return null;
             }
-            
-            URI result = null;
-            URI.TryCreate(this.toJavaUri(), other.toJavaUri(), out result);
-            return fromJavaUri(result);
-            //return fromJavaUri(new URI(this.toJavaUri(),other.ToString()));
+            if (relative.isAbsolute())
+            {
+                return relative;
+            }
+
+            UriBuilder result;
+            if (string.IsNullOrEmpty(relative.path) && relative.scheme == null
+                && relative.authority == null && relative.query == null
+                && relative.fragment != null)
+            {
+                // if the relative URI only consists of fragment,
+                // the resolved URI is very similar to this URI,
+                // except that it has the fragement from the relative URI.
+                result = new UriBuilder(this);
+                result.setFragment(relative.fragment);
+            }
+            else if (relative.scheme != null)
+            {
+                result = new UriBuilder(relative);
+            }
+            else if (relative.authority != null)
+            {
+                // if the relative URI has authority,
+                // the resolved URI is almost the same as the relative URI,
+                // except that it has the scheme of this URI.
+                result = new UriBuilder(relative);
+                result.setScheme(scheme);
+            }
+            else
+            {
+                // since relative URI has no authority,
+                // the resolved URI is very similar to this URI,
+                // except that it has the query and fragment of the relative URI,
+                // and the path is different.
+                result = new UriBuilder(this);
+                result.setFragment(relative.fragment);
+                result.setQuery(relative.query);
+                String relativePath = (relative.path == null) ? "" : relative.path;
+                if (relativePath.StartsWith("/"))
+                { //$NON-NLS-1$
+                    result.setPath(relativePath);
+                }
+                else
+                {
+                    // resolve a relative reference
+                    int endindex = path.LastIndexOf('/') + 1;
+                    result.setPath(normalizePath(path.Substring(0, endindex) + relativePath));
+                }
+            }
+            Uri resolved = result.toUri();
+            validate(resolved);
+            return resolved;
+        }
+
+        private static void validate(Uri uri)
+        {
+            if (string.IsNullOrEmpty(uri.authority) &&
+                string.IsNullOrEmpty(uri.path) &&
+                string.IsNullOrEmpty(uri.query))
+            {
+                throw new ArgumentException("Invalid scheme-specific part"); 
+            }
+        }
+
+        /**
+        * Dervived from harmony
+        * normalize path, and return the resulting string
+        */
+        private static String normalizePath(String path)
+        {
+            // count the number of '/'s, to determine number of segments
+            int index = -1;
+            int pathlen = path.Length;
+            int size = 0;
+            if (pathlen > 0 && path[0] != '/')
+            {
+                size++;
+            }
+            while ((index = path.IndexOf('/', index + 1)) != -1)
+            {
+                if (index + 1 < pathlen && path[index + 1] != '/')
+                {
+                    size++;
+                }
+            }
+
+            String[] seglist = new String[size];
+            bool[] include = new bool[size];
+
+            // break the path into segments and store in the list
+            int current = 0;
+            int index2 = 0;
+            index = (pathlen > 0 && path[0] == '/') ? 1 : 0;
+            while ((index2 = path.IndexOf('/', index + 1)) != -1)
+            {
+                seglist[current++] = path.Substring(index, index2 - index);
+                index = index2 + 1;
+            }
+
+            // if current==size, then the last character was a slash
+            // and there are no more segments
+            if (current < size)
+            {
+                seglist[current] = path.Substring(index);
+            }
+
+            // determine which segments get included in the normalized path
+            for (int i = 0; i < size; i++)
+            {
+                include[i] = true;
+                if (seglist[i].Equals(".."))
+                { //$NON-NLS-1$
+                    int remove = i - 1;
+                    // search back to find a segment to remove, if possible
+                    while (remove > -1 && !include[remove])
+                    {
+                        remove--;
+                    }
+                    // if we find a segment to remove, remove it and the ".."
+                    // segment
+                    if (remove > -1 && !seglist[remove].Equals(".."))
+                    { //$NON-NLS-1$
+                        include[remove] = false;
+                        include[i] = false;
+                    }
+                }
+                else if (seglist[i].Equals("."))
+                { //$NON-NLS-1$
+                    include[i] = false;
+                }
+            }
+
+            // put the path back together
+            StringBuilder newpath = new StringBuilder();
+            if (path.StartsWith("/"))
+            { //$NON-NLS-1$
+                newpath.Append('/');
+            }
+
+            for (int i = 0; i < seglist.Length; i++)
+            {
+                if (include[i])
+                {
+                    newpath.Append(seglist[i]);
+                    newpath.Append('/');
+                }
+            }
+
+            // if we used at least one segment and the path previously ended with
+            // a slash and the last segment is still used, then delete the extra
+            // trailing '/'
+            if (!path.EndsWith("/") && seglist.Length > 0 //$NON-NLS-1$
+                && include[seglist.Length - 1])
+            {
+                newpath.Remove(newpath.Length - 1, 1);
+            }
+
+            String result = newpath.ToString();
+
+            // check for a ':' in the first segment if one exists,
+            // prepend "./" to normalize
+            index = result.IndexOf(':');
+            index2 = result.IndexOf('/');
+            if (index != -1 && (index < index2 || index2 == -1))
+            {
+                newpath.Insert(0, "./"); //$NON-NLS-1$
+                result = newpath.ToString();
+            }
+            return result;
         }
 
         /**

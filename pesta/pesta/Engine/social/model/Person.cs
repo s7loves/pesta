@@ -112,7 +112,7 @@ namespace Pesta.Engine.social.model
             {
                 if (value != null)
                 {
-                    gender = (Gender?)value.ToEnum();
+                    gender = (Gender?)value.ToEnum<Gender>();
                 }
             } 
         }

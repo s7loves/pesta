@@ -40,23 +40,7 @@ namespace Pesta.Utilities.Helpers
             return Convert.ToInt32(obj);
         }
 
-        /// <summary>
-        /// Parse a string to specified enum, will throw an exception if string is null or empty
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="obj"></param>
-        /// <returns></returns>
-        public static T ToEnum<T>(this string obj)
-        {
-            if (string.IsNullOrEmpty(obj))
-            {
-                throw new InvalidOperationException("string empty while trying to convert to enum " + typeof(T).Name);
-            }
-
-            return (T) Enum.Parse(typeof (T), obj);
-        }
-
-        public static object ToEnum(this string obj)
+        public static object ToEnum<T>(this string obj)
         {
             if (string.IsNullOrEmpty(obj))
             {
@@ -64,7 +48,7 @@ namespace Pesta.Utilities.Helpers
             }
             try
             {
-                return Enum.Parse(obj.GetType(), obj, true);
+                return Enum.Parse(typeof(T), obj, true);
             }
             catch (Exception)
             {
