@@ -27,9 +27,9 @@ using System.Text;
 using System.Web;
 using System.Xml;
 using System.Xml.Serialization;
+using Jayrock;
 using Pesta.Engine.social.model;
 using Pesta.Engine.social.spi;
-using Pesta.Utilities;
 
 namespace Pesta.Engine.protocol.conversion
 {
@@ -73,7 +73,7 @@ namespace Pesta.Engine.protocol.conversion
                 writer.WriteElementString("uri", guidPrefix + ":" + users.Current.getUserId());
                 writer.WriteEndElement(); // author
 
-                if (obj.GetType().IsAssignableFrom(typeof(RestfulCollection<>)))
+                if (obj is IRestfulCollection)
                 {
                     IRestfulCollection collection = (IRestfulCollection) obj;
                     int totalResults = collection.totalResults;
@@ -165,7 +165,7 @@ namespace Pesta.Engine.protocol.conversion
             // TODO:<link rel="self" type="application/atom+xml" href="http://api.example.org/activity/feeds/.../af3778"/>
             writer.WriteElementString("id", guidPrefix + ":" + data.id);
             writer.WriteElementString("title", data.title);
-            writer.WriteElementString("updated", data.postedTime.HasValue ? UnixTime.ConvertFromUnixTimestamp(data.postedTime.Value).ToUniversalTime().ToString("o") : DateTime.UtcNow.ToString("o"));
+            writer.WriteElementString("updated", data.postedTime.HasValue ? UnixTime.ToDateTime(data.postedTime.Value).ToUniversalTime().ToString("o") : DateTime.UtcNow.ToString("o"));
             writer.WriteStartElement("author");
             writer.WriteElementString("uri", guidPrefix + ":" + data.userId);
             //writer.WriteElementString("name", data.displayName???);
@@ -194,7 +194,7 @@ namespace Pesta.Engine.protocol.conversion
             writer.WriteElementString("title", data.title);
             writer.WriteElementString("total", data.total.ToString());
             writer.WriteElementString("unread", data.unread.ToString());
-            writer.WriteElementString("updated", data.updated.HasValue ? UnixTime.ConvertFromUnixTimestamp(data.updated.Value).ToUniversalTime().ToString("o") : DateTime.UtcNow.ToString("o"));
+            writer.WriteElementString("updated", data.updated.HasValue ? UnixTime.ToDateTime(data.updated.Value).ToUniversalTime().ToString("o") : DateTime.UtcNow.ToString("o"));
             if (data.urls != null)
             {
                 XmlSerializer serializer = new XmlSerializer(data.urls.GetType());

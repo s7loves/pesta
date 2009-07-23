@@ -250,7 +250,6 @@
     <Compile Include="Utilities\Preconditions.cs" />
     <Compile Include="Utilities\Provider.cs" />
     <Compile Include="Utilities\Singleton.cs" />
-    <Compile Include="Utilities\UnixTime.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>

@@ -14,19 +14,12 @@
  * limitations under the License.
  */
 using System;
+using Jayrock;
 using Pesta.Interop.oauth.signature;
-using Pesta.Utilities;
+using Pesta.Libraries.oauth;
 
 namespace Pesta.Interop.oauth
 {
-    /// <summary>
-    /// Summary description for SimpleOAuthValidator
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
-    /// </para>
-    /// </remarks>
     public class SimpleOAuthValidator : OAuthValidator
     {
         // default window for timestamps is 5 minutes
@@ -90,7 +83,7 @@ namespace Pesta.Interop.oauth
         protected void validateTimestampAndNonce(OAuthMessage message)
         {
             message.requireParameters(new[] { OAuth.OAUTH_TIMESTAMP, OAuth.OAUTH_NONCE });
-            DateTime timestamp = UnixTime.ConvertFromUnixTimestamp(double.Parse(message.getParameter(OAuth.OAUTH_TIMESTAMP)));
+            DateTime timestamp = UnixTime.ToDateTime(double.Parse(message.getParameter(OAuth.OAUTH_TIMESTAMP)));
             DateTime now = DateTime.UtcNow;
             DateTime min = now.AddSeconds(0 - timestampWindow);
             DateTime max = now.AddSeconds(timestampWindow);

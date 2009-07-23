@@ -24,6 +24,7 @@ using System.Runtime.Serialization;
 using System.Xml.Serialization;
 using Pesta.Engine.protocol.conversion;
 using Pesta.Utilities;
+using Pesta.Utilities.Helpers;
 
 namespace Pesta.Engine.social.model
 {
@@ -81,6 +82,9 @@ namespace Pesta.Engine.social.model
         public String children { get; set; }
         [DataMember(EmitDefaultValue = false)]
         public Address currentLocation { get; set; }
+
+        [XmlIgnore]
+        public bool drinkerSpecified { get { return drinker.HasValue; } }
         [DataMember(EmitDefaultValue = false)]
         public Drinker? drinker { get; set; }
         [DataMember(EmitDefaultValue = false)]
@@ -108,15 +112,19 @@ namespace Pesta.Engine.social.model
             {
                 if (value != null)
                 {
-                    gender = (Gender)Enum.Parse(typeof(Gender), value, true);
+                    gender = (Gender?)value.ToEnum();
                 }
             } 
         }
         
         [DataMember(EmitDefaultValue = false)]
         public String happiestWhen { get; set; }
+
+        [XmlIgnore]
+        public bool hasAppSpecified { get { return hasApp.HasValue; } }
         [DataMember(EmitDefaultValue = false)]
         public bool? hasApp { get; set; }
+
         [DataMember(EmitDefaultValue = false)]
         public List<String> heroes { get; set; }
         [DataMember(EmitDefaultValue = false)]
@@ -143,6 +151,7 @@ namespace Pesta.Engine.social.model
         [DataMember(EmitDefaultValue = false)]
         public List<LookingFor> lookingFor { get; set; }
 
+        [XmlIgnore]
         public int? _lookingFor
         {
             get
@@ -197,6 +206,9 @@ namespace Pesta.Engine.social.model
         public List<String> music { get; set; }
         [DataMember(EmitDefaultValue = false)]
         public Name name { get; set; }
+
+        [XmlIgnore]
+        public bool networkPresenceSpecified { get { return smoker.HasValue; } }
         public NetworkPresence? networkPresence { get; set; }
         [DataMember(Name = "networkPresence", EmitDefaultValue = false)]
         public string _networkPresence
@@ -213,6 +225,7 @@ namespace Pesta.Engine.social.model
                 }
             }
         }
+        
         [DataMember(EmitDefaultValue = false)]
         public String nickname { get; set; }
         [DataMember(EmitDefaultValue = false)]
@@ -241,6 +254,9 @@ namespace Pesta.Engine.social.model
         public String scaredOf { get; set; }
         [DataMember(EmitDefaultValue = false)]
         public String sexualOrientation { get; set; }
+
+        [XmlIgnore]
+        public bool smokerSpecified { get { return smoker.HasValue; } }
         [DataMember(EmitDefaultValue = false)]
         public Smoker? smoker { get; set; }
         [DataMember(EmitDefaultValue = false)]
@@ -269,8 +285,6 @@ namespace Pesta.Engine.social.model
         public bool isOwner { get; set; }
         [DataMember(EmitDefaultValue = false)]
         public bool isViewer { get; set; }
-
-        
 
         [DataMember(EmitDefaultValue = false)]
         public string profileUrl

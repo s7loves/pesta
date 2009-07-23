@@ -37,15 +37,15 @@
   <ItemGroup>
     <Reference Include="IKVM.OpenJDK.ClassLibrary, Version=0.38.0.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\ikvm\ikvm-0.38.0.0\bin\IKVM.OpenJDK.ClassLibrary.dll</HintPath>
+      <HintPath>..\..\..\..\IKVM shindig\IKVM.OpenJDK.ClassLibrary.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.Runtime, Version=0.38.0.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\ikvm\ikvm-0.38.0.0\bin\IKVM.Runtime.dll</HintPath>
+      <HintPath>..\..\..\..\IKVM shindig\IKVM.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.Runtime.JNI, Version=0.38.0.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\ikvm\ikvm-0.38.0.0\bin\IKVM.Runtime.JNI.dll</HintPath>
+      <HintPath>..\..\..\..\IKVM shindig\IKVM.Runtime.JNI.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Build.Engine" />
     <Reference Include="Microsoft.Build.Framework" />
@@ -53,7 +53,7 @@
     <Reference Include="Microsoft.Build.Utilities" />
     <Reference Include="shindig, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Users\sean\Documents\Visual Studio 2008\Projects\pestaInTheCloud\pestaServer\bin\shindig.dll</HintPath>
+      <HintPath>..\..\..\..\IKVM shindig\shindig.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />

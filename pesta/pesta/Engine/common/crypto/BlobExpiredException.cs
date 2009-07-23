@@ -17,18 +17,13 @@
  * specific language governing permissions and limitations under the License.
  */
 #endregionusing System;
-using Pesta.Utilities;
+using Jayrock;
 
 namespace Pesta.Engine.common.crypto
 {
     /// <summary>
     /// Thrown when a blob has expired.
     /// </summary>
-    /// <remarks>
-    /// <para>
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
-    /// </para>
-    /// </remarks>
     [Serializable]
     public class BlobExpiredException : BlobCrypterException
     {
@@ -38,7 +33,7 @@ namespace Pesta.Engine.common.crypto
         public readonly DateTime maxDate;
 
         public BlobExpiredException(long minTime, double now, long maxTime)
-            : this(UnixTime.ConvertFromUnixTimestamp(minTime), UnixTime.ConvertFromUnixTimestamp(now), UnixTime.ConvertFromUnixTimestamp(maxTime))
+            : this(UnixTime.ToDateTime(minTime), UnixTime.ToDateTime(now), UnixTime.ToDateTime(maxTime))
         {
         }
 

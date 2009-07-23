@@ -17,19 +17,12 @@ using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Text;
+using Jayrock;
+using Pesta.Interop.oauth;
 using Pesta.Interop.oauth.signature;
-using Pesta.Utilities;
 
-namespace Pesta.Interop.oauth
+namespace Pesta.Libraries.oauth
 {
-    /// <summary>
-    /// Summary description for OAuthMessage
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
-    /// </para>
-    /// </remarks>
     public class OAuthMessage
     {
         public OAuthMessage(String method, String URL, ICollection<OAuth.Parameter> parameters)
@@ -219,7 +212,7 @@ namespace Pesta.Interop.oauth
             }
             if (!pMap.ContainsKey(OAuth.OAUTH_TIMESTAMP))
             {
-                addParameter(OAuth.OAUTH_TIMESTAMP, UnixTime.ConvertToUnixTimestamp(DateTime.UtcNow).ToString());
+                addParameter(OAuth.OAUTH_TIMESTAMP, UnixTime.ToInt64(DateTime.UtcNow).ToString());
             }
             if (!pMap.ContainsKey(OAuth.OAUTH_NONCE))
             {
@@ -288,7 +281,7 @@ namespace Pesta.Interop.oauth
                         into.Append(Rfc3986.Encode(name)).Append("=\"")
                             .Append(
                             Rfc3986.Encode(ToString(parameter
-                                                             .Value))).Append('"');
+                                                        .Value))).Append('"');
                     }
                 }
             }

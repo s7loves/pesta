@@ -1,4 +1,4 @@
-﻿#region License, Terms and Conditions
+#region License, Terms and Conditions
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -23,6 +23,7 @@ using Pesta.Engine.auth;
 using Pesta.Engine.social.oauth;
 using Pesta.Interop.oauth;
 using Pesta.Interop.oauth.server;
+using Pesta.Libraries.oauth;
 
 namespace Pesta.Engine.social.core.oauth
 {

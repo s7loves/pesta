@@ -18,9 +18,7 @@
  */
 #endregion
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using Jayrock;
 
 namespace Pesta.Utilities.Helpers
 {
@@ -33,7 +31,7 @@ namespace Pesta.Utilities.Helpers
         /// <returns></returns>
         public static long ToUnixTime(this DateTime thetime)
         {
-            return UnixTime.ConvertToUnixTimestamp(thetime);
+            return UnixTime.ToInt64(thetime);
         }
 
         /// <summary>
@@ -43,7 +41,7 @@ namespace Pesta.Utilities.Helpers
         /// <returns></returns>
         public static DateTime FromUnixTime(this long thetime)
         {
-            return UnixTime.ConvertFromUnixTimestamp(thetime);
+            return UnixTime.ToDateTime(thetime);
         }
     }
 }

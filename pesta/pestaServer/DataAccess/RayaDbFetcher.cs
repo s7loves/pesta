@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using Jayrock;
 using Pesta.DataAccess;
 using Pesta.Engine.social.model;
 using Pesta.Engine.social.spi;
@@ -52,37 +53,37 @@ namespace pestaServer.DataAccess
 
         public bool CreateActivity(string personId, Activity activity, string appId) 
         {
-            string _title = (activity.title ?? "").Trim();
-            if (string.IsNullOrEmpty(_title)) 
+            string title = (activity.title ?? "").Trim();
+            if (string.IsNullOrEmpty(title)) 
             {
                 throw new Exception("Invalid activity: empty title");
             }
-            string _body = (activity.body ?? "").Trim();
-            var _time = UnixTime.ConvertToUnixTimestamp(DateTime.UtcNow);
+            string body = (activity.body ?? "").Trim();
+            var time = UnixTime.ToInt64(DateTime.UtcNow);
             var act = new activity
                           {
                               person_id = int.Parse(personId),
                               app_id = int.Parse(appId),
-                              title = _title,
-                              body = _body,
-                              created = (long)_time
+                              title = title,
+                              body = body,
+                              created = time
                           };
             Db.activities.InsertOnSubmit(act);
             Db.SubmitChanges();
             if (Db.GetChangeSet().Inserts.Count != 0)
                 return false;
         
-            var _mediaItems = activity.mediaItems;
-            if (_mediaItems.Count != 0)
+            var mediaItems = activity.mediaItems;
+            if (mediaItems.Count != 0)
             {
-                foreach (var _mediaItem in _mediaItems) 
+                foreach (var mediaItem in mediaItems) 
                 {
                     var actm = new activity_media_item
                                    {
                                        activity_id = act.id,
-                                       media_type = _mediaItem.type.ToString().ToLower(),
-                                       mime_type = _mediaItem.mimeType,
-                                       url = _mediaItem.url
+                                       media_type = mediaItem.type.ToString().ToLower(),
+                                       mime_type = mediaItem.mimeType,
+                                       url = mediaItem.url
                                    };
                     if (!string.IsNullOrEmpty(actm.mime_type) && 
                         !string.IsNullOrEmpty(actm.url)) 
@@ -255,7 +256,7 @@ namespace pestaServer.DataAccess
                 {
                     if (p.date_of_birth.HasValue)
                     {
-                        person.birthday = UnixTime.ConvertFromUnixTimestamp(p.date_of_birth.Value);
+                        person.birthday = UnixTime.ToDateTime(p.date_of_birth.Value);
                     }
                 }
                 if (fields.Contains("ethnicity") || fields.Contains("@all"))
@@ -505,12 +506,12 @@ namespace pestaServer.DataAccess
                         var _organization = new Organization();
                         _organization.description = _row.description;
                         if (_row.end_date.HasValue)
-                            _organization.endDate = UnixTime.ConvertFromUnixTimestamp(_row.end_date.Value);
+                            _organization.endDate = UnixTime.ToDateTime(_row.end_date.Value);
                         _organization.field = _row.field;
                         _organization.name = _row.name;
                         _organization.salary = _row.salary;
                         if (_row.start_date.HasValue)
-                            _organization.startDate = UnixTime.ConvertFromUnixTimestamp(_row.start_date.Value);
+                            _organization.startDate = UnixTime.ToDateTime(_row.start_date.Value);
                         _organization.subField = _row.sub_field;
                         _organization.title = _row.title;
                         _organization.webpage = _row.webpage;
@@ -550,12 +551,12 @@ namespace pestaServer.DataAccess
                         var _organization = new Organization();
                         _organization.description = _row.description;
                         if (_row.end_date.HasValue)
-                            _organization.endDate = UnixTime.ConvertFromUnixTimestamp(_row.end_date.Value);
+                            _organization.endDate = UnixTime.ToDateTime(_row.end_date.Value);
                         _organization.field = _row.field;
                         _organization.name = _row.name;
                         _organization.salary = _row.salary;
                         if (_row.start_date.HasValue)
-                            _organization.startDate = UnixTime.ConvertFromUnixTimestamp(_row.start_date.Value);
+                            _organization.startDate = UnixTime.ToDateTime(_row.start_date.Value);
                         _organization.subField = _row.sub_field;
                         _organization.title = _row.title;
                         _organization.webpage = _row.webpage;
