@@ -38,11 +38,9 @@ namespace pestaServer.ActionFilters
                                                            };
         // At some point change this to a container specific realm
         private const String realm = "shindig";
-
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
             base.OnActionExecuting(filterContext);
-
 
             HttpRequestBase request = filterContext.HttpContext.Request;
             HttpResponseBase response = filterContext.HttpContext.Response;

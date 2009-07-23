@@ -51,7 +51,7 @@ namespace Pesta.Engine.protocol.conversion
             XmlWriter xw = XmlWriter.Create(ms, new XmlWriterSettings { Indent = true  });
             using (var writer = XmlDictionaryWriter.CreateDictionaryWriter(xw))
             {
-                if (obj.GetType().IsAssignableFrom(typeof(RestfulCollection<>)))
+                if (obj is IRestfulCollection)
                 {
                     IRestfulCollection collection = (IRestfulCollection)obj;
                     var responses = collection.getEntry();

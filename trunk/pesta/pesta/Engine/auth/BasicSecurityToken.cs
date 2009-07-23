@@ -25,14 +25,6 @@ using Pesta.Utilities;
 
 namespace Pesta.Engine.auth
 {
-    /// <summary>
-    /// Summary description for BasicSecurityToken
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
-    /// </para>
-    /// </remarks>
     public class BasicSecurityToken : ISecurityToken
     {
         /** serialized form of the token */
@@ -101,9 +93,9 @@ namespace Pesta.Engine.auth
         * @param moduleId module id of this gadget 
         * @throws BlobCrypterException 
         */
-        static public BasicSecurityToken createFromValues(string _owner, string _viewer, string _app, string _domain, string _appUrl, string _moduleId, string container) 
+        static public BasicSecurityToken createFromValues(string owner, string viewer, string app, string domain, string appUrl, string moduleId, string container) 
         {
-            return new BasicSecurityToken(_owner, _viewer, _app, _domain, _appUrl, _moduleId, container);
+            return new BasicSecurityToken(owner, viewer, app, domain, appUrl, moduleId, container);
         }
 
         private void putNullSafe(String key, String value)

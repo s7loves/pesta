@@ -66,7 +66,7 @@ namespace Pesta.Engine.social.model
         [DataMember(EmitDefaultValue = false)] public String streamTitle { get; set; }
         [DataMember(EmitDefaultValue = false)] public String streamUrl { get; set; }
         [DataMember(EmitDefaultValue = false)]
-        public Dictionary<String, String> templateParams { get; set; }
+        public DictionarySerializer<String, String> templateParams { get; set; }
         [DataMember(EmitDefaultValue = false)] public String title { get; set; }
         [DataMember(EmitDefaultValue = false)] public String titleId { get; set; }
         [DataMember(EmitDefaultValue = false)] public String url { get; set; }

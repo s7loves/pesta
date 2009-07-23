@@ -55,6 +55,22 @@ namespace Pesta.Utilities.Helpers
 
             return (T) Enum.Parse(typeof (T), obj);
         }
+
+        public static object ToEnum(this string obj)
+        {
+            if (string.IsNullOrEmpty(obj))
+            {
+                return null;
+            }
+            try
+            {
+                return Enum.Parse(obj.GetType(), obj, true);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
     }
 }
 

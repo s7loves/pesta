@@ -22,14 +22,6 @@ using com.google.caja.lexer;
 
 namespace pestaServer.Models.gadgets.rewrite.lexer
 {
-    /// <summary>
-    /// Summary description for IHtmlTagTransformer
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
-    /// </para>
-    /// </remarks>
     public interface IHtmlTagTransformer
     {
         /**

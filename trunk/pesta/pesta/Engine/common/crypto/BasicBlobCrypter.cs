@@ -23,18 +23,13 @@ using System.IO;
 using System.Text;
 using System;
 using System.Web;
-using Pesta.Utilities;
+using Jayrock;
 
 namespace Pesta.Engine.common.crypto
 {
     /// <summary>
     /// Simple implementation of BlobCrypter.
     /// </summary>
-    /// <remarks>
-    /// <para>
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
-    /// </para>
-    /// </remarks>
     public class BasicBlobCrypter : BlobCrypter
     {
         // Labels for key derivation
@@ -168,7 +163,7 @@ namespace Pesta.Engine.common.crypto
             }
             sb.Append(TIMESTAMP_KEY);
             sb.Append('=');
-            sb.Append(UnixTime.ConvertToUnixTimestamp(DateTime.UtcNow));
+            sb.Append(UnixTime.ToInt64(DateTime.UtcNow));
             return Encoding.UTF8.GetBytes(sb.ToString());
         }
 
@@ -230,7 +225,7 @@ namespace Pesta.Engine.common.crypto
             long origin = long.Parse(xout[TIMESTAMP_KEY]);
             long minTime = origin - CLOCK_SKEW_ALLOWANCE;
             long maxTime = origin + maxAge + CLOCK_SKEW_ALLOWANCE;
-            double now = UnixTime.ConvertToUnixTimestamp(DateTime.UtcNow);
+            var now = UnixTime.ToInt64(DateTime.UtcNow);
             if (!(minTime < now && now < maxTime))
             {
                 throw new BlobExpiredException(minTime, now, maxTime);

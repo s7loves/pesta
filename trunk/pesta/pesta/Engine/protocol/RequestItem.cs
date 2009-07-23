@@ -19,22 +19,14 @@
 #endregion
 using System;
 using System.Collections.Generic;
+using Jayrock;
 using Pesta.Engine.auth;
 using Pesta.Engine.protocol.conversion;
 using Pesta.Engine.social;
 using Pesta.Engine.social.spi;
-using Pesta.Utilities;
 
 namespace Pesta.Engine.protocol
 {
-    /// <summary>
-    /// Summary description for RequestItem
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
-    /// </para>
-    /// </remarks>
     public abstract class RequestItem
     {
         // Common OpenSocial API fields
@@ -96,7 +88,7 @@ namespace Pesta.Engine.protocol
             if (updatedSince == null)
                 return null;
 
-            DateTime date = UnixTime.ConvertFromUnixTimestamp(double.Parse(updatedSince));
+            DateTime date = UnixTime.ToDateTime(double.Parse(updatedSince));
 
             return date;
         }

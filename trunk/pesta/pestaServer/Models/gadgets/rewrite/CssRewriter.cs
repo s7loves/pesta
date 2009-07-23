@@ -25,14 +25,6 @@ using Uri=Pesta.Engine.common.uri.Uri;
 
 namespace pestaServer.Models.gadgets.rewrite
 {
-    /// <summary>
-    /// Summary description for CssRewriter
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
-    /// </para>
-    /// </remarks>
     public class CssRewriter
     {
         private static readonly Regex urlMatcher = new Regex("(url\\s*\\(\\s*['\"]?)([^\\)'\"]*)(['\"]?\\s*\\))", RegexOptions.IgnoreCase);

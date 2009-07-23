@@ -17,15 +17,15 @@
  * specific language governing permissions and limitations under the License.
  */
 #endregion
-
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
+using Jayrock;
 using Jayrock.Json;
 using Pesta.Interop.oauth;
-using Pesta.Utilities;
+using Pesta.Libraries.oauth;
 using pestaServer.Models.gadgets.http;
 using String=System.String;
 using Uri=Pesta.Engine.common.uri.Uri;
@@ -45,11 +45,6 @@ namespace pestaServer.Models.gadgets.oauth
     /// OAuth dance to happen as well when owner == viewer.  This lets OAuth service providers build up
     /// an identity mapping from ids on social network sites to their own local ids.
     /// </summary>
-    /// <remarks>
-    /// <para>
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
-    /// </para>
-    /// </remarks>
     public class OAuthRequest
     {
         // Maximum number of attempts at the protocol before giving up.
@@ -449,7 +444,7 @@ namespace pestaServer.Models.gadgets.oauth
             }
             parameters.Add(new OAuth.Parameter(OAuth.OAUTH_VERSION, OAuth.VERSION_1_0));
             parameters.Add(new OAuth.Parameter(OAuth.OAUTH_TIMESTAMP,
-                                                UnixTime.ConvertToUnixTimestamp(DateTime.UtcNow).ToString()));
+                                                UnixTime.ToInt64(DateTime.UtcNow).ToString()));
         }
 
         private static String getAuthorizationHeader(IEnumerable<OAuth.Parameter> oauthParams)

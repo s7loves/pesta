@@ -20,6 +20,7 @@
 using System.Collections.Generic;
 using System;
 using Pesta.Interop.oauth;
+using Pesta.Libraries.oauth;
 
 
 namespace pestaServer.Models.gadgets.oauth
