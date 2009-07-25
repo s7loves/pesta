@@ -21,7 +21,7 @@
   "http://localhost:32974/content/widgets/gmailContacts.xml" : {
     "gmail" : {
       "consumer_key" : "my6solutions.com",
-      "consumer_secret" : "XWMtLyKdDqRSSUoyFejbdDrq",
+      "consumer_secret" : "WjbzTy7PK3eZpoTDiROOmzAO",
       "key_type" : "HMAC_SYMMETRIC"
     }
   }

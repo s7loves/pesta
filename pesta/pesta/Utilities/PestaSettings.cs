@@ -58,7 +58,6 @@ namespace Pesta.Utilities
                 gadgetDebug = ReadSetting(settings, "gadgetDebug", "true");
                 tokenMaxAge = ReadSetting(settings, "tokenMaxAge", "3600");
                 gadgetCacheXmlRefreshInterval = ReadSetting(settings, "gadgetCacheXmlRefreshInterval", "300000");
-                allowPlaintextToken = ReadSetting(settings, "allowPlaintextToken", "true");
                 containerUrlPrefix = ReadSetting(settings, "containerUrlPrefix", "");
                 tokenMasterKey = ReadSetting(settings, "tokenMasterKey", "INSECURE_DEFAULT_KEY");
                 javaPath = ReadSetting(settings, "javaPath", @"c:\program files\java\jdk1.6.0_12\bin\java.exe");
@@ -89,7 +88,6 @@ namespace Pesta.Utilities
         private static string allowUnauthenticated;
         private static string gadgetDebug;
         private static string gadgetCacheXmlRefreshInterval;
-        private static string allowPlaintextToken;
         private static string tokenMaxAge;
         private static string containerUrlPrefix;
         private static string tokenMasterKey;
@@ -98,10 +96,6 @@ namespace Pesta.Utilities
         public static String DbServiceName 
         {
             get { return dbServiceName; }
-        }
-        public static String AllowPlaintextToken
-        {
-            get { return allowPlaintextToken; }
         }
         public static String TokenMaxAge
         {

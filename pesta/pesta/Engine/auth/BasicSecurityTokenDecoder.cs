@@ -90,7 +90,7 @@ namespace Pesta.Engine.auth
             try
             {
                 String[] tokens = token.Split(':');
-                if (tokens.Length != TOKEN_COUNT && PestaSettings.AllowPlaintextToken.ToLower().Equals("true"))
+                if (tokens.Length != TOKEN_COUNT)
                 {
                     //throw new SecurityTokenException("Malformed security token");
                     return BasicSecurityToken.createFromToken(token, int.Parse(PestaSettings.TokenMaxAge));
