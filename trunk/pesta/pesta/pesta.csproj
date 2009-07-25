@@ -74,7 +74,6 @@
     <Compile Include="Engine\common\util\HashUtil.cs" />
     <Compile Include="Engine\common\util\JsonConversionUtil.cs" />
     <Compile Include="Engine\common\xml\XmlUtil.cs" />
-    <Compile Include="Filters\AuthenticationServletFilter.cs" />
     <Compile Include="Utilities\CustomAttr.cs" />
     <Compile Include="Utilities\EnumBaseType.cs" />
     <Compile Include="Utilities\HashKey.cs" />

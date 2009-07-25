@@ -33,6 +33,7 @@ namespace pestaServer.Controllers
         private static readonly MakeRequestHandler makeRequestHandler = MakeRequestHandler.Instance;
 
         [CompressFilter]
+        [AuthenticationFilter]
         public void Index()
         {
             var request = new HttpRequestWrapper(System.Web.HttpContext.Current);
