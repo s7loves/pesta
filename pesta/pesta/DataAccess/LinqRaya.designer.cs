@@ -51,9 +51,6 @@ namespace Pesta.DataAccess
     partial void Insertfb_user(fb_user instance);
     partial void Updatefb_user(fb_user instance);
     partial void Deletefb_user(fb_user instance);
-    partial void Insertfriend_request(friend_request instance);
-    partial void Updatefriend_request(friend_request instance);
-    partial void Deletefriend_request(friend_request instance);
     partial void Insertfriend(friend instance);
     partial void Updatefriend(friend instance);
     partial void Deletefriend(friend instance);
@@ -66,6 +63,9 @@ namespace Pesta.DataAccess
     partial void Insertmessage(message instance);
     partial void Updatemessage(message instance);
     partial void Deletemessage(message instance);
+    partial void Insertnotification(notification instance);
+    partial void Updatenotification(notification instance);
+    partial void Deletenotification(notification instance);
     partial void Insertoauth_consumer(oauth_consumer instance);
     partial void Updateoauth_consumer(oauth_consumer instance);
     partial void Deleteoauth_consumer(oauth_consumer instance);
@@ -186,14 +186,6 @@ namespace Pesta.DataAccess
 			}
 		}
 		
-		public System.Data.Linq.Table<friend_request> friend_requests
-		{
-			get
-			{
-				return this.GetTable<friend_request>();
-			}
-		}
-		
 		public System.Data.Linq.Table<friend> friends
 		{
 			get
@@ -223,6 +215,14 @@ namespace Pesta.DataAccess
 			get
 			{
 				return this.GetTable<message>();
+			}
+		}
+		
+		public System.Data.Linq.Table<notification> notifications
+		{
+			get
+			{
+				return this.GetTable<notification>();
 			}
 		}
 		
@@ -1641,7 +1641,7 @@ namespace Pesta.DataAccess
 		
 		private long _modified;
 		
-		private System.Nullable<int> _type;
+		private int _type;
 		
 		private EntitySet<activity> _activities;
 		
@@ -1683,7 +1683,7 @@ namespace Pesta.DataAccess
     partial void OnscrollingChanged();
     partial void OnmodifiedChanging(long value);
     partial void OnmodifiedChanged();
-    partial void OntypeChanging(System.Nullable<int> value);
+    partial void OntypeChanging(int value);
     partial void OntypeChanged();
     #endregion
 		
@@ -1995,8 +1995,8 @@ namespace Pesta.DataAccess
 			}
 		}
 		
-		[Column(Storage="_type", DbType="Int")]
-		public System.Nullable<int> type
+		[Column(Storage="_type", DbType="Int NOT NULL")]
+		public int type
 		{
 			get
 			{
@@ -2365,8 +2365,8 @@ namespace Pesta.DataAccess
 		}
 	}
 	
-	[Table(Name="dbo.friend_requests")]
-	public partial class friend_request : INotifyPropertyChanging, INotifyPropertyChanged
+	[Table(Name="dbo.friends")]
+	public partial class friend : INotifyPropertyChanging, INotifyPropertyChanged
 	{
 		
 		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
@@ -2387,7 +2387,7 @@ namespace Pesta.DataAccess
     partial void Onfriend_idChanged();
     #endregion
 		
-		public friend_request()
+		public friend()
 		{
 			this._person = default(EntityRef<person>);
 			OnCreated();
@@ -2437,7 +2437,7 @@ namespace Pesta.DataAccess
 			}
 		}
 		
-		[Association(Name="person_friend_request", Storage="_person", ThisKey="person_id", OtherKey="id", IsForeignKey=true, DeleteOnNull=true, DeleteRule="CASCADE")]
+		[Association(Name="person_friend", Storage="_person", ThisKey="person_id", OtherKey="id", IsForeignKey=true)]
 		public person person
 		{
 			get
@@ -2454,12 +2454,12 @@ namespace Pesta.DataAccess
 					if ((previousValue != null))
 					{
 						this._person.Entity = null;
-						previousValue.friend_request = null;
+						previousValue.friend = null;
 					}
 					this._person.Entity = value;
 					if ((value != null))
 					{
-						value.friend_request = this;
+						value.friend = this;
 						this._person_id = value.id;
 					}
 					else
@@ -2467,116 +2467,6 @@ namespace Pesta.DataAccess
 						this._person_id = default(int);
 					}
 					this.SendPropertyChanged("person");
-				}
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-	}
-	
-	[Table(Name="dbo.friends")]
-	public partial class friend : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private int _fid;
-		
-		private int _person_id;
-		
-		private int _friend_id;
-		
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void OnfidChanging(int value);
-    partial void OnfidChanged();
-    partial void Onperson_idChanging(int value);
-    partial void Onperson_idChanged();
-    partial void Onfriend_idChanging(int value);
-    partial void Onfriend_idChanged();
-    #endregion
-		
-		public friend()
-		{
-			OnCreated();
-		}
-		
-		[Column(Storage="_fid", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int fid
-		{
-			get
-			{
-				return this._fid;
-			}
-			set
-			{
-				if ((this._fid != value))
-				{
-					this.OnfidChanging(value);
-					this.SendPropertyChanging();
-					this._fid = value;
-					this.SendPropertyChanged("fid");
-					this.OnfidChanged();
-				}
-			}
-		}
-		
-		[Column(Storage="_person_id", DbType="Int NOT NULL")]
-		public int person_id
-		{
-			get
-			{
-				return this._person_id;
-			}
-			set
-			{
-				if ((this._person_id != value))
-				{
-					this.Onperson_idChanging(value);
-					this.SendPropertyChanging();
-					this._person_id = value;
-					this.SendPropertyChanged("person_id");
-					this.Onperson_idChanged();
-				}
-			}
-		}
-		
-		[Column(Storage="_friend_id", DbType="Int NOT NULL")]
-		public int friend_id
-		{
-			get
-			{
-				return this._friend_id;
-			}
-			set
-			{
-				if ((this._friend_id != value))
-				{
-					this.Onfriend_idChanging(value);
-					this.SendPropertyChanging();
-					this._friend_id = value;
-					this.SendPropertyChanged("friend_id");
-					this.Onfriend_idChanged();
 				}
 			}
 		}
@@ -2616,6 +2506,8 @@ namespace Pesta.DataAccess
 		
 		private int _image_type;
 		
+		private EntityRef<person> _person;
+		
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -2632,10 +2524,11 @@ namespace Pesta.DataAccess
 		
 		public image()
 		{
+			this._person = default(EntityRef<person>);
 			OnCreated();
 		}
 		
-		[Column(Storage="_id", DbType="Int NOT NULL", IsPrimaryKey=true)]
+		[Column(Storage="_id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
 		public int id
 		{
 			get
@@ -2666,6 +2559,10 @@ namespace Pesta.DataAccess
 			{
 				if ((this._userid != value))
 				{
+					if (this._person.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
 					this.OnuseridChanging(value);
 					this.SendPropertyChanging();
 					this._userid = value;
@@ -2711,6 +2608,40 @@ namespace Pesta.DataAccess
 					this._image_type = value;
 					this.SendPropertyChanged("image_type");
 					this.Onimage_typeChanged();
+				}
+			}
+		}
+		
+		[Association(Name="person_image", Storage="_person", ThisKey="userid", OtherKey="id", IsForeignKey=true)]
+		public person person
+		{
+			get
+			{
+				return this._person.Entity;
+			}
+			set
+			{
+				person previousValue = this._person.Entity;
+				if (((previousValue != value) 
+							|| (this._person.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._person.Entity = null;
+						previousValue.images.Remove(this);
+					}
+					this._person.Entity = value;
+					if ((value != null))
+					{
+						value.images.Add(this);
+						this._userid = value.id;
+					}
+					else
+					{
+						this._userid = default(int);
+					}
+					this.SendPropertyChanged("person");
 				}
 			}
 		}
@@ -2870,6 +2801,8 @@ namespace Pesta.DataAccess
 		
 		private long _created;
 		
+		private EntityRef<person> _person;
+		
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -2896,6 +2829,7 @@ namespace Pesta.DataAccess
 		
 		public message()
 		{
+			this._person = default(EntityRef<person>);
 			OnCreated();
 		}
 		
@@ -2930,6 +2864,10 @@ namespace Pesta.DataAccess
 			{
 				if ((this._sender != value))
 				{
+					if (this._person.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
 					this.OnsenderChanging(value);
 					this.SendPropertyChanging();
 					this._sender = value;
@@ -3075,6 +3013,191 @@ namespace Pesta.DataAccess
 					this._created = value;
 					this.SendPropertyChanged("created");
 					this.OncreatedChanged();
+				}
+			}
+		}
+		
+		[Association(Name="person_message", Storage="_person", ThisKey="sender", OtherKey="id", IsForeignKey=true, DeleteOnNull=true, DeleteRule="CASCADE")]
+		public person person
+		{
+			get
+			{
+				return this._person.Entity;
+			}
+			set
+			{
+				person previousValue = this._person.Entity;
+				if (((previousValue != value) 
+							|| (this._person.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._person.Entity = null;
+						previousValue.messages.Remove(this);
+					}
+					this._person.Entity = value;
+					if ((value != null))
+					{
+						value.messages.Add(this);
+						this._sender = value.id;
+					}
+					else
+					{
+						this._sender = default(int);
+					}
+					this.SendPropertyChanged("person");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[Table(Name="dbo.notifications")]
+	public partial class notification : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _creator;
+		
+		private int _recipient;
+		
+		private int _type;
+		
+		private EntityRef<person> _person;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OncreatorChanging(int value);
+    partial void OncreatorChanged();
+    partial void OnrecipientChanging(int value);
+    partial void OnrecipientChanged();
+    partial void OntypeChanging(int value);
+    partial void OntypeChanged();
+    #endregion
+		
+		public notification()
+		{
+			this._person = default(EntityRef<person>);
+			OnCreated();
+		}
+		
+		[Column(Storage="_creator", DbType="Int NOT NULL", IsPrimaryKey=true)]
+		public int creator
+		{
+			get
+			{
+				return this._creator;
+			}
+			set
+			{
+				if ((this._creator != value))
+				{
+					if (this._person.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OncreatorChanging(value);
+					this.SendPropertyChanging();
+					this._creator = value;
+					this.SendPropertyChanged("creator");
+					this.OncreatorChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_recipient", DbType="Int NOT NULL")]
+		public int recipient
+		{
+			get
+			{
+				return this._recipient;
+			}
+			set
+			{
+				if ((this._recipient != value))
+				{
+					this.OnrecipientChanging(value);
+					this.SendPropertyChanging();
+					this._recipient = value;
+					this.SendPropertyChanged("recipient");
+					this.OnrecipientChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_type", DbType="Int NOT NULL")]
+		public int type
+		{
+			get
+			{
+				return this._type;
+			}
+			set
+			{
+				if ((this._type != value))
+				{
+					this.OntypeChanging(value);
+					this.SendPropertyChanging();
+					this._type = value;
+					this.SendPropertyChanged("type");
+					this.OntypeChanged();
+				}
+			}
+		}
+		
+		[Association(Name="person_notification", Storage="_person", ThisKey="creator", OtherKey="id", IsForeignKey=true, DeleteOnNull=true, DeleteRule="CASCADE")]
+		public person person
+		{
+			get
+			{
+				return this._person.Entity;
+			}
+			set
+			{
+				person previousValue = this._person.Entity;
+				if (((previousValue != value) 
+							|| (this._person.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._person.Entity = null;
+						previousValue.notification = null;
+					}
+					this._person.Entity = value;
+					if ((value != null))
+					{
+						value.notification = this;
+						this._creator = value.id;
+					}
+					else
+					{
+						this._creator = default(int);
+					}
+					this.SendPropertyChanged("person");
 				}
 			}
 		}
@@ -5372,7 +5495,13 @@ namespace Pesta.DataAccess
 		
 		private EntityRef<fb_user> _fb_user;
 		
-		private EntityRef<friend_request> _friend_request;
+		private EntityRef<friend> _friend;
+		
+		private EntitySet<image> _images;
+		
+		private EntitySet<message> _messages;
+		
+		private EntityRef<notification> _notification;
 		
 		private EntitySet<person_application> _person_applications;
 		
@@ -5456,7 +5585,10 @@ namespace Pesta.DataAccess
 			this._application_settings = new EntitySet<application_setting>(new Action<application_setting>(this.attach_application_settings), new Action<application_setting>(this.detach_application_settings));
 			this._authenticated = default(EntityRef<authenticated>);
 			this._fb_user = default(EntityRef<fb_user>);
-			this._friend_request = default(EntityRef<friend_request>);
+			this._friend = default(EntityRef<friend>);
+			this._images = new EntitySet<image>(new Action<image>(this.attach_images), new Action<image>(this.detach_images));
+			this._messages = new EntitySet<message>(new Action<message>(this.attach_messages), new Action<message>(this.detach_messages));
+			this._notification = default(EntityRef<notification>);
 			this._person_applications = new EntitySet<person_application>(new Action<person_application>(this.attach_person_applications), new Action<person_application>(this.detach_person_applications));
 			OnCreated();
 		}
@@ -6225,31 +6357,86 @@ namespace Pesta.DataAccess
 			}
 		}
 		
-		[Association(Name="person_friend_request", Storage="_friend_request", ThisKey="id", OtherKey="person_id", IsUnique=true, IsForeignKey=false)]
-		public friend_request friend_request
+		[Association(Name="person_friend", Storage="_friend", ThisKey="id", OtherKey="person_id", IsUnique=true, IsForeignKey=false)]
+		public friend friend
 		{
 			get
 			{
-				return this._friend_request.Entity;
+				return this._friend.Entity;
 			}
 			set
 			{
-				friend_request previousValue = this._friend_request.Entity;
+				friend previousValue = this._friend.Entity;
 				if (((previousValue != value) 
-							|| (this._friend_request.HasLoadedOrAssignedValue == false)))
+							|| (this._friend.HasLoadedOrAssignedValue == false)))
 				{
 					this.SendPropertyChanging();
 					if ((previousValue != null))
 					{
-						this._friend_request.Entity = null;
+						this._friend.Entity = null;
 						previousValue.person = null;
 					}
-					this._friend_request.Entity = value;
+					this._friend.Entity = value;
 					if ((value != null))
 					{
 						value.person = this;
 					}
-					this.SendPropertyChanged("friend_request");
+					this.SendPropertyChanged("friend");
+				}
+			}
+		}
+		
+		[Association(Name="person_image", Storage="_images", ThisKey="id", OtherKey="userid")]
+		public EntitySet<image> images
+		{
+			get
+			{
+				return this._images;
+			}
+			set
+			{
+				this._images.Assign(value);
+			}
+		}
+		
+		[Association(Name="person_message", Storage="_messages", ThisKey="id", OtherKey="sender")]
+		public EntitySet<message> messages
+		{
+			get
+			{
+				return this._messages;
+			}
+			set
+			{
+				this._messages.Assign(value);
+			}
+		}
+		
+		[Association(Name="person_notification", Storage="_notification", ThisKey="id", OtherKey="creator", IsUnique=true, IsForeignKey=false)]
+		public notification notification
+		{
+			get
+			{
+				return this._notification.Entity;
+			}
+			set
+			{
+				notification previousValue = this._notification.Entity;
+				if (((previousValue != value) 
+							|| (this._notification.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._notification.Entity = null;
+						previousValue.person = null;
+					}
+					this._notification.Entity = value;
+					if ((value != null))
+					{
+						value.person = this;
+					}
+					this.SendPropertyChanged("notification");
 				}
 			}
 		}
@@ -6306,6 +6493,30 @@ namespace Pesta.DataAccess
 		}
 		
 		private void detach_application_settings(application_setting entity)
+		{
+			this.SendPropertyChanging();
+			entity.person = null;
+		}
+		
+		private void attach_images(image entity)
+		{
+			this.SendPropertyChanging();
+			entity.person = this;
+		}
+		
+		private void detach_images(image entity)
+		{
+			this.SendPropertyChanging();
+			entity.person = null;
+		}
+		
+		private void attach_messages(message entity)
+		{
+			this.SendPropertyChanging();
+			entity.person = this;
+		}
+		
+		private void detach_messages(message entity)
 		{
 			this.SendPropertyChanging();
 			entity.person = null;
