@@ -78,7 +78,7 @@
       <Column Name="height" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="scrolling" Type="System.String" DbType="VarChar(8) NOT NULL" CanBeNull="false" />
       <Column Name="modified" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
-      <Column Name="type" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="type" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Association Name="application_activity" Member="activities" ThisKey="id" OtherKey="app_id" Type="activity" />
       <Association Name="application_application_setting" Member="application_settings" ThisKey="id" OtherKey="application_id" Type="application_setting" />
       <Association Name="application_person_application" Member="person_applications" ThisKey="id" OtherKey="application_id" Type="person_application" />
@@ -98,26 +98,20 @@
       <Association Name="person_fb_user" Member="person" ThisKey="personid" OtherKey="id" Type="person" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
     </Type>
   </Table>
-  <Table Name="dbo.friend_requests" Member="friend_requests">
-    <Type Name="friend_request">
-      <Column Name="person_id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="friend_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Association Name="person_friend_request" Member="person" ThisKey="person_id" OtherKey="id" Type="person" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
-    </Type>
-  </Table>
   <Table Name="dbo.friends" Member="friends">
     <Type Name="friend">
-      <Column Name="fid" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="person_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="person_id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="friend_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="person_friend" Member="person" ThisKey="person_id" OtherKey="id" Type="person" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.images" Member="images">
     <Type Name="image">
-      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="userid" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="url" Type="System.String" DbType="VarChar(128) NOT NULL" CanBeNull="false" />
       <Column Name="image_type" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="person_image" Member="person" ThisKey="userid" OtherKey="id" Type="person" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.languages" Member="languages">
@@ -139,6 +133,15 @@
       <Column Name="to_deleted" Type="System.String" DbType="NVarChar(3) NOT NULL" CanBeNull="false" />
       <Column Name="from_deleted" Type="System.String" DbType="NVarChar(3)" CanBeNull="true" />
       <Column Name="created" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Association Name="person_message" Member="person" ThisKey="sender" OtherKey="id" Type="person" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.notifications" Member="notifications">
+    <Type Name="notification">
+      <Column Name="creator" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="recipient" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="type" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="person_notification" Member="person" ThisKey="creator" OtherKey="id" Type="person" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
     </Type>
   </Table>
   <Table Name="dbo.oauth_consumer" Member="oauth_consumers">
@@ -411,7 +414,10 @@
       <Association Name="person_application_setting" Member="application_settings" ThisKey="id" OtherKey="person_id" Type="application_setting" />
       <Association Name="person_authenticated" Member="authenticated" ThisKey="id" OtherKey="person_id" Type="authenticated" Cardinality="One" />
       <Association Name="person_fb_user" Member="fb_user" ThisKey="id" OtherKey="personid" Type="fb_user" Cardinality="One" />
-      <Association Name="person_friend_request" Member="friend_request" ThisKey="id" OtherKey="person_id" Type="friend_request" Cardinality="One" />
+      <Association Name="person_friend" Member="friend" ThisKey="id" OtherKey="person_id" Type="friend" Cardinality="One" />
+      <Association Name="person_image" Member="images" ThisKey="id" OtherKey="userid" Type="image" />
+      <Association Name="person_message" Member="messages" ThisKey="id" OtherKey="sender" Type="message" />
+      <Association Name="person_notification" Member="notification" ThisKey="id" OtherKey="creator" Type="notification" Cardinality="One" />
       <Association Name="person_person_activity" Member="person_activities" ThisKey="id" OtherKey="person_id" Type="person_activity" />
       <Association Name="person_person_address" Member="person_addresses" ThisKey="id" OtherKey="person_id" Type="person_address" />
       <Association Name="person_person_application" Member="person_applications" ThisKey="id" OtherKey="person_id" Type="person_application" />

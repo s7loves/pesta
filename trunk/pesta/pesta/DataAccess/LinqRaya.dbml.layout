@@ -1,549 +1,570 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ordesignerObjectsDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 14.5, 65.875" name="LinqRaya">
+<ordesignerObjectsDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 14.5, 73.125" name="LinqRaya">
   <DataContextMoniker Name="/LinqRayaDataContext" />
   <nestedChildShapes>
-    <classShape Id="33998771-a0c5-42c3-a51d-118095347a0b" absoluteBounds="9.5, 26.75, 2, 1.6889214715361618">
+    <classShape Id="caf363fe-715a-43ed-a392-2f9f5513b87a" absoluteBounds="9.5, 30.625, 2, 1.6889214715361618">
       <DataClassMoniker Name="/LinqRayaDataContext/activity" />
       <nestedChildShapes>
-        <elementListCompartment Id="683cacc9-70ba-4453-ac1b-104d19fcaca0" absoluteBounds="9.515, 27.21, 1.9700000000000002, 1.1289214715361595" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="342dd8fe-20d5-4891-bbbb-2095acadbe78" absoluteBounds="9.515, 31.085, 1.9700000000000002, 1.1289214715361595" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="68e7bc5c-d36a-465a-8543-cf735f82c622" absoluteBounds="3.5, 1, 2, 1.0659966867168746">
+    <classShape Id="330fa09d-bc17-49df-a685-b23a3a218596" absoluteBounds="3.5, 1, 2, 1.0659966867168746">
       <DataClassMoniker Name="/LinqRayaDataContext/tags_count" />
       <nestedChildShapes>
-        <elementListCompartment Id="5a314614-5246-4def-8924-edd7dc2ee864" absoluteBounds="3.515, 1.46, 1.9700000000000002, 0.50599668671687437" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="7bf83c03-b4b4-4c3f-837d-5f2305d34520" absoluteBounds="3.515, 1.46, 1.9700000000000002, 0.50599668671687437" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="b8005869-8d5d-4943-b30e-6549b03c6d76" absoluteBounds="12.25, 26.75, 2, 1.5331902753313358">
+    <classShape Id="c767cc0e-ed4a-4245-ba14-964390365295" absoluteBounds="12.25, 30.625, 2, 1.5331902753313358">
       <DataClassMoniker Name="/LinqRayaDataContext/activity_media_item" />
       <nestedChildShapes>
-        <elementListCompartment Id="dac08072-5bf8-4471-b64c-5f2291f3e0c6" absoluteBounds="12.265, 27.21, 1.9700000000000002, 0.97319027533133817" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="5334966a-739d-46d5-aed9-b36a0c162777" absoluteBounds="12.265, 31.085, 1.9700000000000002, 0.97319027533133817" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="bee35aae-7528-48cd-87f5-83b31e419ca2" absoluteBounds="1, 7.25, 2, 2.6233086487650867">
+    <classShape Id="59184c16-6759-4111-9992-6a6a44a8976d" absoluteBounds="1, 8.125, 2, 2.6233086487650858">
       <DataClassMoniker Name="/LinqRayaDataContext/address" />
       <nestedChildShapes>
-        <elementListCompartment Id="f1ae0c69-1a01-4578-911f-4988240b8563" absoluteBounds="1.0150000000000001, 7.71, 1.9700000000000002, 2.0633086487650871" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="6f8a5650-f285-4a30-85a6-4b168d8b5e3f" absoluteBounds="1.0150000000000001, 8.585, 1.9700000000000002, 2.0633086487650871" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="04ffb068-b188-45c3-90a2-de9059958afb" absoluteBounds="9.5, 29.75, 2, 1.5331902753313358">
+    <classShape Id="5463abb0-493f-4ed3-bd53-6484afc72015" absoluteBounds="9.5, 33.625, 2, 1.5331902753313358">
       <DataClassMoniker Name="/LinqRayaDataContext/application_setting" />
       <nestedChildShapes>
-        <elementListCompartment Id="ddb9a883-830e-41b7-ad43-5c95b186d814" absoluteBounds="9.515, 30.21, 1.9700000000000002, 0.97319027533133817" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="3ea0db39-fbeb-46a2-8878-ab8deb2555d8" absoluteBounds="9.515, 34.085, 1.9700000000000002, 0.97319027533133817" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="83b9dcf2-e0ba-4471-8749-1cc69f58d91e" absoluteBounds="6.75, 22, 2, 3.2462334335843721">
+    <classShape Id="b0208743-6d8c-4c7e-b6af-958ed447bde1" absoluteBounds="6.75, 25.75, 2, 3.2462334335843721">
       <DataClassMoniker Name="/LinqRayaDataContext/application" />
       <nestedChildShapes>
-        <elementListCompartment Id="a49a35d3-a917-4309-8841-4456a401d596" absoluteBounds="6.765, 22.46, 1.9700000000000002, 2.6862334335843721" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="8e5d4b85-7582-4d04-8f64-f51a32e412df" absoluteBounds="6.765, 26.21, 1.9700000000000002, 2.6862334335843721" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="d66eb103-1b79-4969-8117-96d03072ffcb" absoluteBounds="3.5, 11.375, 2, 1.0659966867168755">
+    <classShape Id="a7d1a5fe-a41e-44ae-aaa9-ded65aa25ab6" absoluteBounds="3.5, 11.75, 2, 1.0659966867168755">
       <DataClassMoniker Name="/LinqRayaDataContext/authenticated" />
       <nestedChildShapes>
-        <elementListCompartment Id="ddbb797f-7ce2-432d-933a-c64fbab26940" absoluteBounds="3.515, 11.835, 1.9700000000000002, 0.50599668671687437" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="79c92684-dede-4977-ba7c-af67a78ac5e5" absoluteBounds="3.515, 12.21, 1.9700000000000002, 0.50599668671687437" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="9dc6502b-4a54-430a-b657-6900160487a1" absoluteBounds="3.5, 13.25, 2, 1.0659966867168755">
+    <classShape Id="64977982-0dfb-46ed-9a6d-80a54d67b3e1" absoluteBounds="3.5, 13.625, 2, 1.0659966867168755">
       <DataClassMoniker Name="/LinqRayaDataContext/fb_user" />
       <nestedChildShapes>
-        <elementListCompartment Id="6c56b1c8-686d-44ec-ab63-793c3ddba220" absoluteBounds="3.515, 13.71, 1.9700000000000002, 0.50599668671687437" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="0b634bbd-5e6b-4b01-9ee7-cb3299a60a4c" absoluteBounds="3.515, 14.085, 1.9700000000000002, 0.50599668671687437" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="9710d876-b94a-45a7-a05d-6b4ce59122fd" absoluteBounds="3.5, 15, 2, 1.0659966867168755">
-      <DataClassMoniker Name="/LinqRayaDataContext/friend_request" />
-      <nestedChildShapes>
-        <elementListCompartment Id="0447b3a5-3c2d-4f8f-9336-16f60e682c56" absoluteBounds="3.515, 15.46, 1.9700000000000002, 0.50599668671687437" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
-      </nestedChildShapes>
-    </classShape>
-    <classShape Id="b6a88a6c-7ddb-44a7-8269-59538c8b8e56" absoluteBounds="6.75, 0.75, 2, 1.2217278829216958">
+    <classShape Id="d0a68a13-f702-476f-b666-382bb4a9bcc6" absoluteBounds="3.5, 15.375, 2, 1.0659966867168755">
       <DataClassMoniker Name="/LinqRayaDataContext/friend" />
       <nestedChildShapes>
-        <elementListCompartment Id="edbc7316-f2b7-4dd4-9992-96a2e177b99a" absoluteBounds="6.765, 1.21, 1.9700000000000002, 0.66172788292169571" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="66869fd6-9dd4-468f-8bb1-6e48fdb64512" absoluteBounds="3.515, 15.835, 1.9700000000000002, 0.50599668671687437" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="e866b0b1-d47c-499b-9dbd-322286f4a5b0" absoluteBounds="6.75, 2.75, 2, 1.3774590791265169">
+    <classShape Id="15358e9c-bb38-493a-ac0b-0587f48ad0d1" absoluteBounds="3.5, 61.375, 2, 1.3774590791265098">
       <DataClassMoniker Name="/LinqRayaDataContext/image" />
       <nestedChildShapes>
-        <elementListCompartment Id="36fa0915-58a0-4f6c-af65-3f974f977fa2" absoluteBounds="6.765, 3.21, 1.9700000000000002, 0.817459079126517" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="62b9f934-2500-474f-b8f9-71703a237e59" absoluteBounds="3.515, 61.835, 1.9700000000000002, 0.817459079126517" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="c2a9f24d-3db1-48b3-9804-5a62ac77a453" absoluteBounds="3.75, 5, 2, 1.2217278829216962">
+    <classShape Id="bc2127be-9a20-4a06-81ae-5c113166644e" absoluteBounds="3.75, 63.875, 2, 1.221727882921698">
       <DataClassMoniker Name="/LinqRayaDataContext/language" />
       <nestedChildShapes>
-        <elementListCompartment Id="5f0f86fb-7341-455b-8000-fba48fe90114" absoluteBounds="3.765, 5.46, 1.9700000000000002, 0.66172788292169571" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="5c556ffa-69bc-4d6c-96ce-8680e109f5c5" absoluteBounds="3.765, 64.335, 1.9700000000000002, 0.66172788292169571" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="bfdb1595-c6d5-43f9-a871-fe2a8690d73f" absoluteBounds="6.75, 5.75, 2, 2.1561150601506238">
+    <classShape Id="323b8194-e8e5-4687-a865-475cd4449aa8" absoluteBounds="3.5, 70.75, 2, 2.1561150601506256">
       <DataClassMoniker Name="/LinqRayaDataContext/message" />
       <nestedChildShapes>
-        <elementListCompartment Id="079279f0-317a-48f0-bc8c-bbd9872513fb" absoluteBounds="6.765, 6.21, 1.9700000000000002, 1.5961150601506233" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="72961b24-253b-4ca4-85cb-59f4b89999ed" absoluteBounds="3.515, 71.21, 1.9700000000000002, 1.5961150601506233" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="c3b4473f-b08f-484c-bbc0-d4879cd315a0" absoluteBounds="6.75, 8.75, 2, 1.5331902753313393">
+    <classShape Id="4b183394-2017-4a64-919c-9ac59bda974d" absoluteBounds="3.5, 53.5, 2, 1.221727882921698">
+      <DataClassMoniker Name="/LinqRayaDataContext/notification" />
+      <nestedChildShapes>
+        <elementListCompartment Id="4e71d60c-1c51-4d63-94e3-a82fe7542b1e" absoluteBounds="3.515, 53.96, 1.9700000000000002, 0.66172788292169571" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="c6f27224-1750-4c33-a97f-7cadd00108da" absoluteBounds="0.75, 3.75, 2, 1.5331902753313376">
       <DataClassMoniker Name="/LinqRayaDataContext/oauth_consumer" />
       <nestedChildShapes>
-        <elementListCompartment Id="dd9302fa-4d27-48fe-b3c6-36cd11828d0e" absoluteBounds="6.765, 9.21, 1.9700000000000002, 0.97319027533133817" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="c7fe5cc6-81f1-45fc-a039-f33d9e0e3fed" absoluteBounds="0.765, 4.21, 1.9700000000000002, 0.97319027533133817" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="7cc6f4b2-cf18-451e-bbf4-7b4a21c69f00" absoluteBounds="9.75, 0.75, 2, 1.0659966867168746">
+    <classShape Id="618e1eb0-2de2-4fe3-a07c-16a02789acad" absoluteBounds="3.75, 3.75, 2, 1.0659966867168751">
       <DataClassMoniker Name="/LinqRayaDataContext/oauth_nonce" />
       <nestedChildShapes>
-        <elementListCompartment Id="6cc4e7f4-7301-4af5-b5c6-412e3b488e6c" absoluteBounds="9.765, 1.21, 1.9700000000000002, 0.50599668671687437" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="046ebe63-2334-4c33-9d20-7a1c649a3ee0" absoluteBounds="3.765, 4.21, 1.9700000000000002, 0.50599668671687437" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="f39bf3a4-bda3-49eb-b217-b947e7c681ca" absoluteBounds="9.75, 2.75, 2, 1.68892147153616">
+    <classShape Id="02c26393-c38b-437d-9dee-92c5fd2525a1" absoluteBounds="3.75, 5.75, 2, 1.68892147153616">
       <DataClassMoniker Name="/LinqRayaDataContext/oauth_token" />
       <nestedChildShapes>
-        <elementListCompartment Id="abcc0f35-cd79-49ea-a26a-34ddf51c8c9b" absoluteBounds="9.765, 3.21, 1.9700000000000002, 1.1289214715361595" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="bb520874-6ba0-483a-a9dc-e0fcca7574ad" absoluteBounds="3.765, 6.21, 1.9700000000000002, 1.1289214715361595" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="42832fef-518d-484f-96a3-811435528477" absoluteBounds="9.75, 5.75, 2, 1.0659966867168755">
+    <classShape Id="83c81002-490e-45fb-b3ab-6373b267059e" absoluteBounds="6.75, 0.75, 2, 1.0659966867168746">
       <DataClassMoniker Name="/LinqRayaDataContext/openid_user" />
       <nestedChildShapes>
-        <elementListCompartment Id="a2719cdc-f63f-4219-bef6-94bf031ea2db" absoluteBounds="9.765, 6.21, 1.9700000000000002, 0.50599668671687437" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="e6256f5f-5229-4aff-a9bd-004daed4dfe1" absoluteBounds="6.765, 1.21, 1.9700000000000002, 0.50599668671687437" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="18188312-bdda-461e-a2c0-3e897be2f222" absoluteBounds="3.75, 7.375, 2, 2.4675774525602669">
+    <classShape Id="b10ccf47-6fac-4047-88d5-53acefa92e58" absoluteBounds="3.75, 8.25, 2, 2.4675774525602669">
       <DataClassMoniker Name="/LinqRayaDataContext/organization" />
       <nestedChildShapes>
-        <elementListCompartment Id="eddfc66e-ac7f-4cb2-92ab-2241952a7e50" absoluteBounds="3.765, 7.835, 1.9700000000000002, 1.907577452560266" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="69d089a1-b7bc-4da8-8a6a-a9bafde0f60c" absoluteBounds="3.765, 8.71, 1.9700000000000002, 1.907577452560266" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="5a8175b2-9bf6-46bf-9a13-93d6b3e46b85" absoluteBounds="3.5, 16.875, 2, 1.065996686716872">
+    <classShape Id="c5af55e0-7798-4105-bcf2-8a86de951257" absoluteBounds="3.5, 17.25, 2, 1.065996686716872">
       <DataClassMoniker Name="/LinqRayaDataContext/person_activity" />
       <nestedChildShapes>
-        <elementListCompartment Id="7583a007-2427-422f-af61-739252347c39" absoluteBounds="3.515, 17.335, 1.9700000000000002, 0.50599668671687437" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="4d41a7ae-534f-4f1f-8eea-6ab7a8f4e28a" absoluteBounds="3.515, 17.71, 1.9700000000000002, 0.50599668671687437" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="9aba9d25-3858-46df-9414-664b112a6c4b" absoluteBounds="3.5, 32, 2, 1.065996686716872">
+    <classShape Id="f91fcb76-8247-407a-93b8-297dc9be1a3e" absoluteBounds="3.5, 32.875, 2, 1.065996686716872">
       <DataClassMoniker Name="/LinqRayaDataContext/person_address" />
       <nestedChildShapes>
-        <elementListCompartment Id="e0a7b4e9-5929-48a4-bcba-8ef63064cdb5" absoluteBounds="3.515, 32.46, 1.9700000000000002, 0.50599668671687437" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="4d0edb63-190a-4e49-a3fb-5bd3955b4a88" absoluteBounds="3.515, 33.335, 1.9700000000000002, 0.50599668671687437" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="7a5de987-3a04-42a7-a911-3825853249f5" absoluteBounds="6.5, 34, 2, 1.221727882921698">
+    <classShape Id="2f63b6fb-705c-447f-a312-69631f4a974a" absoluteBounds="6.5, 37.875, 2, 1.221727882921698">
       <DataClassMoniker Name="/LinqRayaDataContext/person_application" />
       <nestedChildShapes>
-        <elementListCompartment Id="34e357a6-c4b4-4641-bb0b-cccd503bf88f" absoluteBounds="6.515, 34.46, 1.9700000000000002, 0.66172788292169571" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="46543826-785e-4bee-bbcd-3de2163a50c2" absoluteBounds="6.515, 38.335, 1.9700000000000002, 0.66172788292169571" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="460efeb3-6e9a-4eaf-892f-eb669e6c6db2" absoluteBounds="3.5, 63.875, 2, 1.6889214715361618">
+    <classShape Id="3c6815dc-2b79-4835-ae86-8db8edb9e1cc" absoluteBounds="3.5, 68.25, 2, 1.6889214715361618">
       <DataClassMoniker Name="/LinqRayaDataContext/person_body_type" />
       <nestedChildShapes>
-        <elementListCompartment Id="b673f4fa-3a31-47b4-b79a-053beea4be50" absoluteBounds="3.515, 64.335, 1.9700000000000002, 1.1289214715361595" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="dbd9c849-9a89-412a-9e54-be17b19d036b" absoluteBounds="3.515, 68.71, 1.9700000000000002, 1.1289214715361595" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="be511410-b151-4016-b9ee-7b1c4ee9cd8b" absoluteBounds="3.5, 20.5, 2, 1.065996686716872">
+    <classShape Id="286f0dba-43c8-45dd-a540-44fb7ceec7a4" absoluteBounds="3.5, 20.875, 2, 1.065996686716872">
       <DataClassMoniker Name="/LinqRayaDataContext/person_book" />
       <nestedChildShapes>
-        <elementListCompartment Id="f0b5c03d-c4de-4f4c-a258-30b2ba2dfed4" absoluteBounds="3.515, 20.96, 1.9700000000000002, 0.50599668671687437" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="e5cc287e-55c5-4b4a-9e5a-137ad639edd6" absoluteBounds="3.515, 21.335, 1.9700000000000002, 0.50599668671687437" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="e701923a-80eb-47f2-9b2c-935c81900dce" absoluteBounds="3.5, 22.375, 2, 1.065996686716872">
+    <classShape Id="32df1d58-1d72-4854-8adc-0ac945f30387" absoluteBounds="3.5, 22.625, 2, 1.065996686716872">
       <DataClassMoniker Name="/LinqRayaDataContext/person_car" />
       <nestedChildShapes>
-        <elementListCompartment Id="c488bdf5-9405-4ad9-997b-bc08a470397f" absoluteBounds="3.515, 22.835, 1.9700000000000002, 0.50599668671687437" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="8d76bfce-1fb2-48fc-bb01-5cab40b0556c" absoluteBounds="3.515, 23.085, 1.9700000000000002, 0.50599668671687437" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="480d0e63-917e-4cf7-ba4a-30e0ee02326e" absoluteBounds="6.5, 30, 2, 1.065996686716872">
+    <classShape Id="ac511bc1-ddb8-4130-954e-b9e437cd95df" absoluteBounds="6.5, 33.875, 2, 1.065996686716872">
       <DataClassMoniker Name="/LinqRayaDataContext/person_current_location" />
       <nestedChildShapes>
-        <elementListCompartment Id="b02e3063-efe2-414d-8484-31063fc9ec42" absoluteBounds="6.515, 30.46, 1.9700000000000002, 0.50599668671687437" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="9e95e9a2-294b-4195-b6dc-127006b13cc7" absoluteBounds="6.515, 34.335, 1.9700000000000002, 0.50599668671687437" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="daf4b966-2e02-43b5-aced-3b58c7cd6a8b" absoluteBounds="3.5, 55.125, 2, 1.221727882921698">
+    <classShape Id="809cd1ba-f167-41c8-8584-6201c3c9b5c3" absoluteBounds="3.5, 57.5, 2, 1.221727882921698">
       <DataClassMoniker Name="/LinqRayaDataContext/person_email" />
       <nestedChildShapes>
-        <elementListCompartment Id="7126fe12-f121-4e79-9785-f6b0722ac44c" absoluteBounds="3.515, 55.585, 1.9700000000000002, 0.66172788292169571" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="3cf4c68d-fa41-47b3-b553-af92e409ae77" absoluteBounds="3.515, 57.96, 1.9700000000000002, 0.66172788292169571" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="826cc498-1d4c-4f08-a9e5-4ecd99c3730e" absoluteBounds="3.5, 26, 2, 1.065996686716872">
+    <classShape Id="551a2c9a-f6f7-4f0a-b0fd-df02b90c9bd3" absoluteBounds="3.5, 26.25, 2, 1.065996686716872">
       <DataClassMoniker Name="/LinqRayaDataContext/person_food" />
       <nestedChildShapes>
-        <elementListCompartment Id="6e88bdaf-49bf-4711-80e7-a31f0c5b441e" absoluteBounds="3.515, 26.46, 1.9700000000000002, 0.50599668671687437" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="9fdf3bf2-a7d6-4aac-ba9a-56e9478c6b4a" absoluteBounds="3.515, 26.71, 1.9700000000000002, 0.50599668671687437" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="e63677a2-e653-4b4f-88aa-cc3679b70748" absoluteBounds="3.5, 27.75, 2, 1.065996686716872">
+    <classShape Id="c58968ce-45c3-460d-bf59-3cafeb377b1a" absoluteBounds="3.5, 28.125, 2, 1.065996686716872">
       <DataClassMoniker Name="/LinqRayaDataContext/person_heroe" />
       <nestedChildShapes>
-        <elementListCompartment Id="6da9bb21-5b51-4f27-9aec-8aec1c1ea3d9" absoluteBounds="3.515, 28.21, 1.9700000000000002, 0.50599668671687437" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="823ba6a4-043f-4dbb-9586-b2514f2e79ec" absoluteBounds="3.515, 28.585, 1.9700000000000002, 0.50599668671687437" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="f232666e-975a-4c3f-a596-d4d015ce363f" absoluteBounds="3.5, 29.625, 2, 1.065996686716872">
+    <classShape Id="434f4607-cbd8-4599-87f2-bb32ac66071a" absoluteBounds="3.5, 29.875, 2, 1.065996686716872">
       <DataClassMoniker Name="/LinqRayaDataContext/person_interest" />
       <nestedChildShapes>
-        <elementListCompartment Id="5213ecec-9382-404d-ba50-b8b04dea62be" absoluteBounds="3.515, 30.085, 1.9700000000000002, 0.50599668671687437" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="e932af4a-dcbd-4642-9365-0b765f8c713e" absoluteBounds="3.515, 30.335, 1.9700000000000002, 0.50599668671687437" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="c4fe252e-7a63-46ea-be7b-15c8ee805f3b" absoluteBounds="6.5, 28, 2, 1.065996686716872">
+    <classShape Id="53b75c1e-eb24-4aef-baa5-180505609557" absoluteBounds="6.5, 31.875, 2, 1.065996686716872">
       <DataClassMoniker Name="/LinqRayaDataContext/person_job" />
       <nestedChildShapes>
-        <elementListCompartment Id="fa3ea5fd-7714-472e-8444-08140066257e" absoluteBounds="6.515, 28.46, 1.9700000000000002, 0.50599668671687437" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="dc749be8-dfeb-456b-9fb0-d5afef4fecac" absoluteBounds="6.515, 32.335, 1.9700000000000002, 0.50599668671687437" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="2bab39c0-0943-4667-aa0b-6e0b27b510f2" absoluteBounds="6.5, 32, 2, 1.065996686716872">
+    <classShape Id="2d5d59b6-19c6-4a54-ade6-cbdcc6a5ce76" absoluteBounds="6.5, 35.875, 2, 1.065996686716872">
       <DataClassMoniker Name="/LinqRayaDataContext/person_languages_spoken" />
       <nestedChildShapes>
-        <elementListCompartment Id="84880313-df60-42e4-9040-363db5537c80" absoluteBounds="6.515, 32.46, 1.9700000000000002, 0.50599668671687437" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="22050143-8ab2-4791-a80b-3cbee7857626" absoluteBounds="6.515, 36.335, 1.9700000000000002, 0.50599668671687437" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="c91f3076-cfdc-42d5-bbc1-30b015edcfad" absoluteBounds="3.5, 35, 2, 1.065996686716872">
+    <classShape Id="bcafe752-4fbc-4ed2-bd75-f5c12acba2d1" absoluteBounds="3.5, 35.375, 2, 1.065996686716872">
       <DataClassMoniker Name="/LinqRayaDataContext/person_movy" />
       <nestedChildShapes>
-        <elementListCompartment Id="3f2734e8-8e91-4616-985d-9f0284308002" absoluteBounds="3.515, 35.46, 1.9700000000000002, 0.50599668671687437" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="13688045-6b03-4b87-aca2-56dc90341ecc" absoluteBounds="3.515, 35.835, 1.9700000000000002, 0.50599668671687437" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="3f56cdaf-6e58-442f-abc3-ce22dc78c1cf" absoluteBounds="3.5, 36.875, 2, 1.065996686716872">
+    <classShape Id="0f3aa694-a3e1-4506-bdf0-29cfaafe6c73" absoluteBounds="3.5, 37.25, 2, 1.065996686716872">
       <DataClassMoniker Name="/LinqRayaDataContext/person_music" />
       <nestedChildShapes>
-        <elementListCompartment Id="cc3324db-ca60-4015-8230-670d08c71ded" absoluteBounds="3.515, 37.335, 1.9700000000000002, 0.50599668671687437" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="3a7aee8b-f102-49b0-98dd-82e2815d00f3" absoluteBounds="3.515, 37.71, 1.9700000000000002, 0.50599668671687437" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="e2f620af-9f35-41aa-9484-118faea0ad85" absoluteBounds="3.5, 57.125, 2, 1.221727882921698">
+    <classShape Id="802fdf08-8779-4767-bfd5-89ff15cdaa50" absoluteBounds="3.5, 59.5, 2, 1.221727882921698">
       <DataClassMoniker Name="/LinqRayaDataContext/person_phone_number" />
       <nestedChildShapes>
-        <elementListCompartment Id="6895fff5-0242-4cd9-b4d1-8835a989f06c" absoluteBounds="3.515, 57.585, 1.9700000000000002, 0.66172788292169571" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="ee773d3c-9549-4989-bbd5-faa9ba744249" absoluteBounds="3.515, 59.96, 1.9700000000000002, 0.66172788292169571" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="acfcd0b1-1d25-4380-9a19-0f00518b22de" absoluteBounds="3.5, 38.625, 2, 1.065996686716872">
+    <classShape Id="443f8625-db55-468a-b4cf-48075fd108da" absoluteBounds="3.5, 39, 2, 1.065996686716872">
       <DataClassMoniker Name="/LinqRayaDataContext/person_quote" />
       <nestedChildShapes>
-        <elementListCompartment Id="a3f80e0b-976a-4fdb-9b65-6ac56c0c5848" absoluteBounds="3.515, 39.085, 1.9700000000000002, 0.50599668671687437" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="2f294fb8-04bb-47a4-acf8-c330fc7aaab5" absoluteBounds="3.515, 39.46, 1.9700000000000002, 0.50599668671687437" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="aacb1d08-9614-43a7-ae0c-982da87c0963" absoluteBounds="6.5, 26, 2, 1.065996686716872">
+    <classShape Id="bcaff835-f727-43d0-85b3-34b3c579de94" absoluteBounds="6.5, 29.875, 2, 1.065996686716872">
       <DataClassMoniker Name="/LinqRayaDataContext/person_school" />
       <nestedChildShapes>
-        <elementListCompartment Id="d43c7e93-428c-4907-8f8b-b85f582f5923" absoluteBounds="6.515, 26.46, 1.9700000000000002, 0.50599668671687437" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="d20a1b70-61f1-495c-8ad9-cf3533fafbb3" absoluteBounds="6.515, 30.335, 1.9700000000000002, 0.50599668671687437" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="23544aba-48ae-49d2-b4bf-d7f93d46fc8d" absoluteBounds="3.5, 42.25, 2, 1.065996686716872">
+    <classShape Id="25b68d7a-4322-4999-8151-578782790c1f" absoluteBounds="3.5, 42.625, 2, 1.065996686716872">
       <DataClassMoniker Name="/LinqRayaDataContext/person_sport" />
       <nestedChildShapes>
-        <elementListCompartment Id="2fcf0cd1-d091-4d3a-b9fe-e8ef8b8d95d5" absoluteBounds="3.515, 42.71, 1.9700000000000002, 0.50599668671687437" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="90ed23cc-c07e-4793-b6d7-f9cb4088a04e" absoluteBounds="3.515, 43.085, 1.9700000000000002, 0.50599668671687437" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="4eda2b73-6d21-40c9-aa16-45c1778a8d10" absoluteBounds="3.5, 44.125, 2, 1.065996686716872">
+    <classShape Id="118df5eb-bee6-4335-b4a6-f0fe433a0567" absoluteBounds="3.5, 44.5, 2, 1.065996686716872">
       <DataClassMoniker Name="/LinqRayaDataContext/person_tag" />
       <nestedChildShapes>
-        <elementListCompartment Id="b4e624a3-775f-43bc-b767-547c19105184" absoluteBounds="3.515, 44.585, 1.9700000000000002, 0.50599668671687437" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="56966faf-01ee-4089-afc7-bea32b963cc2" absoluteBounds="3.515, 44.96, 1.9700000000000002, 0.50599668671687437" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="a0ed0b59-7148-492b-b5b6-f7c1d369734d" absoluteBounds="3.5, 45.875, 2, 1.065996686716872">
+    <classShape Id="772952a5-a20a-4e8a-9efe-b418d4ffa862" absoluteBounds="3.5, 46.25, 2, 1.065996686716872">
       <DataClassMoniker Name="/LinqRayaDataContext/person_turn_off" />
       <nestedChildShapes>
-        <elementListCompartment Id="91d5eac9-01fc-45ad-96c2-a2d56f139f5c" absoluteBounds="3.515, 46.335, 1.9700000000000002, 0.50599668671687437" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="ccbeac2b-e679-4790-9da5-bce31de975e2" absoluteBounds="3.515, 46.71, 1.9700000000000002, 0.50599668671687437" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="ddfa0fac-d530-4d9c-98b4-6bf9c18b4b13" absoluteBounds="3.5, 47.75, 2, 1.065996686716872">
+    <classShape Id="ca4b2265-d461-4ccd-8f63-48b7074490cf" absoluteBounds="3.5, 48.125, 2, 1.065996686716872">
       <DataClassMoniker Name="/LinqRayaDataContext/person_turn_on" />
       <nestedChildShapes>
-        <elementListCompartment Id="d78276c6-ee57-472d-9abf-9f1c226b0c5b" absoluteBounds="3.515, 48.21, 1.9700000000000002, 0.50599668671687437" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="97d6a97f-0d04-41f5-905c-25c473dda108" absoluteBounds="3.515, 48.585, 1.9700000000000002, 0.50599668671687437" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="22151f70-53c3-44b0-867f-c5c73f622f32" absoluteBounds="3.5, 49.5, 2, 1.065996686716872">
+    <classShape Id="7a38bfb0-fc79-42f8-97a4-4f9ef3ec2711" absoluteBounds="3.5, 49.875, 2, 1.065996686716872">
       <DataClassMoniker Name="/LinqRayaDataContext/person_tv_show" />
       <nestedChildShapes>
-        <elementListCompartment Id="6e0a5536-7f8c-4a2e-b563-252a5886a5ca" absoluteBounds="3.515, 49.96, 1.9700000000000002, 0.50599668671687437" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="feb0318a-4ff8-4c78-904b-d66df0fb45fa" absoluteBounds="3.515, 50.335, 1.9700000000000002, 0.50599668671687437" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="b71a1f4a-b254-4b1e-8d7d-6fcd49f197bd" absoluteBounds="3.5, 51.375, 2, 1.065996686716872">
+    <classShape Id="5ecfa029-c80a-4b0e-9d15-78bdb4be1380" absoluteBounds="3.5, 51.75, 2, 1.065996686716872">
       <DataClassMoniker Name="/LinqRayaDataContext/person_url" />
       <nestedChildShapes>
-        <elementListCompartment Id="986bbb47-e699-488a-8261-51296d16a3fb" absoluteBounds="3.515, 51.835, 1.9700000000000002, 0.50599668671687437" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="8091cd21-316b-49be-8250-a7ebc9bc47b0" absoluteBounds="3.515, 52.21, 1.9700000000000002, 0.50599668671687437" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="32fc0cb4-9304-4cdc-891e-6a740aad26df" absoluteBounds="0.75, 27.5, 2, 6.0493949652711514">
+    <classShape Id="e69c49d7-97c2-49bb-aeae-236b8d289756" absoluteBounds="0.75, 31.375, 2, 6.0493949652711514">
       <DataClassMoniker Name="/LinqRayaDataContext/person" />
       <nestedChildShapes>
-        <elementListCompartment Id="49252e06-7e75-480f-a4eb-02d347d3d578" absoluteBounds="0.765, 27.96, 1.9700000000000002, 5.4893949652711544" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="83e3b0db-d30c-429f-adbf-8d6846fe3183" absoluteBounds="0.765, 31.835, 1.9700000000000002, 5.4893949652711544" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="282c84b1-67b9-4866-9f88-1f1777b235dd" absoluteBounds="0.75, 0.875, 2, 1.3774590791265169">
+    <classShape Id="c63c0cc2-9659-49c7-9150-b65af13e8e98" absoluteBounds="0.75, 0.875, 2, 1.3774590791265169">
       <DataClassMoniker Name="/LinqRayaDataContext/tag" />
       <nestedChildShapes>
-        <elementListCompartment Id="6841580c-624d-4426-8d52-222e1c01266a" absoluteBounds="0.765, 1.335, 1.9700000000000002, 0.817459079126517" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="3764da80-51d5-4c62-9a0e-9ae3b240fb06" absoluteBounds="0.765, 1.335, 1.9700000000000002, 0.817459079126517" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <associationConnector edgePoints="[(11.5 : 27.5165951376657); (12.25 : 27.5165951376657)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(11.5 : 31.3915951376657); (12.25 : 31.3915951376657)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/LinqRayaDataContext/activity/activity_activity_media_item" />
       <nodes>
-        <classShapeMoniker Id="33998771-a0c5-42c3-a51d-118095347a0b" />
-        <classShapeMoniker Id="b8005869-8d5d-4943-b30e-6549b03c6d76" />
+        <classShapeMoniker Id="caf363fe-715a-43ed-a392-2f9f5513b87a" />
+        <classShapeMoniker Id="c767cc0e-ed4a-4245-ba14-964390365295" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(8.65625 : 25.2462334335844); (8.65625 : 27.5329983433584); (9.04166666666667 : 27.5329983433584 : JumpStart); (9.20833333333333 : 27.5329983433584 : JumpEnd); (9.5 : 27.5329983433584)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(8.65625 : 28.9962334335844); (8.65625 : 31.4079983433584); (9.04166666666667 : 31.4079983433584 : JumpStart); (9.20833333333333 : 31.4079983433584 : JumpEnd); (9.5 : 31.4079983433584)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/LinqRayaDataContext/application/application_activity" />
       <nodes>
-        <classShapeMoniker Id="83b9dcf2-e0ba-4471-8749-1cc69f58d91e" />
-        <classShapeMoniker Id="33998771-a0c5-42c3-a51d-118095347a0b" />
+        <classShapeMoniker Id="b0208743-6d8c-4c7e-b6af-958ed447bde1" />
+        <classShapeMoniker Id="caf363fe-715a-43ed-a392-2f9f5513b87a" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(8.6875025 : 25.2462334335844); (8.6875025 : 29.84375); (9.04166666666667 : 29.84375 : JumpStart); (9.20833333333333 : 29.84375 : JumpEnd); (9.5 : 29.84375)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(8.6875025 : 28.9962334335844); (8.6875025 : 33.71875); (9.04166666666667 : 33.71875 : JumpStart); (9.20833333333333 : 33.71875 : JumpEnd); (9.5 : 33.71875)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/LinqRayaDataContext/application/application_application_setting" />
       <nodes>
-        <classShapeMoniker Id="83b9dcf2-e0ba-4471-8749-1cc69f58d91e" />
-        <classShapeMoniker Id="04ffb068-b188-45c3-90a2-de9059958afb" />
+        <classShapeMoniker Id="b0208743-6d8c-4c7e-b6af-958ed447bde1" />
+        <classShapeMoniker Id="5463abb0-493f-4ed3-bd53-6484afc72015" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(3 : 8.60878872628013); (3.75 : 8.60878872628013)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(3 : 9.48378872628013); (3.75 : 9.48378872628013)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/LinqRayaDataContext/address/address_organization" />
       <nodes>
-        <classShapeMoniker Id="bee35aae-7528-48cd-87f5-83b31e419ca2" />
-        <classShapeMoniker Id="18188312-bdda-461e-a2c0-3e897be2f222" />
+        <classShapeMoniker Id="59184c16-6759-4111-9992-6a6a44a8976d" />
+        <classShapeMoniker Id="b10ccf47-6fac-4047-88d5-53acefa92e58" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(2 : 9.87330864876509); (2 : 27.25); (2.07291416666667 : 27.25 : JumpStart); (2.23958083333333 : 27.25 : JumpEnd); (2.29166666666667 : 27.25 : JumpStart); (2.45833333333333 : 27.25 : JumpEnd); (2.51041916666667 : 27.25 : JumpStart); (2.67708583333333 : 27.25 : JumpEnd); (3 : 27.25); (3 : 32.5329983433584); (3.5 : 32.5329983433584)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(2 : 10.7483086487651); (2 : 31.125); (2.07291416666667 : 31.125 : JumpStart); (2.23958083333333 : 31.125 : JumpEnd); (2.29166666666667 : 31.125 : JumpStart); (2.45833333333333 : 31.125 : JumpEnd); (2.51041916666667 : 31.125 : JumpStart); (2.67708583333333 : 31.125 : JumpEnd); (3 : 31.125); (3 : 33.4079983433584); (3.5 : 33.4079983433584)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/LinqRayaDataContext/address/address_person_address" />
       <nodes>
-        <classShapeMoniker Id="bee35aae-7528-48cd-87f5-83b31e419ca2" />
-        <classShapeMoniker Id="9aba9d25-3858-46df-9414-664b112a6c4b" />
+        <classShapeMoniker Id="59184c16-6759-4111-9992-6a6a44a8976d" />
+        <classShapeMoniker Id="f91fcb76-8247-407a-93b8-297dc9be1a3e" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(8.75 : 25.2446939720459); (9.125 : 25.6196939720459); (9.125 : 33.625); (8.875 : 33.625); (8.5 : 34)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+    <associationConnector edgePoints="[(8.75 : 28.9946939720459); (9.125 : 29.3696939720459); (9.125 : 37.5); (8.875 : 37.5); (8.5 : 37.875)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/LinqRayaDataContext/application/application_person_application" />
       <nodes>
-        <classShapeMoniker Id="83b9dcf2-e0ba-4471-8749-1cc69f58d91e" />
-        <classShapeMoniker Id="7a5de987-3a04-42a7-a911-3825853249f5" />
+        <classShapeMoniker Id="b0208743-6d8c-4c7e-b6af-958ed447bde1" />
+        <classShapeMoniker Id="2f63b6fb-705c-447f-a312-69631f4a974a" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(3 : 9.87330864876509); (3.375 : 10.2483086487651); (5.57291666666667 : 10.2483086487651 : JumpStart); (5.73958333333333 : 10.2483086487651 : JumpEnd); (6.125 : 10.2483086487651); (6.125 : 29.6241810025487); (6.22232443490112 : 29.7215054374498 : JumpStart); (6.34017556509888 : 29.8393565676476 : JumpEnd); (6.50081899745132 : 30)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+    <associationConnector edgePoints="[(3 : 10.7483086487651); (3.375 : 11.1233086487651); (5.57291666666667 : 11.1233086487651 : JumpStart); (5.73958333333333 : 11.1233086487651 : JumpEnd); (6.125 : 11.1233086487651); (6.125 : 33.5); (6.5 : 33.875)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/LinqRayaDataContext/address/address_person_current_location" />
       <nodes>
-        <classShapeMoniker Id="bee35aae-7528-48cd-87f5-83b31e419ca2" />
-        <classShapeMoniker Id="480d0e63-917e-4cf7-ba4a-30e0ee02326e" />
+        <classShapeMoniker Id="59184c16-6759-4111-9992-6a6a44a8976d" />
+        <classShapeMoniker Id="ac511bc1-ddb8-4130-954e-b9e437cd95df" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(5.65625 : 9.84257745256027); (5.65625 : 28.9722466867169); (6.04166666666667 : 28.9722466867169 : JumpStart); (6.36458333333333 : 28.9722466867169 : JumpEnd); (6.5 : 28.9722466867169)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(5.65625 : 10.7175774525603); (5.65625 : 32.34375); (6.04166666666667 : 32.34375 : JumpStart); (6.20833333333333 : 32.34375 : JumpEnd); (6.5 : 32.34375)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/LinqRayaDataContext/organization/organization_person_job" />
       <nodes>
-        <classShapeMoniker Id="18188312-bdda-461e-a2c0-3e897be2f222" />
-        <classShapeMoniker Id="c4fe252e-7a63-46ea-be7b-15c8ee805f3b" />
+        <classShapeMoniker Id="b10ccf47-6fac-4047-88d5-53acefa92e58" />
+        <classShapeMoniker Id="53b75c1e-eb24-4aef-baa5-180505609557" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(5.75 : 6.19071379050907); (6.28125 : 6.72196379050907); (6.28125 : 31.78125); (6.5 : 32)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+    <associationConnector edgePoints="[(5.65625 : 63.875); (5.65625 : 36.7222466867169); (6.5 : 36.7222466867169)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/LinqRayaDataContext/language/language_person_languages_spoken" />
       <nodes>
-        <classShapeMoniker Id="c2a9f24d-3db1-48b3-9804-5a62ac77a453" />
-        <classShapeMoniker Id="2bab39c0-0943-4667-aa0b-6e0b27b510f2" />
+        <classShapeMoniker Id="bc2127be-9a20-4a06-81ae-5c113166644e" />
+        <classShapeMoniker Id="2d5d59b6-19c6-4a54-ade6-cbdcc6a5ce76" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(5.75 : 8.32805753007531); (6.19791666666667 : 8.32805753007531 : JumpStart); (6.36458333333333 : 8.32805753007531 : JumpEnd); (6.59375 : 8.32805753007531); (6.59375 : 26)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(5.75 : 9.48378872628013); (6.59375 : 9.48378872628013); (6.59375 : 29.875)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/LinqRayaDataContext/organization/organization_person_school" />
       <nodes>
-        <classShapeMoniker Id="18188312-bdda-461e-a2c0-3e897be2f222" />
-        <classShapeMoniker Id="aacb1d08-9614-43a7-ae0c-982da87c0963" />
+        <classShapeMoniker Id="b10ccf47-6fac-4047-88d5-53acefa92e58" />
+        <classShapeMoniker Id="bcaff835-f727-43d0-85b3-34b3c579de94" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(1.375 : 27.5); (1.375 : 27.1892483433584); (1.46354291666667 : 27.1892483433584 : JumpStart); (1.63020958333333 : 27.1892483433584 : JumpEnd); (1.63541916666667 : 27.1892483433584 : JumpStart); (1.80208583333333 : 27.1892483433584 : JumpEnd); (1.80729541666667 : 27.1892483433584 : JumpStart); (1.97396208333333 : 27.1892483433584 : JumpEnd); (2.07291416666667 : 27.1892483433584 : JumpStart); (2.23958083333333 : 27.1892483433584 : JumpEnd); (2.29166666666667 : 27.1892483433584 : JumpStart); (2.45833333333333 : 27.1892483433584 : JumpEnd); (2.51041916666667 : 27.1892483433584 : JumpStart); (2.67708583333333 : 27.1892483433584 : JumpEnd); (2.97741832330823 : 27.1892483433584 : JumpStart); (3.1440849899749 : 27.1892483433584 : JumpEnd); (5.57291666666667 : 27.1892483433584 : JumpStart); (5.73958333333333 : 27.1892483433584 : JumpEnd); (6.04166666666667 : 27.1892483433584 : JumpStart); (6.46090067414309 : 27.1892483433584 : JumpEnd); (8.57291666666667 : 27.1892483433584 : JumpStart); (8.77083583333333 : 27.1892483433584 : JumpEnd); (9.04166666666667 : 27.1892483433584 : JumpStart); (9.20833333333333 : 27.1892483433584 : JumpEnd); (9.5 : 27.1892483433584)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(2.75 : 31.6727491716792); (2.91666666666667 : 31.6727491716792 : JumpStart); (3.08333333333333 : 31.6727491716792 : JumpEnd); (5.57291666666667 : 31.6727491716792 : JumpStart); (5.73958333333333 : 31.6727491716792 : JumpEnd); (6.04166666666667 : 31.6727491716792 : JumpStart); (6.20833333333333 : 31.6727491716792 : JumpEnd); (8.60416916666667 : 31.6727491716792 : JumpStart); (8.77083583333333 : 31.6727491716792 : JumpEnd); (9.04166666666667 : 31.6727491716792 : JumpStart); (9.20833333333333 : 31.6727491716792 : JumpEnd); (9.5 : 31.6727491716792)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/LinqRayaDataContext/person/person_activity" />
       <nodes>
-        <classShapeMoniker Id="32fc0cb4-9304-4cdc-891e-6a740aad26df" />
-        <classShapeMoniker Id="33998771-a0c5-42c3-a51d-118095347a0b" />
+        <classShapeMoniker Id="e69c49d7-97c2-49bb-aeae-236b8d289756" />
+        <classShapeMoniker Id="caf363fe-715a-43ed-a392-2f9f5513b87a" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(2.75 : 31.2058434810241); (2.91666666666667 : 31.2058434810241 : JumpStart); (3.08333333333333 : 31.2058434810241 : JumpEnd); (6.19791666666667 : 31.2058434810241 : JumpStart); (6.36458333333333 : 31.2058434810241 : JumpEnd); (9.04166666666667 : 31.2058434810241 : JumpStart); (9.20833333333333 : 31.2058434810241 : JumpEnd); (9.5 : 31.2058434810241)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(2.75 : 35.0808434810241); (9.04166666666667 : 35.0808434810241 : JumpStart); (9.20833333333333 : 35.0808434810241 : JumpEnd); (9.5 : 35.0808434810241)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/LinqRayaDataContext/person/person_application_setting" />
       <nodes>
-        <classShapeMoniker Id="32fc0cb4-9304-4cdc-891e-6a740aad26df" />
-        <classShapeMoniker Id="04ffb068-b188-45c3-90a2-de9059958afb" />
+        <classShapeMoniker Id="e69c49d7-97c2-49bb-aeae-236b8d289756" />
+        <classShapeMoniker Id="5463abb0-493f-4ed3-bd53-6484afc72015" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(2.375 : 27.5); (2.375 : 11.9079983433584); (3.5 : 11.9079983433584)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(1.375 : 31.375); (1.375 : 12.2829983433584); (1.91666666666667 : 12.2829983433584 : JumpStart); (2.08333333333333 : 12.2829983433584 : JumpEnd); (3.5 : 12.2829983433584)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/LinqRayaDataContext/person/person_authenticated" />
       <nodes>
-        <classShapeMoniker Id="32fc0cb4-9304-4cdc-891e-6a740aad26df" />
-        <classShapeMoniker Id="d66eb103-1b79-4969-8117-96d03072ffcb" />
+        <classShapeMoniker Id="e69c49d7-97c2-49bb-aeae-236b8d289756" />
+        <classShapeMoniker Id="a7d1a5fe-a41e-44ae-aaa9-ded65aa25ab6" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(1.7187525 : 27.5); (1.7187525 : 13.7829983433584); (1.91666666666667 : 13.7829983433584 : JumpStart); (2.08333333333333 : 13.7829983433584 : JumpEnd); (2.29166666666667 : 13.7829983433584 : JumpStart); (2.45833333333333 : 13.7829983433584 : JumpEnd); (3.5 : 13.7829983433584)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(2.375 : 31.375); (2.375 : 14.1579983433584); (3.5 : 14.1579983433584)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/LinqRayaDataContext/person/person_fb_user" />
       <nodes>
-        <classShapeMoniker Id="32fc0cb4-9304-4cdc-891e-6a740aad26df" />
-        <classShapeMoniker Id="9dc6502b-4a54-430a-b657-6900160487a1" />
+        <classShapeMoniker Id="e69c49d7-97c2-49bb-aeae-236b8d289756" />
+        <classShapeMoniker Id="64977982-0dfb-46ed-9a6d-80a54d67b3e1" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(1.0312475 : 27.5); (1.0312475 : 15.5329983433584); (1.63541916666667 : 15.5329983433584 : JumpStart); (1.80208583333333 : 15.5329983433584 : JumpEnd); (1.91666666666667 : 15.5329983433584 : JumpStart); (2.08333333333333 : 15.5329983433584 : JumpEnd); (2.29166666666667 : 15.5329983433584 : JumpStart); (2.45833333333333 : 15.5329983433584 : JumpEnd); (3.5 : 15.5329983433584)]" fixedFrom="Algorithm" fixedTo="Algorithm">
-      <AssociationMoniker Name="/LinqRayaDataContext/person/person_friend_request" />
+    <associationConnector edgePoints="[(1.7187525 : 31.375); (1.7187525 : 15.9079983433584); (1.91666666666667 : 15.9079983433584 : JumpStart); (2.08333333333333 : 15.9079983433584 : JumpEnd); (2.29166666666667 : 15.9079983433584 : JumpStart); (2.45833333333333 : 15.9079983433584 : JumpEnd); (3.5 : 15.9079983433584)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/LinqRayaDataContext/person/person_friend" />
       <nodes>
-        <classShapeMoniker Id="32fc0cb4-9304-4cdc-891e-6a740aad26df" />
-        <classShapeMoniker Id="9710d876-b94a-45a7-a05d-6b4ce59122fd" />
+        <classShapeMoniker Id="e69c49d7-97c2-49bb-aeae-236b8d289756" />
+        <classShapeMoniker Id="d0a68a13-f702-476f-b666-382bb4a9bcc6" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(2.5937525 : 27.5); (2.5937525 : 17.4079983433584); (3.5 : 17.4079983433584)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(1.75 : 37.4243949652711); (1.75 : 62.0637295395633); (1.93229291666667 : 62.0637295395633 : JumpStart); (2.09895958333333 : 62.0637295395633 : JumpEnd); (2.19791916666667 : 62.0637295395633 : JumpStart); (2.36458583333333 : 62.0637295395633 : JumpEnd); (3.5 : 62.0637295395633)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/LinqRayaDataContext/person/person_image" />
+      <nodes>
+        <classShapeMoniker Id="e69c49d7-97c2-49bb-aeae-236b8d289756" />
+        <classShapeMoniker Id="15358e9c-bb38-493a-ac0b-0587f48ad0d1" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(2.2812525 : 37.4243949652711); (2.2812525 : 71.8280575300753); (3.5 : 71.8280575300753)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/LinqRayaDataContext/person/person_message" />
+      <nodes>
+        <classShapeMoniker Id="e69c49d7-97c2-49bb-aeae-236b8d289756" />
+        <classShapeMoniker Id="323b8194-e8e5-4687-a865-475cd4449aa8" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(1.2187475 : 37.4243949652711); (1.2187475 : 54.1108639414608); (1.40104041666667 : 54.1108639414608 : JumpStart); (1.56770708333333 : 54.1108639414608 : JumpEnd); (1.66666666666667 : 54.1108639414608 : JumpStart); (1.83333333333333 : 54.1108639414608 : JumpEnd); (1.93229291666667 : 54.1108639414608 : JumpStart); (2.09895958333333 : 54.1108639414608 : JumpEnd); (2.19791916666667 : 54.1108639414608 : JumpStart); (2.36458583333333 : 54.1108639414608 : JumpEnd); (2.59635854166667 : 54.1108639414608 : JumpStart); (2.76302520833333 : 54.1108639414608 : JumpEnd); (3.5 : 54.1108639414608)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/LinqRayaDataContext/person/person_notification" />
+      <nodes>
+        <classShapeMoniker Id="e69c49d7-97c2-49bb-aeae-236b8d289756" />
+        <classShapeMoniker Id="4b183394-2017-4a64-919c-9ac59bda974d" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(1.0312475 : 31.375); (1.0312475 : 17.7829983433584); (1.29166666666667 : 17.7829983433584 : JumpStart); (1.45833333333333 : 17.7829983433584 : JumpEnd); (1.63541916666667 : 17.7829983433584 : JumpStart); (1.80208583333333 : 17.7829983433584 : JumpEnd); (1.91666666666667 : 17.7829983433584 : JumpStart); (2.08333333333333 : 17.7829983433584 : JumpEnd); (2.29166666666667 : 17.7829983433584 : JumpStart); (2.45833333333333 : 17.7829983433584 : JumpEnd); (3.5 : 17.7829983433584)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/LinqRayaDataContext/person/person_person_activity" />
       <nodes>
-        <classShapeMoniker Id="32fc0cb4-9304-4cdc-891e-6a740aad26df" />
-        <classShapeMoniker Id="5a8175b2-9bf6-46bf-9a13-93d6b3e46b85" />
+        <classShapeMoniker Id="e69c49d7-97c2-49bb-aeae-236b8d289756" />
+        <classShapeMoniker Id="c5af55e0-7798-4105-bcf2-8a86de951257" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(2.75 : 32.2039991716792); (2.91666666666667 : 32.2039991716792 : JumpStart); (3.08333333333333 : 32.2039991716792 : JumpEnd); (3.5 : 32.2039991716792)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(2.75 : 33.0789991716792); (2.91666666666667 : 33.0789991716792 : JumpStart); (3.08333333333333 : 33.0789991716792 : JumpEnd); (3.5 : 33.0789991716792)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/LinqRayaDataContext/person/person_person_address" />
       <nodes>
-        <classShapeMoniker Id="32fc0cb4-9304-4cdc-891e-6a740aad26df" />
-        <classShapeMoniker Id="9aba9d25-3858-46df-9414-664b112a6c4b" />
+        <classShapeMoniker Id="e69c49d7-97c2-49bb-aeae-236b8d289756" />
+        <classShapeMoniker Id="f91fcb76-8247-407a-93b8-297dc9be1a3e" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(1.75 : 33.5493949652711); (1.75 : 34.46875); (1.79947979166667 : 34.46875 : JumpStart); (2.76302520833333 : 34.46875 : JumpEnd); (6.5 : 34.46875)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(2.54687875 : 37.4243949652711); (2.54687875 : 38.6579983433584); (2.59635854166667 : 38.6579983433584 : JumpStart); (2.76302520833333 : 38.6579983433584 : JumpEnd); (5.57291666666667 : 38.6579983433584 : JumpStart); (5.73958333333333 : 38.6579983433584 : JumpEnd); (6.5 : 38.6579983433584)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/LinqRayaDataContext/person/person_person_application" />
       <nodes>
-        <classShapeMoniker Id="32fc0cb4-9304-4cdc-891e-6a740aad26df" />
-        <classShapeMoniker Id="7a5de987-3a04-42a7-a911-3825853249f5" />
+        <classShapeMoniker Id="e69c49d7-97c2-49bb-aeae-236b8d289756" />
+        <classShapeMoniker Id="2f63b6fb-705c-447f-a312-69631f4a974a" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(2.2812525 : 33.5493949652711); (2.2812525 : 64.7194607357681); (3.5 : 64.7194607357681)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(2.01562625 : 37.4243949652711); (2.01562625 : 69.0944607357681); (2.19791916666667 : 69.0944607357681 : JumpStart); (2.36458583333333 : 69.0944607357681 : JumpEnd); (3.5 : 69.0944607357681)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/LinqRayaDataContext/person/person_person_body_type" />
       <nodes>
-        <classShapeMoniker Id="32fc0cb4-9304-4cdc-891e-6a740aad26df" />
-        <classShapeMoniker Id="460efeb3-6e9a-4eaf-892f-eb669e6c6db2" />
+        <classShapeMoniker Id="e69c49d7-97c2-49bb-aeae-236b8d289756" />
+        <classShapeMoniker Id="3c6815dc-2b79-4835-ae86-8db8edb9e1cc" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(2.1562475 : 27.5); (2.1562475 : 21.0329983433584); (2.29166666666667 : 21.0329983433584 : JumpStart); (2.45833333333333 : 21.0329983433584 : JumpEnd); (2.51041916666667 : 21.0329983433584 : JumpStart); (2.67708583333333 : 21.0329983433584 : JumpEnd); (3.5 : 21.0329983433584)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(2.5937525 : 31.375); (2.5937525 : 21.4079983433584); (3.5 : 21.4079983433584)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/LinqRayaDataContext/person/person_person_book" />
       <nodes>
-        <classShapeMoniker Id="32fc0cb4-9304-4cdc-891e-6a740aad26df" />
-        <classShapeMoniker Id="be511410-b151-4016-b9ee-7b1c4ee9cd8b" />
+        <classShapeMoniker Id="e69c49d7-97c2-49bb-aeae-236b8d289756" />
+        <classShapeMoniker Id="286f0dba-43c8-45dd-a540-44fb7ceec7a4" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(1.89062875 : 27.5); (1.89062875 : 22.9079983433584); (1.91666666666667 : 22.9079983433584 : JumpStart); (2.23958083333333 : 22.9079983433584 : JumpEnd); (2.29166666666667 : 22.9079983433584 : JumpStart); (2.45833333333333 : 22.9079983433584 : JumpEnd); (2.51041916666667 : 22.9079983433584 : JumpStart); (2.67708583333333 : 22.9079983433584 : JumpEnd); (3.5 : 22.9079983433584)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(2.1562475 : 31.375); (2.1562475 : 23.1579983433584); (2.29166666666667 : 23.1579983433584 : JumpStart); (2.45833333333333 : 23.1579983433584 : JumpEnd); (2.51041916666667 : 23.1579983433584 : JumpStart); (2.67708583333333 : 23.1579983433584 : JumpEnd); (3.5 : 23.1579983433584)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/LinqRayaDataContext/person/person_person_car" />
       <nodes>
-        <classShapeMoniker Id="32fc0cb4-9304-4cdc-891e-6a740aad26df" />
-        <classShapeMoniker Id="e701923a-80eb-47f2-9b2c-935c81900dce" />
+        <classShapeMoniker Id="e69c49d7-97c2-49bb-aeae-236b8d289756" />
+        <classShapeMoniker Id="32df1d58-1d72-4854-8adc-0ac945f30387" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(2.75 : 30.9097466867169); (2.91666666666667 : 30.9097466867169 : JumpStart); (3.08333333333333 : 30.9097466867169 : JumpEnd); (6.19791666666667 : 30.9097466867169 : JumpStart); (6.36458333333333 : 30.9097466867169 : JumpEnd); (6.5 : 30.9097466867169)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(2.75 : 34.4722466867169); (6.5 : 34.4722466867169)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/LinqRayaDataContext/person/person_person_current_location" />
       <nodes>
-        <classShapeMoniker Id="32fc0cb4-9304-4cdc-891e-6a740aad26df" />
-        <classShapeMoniker Id="480d0e63-917e-4cf7-ba4a-30e0ee02326e" />
+        <classShapeMoniker Id="e69c49d7-97c2-49bb-aeae-236b8d289756" />
+        <classShapeMoniker Id="ac511bc1-ddb8-4130-954e-b9e437cd95df" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(1.2187475 : 33.5493949652711); (1.2187475 : 55.7358639414608); (1.40104041666667 : 55.7358639414608 : JumpStart); (1.56770708333333 : 55.7358639414608 : JumpEnd); (2.19791916666667 : 55.7358639414608 : JumpStart); (2.36458583333333 : 55.7358639414608 : JumpEnd); (3.5 : 55.7358639414608)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(1.48437375 : 37.4243949652711); (1.48437375 : 58.1108639414608); (1.66666666666667 : 58.1108639414608 : JumpStart); (1.83333333333333 : 58.1108639414608 : JumpEnd); (1.93229291666667 : 58.1108639414608 : JumpStart); (2.09895958333333 : 58.1108639414608 : JumpEnd); (2.19791916666667 : 58.1108639414608 : JumpStart); (2.36458583333333 : 58.1108639414608 : JumpEnd); (2.59635854166667 : 58.1108639414608 : JumpStart); (2.76302520833333 : 58.1108639414608 : JumpEnd); (3.5 : 58.1108639414608)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/LinqRayaDataContext/person/person_person_email" />
       <nodes>
-        <classShapeMoniker Id="32fc0cb4-9304-4cdc-891e-6a740aad26df" />
-        <classShapeMoniker Id="daf4b966-2e02-43b5-aced-3b58c7cd6a8b" />
+        <classShapeMoniker Id="e69c49d7-97c2-49bb-aeae-236b8d289756" />
+        <classShapeMoniker Id="809cd1ba-f167-41c8-8584-6201c3c9b5c3" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(1.54687625 : 27.5); (1.54687625 : 26.5329983433584); (1.63541916666667 : 26.5329983433584 : JumpStart); (1.80208583333333 : 26.5329983433584 : JumpEnd); (1.80729541666667 : 26.5329983433584 : JumpStart); (2.23958083333333 : 26.5329983433584 : JumpEnd); (2.29166666666667 : 26.5329983433584 : JumpStart); (2.45833333333333 : 26.5329983433584 : JumpEnd); (2.51041916666667 : 26.5329983433584 : JumpStart); (2.67708583333333 : 26.5329983433584 : JumpEnd); (3.5 : 26.5329983433584)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(1.89062875 : 31.375); (1.89062875 : 26.7829983433584); (1.91666666666667 : 26.7829983433584 : JumpStart); (2.23958083333333 : 26.7829983433584 : JumpEnd); (2.29166666666667 : 26.7829983433584 : JumpStart); (2.45833333333333 : 26.7829983433584 : JumpEnd); (2.51041916666667 : 26.7829983433584 : JumpStart); (2.67708583333333 : 26.7829983433584 : JumpEnd); (3.5 : 26.7829983433584)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/LinqRayaDataContext/person/person_person_food" />
       <nodes>
-        <classShapeMoniker Id="32fc0cb4-9304-4cdc-891e-6a740aad26df" />
-        <classShapeMoniker Id="826cc498-1d4c-4f08-a9e5-4ecd99c3730e" />
+        <classShapeMoniker Id="e69c49d7-97c2-49bb-aeae-236b8d289756" />
+        <classShapeMoniker Id="551a2c9a-f6f7-4f0a-b0fd-df02b90c9bd3" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(2.75 : 28.2829983433584); (2.91666666666667 : 28.2829983433584 : JumpStart); (3.08333333333333 : 28.2829983433584 : JumpEnd); (3.5 : 28.2829983433584)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(1.54687625 : 31.375); (1.54687625 : 28.6579983433584); (1.63541916666667 : 28.6579983433584 : JumpStart); (1.80208583333333 : 28.6579983433584 : JumpEnd); (1.80729541666667 : 28.6579983433584 : JumpStart); (2.23958083333333 : 28.6579983433584 : JumpEnd); (2.29166666666667 : 28.6579983433584 : JumpStart); (2.45833333333333 : 28.6579983433584 : JumpEnd); (2.51041916666667 : 28.6579983433584 : JumpStart); (2.67708583333333 : 28.6579983433584 : JumpEnd); (3.5 : 28.6579983433584)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/LinqRayaDataContext/person/person_person_heroe" />
       <nodes>
-        <classShapeMoniker Id="32fc0cb4-9304-4cdc-891e-6a740aad26df" />
-        <classShapeMoniker Id="e63677a2-e653-4b4f-88aa-cc3679b70748" />
+        <classShapeMoniker Id="e69c49d7-97c2-49bb-aeae-236b8d289756" />
+        <classShapeMoniker Id="c58968ce-45c3-460d-bf59-3cafeb377b1a" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(2.75 : 30.1579983433584); (2.91666666666667 : 30.1579983433584 : JumpStart); (3.08333333333333 : 30.1579983433584 : JumpEnd); (3.5 : 30.1579983433584)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(1.20312375 : 31.375); (1.20312375 : 30.4079983433584); (1.29166666666667 : 30.4079983433584 : JumpStart); (1.45833333333333 : 30.4079983433584 : JumpEnd); (1.46354291666667 : 30.4079983433584 : JumpStart); (1.63020958333333 : 30.4079983433584 : JumpEnd); (1.63541916666667 : 30.4079983433584 : JumpStart); (1.80208583333333 : 30.4079983433584 : JumpEnd); (1.80729541666667 : 30.4079983433584 : JumpStart); (2.23958083333333 : 30.4079983433584 : JumpEnd); (2.29166666666667 : 30.4079983433584 : JumpStart); (2.45833333333333 : 30.4079983433584 : JumpEnd); (2.51041916666667 : 30.4079983433584 : JumpStart); (2.67708583333333 : 30.4079983433584 : JumpEnd); (3.5 : 30.4079983433584)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/LinqRayaDataContext/person/person_person_interest" />
       <nodes>
-        <classShapeMoniker Id="32fc0cb4-9304-4cdc-891e-6a740aad26df" />
-        <classShapeMoniker Id="f232666e-975a-4c3f-a596-d4d015ce363f" />
+        <classShapeMoniker Id="e69c49d7-97c2-49bb-aeae-236b8d289756" />
+        <classShapeMoniker Id="434f4607-cbd8-4599-87f2-bb32ac66071a" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(2.75 : 27.59375); (2.91666666666667 : 27.59375 : JumpStart); (3.08333333333333 : 27.59375 : JumpEnd); (5.57291666666667 : 27.59375 : JumpStart); (5.73958333333333 : 27.59375 : JumpEnd); (6.04166666666667 : 27.59375 : JumpStart); (6.36458333333333 : 27.59375 : JumpEnd); (7.5 : 27.59375); (7.5 : 28)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(2.75 : 32.640625); (2.91666666666667 : 32.640625 : JumpStart); (3.08333333333333 : 32.640625 : JumpEnd); (6.04166666666667 : 32.640625 : JumpStart); (6.20833333333333 : 32.640625 : JumpEnd); (6.5 : 32.640625)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/LinqRayaDataContext/person/person_person_job" />
       <nodes>
-        <classShapeMoniker Id="32fc0cb4-9304-4cdc-891e-6a740aad26df" />
-        <classShapeMoniker Id="c4fe252e-7a63-46ea-be7b-15c8ee805f3b" />
+        <classShapeMoniker Id="e69c49d7-97c2-49bb-aeae-236b8d289756" />
+        <classShapeMoniker Id="53b75c1e-eb24-4aef-baa5-180505609557" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(2.75 : 33.5478555037327); (3.125 : 33.9228555037327); (3.125 : 33.4409966867169); (6.125 : 33.4409966867169); (6.5 : 33.0659966867169)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+    <associationConnector edgePoints="[(2.75 : 36.5503716867169); (6.5 : 36.5503716867169)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/LinqRayaDataContext/person/person_person_languages_spoken" />
       <nodes>
-        <classShapeMoniker Id="32fc0cb4-9304-4cdc-891e-6a740aad26df" />
-        <classShapeMoniker Id="2bab39c0-0943-4667-aa0b-6e0b27b510f2" />
+        <classShapeMoniker Id="e69c49d7-97c2-49bb-aeae-236b8d289756" />
+        <classShapeMoniker Id="2d5d59b6-19c6-4a54-ade6-cbdcc6a5ce76" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(2.54687875 : 33.5493949652711); (2.54687875 : 35.5329983433584); (2.59635854166667 : 35.5329983433584 : JumpStart); (2.76302520833333 : 35.5329983433584 : JumpEnd); (3.5 : 35.5329983433584)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(2.75 : 35.9079983433584); (3.5 : 35.9079983433584)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/LinqRayaDataContext/person/person_person_movy" />
       <nodes>
-        <classShapeMoniker Id="32fc0cb4-9304-4cdc-891e-6a740aad26df" />
-        <classShapeMoniker Id="c91f3076-cfdc-42d5-bbc1-30b015edcfad" />
+        <classShapeMoniker Id="e69c49d7-97c2-49bb-aeae-236b8d289756" />
+        <classShapeMoniker Id="bcafe752-4fbc-4ed2-bd75-f5c12acba2d1" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(2.01562625 : 33.5493949652711); (2.01562625 : 37.4079983433584); (2.06510604166667 : 37.4079983433584 : JumpStart); (2.49739895833333 : 37.4079983433584 : JumpEnd); (2.59635854166667 : 37.4079983433584 : JumpStart); (2.76302520833333 : 37.4079983433584 : JumpEnd); (3.5 : 37.4079983433584)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(0.95312125 : 37.4243949652711); (0.95312125 : 37.901448325994); (1.00260104166667 : 37.901448325994 : JumpStart); (2.76302520833333 : 37.901448325994 : JumpEnd); (3.5 : 37.901448325994)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/LinqRayaDataContext/person/person_person_music" />
       <nodes>
-        <classShapeMoniker Id="32fc0cb4-9304-4cdc-891e-6a740aad26df" />
-        <classShapeMoniker Id="3f56cdaf-6e58-442f-abc3-ce22dc78c1cf" />
+        <classShapeMoniker Id="e69c49d7-97c2-49bb-aeae-236b8d289756" />
+        <classShapeMoniker Id="0f3aa694-a3e1-4506-bdf0-29cfaafe6c73" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(1.48437375 : 33.5493949652711); (1.48437375 : 57.7358639414608); (2.19791916666667 : 57.7358639414608 : JumpStart); (2.36458583333333 : 57.7358639414608 : JumpEnd); (3.5 : 57.7358639414608)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(2.679691875 : 37.4243949652711); (2.679691875 : 60.1108639414608); (3.5 : 60.1108639414608)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/LinqRayaDataContext/person/person_person_phone_number" />
       <nodes>
-        <classShapeMoniker Id="32fc0cb4-9304-4cdc-891e-6a740aad26df" />
-        <classShapeMoniker Id="e2f620af-9f35-41aa-9484-118faea0ad85" />
+        <classShapeMoniker Id="e69c49d7-97c2-49bb-aeae-236b8d289756" />
+        <classShapeMoniker Id="802fdf08-8779-4767-bfd5-89ff15cdaa50" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(0.95312125 : 33.5493949652711); (0.95312125 : 39.1579983433584); (1.13541416666667 : 39.1579983433584 : JumpStart); (1.70052020833333 : 39.1579983433584 : JumpEnd); (1.79947979166667 : 39.1579983433584 : JumpStart); (1.96614645833333 : 39.1579983433584 : JumpEnd); (2.06510604166667 : 39.1579983433584 : JumpStart); (2.49739895833333 : 39.1579983433584 : JumpEnd); (2.59635854166667 : 39.1579983433584 : JumpStart); (2.76302520833333 : 39.1579983433584 : JumpEnd); (3.5 : 39.1579983433584)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(2.414065625 : 37.4243949652711); (2.414065625 : 39.5329983433584); (2.59635854166667 : 39.5329983433584 : JumpStart); (2.76302520833333 : 39.5329983433584 : JumpEnd); (3.5 : 39.5329983433584)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/LinqRayaDataContext/person/person_person_quote" />
       <nodes>
-        <classShapeMoniker Id="32fc0cb4-9304-4cdc-891e-6a740aad26df" />
-        <classShapeMoniker Id="acfcd0b1-1d25-4380-9a19-0f00518b22de" />
+        <classShapeMoniker Id="e69c49d7-97c2-49bb-aeae-236b8d289756" />
+        <classShapeMoniker Id="443f8625-db55-468a-b4cf-48075fd108da" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(2.75 : 27.5); (3.125 : 27.125); (3.125 : 27.4409966867169); (5.57291666666667 : 27.4409966867169 : JumpStart); (5.73958333333333 : 27.4409966867169 : JumpEnd); (6.12581899745132 : 27.4409966867169); (6.22232443490112 : 27.3444912492671 : JumpStart); (6.34017556509888 : 27.2266401190693 : JumpEnd); (6.50081899745132 : 27.0659966867169)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+    <associationConnector edgePoints="[(2.75 : 31.375); (3.125 : 31); (3.125 : 31.3159966867169); (5.57291666666667 : 31.3159966867169 : JumpStart); (5.73958333333333 : 31.3159966867169 : JumpEnd); (6.12581899745132 : 31.3159966867169); (6.50081899745132 : 30.9409966867169)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/LinqRayaDataContext/person/person_person_school" />
       <nodes>
-        <classShapeMoniker Id="32fc0cb4-9304-4cdc-891e-6a740aad26df" />
-        <classShapeMoniker Id="aacb1d08-9614-43a7-ae0c-982da87c0963" />
+        <classShapeMoniker Id="e69c49d7-97c2-49bb-aeae-236b8d289756" />
+        <classShapeMoniker Id="bcaff835-f727-43d0-85b3-34b3c579de94" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(2.679691875 : 33.5493949652711); (2.679691875 : 42.7829983433584); (3.5 : 42.7829983433584)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(2.148439375 : 37.4243949652711); (2.148439375 : 43.1579983433584); (2.19791916666667 : 43.1579983433584 : JumpStart); (2.36458583333333 : 43.1579983433584 : JumpEnd); (2.59635854166667 : 43.1579983433584 : JumpStart); (2.76302520833333 : 43.1579983433584 : JumpEnd); (3.5 : 43.1579983433584)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/LinqRayaDataContext/person/person_person_sport" />
       <nodes>
-        <classShapeMoniker Id="32fc0cb4-9304-4cdc-891e-6a740aad26df" />
-        <classShapeMoniker Id="23544aba-48ae-49d2-b4bf-d7f93d46fc8d" />
+        <classShapeMoniker Id="e69c49d7-97c2-49bb-aeae-236b8d289756" />
+        <classShapeMoniker Id="25b68d7a-4322-4999-8151-578782790c1f" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(2.414065625 : 33.5493949652711); (2.414065625 : 44.6579983433584); (3.5 : 44.6579983433584)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(1.882813125 : 37.4243949652711); (1.882813125 : 45.0329983433584); (1.93229291666667 : 45.0329983433584 : JumpStart); (2.09895958333333 : 45.0329983433584 : JumpEnd); (2.19791916666667 : 45.0329983433584 : JumpStart); (2.36458583333333 : 45.0329983433584 : JumpEnd); (2.59635854166667 : 45.0329983433584 : JumpStart); (2.76302520833333 : 45.0329983433584 : JumpEnd); (3.5 : 45.0329983433584)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/LinqRayaDataContext/person/person_person_tag" />
       <nodes>
-        <classShapeMoniker Id="32fc0cb4-9304-4cdc-891e-6a740aad26df" />
-        <classShapeMoniker Id="4eda2b73-6d21-40c9-aa16-45c1778a8d10" />
+        <classShapeMoniker Id="e69c49d7-97c2-49bb-aeae-236b8d289756" />
+        <classShapeMoniker Id="118df5eb-bee6-4335-b4a6-f0fe433a0567" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(2.148439375 : 33.5493949652711); (2.148439375 : 46.4079983433584); (2.19791916666667 : 46.4079983433584 : JumpStart); (2.36458583333333 : 46.4079983433584 : JumpEnd); (3.5 : 46.4079983433584)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(1.617186875 : 37.4243949652711); (1.617186875 : 46.7829983433584); (1.66666666666667 : 46.7829983433584 : JumpStart); (1.83333333333333 : 46.7829983433584 : JumpEnd); (1.93229291666667 : 46.7829983433584 : JumpStart); (2.09895958333333 : 46.7829983433584 : JumpEnd); (2.19791916666667 : 46.7829983433584 : JumpStart); (2.36458583333333 : 46.7829983433584 : JumpEnd); (2.59635854166667 : 46.7829983433584 : JumpStart); (2.76302520833333 : 46.7829983433584 : JumpEnd); (3.5 : 46.7829983433584)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/LinqRayaDataContext/person/person_person_turn_off" />
       <nodes>
-        <classShapeMoniker Id="32fc0cb4-9304-4cdc-891e-6a740aad26df" />
-        <classShapeMoniker Id="a0ed0b59-7148-492b-b5b6-f7c1d369734d" />
+        <classShapeMoniker Id="e69c49d7-97c2-49bb-aeae-236b8d289756" />
+        <classShapeMoniker Id="772952a5-a20a-4e8a-9efe-b418d4ffa862" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(1.882813125 : 33.5493949652711); (1.882813125 : 48.2829983433584); (2.19791916666667 : 48.2829983433584 : JumpStart); (2.36458583333333 : 48.2829983433584 : JumpEnd); (3.5 : 48.2829983433584)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(1.351560625 : 37.4243949652711); (1.351560625 : 48.6579983433584); (1.40104041666667 : 48.6579983433584 : JumpStart); (1.56770708333333 : 48.6579983433584 : JumpEnd); (1.66666666666667 : 48.6579983433584 : JumpStart); (1.83333333333333 : 48.6579983433584 : JumpEnd); (1.93229291666667 : 48.6579983433584 : JumpStart); (2.09895958333333 : 48.6579983433584 : JumpEnd); (2.19791916666667 : 48.6579983433584 : JumpStart); (2.36458583333333 : 48.6579983433584 : JumpEnd); (2.59635854166667 : 48.6579983433584 : JumpStart); (2.76302520833333 : 48.6579983433584 : JumpEnd); (3.5 : 48.6579983433584)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/LinqRayaDataContext/person/person_person_turn_on" />
       <nodes>
-        <classShapeMoniker Id="32fc0cb4-9304-4cdc-891e-6a740aad26df" />
-        <classShapeMoniker Id="ddfa0fac-d530-4d9c-98b4-6bf9c18b4b13" />
+        <classShapeMoniker Id="e69c49d7-97c2-49bb-aeae-236b8d289756" />
+        <classShapeMoniker Id="ca4b2265-d461-4ccd-8f63-48b7074490cf" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(1.617186875 : 33.5493949652711); (1.617186875 : 50.0329983433584); (2.19791916666667 : 50.0329983433584 : JumpStart); (2.36458583333333 : 50.0329983433584 : JumpEnd); (3.5 : 50.0329983433584)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(1.085934375 : 37.4243949652711); (1.085934375 : 50.4079983433584); (1.13541416666667 : 50.4079983433584 : JumpStart); (1.30208083333333 : 50.4079983433584 : JumpEnd); (1.40104041666667 : 50.4079983433584 : JumpStart); (1.56770708333333 : 50.4079983433584 : JumpEnd); (1.66666666666667 : 50.4079983433584 : JumpStart); (1.83333333333333 : 50.4079983433584 : JumpEnd); (1.93229291666667 : 50.4079983433584 : JumpStart); (2.09895958333333 : 50.4079983433584 : JumpEnd); (2.19791916666667 : 50.4079983433584 : JumpStart); (2.36458583333333 : 50.4079983433584 : JumpEnd); (2.59635854166667 : 50.4079983433584 : JumpStart); (2.76302520833333 : 50.4079983433584 : JumpEnd); (3.5 : 50.4079983433584)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/LinqRayaDataContext/person/person_person_tv_show" />
       <nodes>
-        <classShapeMoniker Id="32fc0cb4-9304-4cdc-891e-6a740aad26df" />
-        <classShapeMoniker Id="22151f70-53c3-44b0-867f-c5c73f622f32" />
+        <classShapeMoniker Id="e69c49d7-97c2-49bb-aeae-236b8d289756" />
+        <classShapeMoniker Id="7a38bfb0-fc79-42f8-97a4-4f9ef3ec2711" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(1.351560625 : 33.5493949652711); (1.351560625 : 51.9079983433584); (1.40104041666667 : 51.9079983433584 : JumpStart); (1.56770708333333 : 51.9079983433584 : JumpEnd); (2.19791916666667 : 51.9079983433584 : JumpStart); (2.36458583333333 : 51.9079983433584 : JumpEnd); (3.5 : 51.9079983433584)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(0.820308125 : 37.4243949652711); (0.820308125 : 52.2829983433584); (1.13541416666667 : 52.2829983433584 : JumpStart); (1.30208083333333 : 52.2829983433584 : JumpEnd); (1.40104041666667 : 52.2829983433584 : JumpStart); (1.56770708333333 : 52.2829983433584 : JumpEnd); (1.66666666666667 : 52.2829983433584 : JumpStart); (1.83333333333333 : 52.2829983433584 : JumpEnd); (1.93229291666667 : 52.2829983433584 : JumpStart); (2.09895958333333 : 52.2829983433584 : JumpEnd); (2.19791916666667 : 52.2829983433584 : JumpStart); (2.36458583333333 : 52.2829983433584 : JumpEnd); (2.59635854166667 : 52.2829983433584 : JumpStart); (2.76302520833333 : 52.2829983433584 : JumpEnd); (3.5 : 52.2829983433584)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/LinqRayaDataContext/person/person_person_url" />
       <nodes>
-        <classShapeMoniker Id="32fc0cb4-9304-4cdc-891e-6a740aad26df" />
-        <classShapeMoniker Id="b71a1f4a-b254-4b1e-8d7d-6fcd49f197bd" />
+        <classShapeMoniker Id="e69c49d7-97c2-49bb-aeae-236b8d289756" />
+        <classShapeMoniker Id="5ecfa029-c80a-4b0e-9d15-78bdb4be1380" />
       </nodes>
     </associationConnector>
     <associationConnector edgePoints="[(2.75 : 1.53299834335844); (3.5 : 1.53299834335844)]" fixedFrom="Algorithm" fixedTo="Algorithm">
       <AssociationMoniker Name="/LinqRayaDataContext/tag/tag_tags_count" />
       <nodes>
-        <classShapeMoniker Id="282c84b1-67b9-4866-9f88-1f1777b235dd" />
-        <classShapeMoniker Id="68e7bc5c-d36a-465a-8543-cf735f82c622" />
+        <classShapeMoniker Id="c63c0cc2-9659-49c7-9150-b65af13e8e98" />
+        <classShapeMoniker Id="330fa09d-bc17-49df-a685-b23a3a218596" />
       </nodes>
     </associationConnector>
   </nestedChildShapes>
