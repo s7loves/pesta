@@ -63,10 +63,9 @@ namespace Pesta.Engine.protocol.conversion
 
         public override T ConvertToObject<T>(String json)
         {
-            DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof (T),new[]{typeof(JsonSurrogate.SDictionary)},int.MaxValue,true,new JsonSurrogate(),false);
-            MemoryStream ms = new MemoryStream(Encoding.UTF8.GetBytes(json));
-            var obj = serializer.ReadObject(ms);
-            return (T)obj;
+            var serializer = new JavaScriptSerializer();
+            serializer.RegisterConverters(new JavaScriptConverter[] { new DataContractJSConverter() });
+            return serializer.Deserialize<T>(json);
         }
 
     }

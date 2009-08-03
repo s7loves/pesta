@@ -231,6 +231,7 @@
     <Compile Include="Engine\social\spi\IPersonService.cs" />
     <Compile Include="Engine\social\spi\IRestfulCollection.cs" />
     <Compile Include="Engine\social\spi\RestfulCollection.cs" />
+    <Compile Include="Engine\social\spi\RestfulEntry.cs" />
     <Compile Include="Engine\social\spi\SocialSpiException.cs" />
     <Compile Include="Engine\social\spi\UserId.cs" />
     <Compile Include="Libraries\oauth\Constants.cs" />

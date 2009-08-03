@@ -34,14 +34,7 @@ namespace Pesta.Engine.social.model
         public String userId { get; set; }
         [DataMember(EmitDefaultValue = false)]
         public String username { get; set; }
-        /**
-       * The fields that represent the account object in json form.
-       *
-       * <p>
-       * All of the fields that an account can have, all fields are required
-       * </p>
-       *
-       */
+        
         public class Field : EnumBaseType<Field>
         {
             /// <summary>

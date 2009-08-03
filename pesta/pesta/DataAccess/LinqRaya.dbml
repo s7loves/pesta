@@ -1,6 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Database Name="raya" Class="LinqRayaDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
   <Connection Mode="AppSettings" ConnectionString="Data Source=seanlaptop;Initial Catalog=raya;Integrated Security=True" SettingsObjectName="Pesta.Properties.Settings" SettingsPropertyName="rayaConnectionString2" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.tags_counts" Member="tags_counts">
+    <Type Name="tags_count">
+      <Column Name="tagid" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="refid" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="tag_tags_count" Member="tag" ThisKey="tagid" OtherKey="id" Type="tag" IsForeignKey="true" />
+    </Type>
+  </Table>
   <Table Name="dbo.activities" Member="activities">
     <Type Name="activity">
       <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
@@ -12,13 +19,6 @@
       <Association Name="activity_activity_media_item" Member="activity_media_items" ThisKey="id" OtherKey="activity_id" Type="activity_media_item" />
       <Association Name="application_activity" Member="application" ThisKey="app_id" OtherKey="id" Type="application" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
       <Association Name="person_activity" Member="person" ThisKey="person_id" OtherKey="id" Type="person" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.tags_counts" Member="tags_counts">
-    <Type Name="tags_count">
-      <Column Name="tagid" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="refid" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Association Name="tag_tags_count" Member="tag" ThisKey="tagid" OtherKey="id" Type="tag" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.activity_media_items" Member="activity_media_items">
@@ -102,7 +102,14 @@
     <Type Name="friend">
       <Column Name="person_id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="friend_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Association Name="person_friend" Member="person" ThisKey="person_id" OtherKey="id" Type="person" IsForeignKey="true" />
+      <Association Name="person_friend" Member="person" ThisKey="person_id" OtherKey="id" Type="person" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.gfc_users" Member="gfc_users">
+    <Type Name="gfc_user">
+      <Column Name="gfc_id" Type="System.String" DbType="VarChar(128) NOT NULL" CanBeNull="false" />
+      <Column Name="personid" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Association Name="person_gfc_user" Member="person" ThisKey="personid" OtherKey="id" Type="person" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
     </Type>
   </Table>
   <Table Name="dbo.images" Member="images">
@@ -111,7 +118,7 @@
       <Column Name="userid" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="url" Type="System.String" DbType="VarChar(128) NOT NULL" CanBeNull="false" />
       <Column Name="image_type" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Association Name="person_image" Member="person" ThisKey="userid" OtherKey="id" Type="person" IsForeignKey="true" />
+      <Association Name="person_image" Member="person" ThisKey="userid" OtherKey="id" Type="person" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
     </Type>
   </Table>
   <Table Name="dbo.languages" Member="languages">
@@ -415,6 +422,7 @@
       <Association Name="person_authenticated" Member="authenticated" ThisKey="id" OtherKey="person_id" Type="authenticated" Cardinality="One" />
       <Association Name="person_fb_user" Member="fb_user" ThisKey="id" OtherKey="personid" Type="fb_user" Cardinality="One" />
       <Association Name="person_friend" Member="friend" ThisKey="id" OtherKey="person_id" Type="friend" Cardinality="One" />
+      <Association Name="person_gfc_user" Member="gfc_user" ThisKey="id" OtherKey="personid" Type="gfc_user" Cardinality="One" />
       <Association Name="person_image" Member="images" ThisKey="id" OtherKey="userid" Type="image" />
       <Association Name="person_message" Member="messages" ThisKey="id" OtherKey="sender" Type="message" />
       <Association Name="person_notification" Member="notification" ThisKey="id" OtherKey="creator" Type="notification" Cardinality="One" />

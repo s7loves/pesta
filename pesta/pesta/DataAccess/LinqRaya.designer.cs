@@ -54,6 +54,9 @@ namespace Pesta.DataAccess
     partial void Insertfriend(friend instance);
     partial void Updatefriend(friend instance);
     partial void Deletefriend(friend instance);
+    partial void Insertgfc_user(gfc_user instance);
+    partial void Updategfc_user(gfc_user instance);
+    partial void Deletegfc_user(gfc_user instance);
     partial void Insertimage(image instance);
     partial void Updateimage(image instance);
     partial void Deleteimage(image instance);
@@ -122,19 +125,19 @@ namespace Pesta.DataAccess
 			OnCreated();
 		}
 		
-		public System.Data.Linq.Table<activity> activities
-		{
-			get
-			{
-				return this.GetTable<activity>();
-			}
-		}
-		
 		public System.Data.Linq.Table<tags_count> tags_counts
 		{
 			get
 			{
 				return this.GetTable<tags_count>();
+			}
+		}
+		
+		public System.Data.Linq.Table<activity> activities
+		{
+			get
+			{
+				return this.GetTable<activity>();
 			}
 		}
 		
@@ -191,6 +194,14 @@ namespace Pesta.DataAccess
 			get
 			{
 				return this.GetTable<friend>();
+			}
+		}
+		
+		public System.Data.Linq.Table<gfc_user> gfc_users
+		{
+			get
+			{
+				return this.GetTable<gfc_user>();
 			}
 		}
 		
@@ -471,6 +482,51 @@ namespace Pesta.DataAccess
 			get
 			{
 				return this.GetTable<tag>();
+			}
+		}
+	}
+	
+	[Table(Name="dbo.tags_counts")]
+	public partial class tags_count
+	{
+		
+		private int _tagid;
+		
+		private int _refid;
+		
+		public tags_count()
+		{
+		}
+		
+		[Column(Storage="_tagid", DbType="Int NOT NULL")]
+		public int tagid
+		{
+			get
+			{
+				return this._tagid;
+			}
+			set
+			{
+				if ((this._tagid != value))
+				{
+					this._tagid = value;
+				}
+			}
+		}
+		
+		[Column(Storage="_refid", DbType="Int NOT NULL")]
+		public int refid
+		{
+			get
+			{
+				return this._refid;
+			}
+			set
+			{
+				if ((this._refid != value))
+				{
+					this._refid = value;
+				}
 			}
 		}
 	}
@@ -764,51 +820,6 @@ namespace Pesta.DataAccess
 		{
 			this.SendPropertyChanging();
 			entity.activity = null;
-		}
-	}
-	
-	[Table(Name="dbo.tags_counts")]
-	public partial class tags_count
-	{
-		
-		private int _tagid;
-		
-		private int _refid;
-		
-		public tags_count()
-		{
-		}
-		
-		[Column(Storage="_tagid", DbType="Int NOT NULL")]
-		public int tagid
-		{
-			get
-			{
-				return this._tagid;
-			}
-			set
-			{
-				if ((this._tagid != value))
-				{
-					this._tagid = value;
-				}
-			}
-		}
-		
-		[Column(Storage="_refid", DbType="Int NOT NULL")]
-		public int refid
-		{
-			get
-			{
-				return this._refid;
-			}
-			set
-			{
-				if ((this._refid != value))
-				{
-					this._refid = value;
-				}
-			}
 		}
 	}
 	
@@ -2437,7 +2448,7 @@ namespace Pesta.DataAccess
 			}
 		}
 		
-		[Association(Name="person_friend", Storage="_person", ThisKey="person_id", OtherKey="id", IsForeignKey=true)]
+		[Association(Name="person_friend", Storage="_person", ThisKey="person_id", OtherKey="id", IsForeignKey=true, DeleteOnNull=true, DeleteRule="CASCADE")]
 		public person person
 		{
 			get
@@ -2465,6 +2476,133 @@ namespace Pesta.DataAccess
 					else
 					{
 						this._person_id = default(int);
+					}
+					this.SendPropertyChanged("person");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[Table(Name="dbo.gfc_users")]
+	public partial class gfc_user : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private string _gfc_id;
+		
+		private int _personid;
+		
+		private EntityRef<person> _person;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void Ongfc_idChanging(string value);
+    partial void Ongfc_idChanged();
+    partial void OnpersonidChanging(int value);
+    partial void OnpersonidChanged();
+    #endregion
+		
+		public gfc_user()
+		{
+			this._person = default(EntityRef<person>);
+			OnCreated();
+		}
+		
+		[Column(Storage="_gfc_id", DbType="VarChar(128) NOT NULL", CanBeNull=false)]
+		public string gfc_id
+		{
+			get
+			{
+				return this._gfc_id;
+			}
+			set
+			{
+				if ((this._gfc_id != value))
+				{
+					this.Ongfc_idChanging(value);
+					this.SendPropertyChanging();
+					this._gfc_id = value;
+					this.SendPropertyChanged("gfc_id");
+					this.Ongfc_idChanged();
+				}
+			}
+		}
+		
+		[Column(Storage="_personid", DbType="Int NOT NULL", IsPrimaryKey=true)]
+		public int personid
+		{
+			get
+			{
+				return this._personid;
+			}
+			set
+			{
+				if ((this._personid != value))
+				{
+					if (this._person.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnpersonidChanging(value);
+					this.SendPropertyChanging();
+					this._personid = value;
+					this.SendPropertyChanged("personid");
+					this.OnpersonidChanged();
+				}
+			}
+		}
+		
+		[Association(Name="person_gfc_user", Storage="_person", ThisKey="personid", OtherKey="id", IsForeignKey=true, DeleteOnNull=true, DeleteRule="CASCADE")]
+		public person person
+		{
+			get
+			{
+				return this._person.Entity;
+			}
+			set
+			{
+				person previousValue = this._person.Entity;
+				if (((previousValue != value) 
+							|| (this._person.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._person.Entity = null;
+						previousValue.gfc_user = null;
+					}
+					this._person.Entity = value;
+					if ((value != null))
+					{
+						value.gfc_user = this;
+						this._personid = value.id;
+					}
+					else
+					{
+						this._personid = default(int);
 					}
 					this.SendPropertyChanged("person");
 				}
@@ -2612,7 +2750,7 @@ namespace Pesta.DataAccess
 			}
 		}
 		
-		[Association(Name="person_image", Storage="_person", ThisKey="userid", OtherKey="id", IsForeignKey=true)]
+		[Association(Name="person_image", Storage="_person", ThisKey="userid", OtherKey="id", IsForeignKey=true, DeleteOnNull=true, DeleteRule="CASCADE")]
 		public person person
 		{
 			get
@@ -5497,6 +5635,8 @@ namespace Pesta.DataAccess
 		
 		private EntityRef<friend> _friend;
 		
+		private EntityRef<gfc_user> _gfc_user;
+		
 		private EntitySet<image> _images;
 		
 		private EntitySet<message> _messages;
@@ -5586,6 +5726,7 @@ namespace Pesta.DataAccess
 			this._authenticated = default(EntityRef<authenticated>);
 			this._fb_user = default(EntityRef<fb_user>);
 			this._friend = default(EntityRef<friend>);
+			this._gfc_user = default(EntityRef<gfc_user>);
 			this._images = new EntitySet<image>(new Action<image>(this.attach_images), new Action<image>(this.detach_images));
 			this._messages = new EntitySet<message>(new Action<message>(this.attach_messages), new Action<message>(this.detach_messages));
 			this._notification = default(EntityRef<notification>);
@@ -6382,6 +6523,35 @@ namespace Pesta.DataAccess
 						value.person = this;
 					}
 					this.SendPropertyChanged("friend");
+				}
+			}
+		}
+		
+		[Association(Name="person_gfc_user", Storage="_gfc_user", ThisKey="id", OtherKey="personid", IsUnique=true, IsForeignKey=false)]
+		public gfc_user gfc_user
+		{
+			get
+			{
+				return this._gfc_user.Entity;
+			}
+			set
+			{
+				gfc_user previousValue = this._gfc_user.Entity;
+				if (((previousValue != value) 
+							|| (this._gfc_user.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._gfc_user.Entity = null;
+						previousValue.person = null;
+					}
+					this._gfc_user.Entity = value;
+					if ((value != null))
+					{
+						value.person = this;
+					}
+					this.SendPropertyChanged("gfc_user");
 				}
 			}
 		}

@@ -31,7 +31,38 @@ namespace Pesta.Engine.protocol.conversion
     {
         public override object Deserialize(IDictionary<string, object> dictionary, Type type, JavaScriptSerializer serializer)
         {
-            throw new NotImplementedException("Unable to deserialize " + type.Name);
+            return ConvertToObject(dictionary, type);
+        }
+
+        public object ConvertToObject(IDictionary<string, object> dictionary, Type type)
+        {
+            var obj = Activator.CreateInstance(type);
+            foreach (var entry in dictionary)
+            {
+                var fieldType = type.GetProperty(entry.Key).PropertyType;
+                var valueType = entry.Value.GetType();
+                if (typeof(IDictionary).IsAssignableFrom(valueType))
+                {
+                    ConvertToObject((IDictionary<string, object>)entry.Value, fieldType);
+                }
+                else
+                {
+                    if (typeof(IList).IsAssignableFrom(fieldType))
+                    {
+                        Type argType = fieldType.GetGenericArguments()[0];
+                        var listObj = Activator.CreateInstance(fieldType);
+                        foreach (var val in (IList)entry.Value)
+                        {
+                            ((IList)listObj).Add(ConvertToObject((IDictionary<string, object>)val, argType));
+                        }
+                    }
+                    else
+                    {
+                        type.GetProperty(entry.Key).SetValue(obj, entry.Value, null);
+                    }
+                }
+            }
+            return obj;
         }
 
         public override IDictionary<string, object> Serialize(object obj, JavaScriptSerializer serializer)
