@@ -17,13 +17,11 @@
  * specific language governing permissions and limitations under the License.
  */
 #endregion
-
 using System.Collections.Generic;
 using pestaServer.Models.gadgets.spec;
 
 namespace pestaServer.Models.gadgets.preload
 {
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
     public class ConcurrentPreloaderService : PreloaderService
     {
         private readonly List<Preloader> preloaders = new List<Preloader>();

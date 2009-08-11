@@ -20,6 +20,8 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data.Services.Common;
+using System.Diagnostics;
 using System.Runtime.Serialization;
 using System.Xml.Serialization;
 using Pesta.Engine.protocol.conversion;
@@ -30,6 +32,7 @@ namespace Pesta.Engine.social.model
 {
     [XmlRoot(ElementName = "person", Namespace = BeanConverter.osNameSpace)]
     [DataContract(Name = "person", Namespace = BeanConverter.osNameSpace)]
+    [DataServiceKey("PartitionKey", "RowKey")]
     public class Person
     {
         public static readonly String PROFILE_URL_TYPE = "profile";
@@ -42,14 +45,25 @@ namespace Pesta.Engine.social.model
         }
         public Person()
         {
+#if AZURE
+            Debug.Assert(!string.IsNullOrEmpty(displayName));
+            PartitionKey = displayName;
+            RowKey = id;
+#endif
         }
 
-        public Person(String id, String displayName, Name name)
+        public Person(String id, String displayName, Name name) :this()
         {
             this.id = id;
             this.displayName = displayName;
             this.name = name;
         }
+
+#if AZURE
+        // displayName
+        public string PartitionKey {get;set;}
+        public string RowKey {get;set;}
+#endif
 
         [DataMember(EmitDefaultValue = false)]
         public String aboutMe { get; set; }

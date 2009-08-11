@@ -129,7 +129,7 @@ namespace CustomBuildTasks
             foreach (ITaskItem file in Files)
             {
                 // make sure the file at least has a value before compressing
-                if (file.ItemSpec.Length > 0)
+                if (file.ItemSpec.Length > 0 && file.ItemSpec.EndsWith(type))
                 {
                     try
                     {

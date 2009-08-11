@@ -27,14 +27,6 @@ using Uri=Pesta.Engine.common.uri.Uri;
 
 namespace pestaServer.Models.gadgets.spec
 {
-    /// <summary>
-    /// Summary description for ModulePrefs
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
-    /// </para>
-    /// </remarks>
     public class ModulePrefs
     {
         private static readonly String ATTR_TITLE = "title";

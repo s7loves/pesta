@@ -17,6 +17,9 @@
  * under the License.
  */
 
+/*global ActiveXObject, DOMParser */
+/*global shindig */
+
 var gadgets = gadgets || {};
 
 /**
@@ -71,11 +74,19 @@ gadgets.io = function() {
     try {
       if (xobj.status !== 200) {
         // TODO Need to work on standardizing errors
-        callback({errors : ["Error " + xobj.status]});
+        callback({
+          errors : ["Error " + xobj.status],
+          rc : xobj.status,
+          text : xobj.responseText
+          });
         return true;
       }
     } catch(e) {
-      callback({errors : ["Error not specified"]});
+      callback({
+         errors : ["Error not specified"],
+          rc : e.number,
+          text : e.description
+      });
       return true;
     }
     return false;
@@ -196,6 +207,10 @@ gadgets.io = function() {
       params, processResponseFunction, opt_contentType) {
     var xhr = makeXhr();
 
+    if (proxyUrl.indexOf('//') == 0) {
+      proxyUrl = document.location.protocol + proxyUrl;
+    }
+    
     xhr.open(method, proxyUrl, true);
     if (callback) {
       xhr.onreadystatechange = gadgets.util.makeClosure(
@@ -349,11 +364,17 @@ gadgets.io = function() {
 
       // OAuth goodies
       if (auth === "oauth" || auth === "signed") {
+        if (gadgets.io.oauthReceivedCallbackUrl_) {
+          paramData.OAUTH_RECEIVED_CALLBACK = gadgets.io.oauthReceivedCallbackUrl_;
+          gadgets.io.oauthReceivedCallbackUrl_ = null;
+        }
         paramData.oauthState = oauthState || "";
         // Just copy the OAuth parameters into the req to the server
-        for (opt in params) if (params.hasOwnProperty(opt)) {
-          if (opt.indexOf("OAUTH_") === 0) {
-            paramData[opt] = params[opt];
+        for (opt in params) {
+          if (params.hasOwnProperty(opt)) {
+            if (opt.indexOf("OAUTH_") === 0) {
+              paramData[opt] = params[opt];
+            }
           }
         }
       }
@@ -412,15 +433,17 @@ gadgets.io = function() {
 
       var buf = [];
       var first = false;
-      for (var i in fields) if (fields.hasOwnProperty(i)) {
-        if (!first) {
-          first = true;
-        } else {
-          buf.push("&");
+      for (var i in fields) {
+        if (fields.hasOwnProperty(i)) {
+          if (!first) {
+            first = true;
+          } else {
+            buf.push("&");
+          }
+          buf.push(escape ? encodeURIComponent(i) : i);
+          buf.push("=");
+          buf.push(escape ? encodeURIComponent(fields[i]) : fields[i]);
         }
-        buf.push(escape ? encodeURIComponent(i) : i);
-        buf.push("=");
-        buf.push(escape ? encodeURIComponent(fields[i]) : fields[i]);
       }
       return buf.join("");
     },
@@ -467,9 +490,11 @@ gadgets.io.RequestParameters = gadgets.util.makeEnum([
   "GET_SUMMARIES",
   "REFRESH_INTERVAL",
   "OAUTH_SERVICE_NAME",
+  "OAUTH_USE_TOKEN",
   "OAUTH_TOKEN_NAME",
   "OAUTH_REQUEST_TOKEN",
-  "OAUTH_REQUEST_TOKEN_SECRET"
+  "OAUTH_REQUEST_TOKEN_SECRET",
+  "OAUTH_RECEIVED_CALLBACK"
 ]);
 
 gadgets.io.MethodType = gadgets.util.makeEnum([

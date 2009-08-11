@@ -19,6 +19,8 @@
 #endregion
 using System;
 using System.Collections.Generic;
+using System.Data.Services.Common;
+using System.Diagnostics;
 using System.Runtime.Serialization;
 using System.Xml.Serialization;
 using Pesta.Engine.protocol.conversion;
@@ -28,10 +30,16 @@ namespace Pesta.Engine.social.model
 {
     [XmlRoot(ElementName = "activity", Namespace = BeanConverter.osNameSpace)]
     [DataContract(Name = "activity", Namespace = BeanConverter.osNameSpace)]
+    [DataServiceKey("PartitionKey", "RowKey")]
     public class Activity
     {
         public Activity()
         {
+#if AZURE
+            Debug.Assert(!string.IsNullOrEmpty(userId));
+            PartitionKey = userId;
+            RowKey = id;
+#endif
         }
 
         public Activity(String id, String userId) : this()
@@ -39,12 +47,21 @@ namespace Pesta.Engine.social.model
             this.id = id;
             this.userId = userId;
         }
-
-        [DataMember(EmitDefaultValue = false)] public String appId { get; set; }
-        [DataMember(EmitDefaultValue = false)] public String body { get; set; }
-        [DataMember(EmitDefaultValue = false)] public String bodyId { get; set; }
-        [DataMember(EmitDefaultValue = false)] public String externalId { get; set; }
-        [DataMember(EmitDefaultValue = false)] public String id { get; set; }
+#if AZURE
+        // userid
+        public string PartitionKey { get; set; }
+        public string RowKey { get; set; }
+#endif
+        [DataMember(EmitDefaultValue = false)] 
+        public String appId { get; set; }
+        [DataMember(EmitDefaultValue = false)]
+        public String body { get; set; }
+        [DataMember(EmitDefaultValue = false)] 
+        public String bodyId { get; set; }
+        [DataMember(EmitDefaultValue = false)] 
+        public String externalId { get; set; }
+        [DataMember(EmitDefaultValue = false)] 
+        public String id { get; set; }
 
         [DataMember(EmitDefaultValue = false)] 
         public DateTime? updated { get; set; }

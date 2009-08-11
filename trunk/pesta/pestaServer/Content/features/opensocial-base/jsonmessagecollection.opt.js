@@ -1,0 +1,1 @@
+var JsonMessageCollection=function(a){a=a||{};opensocial.MessageCollection.call(this,a)};JsonMessageCollection.inherits(opensocial.MessageCollection);JsonMessageCollection.prototype.toJsonObject=function(){return JsonMessageCollection.copyFields(this.fields_)};JsonMessageCollection.copyFields=function(a){var b={};for(var c in a){b[c]=a[c]}return b};

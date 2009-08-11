@@ -142,15 +142,8 @@ os.variableMap_ = {
   'Cur': VAR_this,
   '$cur': VAR_this,
   'Top': VAR_top,
-  'Index': VAR_index,
-  'Count': VAR_count
+  'Context': VAR_loop  
 };
-
-/**
- * Regular expression for finding and removing the "Context" variable
- * reference from top-level identifier chains.
- */
-os.regExps_.CONTEXT_VAR_REMOVAL = /(^|[^.$a-zA-Z0-9])Context[.]/g;
 
 /**
  * Replace the top level variables
@@ -160,11 +153,6 @@ os.regExps_.CONTEXT_VAR_REMOVAL = /(^|[^.$a-zA-Z0-9])Context[.]/g;
 os.replaceTopLevelVars_ = function(text) {
 
   var regex;
-  
-  // Currently, values specced to be inside the "Context" variable are placed
-  // by JSTemplate into the top-level of the data context.
-  // To make references like "Context.Index" work, remove the "Context." prefix.
-  text = text.replace(os.regExps_.CONTEXT_VAR_REMOVAL, "$1");
 
   regex = os.regExps_.TOP_LEVEL_VAR_REPLACEMENT;
   if (!regex) {
@@ -179,7 +167,7 @@ os.replaceTopLevelVars_ = function(text) {
         } else { 
           return whole; 
         } 
-      }); 
+      });
 };
 
 /**
@@ -216,6 +204,9 @@ os.setIdentifierResolver = function(resolver) {
  * @return {Object|String}
  */
 os.getFromContext = function(context, name, opt_default) {
+  if (!context) {
+    return opt_default;
+  }
   var ret;
   // Check if this is a context object.
   if (context.vars_ && context.data_) {
@@ -232,6 +223,12 @@ os.getFromContext = function(context, name, opt_default) {
     if (typeof(ret) == "undefined") {
       ret = os.identifierResolver_(context.vars_, name);
     }
+    if (typeof(ret) == "undefined" && context.vars_[os.VAR_my]) {
+      ret = os.getValueFromNode_(context.vars_[os.VAR_my], name);
+    }
+    if (typeof(ret) == "undefined" && context.vars_[VAR_top]) {
+      ret = context.vars_[VAR_top][name];
+    }
   } else if (context.nodeType == DOM_ELEMENT_NODE) {
     // Is the context a DOM node?
     ret = os.getValueFromNode_(context, name);
@@ -244,6 +241,11 @@ os.getFromContext = function(context, name, opt_default) {
     } else {
       ret = "";
     }
+  } else if (opt_default && os.isArray(opt_default) && !os.isArray(ret) && 
+      ret.list && os.isArray(ret.list)) {
+    // If we were trying to get an array, but got a JSON object with an
+    // array property "list", return that instead.
+    ret = ret.list;    
   }
   return ret;
 };
@@ -269,9 +271,9 @@ os.transformExpression_ = function(expr, opt_default) {
  * used to implement that feature.
  */
 os.attributeMap_ = {
-  'if': 'jsdisplay',
-  'repeat': 'jsselect',
-  'context': 'jsselect'
+  'if': ATT_display,
+  'repeat': ATT_select,
+  'cur': ATT_innerselect
 };
 
 /**
@@ -309,9 +311,9 @@ os.copyAttributes_ = function(from, to, opt_customTag) {
       if (name == 'var') {
         os.appendJSTAttribute_(to, ATT_vars, from.getAttribute(name) +
             ': $this');
-      } else if (name == 'index') {
+      } else if (name == 'context') {
         os.appendJSTAttribute_(to, ATT_vars, from.getAttribute(name) +
-            ': $index');
+            ': ' + VAR_loop);
       } else if (name.length < 7 || name.substring(0, 6) != 'xmlns:') {
         if (os.customAttributes_[name]) {
           os.appendJSTAttribute_(to, ATT_eval, "os.doAttribute(this, '" + name +
@@ -323,8 +325,7 @@ os.copyAttributes_ = function(from, to, opt_customTag) {
         var outName = os.attributeMap_.hasOwnProperty(name) ? 
             os.attributeMap_[name] : name;
         var substitution =
-            (os.attributeMap_[name] ||
-                opt_customTag && os.globalDisallowedAttributes_[outName]) ?
+            (os.attributeMap_[name]) ?
             null : os.parseAttribute_(value);
 
         if (substitution) {
@@ -347,6 +348,10 @@ os.copyAttributes_ = function(from, to, opt_customTag) {
             // to create a function to set as a property.
             outName = '.' + outName;
             substitution = 'new Function(' + substitution + ')';
+          } else if (outName == 'selected' && to.tagName == 'OPTION') {
+            // For the @selected attribute of an option, set the property 
+            // instead to allow false values to not mark the option selected.
+            outName = '.selected'
           }
 
           // TODO: reuse static array (IE6 perf).
@@ -363,8 +368,10 @@ os.copyAttributes_ = function(from, to, opt_customTag) {
               value.charAt(value.length - 1) == '}') {
               value = value.substring(2, value.length - 1);
             }
-            // In special attributes, default value is null.
-            value = os.transformExpression_(value, 'null');
+            // In special attributes, default value is empty array for repeats,
+            // null for others
+            value = os.transformExpression_(value, 
+                name == 'repeat' ? os.VAR_emptyArray : 'null');
           } else if (outName == 'class') {
             // In IE, we must set className instead of class.
             to.setAttribute('className', value);
@@ -406,24 +413,41 @@ os.compileNode_ = function(node) {
   } else if (node.nodeType == DOM_ELEMENT_NODE) {
     var output;
     if (node.tagName.indexOf(":") > 0) {
-      output = document.createElement("span");
-      output.setAttribute(os.ATT_customtag, node.tagName);
+      if (node.tagName == "os:Repeat") {
+        output = document.createElement(os.computeContainerTag_(node));
+        output.setAttribute(ATT_select, os.parseAttribute_(node.getAttribute("expression")));
+        var varAttr = node.getAttribute("var");
+        if (varAttr) {
+          os.appendJSTAttribute_(output, ATT_vars, varAttr + ': $this');
+        }
+        var contextAttr = node.getAttribute("context");
+        if (contextAttr) {
+          os.appendJSTAttribute_(output, ATT_vars, contextAttr + ': ' + VAR_loop);
+        }
+        os.appendJSTAttribute_(output, ATT_eval, "os.setContextNode_($this, $context)");
+      } else if (node.tagName == "os:If") {
+        output = document.createElement(os.computeContainerTag_(node));
+        output.setAttribute(ATT_display, os.parseAttribute_(node.getAttribute("condition")));
+      } else {
+        output = document.createElement("span");
+        output.setAttribute(os.ATT_customtag, node.tagName);
 
-      var custom = node.tagName.split(":");
-      os.appendJSTAttribute_(output, ATT_eval, "os.doTag(this, \""
-          + custom[0] + "\", \"" + custom[1] + "\", $this, $context)");
-      var context = node.getAttribute("context") || "$this||true";
-      output.setAttribute(ATT_select, context);
+        var custom = node.tagName.split(":");
+        os.appendJSTAttribute_(output, ATT_eval, "os.doTag(this, \""
+            + custom[0] + "\", \"" + custom[1] + "\", $this, $context)");
+        var context = node.getAttribute("cur") || "{}";
+        output.setAttribute(ATT_innerselect, context);
 
-      // For os:Render, create a parent node reference.
-      // TODO: remove legacy support
-      if (node.tagName == "os:render" || node.tagName == "os:Render" ||
-          node.tagName == "os:renderAll" || node.tagName == "os:RenderAll") {
-        os.appendJSTAttribute_(output, ATT_values, os.VAR_parentnode + ":" +
-            os.VAR_node);
+        // For os:Render, create a parent node reference.
+        // TODO: remove legacy support
+        if (node.tagName == "os:render" || node.tagName == "os:Render" ||
+            node.tagName == "os:renderAll" || node.tagName == "os:RenderAll") {
+          os.appendJSTAttribute_(output, ATT_values, os.VAR_parentnode + ":" +
+              os.VAR_node);
+        }
+
+        os.copyAttributes_(node, output, node.tagName);
       }
-
-      os.copyAttributes_(node, output, node.tagName);
     } else {
       output = os.xmlToHtml_(node);
     }
@@ -458,6 +482,35 @@ os.compileNode_ = function(node) {
     return output;
   }
   return null;
+};
+
+/**
+ * Calculates the type of element best suited to encapsulating contents of a 
+ * <os:Repeat> or <os:If> tags. Inspects the element's children to see if one 
+ * of the special cases should be used.
+ * "optgroup" for <option>s
+ * "tbody" for <tr>s
+ * "span" otherwise
+ * @param {Element} element The repeater/conditional element
+ * @return {stirng} Name of the node ot represent this repeater.
+ */
+os.computeContainerTag_ = function(element) {
+  var child = element.firstChild;
+  if (child) {
+    while (child && !child.tagName) {
+      child = child.nextSibling;
+    }
+    if (child) {
+      var tag = child.tagName.toLowerCase();
+      if (tag == "option") {
+        return "optgroup";
+      }
+      if (tag == "tr") {
+        return "tbody";
+      }
+    }
+  }
+  return "span";
 };
 
 /**
@@ -610,6 +663,7 @@ os.transformLiteral_ = function(string) {
  * Parses an attribute value into a JS expression. "Hello, ${user}!" becomes
  * "Hello, " + user + "!".
  *
+ * @param {string} value Attribute value to parse
  * TODO: Rename to parseExpression()
  */
 os.parseAttribute_ = function(value) {
@@ -632,7 +686,8 @@ os.parseAttribute_ = function(value) {
     if (!expr) {
       expr = VAR_this;
     }
-    parts.push('(' + os.transformExpression_(expr) + ')');
+    parts.push('(' + 
+        os.transformExpression_(expr) + ')');
     text = match[3];
     match = text.match(substRex);
   }
@@ -655,59 +710,41 @@ os.parseAttribute_ = function(value) {
  * Object, Element or array of Elements.
  */
 os.getValueFromNode_ = function(node, name) {
-  var ret = (name != "*") ? node[name] : null;
-  if (name != "*" && (typeof(ret) == "undefined" || ret == null)) {
+
+  if (name == "*") {
+    var children = [];
+    for (var child = node.firstChild; child; child = child.nextSibling) {
+      children.push(child);
+    }
+    return children;
+  }
+  
+  // Since namespaces are not supported, strip off prefix.
+  if (name.indexOf(':') >= 0) {
+    name = name.substring(name.indexOf(':') + 1);
+  }
+  
+  var ret = node[name];
+  if (typeof(ret) == "undefined" || ret == null) {
     ret = node.getAttribute(name);
   }
-
-  if (typeof(ret) == "undefined" || ret == null) {
-    if (name) {
-      name = name.toLowerCase();
+  
+  if (typeof(ret) != "undefined" && ret != null) {
+    // Process special cases where ret would be wrongly evaluated as "true"
+    if (ret == "false") {
+      ret = false;
+    } else if (ret == "0") {
+      ret = 0;
     }
-
-    // A special character meaning "get all child nodes".
-    var allChildren = ("*" == name);
-
-    ret = [];
-    for (var child = node.firstChild; child; child = child.nextSibling) {
-      if (allChildren) {
-        ret.push(child);
-        continue;
-      }
-      if (child.nodeType != DOM_ELEMENT_NODE) {
-        continue;
-      }
-      var tagName = child.getAttribute(os.ATT_customtag);
-      if (!tagName) {
-        tagName = child.tagName;
-      }
-      tagName = tagName.toLowerCase();
-      if (tagName == name) {
-        ret.push(child);
-      }
-    }
-    if (ret.length == 0) {
-      ret = null;
-    }
-
-    // Check for "optimized" dynamic content. A tag like:
-    // <div>${a}</div> would have compiled to <div jscontent="a"/>, and we
-    // need to reconstruct its content here into a span.
-    var content;
-    if (ret == null && allChildren &&
-        (content = node.getAttribute(ATT_content))) {
-      var span = document.createElement("span");
-      span.setAttribute(ATT_content, content);
-      ret = [ span ];
-    }
+    return ret;
   }
 
-  // Process special cases where ret would be wrongly evaluated as "true"
-  if (ret == "false") {
-    ret = false;
-  } else if (ret == "0") {
-    ret = 0;
+  var myMap = node[os.VAR_my];
+  if (!myMap) {
+    myMap = os.computeChildMap_(node);
+    node[os.VAR_my] = myMap;
   }
+  ret = myMap[name.toLowerCase()];
   return ret;
 };
 
@@ -729,8 +766,7 @@ os.identifiersNotToWrap_[os.VAR_my] = true;
 os.identifiersNotToWrap_[VAR_this] = true;
 os.identifiersNotToWrap_[VAR_context] = true;
 os.identifiersNotToWrap_[VAR_top] = true;
-os.identifiersNotToWrap_[VAR_index] = true;
-os.identifiersNotToWrap_[VAR_count] = true;
+os.identifiersNotToWrap_[VAR_loop] = true;
 
 /**
  * Checks if a character can begin a legal JS identifier name.
@@ -777,7 +813,8 @@ os.canBeInToken = function(ch) {
  * literal string 'null').
  */
 os.wrapSingleIdentifier = function(iden, opt_context, opt_default) {
-  if (os.identifiersNotToWrap_.hasOwnProperty(iden)) {
+  if (os.identifiersNotToWrap_.hasOwnProperty(iden) && 
+      (!opt_context || opt_context == VAR_context)) {
     return iden;
   }
   return os.VAR_identifierresolver + '(' +
@@ -813,7 +850,11 @@ os.wrapIdentifiersInToken = function(token, opt_default) {
     var iden = identifiers[i];
     parts = os.breakUpParens(iden);
     if (!parts) {
-      output = os.wrapSingleIdentifier(iden, output, opt_default);
+      if (i == identifiers.length - 1) {
+        output = os.wrapSingleIdentifier(iden, output, opt_default);
+      } else {
+        output = os.wrapSingleIdentifier(iden, output);
+      }
     } else {
       buffer.length = 0;
       buffer.push(os.wrapSingleIdentifier(parts[0], output));

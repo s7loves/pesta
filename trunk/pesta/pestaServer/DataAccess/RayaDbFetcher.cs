@@ -29,7 +29,7 @@ using Pesta.Utilities;
 
 namespace pestaServer.DataAccess
 {
-    public class RayaDbFetcher : IDisposable
+    public class RayaDbFetcher : IDisposable, IPestaDbProvider
     {
         private readonly LinqRayaDataContext Db;
         private readonly string urlPrefix;
@@ -104,13 +104,60 @@ namespace pestaServer.DataAccess
             return true;
         }
 
-        public IQueryable<activity> GetActivities(HashSet<string> ids, string appId, HashSet<String> fields) 
+        public List<Activity> GetActivities(HashSet<string> ids, string appId, HashSet<String> fields, CollectionOptions options) 
         {
             var activities = Db.activities
                 .OrderByDescending(x => x.id)
                 .Where(x => ids.AsEnumerable().Contains(x.person_id.ToString()) && (string.IsNullOrEmpty(appId)?true:x.app_id.ToString() == appId));
-            
-            return activities;
+
+            int first = options.getFirst();
+            int max = options.getMax();
+            if (first != 0)
+            {
+                activities = activities.Skip(first);
+            }
+            if (max != 0)
+            {
+                activities = activities.Take(max);
+            }
+            List<Activity> actList = new List<Activity>();
+            foreach (var row in activities)
+            {
+                var act = new Activity(row.id.ToString(), row.person_id.ToString());
+                act.streamTitle = "activities";
+                act.title = row.title;
+                act.body = row.body;
+                act.postedTime = row.created;
+                act.mediaItems = GetMediaItems(row.id);
+                actList.Add(act);
+            }
+            return actList;
+        }
+
+        public List<Activity> GetActivities(HashSet<string> ids, string appId, HashSet<String> fields, HashSet<String> activityIds)
+        {
+            var activities = Db.activities
+                .OrderByDescending(x => x.id)
+                .Where(x => ids.AsEnumerable().Contains(x.person_id.ToString()) && (string.IsNullOrEmpty(appId) ? true : x.app_id.ToString() == appId));
+
+            List<Activity> actList = new List<Activity>();
+            if (activityIds != null)
+            {
+                foreach (var row in activities)
+                {
+                    if (activityIds.Contains(row.id.ToString()))
+                    {
+                        var act = new Activity(row.id.ToString(), row.person_id.ToString());
+                        act.streamTitle = "activities";
+                        act.title = row.title;
+                        act.body = row.body;
+                        act.postedTime = row.created;
+                        act.mediaItems = GetMediaItems(row.id);
+                        actList.Add(act);
+                    }
+                }
+            }
+            return actList;
         }
 
         public bool DeleteActivities(string userId, string appId, HashSet<string> activityIds) 

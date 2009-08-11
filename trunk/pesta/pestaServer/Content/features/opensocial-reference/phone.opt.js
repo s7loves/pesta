@@ -1,5 +1,1 @@
-opensocial.Phone=function(A){this.fields_=A||{}
-};
-opensocial.Phone.Field={TYPE:"type",NUMBER:"number"};
-opensocial.Phone.prototype.getField=function(A,B){return opensocial.Container.getField(this.fields_,A,B)
-};
+opensocial.Phone=function(a){this.fields_=a||{}};opensocial.Phone.Field={TYPE:"type",NUMBER:"number"};opensocial.Phone.prototype.getField=function(a,b){return opensocial.Container.getField(this.fields_,a,b)};

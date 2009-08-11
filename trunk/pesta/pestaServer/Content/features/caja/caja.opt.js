@@ -1,0 +1,1 @@
+var valijaMaker=undefined;(function(){var a=___.copy(___.sharedImports);a.loader={provide:___.func(function(b){valijaMaker=b})};___.grantRead(a,"loader");___.grantCall(a.loader,"provide");___.getNewModuleHandler().setImports(a);___.getNewModuleHandler().handleUncaughtException=function(b){throw b}})();

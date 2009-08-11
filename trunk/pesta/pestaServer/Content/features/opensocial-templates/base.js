@@ -87,7 +87,14 @@ os.VAR_msg = "Msg";
 os.VAR_parentnode = "$parentnode";
 os.VAR_uniqueId = "$uniqueId";
 os.VAR_identifierresolver = "$_ir";
+os.VAR_emptyArray = "$_ea";
 os.VAR_callbacks = "$callbacks_";
+
+/**
+ * Reusable empty array instance
+ * IE6 PERF: To avoid creating empty arrays when they are needed. 
+ */
+os.EMPTY_ARRAY = [];
 
 /**
  * Regular expressions
@@ -114,7 +121,7 @@ os.compileTemplate = function(node, opt_id) {
   opt_id = opt_id || node.name;
   var src = node.value || node.innerHTML;
   src = os.trim(src);
-  var template = os.compileTemplateString(src, opt_id);
+  var template = os.compileTemplateString(src, opt_id, node);
   // Decorate the node with the template's ID, so we consistently render it
   // into the same DIV, and so that it doesn't get treated as anonymous anymore.
   if (! node.name) {
@@ -127,10 +134,12 @@ os.compileTemplate = function(node, opt_id) {
  * Compile a template without requiring a DOM node.
  * @param {string} src XML data to be compiled.
  * @param {string} opt_id An optional ID for the new template.
- * @return {os.Template} A compiled Template object.
+ * @param {Element} opt_container An optional container DOM Element 
+ * to look for namespaces
+ * @return {opensocial.template.Template} A compiled Template object.
  */
-os.compileTemplateString = function(src, opt_id) {
-  src = opensocial.xmlutil.prepareXML(src);
+os.compileTemplateString = function(src, opt_id, opt_container) {
+  src = opensocial.xmlutil.prepareXML(src, opt_container);
   var doc = opensocial.xmlutil.parseXML(src);
   return os.compileXMLDoc(doc, opt_id);
 };
@@ -172,6 +181,42 @@ os.createTemplateCustomTag = function(template) {
 };
 
 /**
+ * Creates a map of the named children of a node. Lower-cased element names 
+ * (including transformed custom tags) are used as keys. 
+ * Where multiple elements share a name, the map value will be an array.
+ * @param {Element} node The node whose children are to be mapped
+ * @return {object} A Map of Element names to Elements.
+ */
+os.computeChildMap_ = function(node) {
+  var map = {};
+  for (var i = 0; i < node.childNodes.length; i++) {
+    var child = node.childNodes[i];
+    if (!child.tagName) {
+      continue;
+    }
+    var name = child.getAttribute(os.ATT_customtag);    
+    if (name) {
+      var parts = name.split(":");
+      parts.length == 2 ? name = parts[1] : name = parts[0];
+    } else {
+      name = child.tagName;
+    }
+    name = name.toLowerCase();
+    var prev = map[name];
+    if (!prev) {
+      map[name] = child;
+    } else if (os.isArray(prev)) {
+      prev.push(child);
+    } else {
+      map[name] = [];
+      map[name].push(prev);
+      map[name].push(child);
+    }
+  }
+  return map;
+};
+
+/**
  * Creates a functor which returns a value from the specified node given a
  * name.
  * @param {Node} node Node to get the value from.
@@ -206,14 +251,6 @@ os.getPrefMessage = function(key) {
     return null;
   }
   return os.gadgetPrefs_.getMsg(key);
-};
-
-/**
- * Globally disallowed dynamic attributes. These are the attributes where
- * ${} notation will be ignored reguardless of the tag.
- */
-os.globalDisallowedAttributes_ = {
-  'data': 1
 };
 
 /**
@@ -261,18 +298,29 @@ os.doTag = function(node, ns, tag, data, context) {
     return;
   }
 
+  var ctx = null;
   // Process tag's inner content before processing the tag.
-  for (var child = node.firstChild; child; child = child.nextSibling) {
+  for (var child = node.firstChild; child; child = child.nextSibling) {    
     if (child.nodeType == DOM_ELEMENT_NODE) {
-      jstProcess(context, child);
+      if (ctx == null) {        
+        var selectInner = node[PROP_jstcache] ? node[PROP_jstcache][ATT_innerselect] : null;
+        if (selectInner) {
+          var data = context.jsexec(selectInner, node);
+          ctx = context.clone(data, 0, 0);
+        } else {
+          ctx = context;          
+        }
+      }
+      jstProcess(ctx, child);
       os.markNodeToSkip(child);
     }
-  }
-
-  var result = tagFunction.call(null, node, data, context);
+  }  
+  
+  ctx = context.clone({}, 0, 0);
+  var result = tagFunction.call(null, node, data, ctx);
 
   if (!result && typeof(result) != "string") {
-    throw "Custom tag <" + ns + ":" + tag + "> failed to return anything.";
+    throw Error("Custom tag <" + ns + ":" + tag + "> failed to return anything.");
   }
 
   if (typeof(result) == "string") {
