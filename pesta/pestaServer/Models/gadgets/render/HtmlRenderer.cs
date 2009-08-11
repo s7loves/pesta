@@ -30,7 +30,6 @@ using UriBuilder=Pesta.Engine.common.uri.UriBuilder;
 
 namespace pestaServer.Models.gadgets.render
 {
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
     public class HtmlRenderer
     {
         private readonly IRequestPipeline requestPipeline;

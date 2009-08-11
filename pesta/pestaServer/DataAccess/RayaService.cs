@@ -209,59 +209,21 @@ using pestaServer.DataAccess;
                 GroupId groupId, String appId, CollectionOptions options, HashSet<String> fields, ISecurityToken token)
         {
             var ids = GetIdSet(userIds, groupId, token);
-            var activities = RayaDbFetcher.Get().GetActivities(ids, appId, fields);
-            int totalCount = activities.Count();
-            int first = options.getFirst();
-            int max = options.getMax();
-            if (first != 0)
-            {
-                activities = activities.Skip(first);
-            }
-            if (max != 0)
-            {
-                activities = activities.Take(max);
-            }
-            List<Activity> actList = new List<Activity>();
-            foreach (var row in activities)
-            {
-                var act = new Activity(row.id.ToString(), row.person_id.ToString());
-                act.streamTitle = "activities";
-                act.title = row.title;
-                act.body = row.body;
-                act.postedTime = row.created;
-                act.mediaItems = RayaDbFetcher.Get().GetMediaItems(row.id);
-                actList.Add(act);
-            }
+            var activities = RayaDbFetcher.Get().GetActivities(ids, appId, fields, options);
 
-            return new RestfulCollection<Activity>(actList, options.getFirst(), totalCount);
+            return new RestfulCollection<Activity>(activities, options.getFirst(), activities.Count());
         }
         
         public RestfulCollection<Activity> getActivities(UserId userId, GroupId groupId,
                                                          String appId, HashSet<String> fields, HashSet<String> activityIds, ISecurityToken token)
         {
             var ids = GetIdSet(userId, groupId, token);
-            var activities = RayaDbFetcher.Get().GetActivities(ids, appId, fields);
-            List<Activity> actList = new List<Activity>();
-            if (activityIds != null)
-            {
-                foreach (var row in activities)
-                {
-                    if (activityIds.Contains(row.id.ToString()))
-                    {
-                        var act = new Activity(row.id.ToString(), row.person_id.ToString());
-                        act.streamTitle = "activities";
-                        act.title = row.title;
-                        act.body = row.body;
-                        act.postedTime = row.created;
-                        act.mediaItems = RayaDbFetcher.Get().GetMediaItems(row.id);
-                        actList.Add(act);
-                    }
-                }
-            }
+            var activities = RayaDbFetcher.Get().GetActivities(ids, appId, fields, activityIds);
 
-            if (actList.Count != 0)
+
+            if (activities.Count != 0)
             {
-                return new RestfulCollection<Activity>(actList);
+                return new RestfulCollection<Activity>(activities);
             }
             throw new ProtocolException(ResponseError.NOT_FOUND, "Activity not found");
         }

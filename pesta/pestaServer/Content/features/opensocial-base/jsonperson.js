@@ -17,6 +17,8 @@
  * under the License.
  */
 
+/*global opensocial */
+
 /**
  * Base interface for json based person objects.
  *
@@ -98,4 +100,9 @@ JsonPerson.constructArrayObject = function(map, fieldName, className) {
 
 JsonPerson.prototype.getDisplayName = function() {
   return this.getField("displayName");
+};
+
+JsonPerson.prototype.getAppData = function(key) {
+  var appData = this.getField("appData");
+  return appData && appData[key];
 };

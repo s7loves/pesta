@@ -79,7 +79,7 @@ using Activity=Pesta.Engine.social.model.Activity;
         /**
         * db["activities"] -> Array<Person>
         */
-    public static readonly String PEOPLE_TABLE = "people";
+        public static readonly String PEOPLE_TABLE = "people";
 
         /**
         * db["people"] -> Dictionary<Person.Id, Array<Activity>>

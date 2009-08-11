@@ -76,7 +76,7 @@ var opensocial = opensocial || {};
  */
 opensocial.requestSendMessage = function(recipients, message, opt_callback,
     opt_params) {
-  opensocial.Container.get().requestSendMessage(recipients, message,
+  return opensocial.Container.get().requestSendMessage(recipients, message,
       opt_callback, opt_params);
 };
 
@@ -166,8 +166,7 @@ opensocial.requestShareApp = function(recipients, reason, opt_callback,
  * @member opensocial
  */
 opensocial.requestCreateActivity = function(activity, priority, opt_callback) {
-  if (!activity || (!activity.getField(opensocial.Activity.Field.TITLE)
-      && !activity.getField(opensocial.Activity.Field.TITLE_ID))) {
+  if (!activity || (!activity.getField(opensocial.Activity.Field.TITLE) && !activity.getField(opensocial.Activity.Field.TITLE_ID))) {
     if (opt_callback) {
       window.setTimeout(function() {
         opt_callback(new opensocial.ResponseItem(null, null,
@@ -449,11 +448,19 @@ opensocial.newNavigationParameters = function(params) {
 };
 
 
+/**
+ * Invalidates all resources cached for the current viewer.
+ */
+opensocial.invalidateCache = function() {
+  opensocial.Container.get().invalidateCache();
+};
+
+
 // TODO(doll): Util function - pull up the gadgets inherits in shindig so that
 // opensocial and gadgets use the same one
 /** @private */
 Function.prototype.inherits = function(parentCtor) {
-  function tempCtor() {};
+  function tempCtor() {}
 
   tempCtor.prototype = parentCtor.prototype;
   this.superClass_ = parentCtor.prototype;

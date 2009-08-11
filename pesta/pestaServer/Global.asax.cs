@@ -19,6 +19,8 @@
 #endregion
 using System.Web.Mvc;
 using System.Web.Routing;
+using Microsoft.Samples.ServiceHosting.StorageClient;
+using pestaServer.DataAccess;
 
 namespace pestaServer
 {
@@ -98,6 +100,9 @@ namespace pestaServer
         protected void Application_Start()
         {
             RegisterRoutes(RouteTable.Routes);
+#if AZURE
+            TableStorage.CreateTablesFromModel(typeof(RayaAzureContext));
+#endif
         }
     }
 }

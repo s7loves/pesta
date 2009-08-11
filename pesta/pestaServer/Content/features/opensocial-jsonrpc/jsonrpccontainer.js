@@ -16,6 +16,9 @@
  * specific language governing permissions and limitations under the License.
  */
 
+/*global opensocial, gadgets, shindig */
+/*global JsonPerson, JsonActivity, JsonMediaItem, FieldTranslations */
+
 /**
  * @fileoverview JSON-RPC based opensocial container.
  */
@@ -47,6 +50,20 @@ var JsonRpcContainer = function(baseUrl, domain, supportedFieldsArray) {
   var callbackIdStore = {};
 
   JsonRpcContainer.inherits(opensocial.Container);
+
+  var JsonRpcRequestItem = function(rpc, opt_processData) {
+    this.rpc = rpc;
+    this.processData = opt_processData ||
+                       function (rawJson) {
+                         return rawJson;
+                       };
+
+    this.processResponse = function(originalDataRequest, rawJson, error, errorMessage) {
+      var errorCode = error ? JsonRpcContainer.translateHttpError("Error " + error['code']) : null;
+      return new opensocial.ResponseItem(originalDataRequest,
+          error ? null : this.processData(rawJson), errorCode, errorMessage);
+    };
+  };
 
   JsonRpcContainer.prototype.getEnvironment = function() {
     return this.environment_;
@@ -156,7 +173,7 @@ var JsonRpcContainer = function(baseUrl, domain, supportedFieldsArray) {
         var request = requestObjects[k];
         var response = result[k];
 
-        if (request.key && response.id != request.key) {
+        if (request.key && response.id !== request.key) {
           throw "Request key(" + request.key +
               ") and response id(" + response.id + ") do not match";
         }
@@ -189,7 +206,7 @@ var JsonRpcContainer = function(baseUrl, domain, supportedFieldsArray) {
       "POST_DATA" : gadgets.json.stringify(jsonBatchData)
     };
 
-    var url = [this.baseUrl_, "/rpc"];
+    var url = [this.baseUrl_, "/social/rpc"];
     var token = shindig.auth.getSecurityToken();
     if (token) {
       url.push("?st=", encodeURIComponent(token));
@@ -219,19 +236,19 @@ var JsonRpcContainer = function(baseUrl, domain, supportedFieldsArray) {
   };
 
   JsonRpcContainer.translateHttpError = function(httpError) {
-    if (httpError == "Error 501") {
+    if (httpError === "Error 501") {
       return opensocial.ResponseItem.Error.NOT_IMPLEMENTED;
-    } else if (httpError == "Error 401") {
+    } else if (httpError === "Error 401") {
       return opensocial.ResponseItem.Error.UNAUTHORIZED;
-    } else if (httpError == "Error 403") {
+    } else if (httpError === "Error 403") {
       return opensocial.ResponseItem.Error.FORBIDDEN;
-    } else if (httpError == "Error 400") {
+    } else if (httpError === "Error 400") {
       return opensocial.ResponseItem.Error.BAD_REQUEST;
-    } else if (httpError == "Error 500") {
+    } else if (httpError === "Error 500") {
       return opensocial.ResponseItem.Error.INTERNAL_ERROR;
-    } else if (httpError == "Error 404") {
+    } else if (httpError === "Error 404") {
       return opensocial.ResponseItem.Error.BAD_REQUEST;
-    } else if (httpError == "Error 417") {
+    } else if (httpError === "Error 417") {
       return opensocial.ResponseItem.Error.LIMIT_EXCEEDED;
     }
   };
@@ -250,16 +267,16 @@ var JsonRpcContainer = function(baseUrl, domain, supportedFieldsArray) {
     }
 
     for (var i = 0; i < userIds.length; i++) {
-      if (userIds[i] == 'OWNER') {
+      if (userIds[i] === 'OWNER') {
         userIds[i] = '@owner';
-      } else if (userIds[i] == 'VIEWER') {
+      } else if (userIds[i] === 'VIEWER') {
         userIds[i] = '@viewer';
       }
     }
 
-    if (groupId == 'FRIENDS') {
+    if (groupId === 'FRIENDS') {
       groupId = "@friends";
-    } else if (groupId == 'SELF' || !groupId) {
+    } else if (groupId === 'SELF' || !groupId) {
       groupId = "@self";
     }
 
@@ -273,7 +290,7 @@ var JsonRpcContainer = function(baseUrl, domain, supportedFieldsArray) {
     var me = this;
     return new JsonRpcRequestItem(peopleRequest.rpc,
             function(rawJson) {
-              return me.createPersonFromJson(rawJson);
+              return me.createPersonFromJson(rawJson, opt_params);
             });
   };
 
@@ -281,26 +298,15 @@ var JsonRpcContainer = function(baseUrl, domain, supportedFieldsArray) {
       opt_params) {
     var rpc = { method : "people.get" };
     rpc.params = this.translateIdSpec(idSpec);
+
+    FieldTranslations.addAppDataAsProfileFields(opt_params);
+    FieldTranslations.translateStandardArguments(opt_params, rpc.params);
+    FieldTranslations.translateNetworkDistance(idSpec, rpc.params);
+
     if (opt_params['profileDetail']) {
       FieldTranslations.translateJsPersonFieldsToServerFields(opt_params['profileDetail']);
       rpc.params.fields = opt_params['profileDetail'];
     }
-    if (opt_params['first']) {
-      rpc.params.startIndex = opt_params['first'];
-    }
-    if (opt_params['max']) {
-      rpc.params.count = opt_params['max'];
-    }
-    if (opt_params['sortOrder']) {
-      rpc.params.sortBy = opt_params['sortOrder'];
-    }
-    if (opt_params['filter']) {
-      rpc.params.filterBy = opt_params['filter'];
-    }
-    if (idSpec.getField('networkDistance')) {
-      rpc.params.networkDistance = idSpec.getField('networkDistance');
-    }
-
     var me = this;
     return new JsonRpcRequestItem(rpc,
         function(rawJson) {
@@ -315,15 +321,15 @@ var JsonRpcContainer = function(baseUrl, domain, supportedFieldsArray) {
 
           var people = [];
           for (var i = 0; i < jsonPeople.length; i++) {
-            people.push(me.createPersonFromJson(jsonPeople[i]));
+            people.push(me.createPersonFromJson(jsonPeople[i], opt_params));
           }
           return new opensocial.Collection(people,
               rawJson['startIndex'], rawJson['totalResults']);
         });
   };
 
-  JsonRpcContainer.prototype.createPersonFromJson = function(serverJson) {
-    FieldTranslations.translateServerPersonToJsPerson(serverJson);
+  JsonRpcContainer.prototype.createPersonFromJson = function(serverJson, opt_params) {
+    FieldTranslations.translateServerPersonToJsPerson(serverJson, opt_params);
     return new JsonPerson(serverJson);
   };
 
@@ -343,7 +349,7 @@ var JsonRpcContainer = function(baseUrl, domain, supportedFieldsArray) {
   JsonRpcContainer.prototype.isWildcardKey = function(key) {
     // Some containers support * to mean all keys in the js apis.
     // This allows the RESTful apis to be compatible with them.
-    return key == "*";
+    return key === "*";
   };
 
   JsonRpcContainer.prototype.newFetchPersonAppDataRequest = function(idSpec, keys,
@@ -352,9 +358,7 @@ var JsonRpcContainer = function(baseUrl, domain, supportedFieldsArray) {
     rpc.params = this.translateIdSpec(idSpec);
     rpc.params.appId = "@app";
     rpc.params.fields = this.getFieldsList(keys);
-    if (idSpec.getField('networkDistance')) {
-      rpc.params.networkDistance = idSpec.getField('networkDistance');
-    }
+    FieldTranslations.translateNetworkDistance(idSpec, rpc.params);
 
     return new JsonRpcRequestItem(rpc,
         function (appData) {
@@ -362,10 +366,10 @@ var JsonRpcContainer = function(baseUrl, domain, supportedFieldsArray) {
         });
   };
 
-  JsonRpcContainer.prototype.newUpdatePersonAppDataRequest = function(id, key,
+  JsonRpcContainer.prototype.newUpdatePersonAppDataRequest = function(key,
       value) {
     var rpc = { method : "appdata.update" };
-    rpc.params = this.translateIdSpec(this.makeIdSpec(id));
+    rpc.params = {userId: ["@viewer"], groupId: "@self"};
     rpc.params.appId = "@app";
     rpc.params.data = {};
     rpc.params.data[key] = value;
@@ -373,9 +377,9 @@ var JsonRpcContainer = function(baseUrl, domain, supportedFieldsArray) {
     return new JsonRpcRequestItem(rpc);
   };
 
-  JsonRpcContainer.prototype.newRemovePersonAppDataRequest = function(id, keys) {
+  JsonRpcContainer.prototype.newRemovePersonAppDataRequest = function(keys) {
     var rpc = { method : "appdata.delete" };
-    rpc.params = this.translateIdSpec(this.makeIdSpec(id));
+    rpc.params = {userId: ["@viewer"], groupId: "@self"};
     rpc.params.appId = "@app";
     rpc.params.fields = this.getFieldsList(keys);
 
@@ -387,9 +391,8 @@ var JsonRpcContainer = function(baseUrl, domain, supportedFieldsArray) {
     var rpc = { method : "activities.get" };
     rpc.params = this.translateIdSpec(idSpec);
     rpc.params.appId = "@app";
-    if (idSpec.getField('networkDistance')) {
-      rpc.params.networkDistance = idSpec.getField('networkDistance');
-    }
+    FieldTranslations.translateStandardArguments(opt_params, rpc.params);
+    FieldTranslations.translateNetworkDistance(idSpec, rpc.params);
 
     return new JsonRpcRequestItem(rpc,
         function(rawJson) {
@@ -418,13 +421,34 @@ var JsonRpcContainer = function(baseUrl, domain, supportedFieldsArray) {
     var rpc = { method : "activities.create" };
     rpc.params = this.translateIdSpec(idSpec);
     rpc.params.appId = "@app";
-    if (idSpec.getField('networkDistance')) {
-      rpc.params.networkDistance = idSpec.getField('networkDistance');
-    }
+    FieldTranslations.translateNetworkDistance(idSpec, rpc.params);
     rpc.params.activity = activity.toJsonObject();
 
     return new JsonRpcRequestItem(rpc);
   };
+
+  JsonRpcContainer.prototype.invalidateCache = function() {
+    var rpc = { method : "cache.invalidate" };
+    var invalidationKeys = { invalidationKeys : ["@viewer"] };
+    rpc.params = invalidationKeys;
+
+    var makeRequestParams = {
+      "CONTENT_TYPE" : "JSON",
+      "METHOD" : "POST",
+      "AUTHORIZATION" : "SIGNED",
+      "POST_DATA" : gadgets.json.stringify(rpc)
+    };
+
+    var url = [this.baseUrl_, "/gadgets/api/rpc"];
+    var token = shindig.auth.getSecurityToken();
+    if (token) {
+      url.push("?st=", encodeURIComponent(token));
+    }
+
+    this.sendRequest(url.join(''), null, makeRequestParams,
+        "application/json");
+  };
+
 })();
 
 JsonRpcContainer.prototype.newMessage = function(body, opt_params) {

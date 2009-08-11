@@ -17,6 +17,8 @@
  * under the License.
  */
 
+/*global opensocial */
+
 /**
  * @fileoverview Representation of a person.
  */
@@ -550,6 +552,17 @@ opensocial.Person.prototype.getDisplayName = function() {
  */
 opensocial.Person.prototype.getField = function(key, opt_params) {
   return opensocial.Container.getField(this.fields_, key, opt_params);
+};
+
+
+/**
+ * Gets the app data for this person that is associated with the specified
+ * key.
+ *
+ * @param {String} key The key to get app data for.
+ * @return {String} The corresponding app data.
+ */
+opensocial.Person.prototype.getAppData = function(key) {
 };
 
 

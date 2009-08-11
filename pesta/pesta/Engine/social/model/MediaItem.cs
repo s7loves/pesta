@@ -18,30 +18,39 @@
  */
 #endregion
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data.Services.Common;
 using System.Runtime.Serialization;
 using System.Xml.Serialization;
 using Pesta.Engine.protocol.conversion;
-using Pesta.Utilities;
-
 
 namespace Pesta.Engine.social.model
 {
     [XmlRoot(Namespace = BeanConverter.osNameSpace)]
     [DataContract(Name = "MediaItem", Namespace = BeanConverter.osNameSpace)]
+    [DataServiceKey("PartitionKey", "RowKey")]
     public class MediaItem
     {
         public MediaItem()
-        {}
+        {
+#if AZURE
+            PartitionKey = mimeType;
+            RowKey = url;
+#endif
+        }
 
         public MediaItem(String mimeType, Type type, String url)
+            :this()
         {
             this.mimeType = mimeType;
             this.type = type;
             this.url = url;
         }
-
+#if AZURE
+        // mimeType
+        public string PartitionKey { get; set; }
+        public string RowKey { get; set; }
+#endif
         [DataMember(EmitDefaultValue = false)] 
         public String mimeType { get; set; }
         

@@ -1,5 +1,1 @@
-opensocial.Url=function(A){this.fields_=A||{}
-};
-opensocial.Url.Field={TYPE:"type",LINK_TEXT:"linkText",ADDRESS:"address"};
-opensocial.Url.prototype.getField=function(A,B){return opensocial.Container.getField(this.fields_,A,B)
-};
+opensocial.Url=function(a){this.fields_=a||{}};opensocial.Url.Field={TYPE:"type",LINK_TEXT:"linkText",ADDRESS:"address"};opensocial.Url.prototype.getField=function(a,b){return opensocial.Container.getField(this.fields_,a,b)};
