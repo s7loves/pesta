@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright 2007 Netflix, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,16 +15,8 @@
  */
 using System;
 
-namespace Pesta.Interop.oauth.signature
+namespace Pesta.Libraries.OAuth.signature
 {
-    /// <summary>
-    /// Summary description for PLAINTEXT
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
-    /// </para>
-    /// </remarks>
     public class PLAINTEXT : OAuthSignatureMethod
     {
 

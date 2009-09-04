@@ -1,4 +1,4 @@
-﻿#region License, Terms and Conditions
+#region License, Terms and Conditions
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -21,12 +21,9 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Xml;
+using pesta.Data;
 using Pesta.Engine.social;
-using Pesta.Engine.social.model;
 using Pesta.Engine.social.spi;
-using Activity=Pesta.Engine.social.model.Activity;
-using MediaItem=Pesta.Engine.social.model.MediaItem;
-using Message=Pesta.Engine.social.model.Message;
 
 namespace Pesta.Engine.protocol.conversion
 {

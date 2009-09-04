@@ -66,7 +66,7 @@ public class OpenSocialUrl {
    * and, last but not least, appending any query string parameters as
    * name-value pairs after the full path.
    */
-  public String toString() {
+  public override String ToString() {
     StringBuilder s = new StringBuilder(this._base);
 
     foreach(String pathComponent in this.components) {

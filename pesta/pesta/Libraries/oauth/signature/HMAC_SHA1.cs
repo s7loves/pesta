@@ -3,16 +3,8 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Pesta.Interop.oauth.signature
+namespace Pesta.Libraries.OAuth.signature
 {
-    /// <summary>
-    /// Summary description for HMAC_SHA1
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
-    /// </para>
-    /// </remarks>
     public class HMAC_SHA1 : OAuthSignatureMethod
     {
         protected override String getSignature(String baseString)
@@ -50,7 +42,7 @@ namespace Pesta.Interop.oauth.signature
                 if (key == null)
                 {
                     String keyString = Rfc3986.Encode(getConsumerSecret())
-                                         + "&" + Rfc3986.Encode(getTokenSecret());
+                                       + "&" + Rfc3986.Encode(getTokenSecret());
                     key = Encoding.GetEncoding(ENCODING).GetBytes(keyString);
                 }
                 _key = key;

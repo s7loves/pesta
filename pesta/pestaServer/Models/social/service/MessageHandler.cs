@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Reflection;
 using Jayrock.Json;
+using pesta.Data;
 using Pesta.Engine.protocol;
-using Pesta.Engine.social.model;
 using Pesta.Engine.social.spi;
 
 namespace pestaServer.Models.social.service
@@ -154,12 +154,12 @@ namespace pestaServer.Models.social.service
             if (msgCollId == null)
             {
                 // No message collection specified, return list of message collections
-                return service.getMessageCollections(user, MessageCollection.Field.ALL_FIELDS,
+                return service.getMessageCollections(user, MessageCollection.ALL_FIELDS,
                     options, request.getToken());
             }
             // If messageIds are specified return them, otherwise return entries in the given collection.
             return service.getMessages(user, msgCollId,
-                Message.Field.ALL_FIELDS, messageIds, options, request.getToken());
+                Message.ALL_FIELDS, messageIds, options, request.getToken());
         }
     }
 }

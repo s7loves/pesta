@@ -28,13 +28,7 @@
 os.createContext = function(data, opt_globals) {
   var context = JsEvalContext.create(data);
   context.setVariable(os.VAR_callbacks, []);
-  var defaults = os.getContextDefaults_();
-  for (var def in defaults) {
-    if (defaults.hasOwnProperty(def)) {
-      context.setVariable(def, defaults[def]);
-    }
-  }
-  context.setVariable(os.VAR_emptyArray, os.EMPTY_ARRAY);
+  context.setVariable(os.VAR_identifierresolver, os.getFromContext);
   if (opt_globals) {
     for (var global in opt_globals) {
       if (opt_globals.hasOwnproperty(global)) {
@@ -43,22 +37,6 @@ os.createContext = function(data, opt_globals) {
     }
   }
   return context;
-};
-
-os.contextDefaults_ = null;
-
-os.getContextDefaults_ = function() {
-  if (!os.contextDefaults_) {
-    os.contextDefaults_ = {};
-    os.contextDefaults_[os.VAR_emptyArray] = os.EMPTY_ARRAY;
-    os.contextDefaults_[os.VAR_identifierresolver] = os.getFromContext;
-    if (window["JSON"] && JSON.parse) {
-      os.contextDefaults_["osx:parseJson"] = JSON.parse;
-    } else if (window["gadgets"] && gadgets.json && gadgets.json.parse) {
-      os.contextDefaults_["osx:parseJson"] = gadgets.json.parse;
-    }
-  }
-  return os.contextDefaults_;
 };
 
 /**

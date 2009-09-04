@@ -15,18 +15,9 @@
  */
 using System;
 using System.Collections.Generic;
-using Pesta.Libraries.oauth;
 
-namespace Pesta.Interop.oauth
+namespace Pesta.Libraries.OAuth
 {
-    /// <summary>
-    /// Summary description for OAuthAccessor
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
-    /// </para>
-    /// </remarks>
     [Serializable]
     public class OAuthAccessor
     {

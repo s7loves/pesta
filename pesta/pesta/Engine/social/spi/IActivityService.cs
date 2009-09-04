@@ -1,4 +1,4 @@
-﻿#region License, Terms and Conditions
+#region License, Terms and Conditions
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -19,8 +19,8 @@
 #endregion
 using System;
 using System.Collections.Generic;
+using pesta.Data;
 using Pesta.Engine.auth;
-using Pesta.Engine.social.model;
 
 namespace Pesta.Engine.social.spi
 {

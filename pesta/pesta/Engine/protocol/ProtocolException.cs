@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
 using Pesta.Engine.social;
 using Pesta.Utilities;
 
@@ -15,7 +12,7 @@ namespace Pesta.Engine.protocol
         /**
         * The applicatin specific response value associated with this exception.
         */
-            private readonly Object response;
+        private readonly Object response;
 
         public ProtocolException(int errorCode, String errorMessage, Exception cause)
                 : base(errorMessage, cause)

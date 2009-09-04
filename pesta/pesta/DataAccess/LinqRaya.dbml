@@ -1,13 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Database Name="raya" Class="LinqRayaDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
   <Connection Mode="AppSettings" ConnectionString="Data Source=seanlaptop;Initial Catalog=raya;Integrated Security=True" SettingsObjectName="Pesta.Properties.Settings" SettingsPropertyName="rayaConnectionString2" Provider="System.Data.SqlClient" />
-  <Table Name="dbo.tags_counts" Member="tags_counts">
-    <Type Name="tags_count">
-      <Column Name="tagid" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="refid" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Association Name="tag_tags_count" Member="tag" ThisKey="tagid" OtherKey="id" Type="tag" IsForeignKey="true" />
-    </Type>
-  </Table>
   <Table Name="dbo.activities" Member="activities">
     <Type Name="activity">
       <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
@@ -19,6 +12,13 @@
       <Association Name="activity_activity_media_item" Member="activity_media_items" ThisKey="id" OtherKey="activity_id" Type="activity_media_item" />
       <Association Name="application_activity" Member="application" ThisKey="app_id" OtherKey="id" Type="application" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
       <Association Name="person_activity" Member="person" ThisKey="person_id" OtherKey="id" Type="person" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tags_counts" Member="tags_counts">
+    <Type Name="tags_count">
+      <Column Name="tagid" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="refid" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="tag_tags_count" Member="tag" ThisKey="tagid" OtherKey="id" Type="tag" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.activity_media_items" Member="activity_media_items">
@@ -69,7 +69,7 @@
       <Column Name="directory_title" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
       <Column Name="screenshot" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
       <Column Name="thumbnail" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
-      <Column Name="author" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
+      <Column Name="author" Type="System.String" DbType="VarChar(1024)" CanBeNull="true" />
       <Column Name="author_email" Type="System.String" DbType="VarChar(128)" CanBeNull="true" />
       <Column Name="description" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
       <Column Name="settings" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
@@ -179,7 +179,7 @@
   <Table Name="dbo.openid_users" Member="openid_users">
     <Type Name="openid_user">
       <Column Name="openid_url" Type="System.String" DbType="VarChar(255) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="user_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="user_id" Type="System.String" DbType="VarChar(255) NOT NULL" CanBeNull="false" />
     </Type>
   </Table>
   <Table Name="dbo.organizations" Member="organizations">

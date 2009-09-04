@@ -13,18 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-using Pesta.Libraries.oauth;
-
-namespace Pesta.Interop.oauth
+namespace Pesta.Libraries.OAuth
 {
-    /// <summary>
-    /// Summary description for OAuthValidator
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
-    /// </para>
-    /// </remarks>
     public interface OAuthValidator
     {
         /**

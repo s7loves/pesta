@@ -23,7 +23,7 @@
 
 var FieldTranslations = {};
 
-FieldTranslations.translateServerPersonToJsPerson = function(serverJson, opt_params) {
+FieldTranslations.translateServerPersonToJsPerson = function(serverJson) {
   if (serverJson.emails) {
     for (var i = 0; i < serverJson.emails.length; i++) {
       serverJson.emails[i].address = serverJson.emails[i].value;
@@ -89,11 +89,6 @@ FieldTranslations.translateServerPersonToJsPerson = function(serverJson, opt_par
     serverJson.name.unstructured = serverJson.name.formatted;
   }
 
-  if (serverJson.appData) {
-    serverJson.appData = opensocial.Container.escape(
-        serverJson.appData, opt_params, true);
-  }
-
 };
 
 FieldTranslations.translateEnumJson = function(enumJson) {
@@ -115,10 +110,6 @@ FieldTranslations.translateJsPersonFieldsToServerFields = function(fields) {
       fields[i] = 'birthday';
     } else if (fields[i] == 'timeZone') {
       fields[i] = 'utcOffset';
-    } else if (fields[i] == 'jobs') {
-      fields[i] = 'organizations';
-    } else if (fields[i] == 'schools') {
-      fields[i] = 'organizations';
     }
   }
 
@@ -150,71 +141,6 @@ FieldTranslations.translateIsoStringToDate = function(isoString) {
 
   offset -= date.getTimezoneOffset();
   time = (Number(date) + (offset * 60 * 1000));
-
+  
   return new Date(Number(time));
-};
-
-/**
- * AppData is provided by the REST and JSON-RPC protocols using
- * an "appData" or "appData.key" field, but is described by
- * the JS fetchPerson() API in terms of an appData param.  Translate
- * between the two.
- */
-FieldTranslations.addAppDataAsProfileFields = function(opt_params) {
-  if (opt_params) {
-    // Push the appData keys in as profileDetails
-    if (opt_params['appData']) {
-      var appDataKeys = opt_params['appData'];
-      if (typeof appDataKeys === 'string') {
-        appDataKeys = [appDataKeys];
-      }
-
-      var profileDetail = opt_params['profileDetail'] || [];
-      for (var i = 0; i < appDataKeys.length; i++) {
-        if (appDataKeys[i] === '*') {
-          profileDetail.push('appData');
-        } else {
-          profileDetail.push('appData.' + appDataKeys[i]);
-        }
-      }
-
-      opt_params['appData'] = appDataKeys;
-    }
-  }
-};
-
-/**
- * Translate standard Javascript arguments to JSON-RPC protocol format.
- */
-FieldTranslations.translateStandardArguments = function(opt_params, rpc_params) {
-  if (opt_params['first']) {
-    rpc_params.startIndex = opt_params['first'];
-  }
-  if (opt_params['max']) {
-    rpc_params.count = opt_params['max'];
-  }
-  if (opt_params['sortOrder']) {
-    rpc_params.sortBy = opt_params['sortOrder'];
-  }
-  if (opt_params['filter']) {
-    rpc_params.filterBy = opt_params['filter'];
-  }
-  if (opt_params['filterOp']) {
-    rpc_params.filterOp = opt_params['filterOp'];
-  }
-  if (opt_params['filterValue']) {
-    rpc_params.filterValue = opt_params['filterValue'];
-  }
-  if (opt_params['fields']) {
-    rpc_params.fields = opt_params['fields'];
-  }
-};
-
-/**
- * Translate network distance from id spec to JSON-RPC parameters.
- */
-FieldTranslations.translateNetworkDistance = function(idSpec, rpc_params) {
-  if (idSpec.getField('networkDistance')) {
-    rpc_params.networkDistance = idSpec.getField('networkDistance');
-  }
-};
+}

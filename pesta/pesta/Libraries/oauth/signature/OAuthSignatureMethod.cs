@@ -15,18 +15,9 @@
  */
 using System;
 using System.Collections.Generic;
-using Pesta.Libraries.oauth;
 
-namespace Pesta.Interop.oauth.signature
+namespace Pesta.Libraries.OAuth.signature
 {
-    /// <summary>
-    /// Summary description for OAuthSignatureMethod
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
-    /// </para>
-    /// </remarks>
     public abstract class OAuthSignatureMethod
     {
         /** Add a signature to the message. 

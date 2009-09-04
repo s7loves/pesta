@@ -32,7 +32,7 @@ namespace pestaServer.Models.gadgets.servlet
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
+    
     /// </para>
     /// </remarks>
     public class HttpGadgetContext : GadgetContext
@@ -44,7 +44,7 @@ namespace pestaServer.Models.gadgets.servlet
         private bool? debug;
         private bool ignoreCache;
         private Locale locale;
-        private int moduleId;
+        private string moduleId;
         private RenderingContext renderingContext;
         private URI url;
         private UserPrefs userPrefs;
@@ -134,9 +134,9 @@ namespace pestaServer.Models.gadgets.servlet
         }
 
 
-        public override int getModuleId()
+        public override string getModuleId()
         {
-            if (moduleId == 0)
+            if (string.IsNullOrEmpty(moduleId))
             {
                 return base.getModuleId();
             }
@@ -269,14 +269,10 @@ namespace pestaServer.Models.gadgets.servlet
         /// </param>
         /// <returns> module id, if specified
         /// </returns>
-        private static int getModuleId(HttpRequest request)
+        private static string getModuleId(HttpRequest request)
         {
             String mid = request.Params["mid"];
-            if (mid == null)
-            {
-                return 0;
-            }
-            return int.Parse(mid);
+            return mid;
         }
 
         /// <param name="request">

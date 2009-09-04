@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2008 Madgex
+// Copyright (c) 2008 Madgex
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@ using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Pesta.Interop.oauth
+namespace Pesta.Libraries.OAuth
 {
     /// <summary>
     /// Performs RFC 3986 encoding and decoding.

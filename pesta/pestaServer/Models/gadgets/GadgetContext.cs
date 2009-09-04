@@ -26,14 +26,6 @@ using URI = System.Uri;
 
 namespace pestaServer.Models.gadgets
 {
-    /// <summary>
-    /// Summary description for GadgetContext
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
-    /// </para>
-    /// </remarks>
     public class GadgetContext
     {
         /**
@@ -56,9 +48,9 @@ namespace pestaServer.Models.gadgets
         /**
          * @return The module id for this request.
          */
-        public virtual int getModuleId()
+        public virtual string getModuleId()
         {
-            return 0;
+            return "";
         }
 
         /**

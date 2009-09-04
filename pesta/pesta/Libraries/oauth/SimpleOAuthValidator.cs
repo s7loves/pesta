@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright 2007 Netflix, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,10 +15,9 @@
  */
 using System;
 using Jayrock;
-using Pesta.Interop.oauth.signature;
-using Pesta.Libraries.oauth;
+using Pesta.Libraries.OAuth.signature;
 
-namespace Pesta.Interop.oauth
+namespace Pesta.Libraries.OAuth
 {
     public class SimpleOAuthValidator : OAuthValidator
     {
@@ -98,7 +97,7 @@ namespace Pesta.Interop.oauth
         protected void validateSignature(OAuthMessage message, OAuthAccessor accessor)
         {
             message.requireParameters(new[]{OAuth.OAUTH_CONSUMER_KEY,
-                                                   OAuth.OAUTH_SIGNATURE_METHOD, OAuth.OAUTH_SIGNATURE});
+                                            OAuth.OAUTH_SIGNATURE_METHOD, OAuth.OAUTH_SIGNATURE});
             OAuthSignatureMethod.newSigner(message, accessor).validate(message);
         }
     }

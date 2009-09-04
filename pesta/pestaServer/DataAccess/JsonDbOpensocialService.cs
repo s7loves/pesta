@@ -1,4 +1,4 @@
-﻿#region License, Terms and Conditions
+#region License, Terms and Conditions
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -25,34 +25,40 @@ using System.Collections.Generic;
 using System.Web;
 using Jayrock.Json;
 using Jayrock.Json.Conversion;
+using pesta.Data;
 using Pesta.Engine.auth;
 using Pesta.Engine.common;
 using Pesta.Engine.protocol;
 using Pesta.Engine.protocol.conversion;
 using Pesta.Engine.social;
-using Pesta.Engine.social.model;
 using Pesta.Engine.social.spi;
+using pesta.Data.Model.Helpers;
 using pestaServer.Models.social.service;
-using Activity=Pesta.Engine.social.model.Activity;
 
     public class JsonDbOpensocialService : IPersonService, IActivityService, IAppDataService, IMessagesService
     {
-        private const string Jsondb = "gadgets/files/sampledata/canonicaldb.json";
+        private const string Jsondb = "Pesta.DataAccess.canonicaldb.json";
         private readonly static string DbLocation = HttpContext.Current.Server.MapPath(HttpContext.Current.Request.ApplicationPath) + Jsondb;
         public readonly static JsonDbOpensocialService Instance = new JsonDbOpensocialService();
 
         private JsonDbOpensocialService()
         {
-            String content;
-            using (StreamReader reader = new StreamReader(DbLocation))
+            String content = "";
+            if (File.Exists(DbLocation))
             {
-                content = reader.ReadToEnd();
+                using (StreamReader reader = new StreamReader(DbLocation))
+                {
+                    content = reader.ReadToEnd();
+                }
             }
-            // if one doesn't exist try the embedded one
-            if (string.IsNullOrEmpty(content))
+            else
             {
-                content = ResourceLoader.GetContent(SampleContainerHandler.Jsondb);
+                if (string.IsNullOrEmpty(content))
+                {
+                    content = ResourceLoader.GetContent(SampleContainerHandler.Jsondb);
+                }
             }
+            
             db = JsonConvert.Import(content) as JsonObject;
             converter = new BeanJsonConverter();
         }
@@ -133,11 +139,11 @@ using Activity=Pesta.Engine.social.model.Activity;
                             for (int i = 0; i < activities.Length; i++)
                             {
                                 JsonObject activity = activities[i] as JsonObject;
-                                if (appId == null || !activity.Contains(Activity.Field.APP_ID.Value))
+                                if (appId == null || !activity.Contains(Activity.Field.APP_ID.ToDescriptionString()))
                                 {
                                     result.Add(ConvertToActivity(activity, fields));
                                 }
-                                else if (activity[Activity.Field.APP_ID.Value].Equals(appId))
+                                else if (activity[Activity.Field.APP_ID.ToDescriptionString()].Equals(appId))
                                 {
                                     result.Add(ConvertToActivity(activity, fields));
                                 }
@@ -168,8 +174,8 @@ using Activity=Pesta.Engine.social.model.Activity;
                         for (int i = 0; i < activities.Length; i++)
                         {
                             JsonObject activity = activities[i] as JsonObject;
-                            if (activity[Activity.Field.USER_ID.Value].Equals(user)
-                                && activityIds.Contains(activity[Activity.Field.ID.Value] as string))
+                            if (activity[Activity.Field.USER_ID.ToDescriptionString()].Equals(user)
+                                && activityIds.Contains(activity[Activity.Field.ID.ToDescriptionString()] as string))
                             {
                                 result.Add(ConvertToActivity(activity, fields));
                             }
@@ -196,9 +202,9 @@ using Activity=Pesta.Engine.social.model.Activity;
                     for (int i = 0; i < activities.Length; i++)
                     {
                         JsonObject activity = activities[i] as JsonObject;
-                        if (activity != null && 
-                            activity[Activity.Field.USER_ID.Value] as string == user && 
-                            activity[Activity.Field.ID.Value] as string == activityId)
+                        if (activity != null &&
+                            activity[Activity.Field.USER_ID.ToDescriptionString()] as string == user &&
+                            activity[Activity.Field.ID.ToDescriptionString()] as string == activityId)
                         {
                             return ConvertToActivity(activity, fields);
                         }
@@ -227,7 +233,7 @@ using Activity=Pesta.Engine.social.model.Activity;
                         for (int i = 0; i < activities.Length; i++)
                         {
                             JsonObject activity = activities[i] as JsonObject;
-                            if (activity != null && !activityIds.Contains(activity[Activity.Field.ID.Value] as string))
+                            if (activity != null && !activityIds.Contains(activity[Activity.Field.ID.ToDescriptionString()] as string))
                             {
                                 newList.Put(activity);
                             }
@@ -254,9 +260,9 @@ using Activity=Pesta.Engine.social.model.Activity;
             try
             {
                 JsonObject jsonObject = ConvertFromActivity(activity, fields);
-                if (!jsonObject.Contains(Activity.Field.ID.Value))
+                if (!jsonObject.Contains(Activity.Field.ID.ToDescriptionString()))
                 {
-                    jsonObject.Put(Activity.Field.ID.Value, DateTime.UtcNow.Ticks);
+                    jsonObject.Put(Activity.Field.ID.ToDescriptionString(), DateTime.UtcNow.Ticks);
                 }
                 JsonArray jsonArray = db.getJSONObject(ACTIVITIES_TABLE)[userId.getUserId(token)] as JsonArray;
                 if (jsonArray == null)
@@ -287,7 +293,7 @@ using Activity=Pesta.Engine.social.model.Activity;
                     for (int i = 0; i < people.Length; i++)
                     {
                         JsonObject person = people[i] as JsonObject;
-                        if (person != null && !idSet.Contains(person[Person.Field.ID.Value] as string))
+                        if (person != null && !idSet.Contains(person[Person.Field.ID.ToDescriptionString()] as string))
                         {
                             continue;
                         }
@@ -296,7 +302,7 @@ using Activity=Pesta.Engine.social.model.Activity;
                     }
                 }
                 // We can pretend that by default the people are in top friends order
-                if (options.getSortBy().Equals(Person.Field.NAME.Value))
+                if (options.getSortBy().Equals(Person.Field.NAME.ToDescriptionString()))
                 {
                     result.Sort(new NameComparator());
                 }
@@ -332,7 +338,7 @@ using Activity=Pesta.Engine.social.model.Activity;
                     for (int i = 0; i < people.Length; i++)
                     {
                         JsonObject person = people[i] as JsonObject;
-                        if (id != null && person != null && person[Person.Field.ID.Value] as string == id.getUserId(token))
+                        if (id != null && person != null && person[Person.Field.ID.ToDescriptionString()] as string == id.getUserId(token))
                         {
                             return ConvertToPerson(person, fields);
                         }

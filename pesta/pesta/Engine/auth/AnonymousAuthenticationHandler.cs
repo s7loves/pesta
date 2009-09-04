@@ -24,14 +24,6 @@ using Pesta.Utilities;
 
 namespace Pesta.Engine.auth
 {
-    /// <summary>
-    /// Summary description for AnonymousAuthenticationHandler
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    /// Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
-    /// </para>
-    /// </remarks>
     public class AnonymousAuthenticationHandler : IAuthenticationHandler
     {
         public static readonly String AUTH_UNAUTHENTICATED = "Unauthenticated";

@@ -17,30 +17,3 @@
  * under the License.
  */
 
-opensocial.DataRequest.prototype.newUpdatePersonAppDataRequest_09 =
-    opensocial.DataRequest.prototype.newUpdatePersonAppDataRequest;
-/**
- * Implementation of 0.8 newUpdatePersonAppDataRequest API
- */
-opensocial.DataRequest.prototype.newUpdatePersonAppDataRequest = function(id,
-    key, value) {
-  if (id !== opensocial.IdSpec.PersonId.VIEWER) {
-    throw Error("Cannot update app data for person "  + id);
-  }
-  return this.newUpdatePersonAppDataRequest_09(key, value);
-};
-
-opensocial.DataRequest.prototype.newRemovePersonAppDataRequest_09 =
-    opensocial.DataRequest.prototype.newRemovePersonAppDataRequest;
-/**
- * Implementation of 0.8 newRemovePersonAppDataRequest API
- */
-opensocial.DataRequest.prototype.newRemovePersonAppDataRequest = function(id,
-    keys) {
-  if (id !== opensocial.IdSpec.PersonId.VIEWER) {
-    throw Error("Cannot remove app data for person "  + id);
-  }
-
-  return this.newRemovePersonAppDataRequest_09(keys);
-};
-    

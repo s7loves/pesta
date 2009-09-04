@@ -20,10 +20,11 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Pesta.Engine.auth;
 using Pesta.Engine.common.crypto;
 using Pesta.Utilities;
 
-namespace Pesta.Engine.auth
+namespace pesta.Auth
 {
     public class BasicSecurityToken : ISecurityToken
     {
@@ -159,7 +160,12 @@ namespace Pesta.Engine.auth
         */
         public long getModuleId()
         {
-            return long.Parse(tokenData[MODULE_KEY]);
+            long modid;
+            if (!long.TryParse(tokenData[MODULE_KEY], out modid))
+            {
+                modid = Convert.ToInt64(tokenData[MODULE_KEY], 16);
+            }
+            return modid;
         }
 
         /**

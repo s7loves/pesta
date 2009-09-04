@@ -158,7 +158,7 @@ public class OpenSocialHttpRequest {
    */
   private HttpWebRequest getConnection() 
   {
-    Uri uri = new Uri(this.url.toString());
+    Uri uri = new Uri(url.ToString());
 
     if (!uri.Scheme.StartsWith("http"))
     {

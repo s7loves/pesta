@@ -4,6 +4,167 @@
         <name>StorageClient</name>
     </assembly>
     <members>
+        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.ResourceUriComponents">
+            <summary>
+            This type represents the different constituent parts that make up a resource Uri in the context of cloud services.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.ResourceUriComponents.#ctor(System.String,System.String,System.String)">
+            <summary>
+            Construct a ResourceUriComponents object.
+            </summary>
+            <param name="accountName">The account name that should become part of the URI.</param>
+            <param name="containerName">The container name (container, queue or table name) that should become part of the URI.</param>
+            <param name="remainingPart">Remaining part of the URI.</param>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.ResourceUriComponents.#ctor(System.String,System.String)">
+            <summary>
+            Construct a ResourceUriComponents object.        
+            </summary>
+            <param name="accountName">The account name that should become part of the URI.</param>
+            <param name="containerName">The container name (container, queue or table name) that should become part of the URI.</param>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.ResourceUriComponents.#ctor(System.String)">
+            <summary>
+            Construct a ResourceUriComponents object.        
+            </summary>
+            <param name="accountName">The account name that should become part of the URI.</param>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.ResourceUriComponents.#ctor">
+            <summary>
+            Construct a ResourceUriComponents object.        
+            </summary>
+        </member>
+        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.ResourceUriComponents.AccountName">
+            <summary>
+            The account name in the URI.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.ResourceUriComponents.ContainerName">
+            <summary>
+            This is really the first component (delimited by '/') after the account name. Since it happens to
+            be a container name in the context of all our storage services (containers in blob storage,
+            queues in the queue service and table names in table storage), it's named as ContainerName to make it more 
+            readable at the cost of slightly being incorrectly named.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.ResourceUriComponents.RemainingPart">
+            <summary>
+            The remaining string in the URI.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageCanonicalizer.CanonicalizeHttpRequest(System.Uri,Microsoft.Samples.ServiceHosting.StorageClient.ResourceUriComponents,System.String,System.String,System.String,System.Collections.Specialized.NameValueCollection)">
+            <summary>
+            Create a canonicalized string out of HTTP request header contents for signing 
+            blob/queue requests with the Shared Authentication scheme. 
+            </summary>
+            <param name="address">The uri address of the HTTP request.</param>
+            <param name="uriComponents">Components of the Uri extracted out of the request.</param>
+            <param name="method">The method of the HTTP request (GET/PUT, etc.).</param>
+            <param name="contentType">The content type of the HTTP request.</param>
+            <param name="date">The date of the HTTP request.</param>
+            <param name="headers">Should contain other headers of the HTTP request.</param>
+            <returns>A canonicalized string of the HTTP request.</returns>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageCanonicalizer.CanonicalizeHttpRequest(System.Net.HttpWebRequest,Microsoft.Samples.ServiceHosting.StorageClient.ResourceUriComponents)">
+            <summary>
+            Canonicalize HTTP header contents.
+            </summary>
+            <param name="request">An HttpWebRequest object.</param>
+            <param name="uriComponents">Components of the Uri extracted out of the request.</param>
+            <returns>The canonicalized string of the given HTTP request's header.</returns>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageCanonicalizer.ConvertDateTimeToHttpString(System.DateTime)">
+            <summary>
+            Creates a standard datetime string for the shared key lite authentication scheme.
+            </summary>
+            <param name="dateTime">DateTime value to convert to a string in the expected format.</param>
+            <returns></returns>
+        </member>
+        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.MessageCanonicalizer.CanonicalizedString">
+            <summary>
+            An internal class that stores the canonicalized string version of an HTTP request.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageCanonicalizer.CanonicalizedString.#ctor(System.String)">
+            <summary>
+            Constructor for the class.
+            </summary>
+            <param name="initialElement">The first canonicalized element to start the string with.</param>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageCanonicalizer.CanonicalizedString.AppendCanonicalizedElement(System.String)">
+            <summary>
+            Append additional canonicalized element to the string.
+            </summary>
+            <param name="element">An additional canonicalized element to append to the string.</param>
+        </member>
+        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.MessageCanonicalizer.CanonicalizedString.Value">
+            <summary>
+            Property for the canonicalized string.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.HttpRequestAccessor">
+            <summary>
+            Use this class to extract various header values from Http requests.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.HttpRequestAccessor.GetHeaderValues(System.Collections.Specialized.NameValueCollection,System.String)">
+            <summary>
+            A helper function for extracting HTTP header values from a NameValueCollection object.
+            </summary>
+            <param name="headers">A NameValueCollection object that should contain HTTP header name-values pairs.</param>
+            <param name="headerName">Name of the header that we want to get values of.</param>
+            <returns>A array list of values for the header. The values are in the same order as they are stored in the NameValueCollection object.</returns>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.HttpRequestAccessor.ConstructResourceUri(System.Uri,Microsoft.Samples.ServiceHosting.StorageClient.ResourceUriComponents,System.Boolean)">
+            <summary>
+            Constructs an URI given all its constituents
+            </summary>
+            <param name="endpoint">
+            This is the service endpoint in case of path-style URIs and a host suffix in case of host-style URIs
+            IMPORTANT: This does NOT include the service name or account name
+            </param>
+            <param name="uriComponents">Uri constituents</param>
+            <param name="pathStyleUri">Indicates whether to construct a path-style Uri (true) or host-style URI (false)</param>
+            <returns>Full uri</returns>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.HttpRequestAccessor.ConstructPathStyleResourceUri(System.Uri,Microsoft.Samples.ServiceHosting.StorageClient.ResourceUriComponents)">
+            <summary>
+            Constructs a path-style resource URI given all its constituents
+            </summary>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.HttpRequestAccessor.ConstructHostStyleResourceUri(System.Uri,Microsoft.Samples.ServiceHosting.StorageClient.ResourceUriComponents)">
+            <summary>
+            Constructs a host-style resource URI given all its constituents
+            </summary>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.HttpRequestAccessor.ConstructHostStyleAccountUri(System.Uri,System.String)">
+            <summary>
+            Given the host suffix part, service name and account name, this method constructs the account Uri
+            </summary>
+        </member>
+        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.SharedKeyCredentials">
+            <summary>
+            Objects of this class contain the credentials (name and key) of a storage account.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.SharedKeyCredentials.#ctor(System.String,System.Byte[])">
+            <summary>
+            Create a SharedKeyCredentials object given an account name and a shared key.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.SharedKeyCredentials.SignRequest(System.Net.HttpWebRequest,Microsoft.Samples.ServiceHosting.StorageClient.ResourceUriComponents)">
+            <summary>
+            Signs the request appropriately to make it an authenticated request.
+            Note that this method takes the URI components as decoding the URI components requires the knowledge
+            of whether the URI is in path-style or host-style and a host-suffix if it's host-style.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.SharedKeyCredentials.SignRequestForSharedKeyLite(System.Net.HttpWebRequest,Microsoft.Samples.ServiceHosting.StorageClient.ResourceUriComponents)">
+            <summary>
+            Signs requests using the SharedKeyLite authentication scheme with is used for the table storage service.
+            </summary>
+        </member>
         <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.StorageErrorCode">
             <summary>
             Error codes that can be returned by the storage service or the client library.
@@ -120,404 +281,6 @@
             </summary>
             <param name="sourceStream">The stream to copy from</param>
             <param name="destinationStream">The stream to copy to</param>
-        </member>
-        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.QueueStorage">
-            <summary>
-            The entry point of the queue storage API
-            </summary>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.QueueStorage.Create(System.Uri,System.Nullable{System.Boolean},System.String,System.String)">
-            <summary>
-            Factory method for QueueStorage
-            </summary>
-            <param name="baseUri">The base URI of the queue service</param>
-            <param name="usePathStyleUris">If true, path-style URIs (http://baseuri/accountname/containername/objectname) are used.
-            If false host-style URIs (http://accountname.baseuri/containername/objectname) are used,
-            where baseuri is the URI of the service.
-            If null, the choice is made automatically: path-style URIs if host name part of base URI is an 
-            IP addres, host-style otherwise.</param>
-            <param name="accountName">The name of the storage account</param>
-            <param name="base64Key">Authentication key used for signing requests</param>
-            <returns>A newly created QueueStorage instance</returns>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.QueueStorage.GetQueue(System.String)">
-            <summary>
-            Get a reference to a Queue object with a specified name. This method does not make a call to
-            the queue service.
-            </summary>
-            <param name="queueName">The name of the queue</param>
-            <returns>A newly created queue object</returns>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.QueueStorage.ListQueues">
-            <summary>
-            Lists the queues within the account.
-            </summary>
-            <returns>A list of queues</returns>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.QueueStorage.ListQueues(System.String)">
-            <summary>
-            Lists the queues within the account that start with the given prefix.
-            </summary>
-            <param name="prefix">If prefix is null returns all queues.</param>
-            <returns>A list of queues.</returns>
-        </member>
-        <member name="F:Microsoft.Samples.ServiceHosting.StorageClient.QueueStorage.DefaultTimeout">
-            <summary>
-            The default timeout
-            </summary>
-        </member>
-        <member name="F:Microsoft.Samples.ServiceHosting.StorageClient.QueueStorage.DefaultRetryPolicy">
-            <summary>
-            The default retry policy
-            </summary>
-        </member>
-        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.QueueStorage.Timeout">
-            <summary>
-            The time out for each request to the storage service.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.QueueStorage.RetryPolicy">
-            <summary>
-            The retry policy used for retrying requests
-            </summary>
-        </member>
-        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.QueueStorage.BaseUri">
-            <summary>
-            The base URI of the blob storage service
-            </summary>
-        </member>
-        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.QueueStorage.AccountName">
-            <summary>
-            The name of the storage account
-            </summary>
-        </member>
-        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.QueueStorage.UsePathStyleUris">
-            <summary>
-            Indicates whether to use/generate path-style or host-style URIs
-            </summary>
-        </member>
-        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.Message">
-            <summary>
-            Objects of this class represent a single message in the queue.
-            </summary>
-        </member>
-        <member name="F:Microsoft.Samples.ServiceHosting.StorageClient.Message.MaxMessageSize">
-            <summary>
-            The maximum message size in bytes.
-            </summary>
-        </member>
-        <member name="F:Microsoft.Samples.ServiceHosting.StorageClient.Message.MaxTimeToLive">
-            <summary>
-            The maximum amount of time a message is kept in the queue. Max value is 7 days. 
-            Value is given in seconds.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.Message.#ctor">
-            <summary>
-            This constructor is not publicly exposed.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.Message.#ctor(System.String)">
-            <summary>
-            Creates a message and initializes the content of the message to be the specified string.
-            </summary>
-            <param name="content">A string representing the contents of the message.</param>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.Message.#ctor(System.Byte[])">
-            <summary>
-            Creates a message and given the specified byte contents.
-            In this implementation, regardless of whether an XML or binary data is passed into this 
-            function, message contents are converted to base64 before passing the data to the queue service.
-            When calculating the size of the message, the size of the base64 encoding is thus the important
-            parameter.
-            </summary>
-            <param name="content"></param>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.Message.ContentAsString">
-            <summary>
-            Returns the the contents of the message as a string.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.Message.ContentAsBytes">
-            <summary>
-            Returns the content of the message as a byte array
-            </summary>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.Message.SetContentFromBase64String(System.String)">
-            <summary>
-            When calling the Get() operation on a queue, the content of messages 
-            returned in the REST protocol are represented as Base64-encoded strings.
-            This internal function transforms the Base64 representation into a byte array.
-            </summary>
-            <param name="str">The Base64-encoded string.</param>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.Message.GetContentXMLRepresentation(System.Int32@)">
-            <summary>
-            Internal method used for creating the XML that becomes part of a REST request
-            </summary>
-        </member>
-        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.Message.Id">
-            <summary>
-            A unique ID of the message as returned from queue operations.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.Message.PopReceipt">
-            <summary>
-            When a message is retrieved from a queue, a PopReceipt is returned. The PopReceipt is used when 
-            deleting a message from the queue.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.Message.InsertionTime">
-            <summary>
-            The point in time when the message was put into the queue.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.Message.ExpirationTime">
-            <summary>
-            A message's expiration time.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.Message.TimeNextVisible">
-            <summary>
-            The point in time when a message becomes visible again after a Get() operation was called 
-            that returned the message.
-            </summary>
-        </member>
-        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.MessageReceivedEventHandler">
-            <summary>
-            Queues in the storage client library expose a functionality for listening for incoming messages. 
-            If a message is put into a queue, a corresponding event is issued and this delegate is called. This functionality
-            is implemented internally in this library by periodically polling for incoming messages.
-            </summary>
-            <param name="sender">The queue that has received a new event.</param>
-            <param name="e">The event argument containing the message.</param>
-        </member>
-        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.MessageReceivedEventArgs">
-            <summary>
-            The argument class for the MessageReceived event.
-            </summary>
-        </member>
-        <member name="F:Microsoft.Samples.ServiceHosting.StorageClient.MessageReceivedEventArgs._msg">
-            <summary>
-            The message itself.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageReceivedEventArgs.#ctor(Microsoft.Samples.ServiceHosting.StorageClient.Message)">
-            <summary>
-            Constructor for creating a message received argument.
-            </summary>
-            <param name="msg"></param>
-        </member>
-        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.MessageReceivedEventArgs.Message">
-            <summary>
-            The message received by the queue.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.QueueProperties.ApproximateMessageCount">
-            <summary>
-            The approximated amount of messages in the queue.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.QueueProperties.Metadata">
-            <summary>
-            Metadata for the queue in the form of name-value pairs.
-            </summary>
-        </member>
-        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue">
-            <summary>
-            Objects of this class represent a queue in a user's storage account.
-            </summary>
-        </member>
-        <member name="F:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue._name">
-            <summary>
-            The name of the queue.
-            </summary>
-        </member>
-        <member name="F:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue._account">
-            <summary>
-            The user account this queue lives in.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue.#ctor">
-            <summary>
-            This constructor is only called by subclasses.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue.CreateQueue(System.Boolean@)">
-            <summary>
-            Creates a queue in the specified storage account.
-            </summary>
-            <param name="queueAlreadyExists">true if a queue with the same name already exists.</param>
-            <returns>true if the queue was successfully created.</returns>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue.CreateQueue">
-            <summary>
-            Creates a queue in the specified storage account.
-            </summary>
-            <returns>true if the queue was successfully created.</returns>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue.DoesQueueExist">
-            <summary>
-            Determines whether a queue with the same name already exists in an account.
-            </summary>
-            <returns>true if a queue with the same name already exists.</returns>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue.DeleteQueue">
-            <summary>
-            Deletes the queue. The queue will be deleted regardless of whether there are messages in the 
-            queue or not.
-            </summary>
-            <returns>true if the queue was successfully deleted.</returns>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue.SetProperties(Microsoft.Samples.ServiceHosting.StorageClient.QueueProperties)">
-            <summary>
-            Sets the properties of a queue.
-            </summary>
-            <param name="properties">The queue's properties to set.</param>
-            <returns>true if the properties were successfully written to the queue.</returns>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue.GetProperties">
-            <summary>
-            Retrieves the queue's properties.
-            </summary>
-            <returns>The queue's properties.</returns>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue.ApproximateCount">
-            <summary>
-            Retrieves the approximate number of messages in a queue.
-            </summary>
-            <returns>The approximate number of messages in this queue.</returns>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue.PutMessage(Microsoft.Samples.ServiceHosting.StorageClient.Message)">
-            <summary>
-            Puts a message in the queue.
-            </summary>
-            <param name="msg">The message to store in the queue.</param>
-            <returns>true if the message has been successfully enqueued.</returns>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue.PutMessage(Microsoft.Samples.ServiceHosting.StorageClient.Message,System.Int32)">
-            <summary>
-            Puts a message in the queue.
-            </summary>
-            <param name="msg">The message to store in the queue.</param>
-            <param name="timeToLiveInSeconds">The time to live for the message in seconds.</param>
-            <returns>true if the message has been successfully enqueued.</returns>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue.GetMessage">
-            <summary>
-            Retrieves a message from the queue. 
-            </summary>
-            <returns>The message retrieved or null if the queue is empty.</returns>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue.GetMessage(System.Int32)">
-            <summary>
-            Retrieves a message and sets its visibility timeout to the specified number of seconds.
-            </summary>
-            <param name="visibilityTimeoutInSeconds">Visibility timeout of the message retrieved in seconds.</param>
-            <returns></returns>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue.GetMessages(System.Int32)">
-            <summary>
-            Tries to retrieve the given number of messages.
-            </summary>
-            <param name="numberOfMessages">Maximum number of messages to retrieve.</param>
-            <returns>The list of messages retrieved.</returns>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue.GetMessages(System.Int32,System.Int32)">
-            <summary>
-            Tries to retrieve the given number of messages.
-            </summary>
-            <param name="numberOfMessages">Maximum number of messages to retrieve.</param>
-            <param name="visibilityTimeoutInSeconds">The visibility timeout of the retrieved messages in seconds.</param>
-            <returns>The list of messages retrieved.</returns>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue.PeekMessage">
-            <summary>
-            Get a message from the queue but do not actually dequeue it. The message will remain visible 
-            for other parties requesting messages.
-            </summary>
-            <returns>The message retrieved or null if there are no messages in the queue.</returns>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue.PeekMessages(System.Int32)">
-            <summary>
-            Tries to get a copy of messages in the queue without actually dequeuing the messages.
-            The messages will remain visible in the queue.
-            </summary>
-            <param name="numberOfMessages">Maximum number of message to retrieve.</param>
-            <returns>The list of messages retrieved.</returns>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue.DeleteMessage(Microsoft.Samples.ServiceHosting.StorageClient.Message)">
-            <summary>
-            Deletes a message from the queue.
-            </summary>
-            <param name="msg">The message to retrieve with a valid popreceipt.</param>
-            <returns>true if the operation was successful.</returns>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue.Clear">
-            <summary>
-            Delete all messages in a queue.
-            </summary>
-            <returns>true if all messages were deleted successfully.</returns>
-        </member>
-        <member name="F:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue.DefaultPollInterval">
-            <summary>
-            The default time interval between polling the queue for messages. 
-            Polling is only enabled if the user has called StartReceiving().
-            </summary>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue.StartReceiving">
-            <summary>
-            Starts the automatic reception of messages.
-            </summary>
-            <returns>true if the operation was successful.</returns>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue.StopReceiving">
-            <summary>
-            Stop the automatic reception of messages.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue.Name">
-            <summary>
-            The name of the queue exposed as a public property.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue.AccountInfo">
-            <summary>
-            The account info object this queue lives in -- exposed as an internal property.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue.UsePathStyleUris">
-            <summary>
-            Indicates whether to use/generate path-style or host-style URIs
-            </summary>
-        </member>
-        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue.QueueUri">
-            <summary>
-            The URI of the queue
-            </summary>
-        </member>
-        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue.RetryPolicy">
-            <summary>
-            The retry policy used for retrying requests; this is the retry policy of the 
-            storage account where this queue was created
-            </summary>
-        </member>
-        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue.Timeout">
-            <summary>
-            The timeout of requests.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue.PollInterval">
-            <summary>
-            The poll interval in milliseconds. If not explicitly set, this defaults to 
-            the DefaultPollInterval.
-            </summary>
-        </member>
-        <member name="E:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue.MessageReceived">
-            <summary>
-            The event users subscribe to in order to automatically receive messages
-            from a queue.
-            </summary>
         </member>
         <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.BlobStorage">
             <summary>
@@ -977,396 +740,6 @@
         <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.XPathQueryHelper">
             <summary>
             Helper class for loading values from an XML segment
-            </summary>
-        </member>
-        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.StorageAccountInfo">
-            <summary>
-            Objects of this class encapsulate information about a storage account and endpoint configuration. 
-            Associated with a storage account is the account name, the base URI of the account and a shared key. 
-            </summary>
-        </member>
-        <member name="F:Microsoft.Samples.ServiceHosting.StorageClient.StorageAccountInfo.DefaultQueueStorageEndpointConfigurationString">
-            <summary>
-            The default configuration string in configuration files for setting the queue storage endpoint.
-            </summary>
-        </member>
-        <member name="F:Microsoft.Samples.ServiceHosting.StorageClient.StorageAccountInfo.DefaultBlobStorageEndpointConfigurationString">
-            <summary>
-            The default configuration string in configuration files for setting the blob storage endpoint.
-            </summary>
-        </member>
-        <member name="F:Microsoft.Samples.ServiceHosting.StorageClient.StorageAccountInfo.DefaultTableStorageEndpointConfigurationString">
-            <summary>
-            The default configuration string in configuration files for setting the table storage endpoint.
-            </summary>
-        </member>
-        <member name="F:Microsoft.Samples.ServiceHosting.StorageClient.StorageAccountInfo.DefaultAccountNameConfigurationString">
-            <summary>
-            The default configuration string in configuration files for setting the storage account name.
-            </summary>
-        </member>
-        <member name="F:Microsoft.Samples.ServiceHosting.StorageClient.StorageAccountInfo.DefaultAccountSharedKeyConfigurationString">
-            <summary>
-            The default configuration string in configuration files for setting the shared key associated with a storage account.
-            </summary>
-        </member>
-        <member name="F:Microsoft.Samples.ServiceHosting.StorageClient.StorageAccountInfo.DefaultUsePathStyleUrisConfigurationString">
-            <summary>
-            The default configuration string in configuration files for setting the UsePathStyleUris option.
-            </summary>
-        </member>
-        <member name="F:Microsoft.Samples.ServiceHosting.StorageClient.StorageAccountInfo.CSConfigStringPrefix">
-            <summary>
-            The default prefix string in application config and Web.config files to indicate that this setting should be looked up 
-            in the fabric's configuration system.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.StorageAccountInfo.#ctor(System.Uri,System.Nullable{System.Boolean},System.String,System.String)">
-            <summary>
-            Constructor for creating account info objects.
-            </summary>
-            <param name="baseUri">The account's base URI.</param>
-            <param name="usePathStyleUris">If true, path-style URIs (http://baseuri/accountname/containername/objectname) are used.
-            If false host-style URIs (http://accountname.baseuri/containername/objectname) are used,
-            where baseuri is the URI of the service..
-            If null, the choice is made automatically: path-style URIs if host name part of base URI is an 
-            IP addres, host-style otherwise.</param>
-            <param name="accountName">The account name.</param>
-            <param name="base64Key">The account's shared key.</param>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.StorageAccountInfo.#ctor(System.Uri,System.Nullable{System.Boolean},System.String,System.String,System.Boolean)">
-            <summary>
-            Constructor for creating account info objects.
-            </summary>
-            <param name="baseUri">The account's base URI.</param>
-            <param name="usePathStyleUris">If true, path-style URIs (http://baseuri/accountname/containername/objectname) are used.
-            If false host-style URIs (http://accountname.baseuri/containername/objectname) are used,
-            where baseuri is the URI of the service.
-            If null, the choice is made automatically: path-style URIs if host name part of base URI is an 
-            IP addres, host-style otherwise.</param>
-            <param name="accountName">The account name.</param>
-            <param name="base64Key">The account's shared key.</param>
-            <param name="allowIncompleteSettings">true if it shall be allowed to only set parts of the StorageAccountInfo properties.</param>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.StorageAccountInfo.GetDefaultQueueStorageAccountFromConfiguration(System.Boolean)">
-            <summary>
-            Retrieves account settings for the queue service from the default settings. 
-            </summary>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.StorageAccountInfo.GetDefaultQueueStorageAccountFromConfiguration">
-            <summary>
-            Retrieves account settings for the queue service from the default settings. 
-            Throws an exception in case of incomplete settings.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.StorageAccountInfo.GetDefaultTableStorageAccountFromConfiguration(System.Boolean)">
-            <summary>
-            Retrieves account settings for the table service from the default settings. 
-            </summary>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.StorageAccountInfo.GetDefaultTableStorageAccountFromConfiguration">
-            <summary>
-            Retrieves account settings for the table service from the default settings. 
-            Throws an exception in case of incomplete settings.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.StorageAccountInfo.GetDefaultBlobStorageAccountFromConfiguration(System.Boolean)">
-            <summary>
-            Retrieves account settings for the blob service from the default settings. 
-            </summary>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.StorageAccountInfo.GetDefaultBlobStorageAccountFromConfiguration">
-            <summary>
-            Retrieves account settings for the blob service from the default settings. 
-            Throws an exception in case of incomplete settings.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.StorageAccountInfo.GetAccountInfoFromConfiguration(System.String,System.Boolean)">
-            <summary>
-            Gets settings from default configuration names except for the endpoint configuration string.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.StorageAccountInfo.GetAccountInfoFromConfiguration(System.String)">
-            <summary>
-            Gets settings from default configuration names except for the endpoint configuration string. Throws an exception 
-            in the case of incomplete settings.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.StorageAccountInfo.GetConfigurationSetting(System.String,System.String,System.Boolean)">
-            <summary>
-            Gets a configuration setting from application settings in the Web.config or App.config file. 
-            When running in a hosted environment, configuration settings are read from .cscfg
-            files.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.StorageAccountInfo.GetAccountInfoFromConfiguration(System.String,System.String,System.String,System.String,System.Boolean)">
-            <summary>
-            Retrieves account information settings from configuration settings. First, the implementation checks for 
-            settings in an application config section of an app.config or Web.config file. These values are overwritten 
-            if the same settings appear in a .csdef file.
-            The implementation also supports indirect settings. In this case, indirect settings overwrite all other settings.
-            </summary>        
-            <param name="accountNameConfiguration">Configuration string for the account name.</param>
-            <param name="accountSharedKeyConfiguration">Configuration string for the key.</param>
-            <param name="endpointConfiguration">Configuration string for the endpoint.</param>
-            <param name="usePathStyleUrisConfiguration">Configuration string for the path style.</param>
-            <param name="allowIncompleteSettings">If false, an exception is thrown if not all settings are available.</param>
-            <returns>StorageAccountInfo object containing the retrieved settings.</returns>        
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.StorageAccountInfo.IsCompleteSetting">
-            <summary>
-            Checks whether all essential properties of this object are set. Only then, the account info object 
-            should be used in ohter APIs of this library.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.StorageAccountInfo.CheckComplete">
-            <summary>
-            Checks whether this StorageAccountInfo object is complete in the sense that all properties are set.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.StorageAccountInfo.BaseUri">
-            <summary>
-            The base URI of the account.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.StorageAccountInfo.AccountName">
-            <summary>
-            The account name.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.StorageAccountInfo.Base64Key">
-            <summary>
-            The account's key.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.StorageAccountInfo.UsePathStyleUris">
-            <summary>
-            If set, returns the UsePathStyleUris properties. If the property has not been explicitly set, 
-            the implementation tries to derive the correct value from the base URI.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.QueueStorageRest.GetQueue(System.String)">
-            <summary>
-            Get a reference to a Queue object with a specified name. This method does not make a call to
-            the queue service.
-            </summary>
-            <param name="queueName">The name of the queue</param>
-            <returns>A newly created queue object</returns>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.QueueStorageRest.ListQueues(System.String)">
-            <summary>
-            Lists all queues with a given prefix within an account.
-            </summary>
-            <param name="prefix"></param>
-            <returns>The list of queue names.</returns>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.QueueStorageRest.ListQueuesImpl(System.String,System.String,System.Int32)">
-            <summary>
-            Lists the queues within the account.
-            </summary>
-            <returns>A list of queues</returns>
-        </member>
-        <member name="F:Microsoft.Samples.ServiceHosting.StorageClient.StorageHttpConstants.HeaderValues.DefaultContentType">
-            <summary>
-            This is the default content-type xStore uses when no content type is specified
-            </summary>
-        </member>
-        <member name="F:Microsoft.Samples.ServiceHosting.StorageClient.StorageHttpConstants.BlobBlockConstants.MaximumBlobSizeBeforeTransmittingAsBlocks">
-            <summary>
-            When transmitting a blob that is larger than this constant, this library automatically
-            transmits the blob as individual blocks. I.e., the blob is (1) partitioned
-            into separate parts (these parts are called blocks) and then (2) each of the blocks is 
-            transmitted separately.
-            The maximum size of this constant as supported by the real blob storage service is currently 
-            64 MB; the development storage tool currently restricts this value to 2 MB.
-            Setting this constant can have a significant impact on the performance for uploading or
-            downloading blobs.
-            As a general guideline: If you run in a reliable environment increase this constant to reduce
-            the amount of roundtrips. In an unreliable environment keep this constant low to reduce the 
-            amount of data that needs to be retransmitted in case of connection failures.
-            </summary>
-        </member>
-        <member name="F:Microsoft.Samples.ServiceHosting.StorageClient.StorageHttpConstants.BlobBlockConstants.BlockSize">
-            <summary>
-            The size of a single block when transmitting a blob that is larger than the 
-            MaximumBlobSizeBeforeTransmittingAsBlocks constant (see above).
-            The maximum size of this constant is currently 4 MB; the development storage 
-            tool currently restricts this value to 1 MB.
-            Setting this constant can have a significant impact on the performance for uploading or 
-            downloading blobs.
-            As a general guideline: If you run in a reliable environment increase this constant to reduce
-            the amount of roundtrips. In an unreliable environment keep this constant low to reduce the 
-            amount of data that needs to be retransmitted in case of connection failures.
-            </summary>
-        </member>
-        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.StorageHttpConstants.RegularExpressionStrings">
-            <summary>
-            Contains regular expressions for checking whether container and table names conform
-            to the rules of the storage REST protocols.
-            </summary>
-        </member>
-        <member name="F:Microsoft.Samples.ServiceHosting.StorageClient.StorageHttpConstants.RegularExpressionStrings.ValidContainerNameRegex">
-            <summary>
-            Container or queue names that match against this regular expression are valid.
-            </summary>
-        </member>
-        <member name="F:Microsoft.Samples.ServiceHosting.StorageClient.StorageHttpConstants.RegularExpressionStrings.ValidTableNameRegex">
-            <summary>
-            Table names that match against this regular expression are valid.
-            </summary>
-        </member>
-        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.RetryPolicy">
-            <summary>
-            This delegate define the shape of a retry policy. A retry policy will invoke the given
-            <paramref name="action"/> as many times as it wants to in the face of 
-            retriable StorageServerExceptions.
-            </summary>
-            <param name="action">The action to retry</param>
-            <returns></returns>
-        </member>
-        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.RetryPolicies">
-            <summary>
-            Provides definitions for some standard retry policies.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.RetryPolicies.NoRetry(System.Action)">
-            <summary>
-            Policy that does no retries i.e., it just invokes <paramref name="action"/> exactly once
-            </summary>
-            <param name="action">The action to retry</param>
-            <returns>The return value of <paramref name="action"/></returns>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.RetryPolicies.RetryN(System.Int32,System.TimeSpan)">
-            <summary>
-            Policy that retries a specified number of times with a specified fixed time interval between retries
-            </summary>
-            <param name="numberOfRetries">The number of times to retry. Should be a non-negative number</param>
-            <param name="intervalBetweenRetries">The time interval between retries. Use TimeSpan.Zero to specify immediate
-            retries</param>
-            <returns></returns>
-            <remarks>When <paramref name="numberOfRetries"/> is 0 and <paramref name="intervalBetweenRetries"/> is
-            TimeSpan.Zero this policy is equivalent to the NoRetry policy</remarks>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.RetryPolicies.RetryExponentialN(System.Int32,System.TimeSpan)">
-            <summary>
-            Policy that retries a specified number of times with a randomized exponential backoff scheme
-            </summary>
-            <param name="numberOfRetries">The number of times to retry. Should be a non-negative number.</param>
-            <param name="deltaBackoff">The multiplier in the exponential backoff scheme</param>
-            <returns></returns>
-            <remarks>For this retry policy, the minimum amount of milliseconds between retries is given by the 
-            StandardMinBackoff constant, and the maximum backoff is predefined by the StandardMaxBackoff constant. 
-            Otherwise, the backoff is calculated as random(2^currentRetry) * deltaBackoff.</remarks>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.RetryPolicies.RetryExponentialN(System.Int32,System.TimeSpan,System.TimeSpan,System.TimeSpan)">
-            <summary>
-            Policy that retries a specified number of times with a randomized exponential backoff scheme
-            </summary>
-            <param name="numberOfRetries">The number of times to retry. Should be a non-negative number</param>
-            <param name="deltaBackoff">The multiplier in the exponential backoff scheme</param>
-            <param name="minBackoff">The minimum backoff interval</param>
-            <param name="maxBackoff">The maximum backoff interval</param>
-            <returns></returns>
-            <remarks>For this retry policy, the minimum amount of milliseconds between retries is given by the 
-            minBackoff parameter, and the maximum backoff is predefined by the maxBackoff parameter. 
-            Otherwise, the backoff is calculated as random(2^currentRetry) * deltaBackoff.</remarks>
-        </member>
-        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.ContainerAccessControl">
-            <summary>
-            Access control for containers
-            </summary>
-        </member>
-        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.BlobProperties">
-            <summary>
-            The properties of a blob.
-            No member of this class makes a storage service request.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobProperties.#ctor(System.String)">
-            <summary>
-            Construct a new BlobProperties object
-            </summary>
-            <param name="name">The name of the blob</param>
-        </member>
-        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.BlobProperties.Name">
-            <summary>
-            Name of the blob
-            </summary>
-        </member>
-        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.BlobProperties.Uri">
-            <summary>
-            URI of the blob
-            </summary>
-        </member>
-        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.BlobProperties.ContentEncoding">
-            <summary>
-            Content encoding of the blob if it set, null otherwise.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.BlobProperties.ContentType">
-            <summary>
-            Content Type of the blob if it is set, null otherwise.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.BlobProperties.ContentLanguage">
-            <summary>
-            Content Language of the blob if it is set, null otherwise.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.BlobProperties.ContentLength">
-            <summary>
-            The length of the blob content, null otherwise.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.BlobProperties.Metadata">
-            <summary>
-            Metadata for the blob in the form of name-value pairs.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.BlobProperties.LastModifiedTime">
-            <summary>
-            The last modified time for the blob. 
-            </summary>
-        </member>
-        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.BlobProperties.ETag">
-            <summary>
-            The ETag of the blob. This is an identifier assigned to the blob by the storage service
-            and is used to distinguish contents of two blobs (or versions of the same blob).
-            </summary>
-        </member>
-        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.ContainerProperties">
-            <summary>
-            The properties of a container.
-            No member of this class makes a storage service request.
-            </summary>
-        </member>
-        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.BlobContents">
-            <summary>
-            The contents of the Blob in various forms.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContents.#ctor(System.IO.Stream)">
-            <summary>
-            Construct a new BlobContents object from a stream.
-            </summary>
-            <param name="stream">The stream to/from which blob contents are written/read. The
-            stream should be seekable in order for requests to be retried.</param>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContents.#ctor(System.Byte[])">
-            <summary>
-            Construct a new BlobContents object from a byte array.
-            </summary>
-            <param name="value">The byte array to/from which contents are written/read.</param>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContents.AsBytes">
-            <summary>
-            Get the contents of a blob as a byte array.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.BlobContents.AsStream">
-            <summary>
-            Get the contents of a blob as a stream.
             </summary>
         </member>
         <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.TableStorageConstants">
@@ -1837,165 +1210,792 @@
             Creates a TableRetryWrapperException object.
             </summary>
         </member>
-        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.ResourceUriComponents">
+        <member name="F:Microsoft.Samples.ServiceHosting.StorageClient.StorageHttpConstants.HeaderValues.DefaultContentType">
             <summary>
-            This type represents the different constituent parts that make up a resource Uri in the context of cloud services.
+            This is the default content-type xStore uses when no content type is specified
             </summary>
         </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.ResourceUriComponents.#ctor(System.String,System.String,System.String)">
+        <member name="F:Microsoft.Samples.ServiceHosting.StorageClient.StorageHttpConstants.BlobBlockConstants.MaximumBlobSizeBeforeTransmittingAsBlocks">
             <summary>
-            Construct a ResourceUriComponents object.
-            </summary>
-            <param name="accountName">The account name that should become part of the URI.</param>
-            <param name="containerName">The container name (container, queue or table name) that should become part of the URI.</param>
-            <param name="remainingPart">Remaining part of the URI.</param>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.ResourceUriComponents.#ctor(System.String,System.String)">
-            <summary>
-            Construct a ResourceUriComponents object.        
-            </summary>
-            <param name="accountName">The account name that should become part of the URI.</param>
-            <param name="containerName">The container name (container, queue or table name) that should become part of the URI.</param>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.ResourceUriComponents.#ctor(System.String)">
-            <summary>
-            Construct a ResourceUriComponents object.        
-            </summary>
-            <param name="accountName">The account name that should become part of the URI.</param>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.ResourceUriComponents.#ctor">
-            <summary>
-            Construct a ResourceUriComponents object.        
+            When transmitting a blob that is larger than this constant, this library automatically
+            transmits the blob as individual blocks. I.e., the blob is (1) partitioned
+            into separate parts (these parts are called blocks) and then (2) each of the blocks is 
+            transmitted separately.
+            The maximum size of this constant as supported by the real blob storage service is currently 
+            64 MB; the development storage tool currently restricts this value to 2 MB.
+            Setting this constant can have a significant impact on the performance for uploading or
+            downloading blobs.
+            As a general guideline: If you run in a reliable environment increase this constant to reduce
+            the amount of roundtrips. In an unreliable environment keep this constant low to reduce the 
+            amount of data that needs to be retransmitted in case of connection failures.
             </summary>
         </member>
-        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.ResourceUriComponents.AccountName">
+        <member name="F:Microsoft.Samples.ServiceHosting.StorageClient.StorageHttpConstants.BlobBlockConstants.BlockSize">
             <summary>
-            The account name in the URI.
+            The size of a single block when transmitting a blob that is larger than the 
+            MaximumBlobSizeBeforeTransmittingAsBlocks constant (see above).
+            The maximum size of this constant is currently 4 MB; the development storage 
+            tool currently restricts this value to 1 MB.
+            Setting this constant can have a significant impact on the performance for uploading or 
+            downloading blobs.
+            As a general guideline: If you run in a reliable environment increase this constant to reduce
+            the amount of roundtrips. In an unreliable environment keep this constant low to reduce the 
+            amount of data that needs to be retransmitted in case of connection failures.
             </summary>
         </member>
-        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.ResourceUriComponents.ContainerName">
+        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.StorageHttpConstants.RegularExpressionStrings">
             <summary>
-            This is really the first component (delimited by '/') after the account name. Since it happens to
-            be a container name in the context of all our storage services (containers in blob storage,
-            queues in the queue service and table names in table storage), it's named as ContainerName to make it more 
-            readable at the cost of slightly being incorrectly named.
+            Contains regular expressions for checking whether container and table names conform
+            to the rules of the storage REST protocols.
             </summary>
         </member>
-        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.ResourceUriComponents.RemainingPart">
+        <member name="F:Microsoft.Samples.ServiceHosting.StorageClient.StorageHttpConstants.RegularExpressionStrings.ValidContainerNameRegex">
             <summary>
-            The remaining string in the URI.
+            Container or queue names that match against this regular expression are valid.
             </summary>
         </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageCanonicalizer.CanonicalizeHttpRequest(System.Uri,Microsoft.Samples.ServiceHosting.StorageClient.ResourceUriComponents,System.String,System.String,System.String,System.Collections.Specialized.NameValueCollection)">
+        <member name="F:Microsoft.Samples.ServiceHosting.StorageClient.StorageHttpConstants.RegularExpressionStrings.ValidTableNameRegex">
             <summary>
-            Create a canonicalized string out of HTTP request header contents for signing 
-            blob/queue requests with the Shared Authentication scheme. 
+            Table names that match against this regular expression are valid.
             </summary>
-            <param name="address">The uri address of the HTTP request.</param>
-            <param name="uriComponents">Components of the Uri extracted out of the request.</param>
-            <param name="method">The method of the HTTP request (GET/PUT, etc.).</param>
-            <param name="contentType">The content type of the HTTP request.</param>
-            <param name="date">The date of the HTTP request.</param>
-            <param name="headers">Should contain other headers of the HTTP request.</param>
-            <returns>A canonicalized string of the HTTP request.</returns>
         </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageCanonicalizer.CanonicalizeHttpRequest(System.Net.HttpWebRequest,Microsoft.Samples.ServiceHosting.StorageClient.ResourceUriComponents)">
+        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.QueueStorage">
             <summary>
-            Canonicalize HTTP header contents.
+            The entry point of the queue storage API
             </summary>
-            <param name="request">An HttpWebRequest object.</param>
-            <param name="uriComponents">Components of the Uri extracted out of the request.</param>
-            <returns>The canonicalized string of the given HTTP request's header.</returns>
         </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageCanonicalizer.ConvertDateTimeToHttpString(System.DateTime)">
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.QueueStorage.Create(System.Uri,System.Nullable{System.Boolean},System.String,System.String)">
             <summary>
-            Creates a standard datetime string for the shared key lite authentication scheme.
+            Factory method for QueueStorage
             </summary>
-            <param name="dateTime">DateTime value to convert to a string in the expected format.</param>
+            <param name="baseUri">The base URI of the queue service</param>
+            <param name="usePathStyleUris">If true, path-style URIs (http://baseuri/accountname/containername/objectname) are used.
+            If false host-style URIs (http://accountname.baseuri/containername/objectname) are used,
+            where baseuri is the URI of the service.
+            If null, the choice is made automatically: path-style URIs if host name part of base URI is an 
+            IP addres, host-style otherwise.</param>
+            <param name="accountName">The name of the storage account</param>
+            <param name="base64Key">Authentication key used for signing requests</param>
+            <returns>A newly created QueueStorage instance</returns>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.QueueStorage.GetQueue(System.String)">
+            <summary>
+            Get a reference to a Queue object with a specified name. This method does not make a call to
+            the queue service.
+            </summary>
+            <param name="queueName">The name of the queue</param>
+            <returns>A newly created queue object</returns>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.QueueStorage.ListQueues">
+            <summary>
+            Lists the queues within the account.
+            </summary>
+            <returns>A list of queues</returns>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.QueueStorage.ListQueues(System.String)">
+            <summary>
+            Lists the queues within the account that start with the given prefix.
+            </summary>
+            <param name="prefix">If prefix is null returns all queues.</param>
+            <returns>A list of queues.</returns>
+        </member>
+        <member name="F:Microsoft.Samples.ServiceHosting.StorageClient.QueueStorage.DefaultTimeout">
+            <summary>
+            The default timeout
+            </summary>
+        </member>
+        <member name="F:Microsoft.Samples.ServiceHosting.StorageClient.QueueStorage.DefaultRetryPolicy">
+            <summary>
+            The default retry policy
+            </summary>
+        </member>
+        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.QueueStorage.Timeout">
+            <summary>
+            The time out for each request to the storage service.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.QueueStorage.RetryPolicy">
+            <summary>
+            The retry policy used for retrying requests
+            </summary>
+        </member>
+        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.QueueStorage.BaseUri">
+            <summary>
+            The base URI of the blob storage service
+            </summary>
+        </member>
+        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.QueueStorage.AccountName">
+            <summary>
+            The name of the storage account
+            </summary>
+        </member>
+        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.QueueStorage.UsePathStyleUris">
+            <summary>
+            Indicates whether to use/generate path-style or host-style URIs
+            </summary>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.QueueStorageRest.GetQueue(System.String)">
+            <summary>
+            Get a reference to a Queue object with a specified name. This method does not make a call to
+            the queue service.
+            </summary>
+            <param name="queueName">The name of the queue</param>
+            <returns>A newly created queue object</returns>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.QueueStorageRest.ListQueues(System.String)">
+            <summary>
+            Lists all queues with a given prefix within an account.
+            </summary>
+            <param name="prefix"></param>
+            <returns>The list of queue names.</returns>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.QueueStorageRest.ListQueuesImpl(System.String,System.String,System.Int32)">
+            <summary>
+            Lists the queues within the account.
+            </summary>
+            <returns>A list of queues</returns>
+        </member>
+        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue">
+            <summary>
+            Objects of this class represent a queue in a user's storage account.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue._name">
+            <summary>
+            The name of the queue.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue._account">
+            <summary>
+            The user account this queue lives in.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue.#ctor">
+            <summary>
+            This constructor is only called by subclasses.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue.CreateQueue(System.Boolean@)">
+            <summary>
+            Creates a queue in the specified storage account.
+            </summary>
+            <param name="queueAlreadyExists">true if a queue with the same name already exists.</param>
+            <returns>true if the queue was successfully created.</returns>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue.CreateQueue">
+            <summary>
+            Creates a queue in the specified storage account.
+            </summary>
+            <returns>true if the queue was successfully created.</returns>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue.DoesQueueExist">
+            <summary>
+            Determines whether a queue with the same name already exists in an account.
+            </summary>
+            <returns>true if a queue with the same name already exists.</returns>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue.DeleteQueue">
+            <summary>
+            Deletes the queue. The queue will be deleted regardless of whether there are messages in the 
+            queue or not.
+            </summary>
+            <returns>true if the queue was successfully deleted.</returns>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue.SetProperties(Microsoft.Samples.ServiceHosting.StorageClient.QueueProperties)">
+            <summary>
+            Sets the properties of a queue.
+            </summary>
+            <param name="properties">The queue's properties to set.</param>
+            <returns>true if the properties were successfully written to the queue.</returns>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue.GetProperties">
+            <summary>
+            Retrieves the queue's properties.
+            </summary>
+            <returns>The queue's properties.</returns>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue.ApproximateCount">
+            <summary>
+            Retrieves the approximate number of messages in a queue.
+            </summary>
+            <returns>The approximate number of messages in this queue.</returns>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue.PutMessage(Microsoft.Samples.ServiceHosting.StorageClient.Message)">
+            <summary>
+            Puts a message in the queue.
+            </summary>
+            <param name="msg">The message to store in the queue.</param>
+            <returns>true if the message has been successfully enqueued.</returns>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue.PutMessage(Microsoft.Samples.ServiceHosting.StorageClient.Message,System.Int32)">
+            <summary>
+            Puts a message in the queue.
+            </summary>
+            <param name="msg">The message to store in the queue.</param>
+            <param name="timeToLiveInSeconds">The time to live for the message in seconds.</param>
+            <returns>true if the message has been successfully enqueued.</returns>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue.GetMessage">
+            <summary>
+            Retrieves a message from the queue. 
+            </summary>
+            <returns>The message retrieved or null if the queue is empty.</returns>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue.GetMessage(System.Int32)">
+            <summary>
+            Retrieves a message and sets its visibility timeout to the specified number of seconds.
+            </summary>
+            <param name="visibilityTimeoutInSeconds">Visibility timeout of the message retrieved in seconds.</param>
             <returns></returns>
         </member>
-        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.MessageCanonicalizer.CanonicalizedString">
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue.GetMessages(System.Int32)">
             <summary>
-            An internal class that stores the canonicalized string version of an HTTP request.
+            Tries to retrieve the given number of messages.
+            </summary>
+            <param name="numberOfMessages">Maximum number of messages to retrieve.</param>
+            <returns>The list of messages retrieved.</returns>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue.GetMessages(System.Int32,System.Int32)">
+            <summary>
+            Tries to retrieve the given number of messages.
+            </summary>
+            <param name="numberOfMessages">Maximum number of messages to retrieve.</param>
+            <param name="visibilityTimeoutInSeconds">The visibility timeout of the retrieved messages in seconds.</param>
+            <returns>The list of messages retrieved.</returns>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue.PeekMessage">
+            <summary>
+            Get a message from the queue but do not actually dequeue it. The message will remain visible 
+            for other parties requesting messages.
+            </summary>
+            <returns>The message retrieved or null if there are no messages in the queue.</returns>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue.PeekMessages(System.Int32)">
+            <summary>
+            Tries to get a copy of messages in the queue without actually dequeuing the messages.
+            The messages will remain visible in the queue.
+            </summary>
+            <param name="numberOfMessages">Maximum number of message to retrieve.</param>
+            <returns>The list of messages retrieved.</returns>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue.DeleteMessage(Microsoft.Samples.ServiceHosting.StorageClient.Message)">
+            <summary>
+            Deletes a message from the queue.
+            </summary>
+            <param name="msg">The message to retrieve with a valid popreceipt.</param>
+            <returns>true if the operation was successful.</returns>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue.Clear">
+            <summary>
+            Delete all messages in a queue.
+            </summary>
+            <returns>true if all messages were deleted successfully.</returns>
+        </member>
+        <member name="F:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue.DefaultPollInterval">
+            <summary>
+            The default time interval between polling the queue for messages. 
+            Polling is only enabled if the user has called StartReceiving().
             </summary>
         </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageCanonicalizer.CanonicalizedString.#ctor(System.String)">
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue.StartReceiving">
             <summary>
-            Constructor for the class.
+            Starts the automatic reception of messages.
             </summary>
-            <param name="initialElement">The first canonicalized element to start the string with.</param>
+            <returns>true if the operation was successful.</returns>
         </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageCanonicalizer.CanonicalizedString.AppendCanonicalizedElement(System.String)">
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue.StopReceiving">
             <summary>
-            Append additional canonicalized element to the string.
-            </summary>
-            <param name="element">An additional canonicalized element to append to the string.</param>
-        </member>
-        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.MessageCanonicalizer.CanonicalizedString.Value">
-            <summary>
-            Property for the canonicalized string.
+            Stop the automatic reception of messages.
             </summary>
         </member>
-        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.HttpRequestAccessor">
+        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue.Name">
             <summary>
-            Use this class to extract various header values from Http requests.
+            The name of the queue exposed as a public property.
             </summary>
         </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.HttpRequestAccessor.GetHeaderValues(System.Collections.Specialized.NameValueCollection,System.String)">
+        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue.AccountInfo">
             <summary>
-            A helper function for extracting HTTP header values from a NameValueCollection object.
-            </summary>
-            <param name="headers">A NameValueCollection object that should contain HTTP header name-values pairs.</param>
-            <param name="headerName">Name of the header that we want to get values of.</param>
-            <returns>A array list of values for the header. The values are in the same order as they are stored in the NameValueCollection object.</returns>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.HttpRequestAccessor.ConstructResourceUri(System.Uri,Microsoft.Samples.ServiceHosting.StorageClient.ResourceUriComponents,System.Boolean)">
-            <summary>
-            Constructs an URI given all its constituents
-            </summary>
-            <param name="endpoint">
-            This is the service endpoint in case of path-style URIs and a host suffix in case of host-style URIs
-            IMPORTANT: This does NOT include the service name or account name
-            </param>
-            <param name="uriComponents">Uri constituents</param>
-            <param name="pathStyleUri">Indicates whether to construct a path-style Uri (true) or host-style URI (false)</param>
-            <returns>Full uri</returns>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.HttpRequestAccessor.ConstructPathStyleResourceUri(System.Uri,Microsoft.Samples.ServiceHosting.StorageClient.ResourceUriComponents)">
-            <summary>
-            Constructs a path-style resource URI given all its constituents
+            The account info object this queue lives in -- exposed as an internal property.
             </summary>
         </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.HttpRequestAccessor.ConstructHostStyleResourceUri(System.Uri,Microsoft.Samples.ServiceHosting.StorageClient.ResourceUriComponents)">
+        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue.UsePathStyleUris">
             <summary>
-            Constructs a host-style resource URI given all its constituents
+            Indicates whether to use/generate path-style or host-style URIs
             </summary>
         </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.HttpRequestAccessor.ConstructHostStyleAccountUri(System.Uri,System.String)">
+        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue.QueueUri">
             <summary>
-            Given the host suffix part, service name and account name, this method constructs the account Uri
+            The URI of the queue
             </summary>
         </member>
-        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.SharedKeyCredentials">
+        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue.RetryPolicy">
             <summary>
-            Objects of this class contain the credentials (name and key) of a storage account.
+            The retry policy used for retrying requests; this is the retry policy of the 
+            storage account where this queue was created
             </summary>
         </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.SharedKeyCredentials.#ctor(System.String,System.Byte[])">
+        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue.Timeout">
             <summary>
-            Create a SharedKeyCredentials object given an account name and a shared key.
+            The timeout of requests.
             </summary>
         </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.SharedKeyCredentials.SignRequest(System.Net.HttpWebRequest,Microsoft.Samples.ServiceHosting.StorageClient.ResourceUriComponents)">
+        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue.PollInterval">
             <summary>
-            Signs the request appropriately to make it an authenticated request.
-            Note that this method takes the URI components as decoding the URI components requires the knowledge
-            of whether the URI is in path-style or host-style and a host-suffix if it's host-style.
+            The poll interval in milliseconds. If not explicitly set, this defaults to 
+            the DefaultPollInterval.
             </summary>
         </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.SharedKeyCredentials.SignRequestForSharedKeyLite(System.Net.HttpWebRequest,Microsoft.Samples.ServiceHosting.StorageClient.ResourceUriComponents)">
+        <member name="E:Microsoft.Samples.ServiceHosting.StorageClient.MessageQueue.MessageReceived">
             <summary>
-            Signs requests using the SharedKeyLite authentication scheme with is used for the table storage service.
+            The event users subscribe to in order to automatically receive messages
+            from a queue.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.RetryPolicy">
+            <summary>
+            This delegate define the shape of a retry policy. A retry policy will invoke the given
+            <paramref name="action"/> as many times as it wants to in the face of 
+            retriable StorageServerExceptions.
+            </summary>
+            <param name="action">The action to retry</param>
+            <returns></returns>
+        </member>
+        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.RetryPolicies">
+            <summary>
+            Provides definitions for some standard retry policies.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.RetryPolicies.NoRetry(System.Action)">
+            <summary>
+            Policy that does no retries i.e., it just invokes <paramref name="action"/> exactly once
+            </summary>
+            <param name="action">The action to retry</param>
+            <returns>The return value of <paramref name="action"/></returns>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.RetryPolicies.RetryN(System.Int32,System.TimeSpan)">
+            <summary>
+            Policy that retries a specified number of times with a specified fixed time interval between retries
+            </summary>
+            <param name="numberOfRetries">The number of times to retry. Should be a non-negative number</param>
+            <param name="intervalBetweenRetries">The time interval between retries. Use TimeSpan.Zero to specify immediate
+            retries</param>
+            <returns></returns>
+            <remarks>When <paramref name="numberOfRetries"/> is 0 and <paramref name="intervalBetweenRetries"/> is
+            TimeSpan.Zero this policy is equivalent to the NoRetry policy</remarks>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.RetryPolicies.RetryExponentialN(System.Int32,System.TimeSpan)">
+            <summary>
+            Policy that retries a specified number of times with a randomized exponential backoff scheme
+            </summary>
+            <param name="numberOfRetries">The number of times to retry. Should be a non-negative number.</param>
+            <param name="deltaBackoff">The multiplier in the exponential backoff scheme</param>
+            <returns></returns>
+            <remarks>For this retry policy, the minimum amount of milliseconds between retries is given by the 
+            StandardMinBackoff constant, and the maximum backoff is predefined by the StandardMaxBackoff constant. 
+            Otherwise, the backoff is calculated as random(2^currentRetry) * deltaBackoff.</remarks>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.RetryPolicies.RetryExponentialN(System.Int32,System.TimeSpan,System.TimeSpan,System.TimeSpan)">
+            <summary>
+            Policy that retries a specified number of times with a randomized exponential backoff scheme
+            </summary>
+            <param name="numberOfRetries">The number of times to retry. Should be a non-negative number</param>
+            <param name="deltaBackoff">The multiplier in the exponential backoff scheme</param>
+            <param name="minBackoff">The minimum backoff interval</param>
+            <param name="maxBackoff">The maximum backoff interval</param>
+            <returns></returns>
+            <remarks>For this retry policy, the minimum amount of milliseconds between retries is given by the 
+            minBackoff parameter, and the maximum backoff is predefined by the maxBackoff parameter. 
+            Otherwise, the backoff is calculated as random(2^currentRetry) * deltaBackoff.</remarks>
+        </member>
+        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.ContainerAccessControl">
+            <summary>
+            Access control for containers
+            </summary>
+        </member>
+        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.BlobProperties">
+            <summary>
+            The properties of a blob.
+            No member of this class makes a storage service request.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobProperties.#ctor(System.String)">
+            <summary>
+            Construct a new BlobProperties object
+            </summary>
+            <param name="name">The name of the blob</param>
+        </member>
+        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.BlobProperties.Name">
+            <summary>
+            Name of the blob
+            </summary>
+        </member>
+        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.BlobProperties.Uri">
+            <summary>
+            URI of the blob
+            </summary>
+        </member>
+        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.BlobProperties.ContentEncoding">
+            <summary>
+            Content encoding of the blob if it set, null otherwise.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.BlobProperties.ContentType">
+            <summary>
+            Content Type of the blob if it is set, null otherwise.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.BlobProperties.ContentLanguage">
+            <summary>
+            Content Language of the blob if it is set, null otherwise.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.BlobProperties.ContentLength">
+            <summary>
+            The length of the blob content, null otherwise.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.BlobProperties.Metadata">
+            <summary>
+            Metadata for the blob in the form of name-value pairs.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.BlobProperties.LastModifiedTime">
+            <summary>
+            The last modified time for the blob. 
+            </summary>
+        </member>
+        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.BlobProperties.ETag">
+            <summary>
+            The ETag of the blob. This is an identifier assigned to the blob by the storage service
+            and is used to distinguish contents of two blobs (or versions of the same blob).
+            </summary>
+        </member>
+        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.ContainerProperties">
+            <summary>
+            The properties of a container.
+            No member of this class makes a storage service request.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.BlobContents">
+            <summary>
+            The contents of the Blob in various forms.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContents.#ctor(System.IO.Stream)">
+            <summary>
+            Construct a new BlobContents object from a stream.
+            </summary>
+            <param name="stream">The stream to/from which blob contents are written/read. The
+            stream should be seekable in order for requests to be retried.</param>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContents.#ctor(System.Byte[])">
+            <summary>
+            Construct a new BlobContents object from a byte array.
+            </summary>
+            <param name="value">The byte array to/from which contents are written/read.</param>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContents.AsBytes">
+            <summary>
+            Get the contents of a blob as a byte array.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.BlobContents.AsStream">
+            <summary>
+            Get the contents of a blob as a stream.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.Message">
+            <summary>
+            Objects of this class represent a single message in the queue.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Samples.ServiceHosting.StorageClient.Message.MaxMessageSize">
+            <summary>
+            The maximum message size in bytes.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Samples.ServiceHosting.StorageClient.Message.MaxTimeToLive">
+            <summary>
+            The maximum amount of time a message is kept in the queue. Max value is 7 days. 
+            Value is given in seconds.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.Message.#ctor">
+            <summary>
+            This constructor is not publicly exposed.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.Message.#ctor(System.String)">
+            <summary>
+            Creates a message and initializes the content of the message to be the specified string.
+            </summary>
+            <param name="content">A string representing the contents of the message.</param>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.Message.#ctor(System.Byte[])">
+            <summary>
+            Creates a message and given the specified byte contents.
+            In this implementation, regardless of whether an XML or binary data is passed into this 
+            function, message contents are converted to base64 before passing the data to the queue service.
+            When calculating the size of the message, the size of the base64 encoding is thus the important
+            parameter.
+            </summary>
+            <param name="content"></param>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.Message.ContentAsString">
+            <summary>
+            Returns the the contents of the message as a string.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.Message.ContentAsBytes">
+            <summary>
+            Returns the content of the message as a byte array
+            </summary>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.Message.SetContentFromBase64String(System.String)">
+            <summary>
+            When calling the Get() operation on a queue, the content of messages 
+            returned in the REST protocol are represented as Base64-encoded strings.
+            This internal function transforms the Base64 representation into a byte array.
+            </summary>
+            <param name="str">The Base64-encoded string.</param>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.Message.GetContentXMLRepresentation(System.Int32@)">
+            <summary>
+            Internal method used for creating the XML that becomes part of a REST request
+            </summary>
+        </member>
+        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.Message.Id">
+            <summary>
+            A unique ID of the message as returned from queue operations.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.Message.PopReceipt">
+            <summary>
+            When a message is retrieved from a queue, a PopReceipt is returned. The PopReceipt is used when 
+            deleting a message from the queue.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.Message.InsertionTime">
+            <summary>
+            The point in time when the message was put into the queue.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.Message.ExpirationTime">
+            <summary>
+            A message's expiration time.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.Message.TimeNextVisible">
+            <summary>
+            The point in time when a message becomes visible again after a Get() operation was called 
+            that returned the message.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.MessageReceivedEventHandler">
+            <summary>
+            Queues in the storage client library expose a functionality for listening for incoming messages. 
+            If a message is put into a queue, a corresponding event is issued and this delegate is called. This functionality
+            is implemented internally in this library by periodically polling for incoming messages.
+            </summary>
+            <param name="sender">The queue that has received a new event.</param>
+            <param name="e">The event argument containing the message.</param>
+        </member>
+        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.MessageReceivedEventArgs">
+            <summary>
+            The argument class for the MessageReceived event.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Samples.ServiceHosting.StorageClient.MessageReceivedEventArgs._msg">
+            <summary>
+            The message itself.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageReceivedEventArgs.#ctor(Microsoft.Samples.ServiceHosting.StorageClient.Message)">
+            <summary>
+            Constructor for creating a message received argument.
+            </summary>
+            <param name="msg"></param>
+        </member>
+        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.MessageReceivedEventArgs.Message">
+            <summary>
+            The message received by the queue.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.QueueProperties.ApproximateMessageCount">
+            <summary>
+            The approximated amount of messages in the queue.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.QueueProperties.Metadata">
+            <summary>
+            Metadata for the queue in the form of name-value pairs.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.StorageAccountInfo">
+            <summary>
+            Objects of this class encapsulate information about a storage account and endpoint configuration. 
+            Associated with a storage account is the account name, the base URI of the account and a shared key. 
+            </summary>
+        </member>
+        <member name="F:Microsoft.Samples.ServiceHosting.StorageClient.StorageAccountInfo.DefaultQueueStorageEndpointConfigurationString">
+            <summary>
+            The default configuration string in configuration files for setting the queue storage endpoint.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Samples.ServiceHosting.StorageClient.StorageAccountInfo.DefaultBlobStorageEndpointConfigurationString">
+            <summary>
+            The default configuration string in configuration files for setting the blob storage endpoint.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Samples.ServiceHosting.StorageClient.StorageAccountInfo.DefaultTableStorageEndpointConfigurationString">
+            <summary>
+            The default configuration string in configuration files for setting the table storage endpoint.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Samples.ServiceHosting.StorageClient.StorageAccountInfo.DefaultAccountNameConfigurationString">
+            <summary>
+            The default configuration string in configuration files for setting the storage account name.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Samples.ServiceHosting.StorageClient.StorageAccountInfo.DefaultAccountSharedKeyConfigurationString">
+            <summary>
+            The default configuration string in configuration files for setting the shared key associated with a storage account.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Samples.ServiceHosting.StorageClient.StorageAccountInfo.DefaultUsePathStyleUrisConfigurationString">
+            <summary>
+            The default configuration string in configuration files for setting the UsePathStyleUris option.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Samples.ServiceHosting.StorageClient.StorageAccountInfo.CSConfigStringPrefix">
+            <summary>
+            The default prefix string in application config and Web.config files to indicate that this setting should be looked up 
+            in the fabric's configuration system.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.StorageAccountInfo.#ctor(System.Uri,System.Nullable{System.Boolean},System.String,System.String)">
+            <summary>
+            Constructor for creating account info objects.
+            </summary>
+            <param name="baseUri">The account's base URI.</param>
+            <param name="usePathStyleUris">If true, path-style URIs (http://baseuri/accountname/containername/objectname) are used.
+            If false host-style URIs (http://accountname.baseuri/containername/objectname) are used,
+            where baseuri is the URI of the service..
+            If null, the choice is made automatically: path-style URIs if host name part of base URI is an 
+            IP addres, host-style otherwise.</param>
+            <param name="accountName">The account name.</param>
+            <param name="base64Key">The account's shared key.</param>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.StorageAccountInfo.#ctor(System.Uri,System.Nullable{System.Boolean},System.String,System.String,System.Boolean)">
+            <summary>
+            Constructor for creating account info objects.
+            </summary>
+            <param name="baseUri">The account's base URI.</param>
+            <param name="usePathStyleUris">If true, path-style URIs (http://baseuri/accountname/containername/objectname) are used.
+            If false host-style URIs (http://accountname.baseuri/containername/objectname) are used,
+            where baseuri is the URI of the service.
+            If null, the choice is made automatically: path-style URIs if host name part of base URI is an 
+            IP addres, host-style otherwise.</param>
+            <param name="accountName">The account name.</param>
+            <param name="base64Key">The account's shared key.</param>
+            <param name="allowIncompleteSettings">true if it shall be allowed to only set parts of the StorageAccountInfo properties.</param>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.StorageAccountInfo.GetDefaultQueueStorageAccountFromConfiguration(System.Boolean)">
+            <summary>
+            Retrieves account settings for the queue service from the default settings. 
+            </summary>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.StorageAccountInfo.GetDefaultQueueStorageAccountFromConfiguration">
+            <summary>
+            Retrieves account settings for the queue service from the default settings. 
+            Throws an exception in case of incomplete settings.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.StorageAccountInfo.GetDefaultTableStorageAccountFromConfiguration(System.Boolean)">
+            <summary>
+            Retrieves account settings for the table service from the default settings. 
+            </summary>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.StorageAccountInfo.GetDefaultTableStorageAccountFromConfiguration">
+            <summary>
+            Retrieves account settings for the table service from the default settings. 
+            Throws an exception in case of incomplete settings.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.StorageAccountInfo.GetDefaultBlobStorageAccountFromConfiguration(System.Boolean)">
+            <summary>
+            Retrieves account settings for the blob service from the default settings. 
+            </summary>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.StorageAccountInfo.GetDefaultBlobStorageAccountFromConfiguration">
+            <summary>
+            Retrieves account settings for the blob service from the default settings. 
+            Throws an exception in case of incomplete settings.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.StorageAccountInfo.GetAccountInfoFromConfiguration(System.String,System.Boolean)">
+            <summary>
+            Gets settings from default configuration names except for the endpoint configuration string.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.StorageAccountInfo.GetAccountInfoFromConfiguration(System.String)">
+            <summary>
+            Gets settings from default configuration names except for the endpoint configuration string. Throws an exception 
+            in the case of incomplete settings.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.StorageAccountInfo.GetConfigurationSetting(System.String,System.String,System.Boolean)">
+            <summary>
+            Gets a configuration setting from application settings in the Web.config or App.config file. 
+            When running in a hosted environment, configuration settings are read from .cscfg
+            files.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.StorageAccountInfo.GetAccountInfoFromConfiguration(System.String,System.String,System.String,System.String,System.Boolean)">
+            <summary>
+            Retrieves account information settings from configuration settings. First, the implementation checks for 
+            settings in an application config section of an app.config or Web.config file. These values are overwritten 
+            if the same settings appear in a .csdef file.
+            The implementation also supports indirect settings. In this case, indirect settings overwrite all other settings.
+            </summary>        
+            <param name="accountNameConfiguration">Configuration string for the account name.</param>
+            <param name="accountSharedKeyConfiguration">Configuration string for the key.</param>
+            <param name="endpointConfiguration">Configuration string for the endpoint.</param>
+            <param name="usePathStyleUrisConfiguration">Configuration string for the path style.</param>
+            <param name="allowIncompleteSettings">If false, an exception is thrown if not all settings are available.</param>
+            <returns>StorageAccountInfo object containing the retrieved settings.</returns>        
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.StorageAccountInfo.IsCompleteSetting">
+            <summary>
+            Checks whether all essential properties of this object are set. Only then, the account info object 
+            should be used in ohter APIs of this library.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.StorageAccountInfo.CheckComplete">
+            <summary>
+            Checks whether this StorageAccountInfo object is complete in the sense that all properties are set.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.StorageAccountInfo.BaseUri">
+            <summary>
+            The base URI of the account.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.StorageAccountInfo.AccountName">
+            <summary>
+            The account name.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.StorageAccountInfo.Base64Key">
+            <summary>
+            The account's key.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.StorageAccountInfo.UsePathStyleUris">
+            <summary>
+            If set, returns the UsePathStyleUris properties. If the property has not been explicitly set, 
+            the implementation tries to derive the correct value from the base URI.
             </summary>
         </member>
     </members>

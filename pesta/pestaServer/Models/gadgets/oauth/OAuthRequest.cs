@@ -24,8 +24,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Jayrock;
 using Jayrock.Json;
-using Pesta.Interop.oauth;
-using Pesta.Libraries.oauth;
+using Pesta.Libraries.OAuth;
 using pestaServer.Models.gadgets.http;
 using String=System.String;
 using Uri=Pesta.Engine.common.uri.Uri;
@@ -581,12 +580,12 @@ namespace pestaServer.Models.gadgets.oauth
             if (OAuthUtil.getParameter(reply, OAuth.OAUTH_TOKEN) == null)
             {
                 throw responseParams.oauthRequestException(OAuthError.UNKNOWN_PROBLEM,
-                    "No oauth_token returned from service provider");
+                    "No oauthToken returned from service provider");
             }
             if (OAuthUtil.getParameter(reply, OAuth.OAUTH_TOKEN_SECRET) == null)
             {
                 throw responseParams.oauthRequestException(OAuthError.UNKNOWN_PROBLEM,
-                    "No oauth_token_secret returned from service provider");
+                    "No oauthToken_secret returned from service provider");
             }
             return reply;
         }
@@ -727,7 +726,7 @@ namespace pestaServer.Models.gadgets.oauth
             // extra data by sending a fetch request for the access token URL.
             //
             // We don't return oauth* parameters from the response, because we know how to handle those
-            // ourselves and some of them (such as oauth_token_secret) aren't supposed to be sent to the
+            // ourselves and some of them (such as oauthToken_secret) aren't supposed to be sent to the
             // client.
             //
             // Note that this data is not stored server-side.  Clients need to cache these user-ids or

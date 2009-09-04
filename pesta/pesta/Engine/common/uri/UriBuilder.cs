@@ -25,7 +25,7 @@ using System.Web;
 
 namespace Pesta.Engine.common.uri
 {
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
+    
     public class UriBuilder
     {
         private static readonly Regex QUERY_PATTERN = new Regex("([^&=]+)=([^&=]*)", RegexOptions.Compiled);

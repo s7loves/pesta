@@ -19,10 +19,8 @@
 #endregion
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using pesta.Data;
 using Pesta.Engine.auth;
-using Pesta.Engine.social.model;
 
 namespace Pesta.Engine.social.spi
 {

@@ -35,7 +35,7 @@ namespace pestaServer.Models.gadgets
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
+    
     /// </para>
     /// </remarks>
     public class DefaultUrlGenerator : UrlGenerator
@@ -147,9 +147,9 @@ namespace pestaServer.Models.gadgets
             }
 
             uri.addQueryParameter("container", context.getContainer());
-            if (context.getModuleId() != 0) 
+            if (!string.IsNullOrEmpty(context.getModuleId())) 
             {
-                uri.addQueryParameter("mid", context.getModuleId().ToString());
+                uri.addQueryParameter("mid", context.getModuleId());
             }
             if (context.getIgnoreCache())
             {

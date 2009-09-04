@@ -17,12 +17,10 @@
  * under the License.
  */
 
-/*global gadgets */
+ // All functions in this file should be treated as deprecated legacy routines.
+ // Gadget authors are explicitly discouraged from using any of them.
 
-// All functions in this file should be treated as deprecated legacy routines.
-// Gadget authors are explicitly discouraged from using any of them.
-
-var JSON = window.JSON || gadgets.json;
+var JSON = gadgets.json;
 
 var _IG_Prefs = (function() {
 
@@ -113,10 +111,6 @@ function _IG_FetchFeedAsJSON(url, callback, numItems, getDescriptions,
             entry.Summary = entry.summary || entry.description;
             entry.Date = entry.pubDate;
           }
-        }
-        for (var ix = 0; ix < resp.data.Entry.length; ++ix) {
-          var entry = resp.data.Entry[ix];
-          entry.Date = (entry.Date / 1000);  // response in sec, not ms
         }
         // for Gadgets back-compatibility, return the feed obj directly
         callback(resp.data);
@@ -259,7 +253,7 @@ function _trim(str) {
  * @param {String | HTMLElement} el The element to toggle.
  */
 function _toggle(el) {
-  el = (typeof el === "string") ? _gel(el) : el;
+  el = _gel(el);
   if (el !== null) {
     if (el.style.display.length === 0 || el.style.display === "block") {
       el.style.display = "none";
@@ -304,14 +298,18 @@ function _max(a, b) {
  * @param {Array.<String | Object>} sym
  */
 function _exportSymbols(name, sym) {
-  var attach = window;
+  var obj = {};
+
+  for (var i = 0, j = sym.length; i < j; i += 2) {
+    obj[sym[i]] = sym[i + 1];
+  }
   var parts = name.split(".");
-  for (var i = 0, j = parts.length; i < j; i++) {
-    var part = parts[i];
-    attach[part] = attach[part] || {};
-    attach = attach[part];
+  var attach = window;
+  for (var k = 0, l = parts.length - 1; k < l; ++k) {
+    var tmp = {};
+    attach[parts[k]] = tmp;
+    attach = tmp;
   }
-  for (var k = 0, l = sym.length; k < l; k += 2) {
-    attach[sym[k]] = sym[k + 1];
-  }
+  attach[parts[parts.length - 1]] = obj;
 }
+

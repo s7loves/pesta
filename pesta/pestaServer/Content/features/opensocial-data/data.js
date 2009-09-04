@@ -156,7 +156,7 @@ opensocial.data.RequestDescriptor.prototype.sendRequest = function() {
     handler = ns[this.tagParts[1]];
   }
   if (!handler) {
-    throw Error("Data handler undefined for " + this.tagName);
+    throw "Data handler undefined for " + this.tagName;
   }
   handler(this);
 };
@@ -169,7 +169,7 @@ opensocial.data.RequestDescriptor.prototype.getSendRequestClosure = function() {
   var self = this;
   return function() {
     self.sendRequest();
-  };
+  }
 };
 
 
@@ -231,7 +231,7 @@ opensocial.data.requests_ = {};
  */
 opensocial.data.registerRequestDescriptor = function(requestDescriptor) {
   if (opensocial.data.requests_[requestDescriptor.key]) {
-    throw Error("Request already registered for " + requestDescriptor.key);
+    throw "Request already registered for " + requestDescriptor.key;
   }
   opensocial.data.requests_[requestDescriptor.key] = requestDescriptor;
 };
@@ -329,7 +329,7 @@ opensocial.data.createSharedRequestCallback_ = function() {
   var callbacks = opensocial.data.currentAPIRequestCallbacks_;
   return function(data) {
     opensocial.data.onAPIResponse(data, keys, callbacks);
-  };
+  }
 };
 
 
@@ -341,48 +341,16 @@ opensocial.data.createSharedRequestCallback_ = function() {
  * @param {Object<string, Function(string, ResponseItem)>} callbacks A map of
  * any custom callbacks by key.
  */
-opensocial.data.onAPIResponse = function(responseItem, keys, callbacks) {
+opensocial.data.onAPIResponse = function(data, keys, callbacks) {
   for (var i = 0; i < keys.length; i++) {
     var key = keys[i];
-    var item = responseItem.get(key);
-    if (!item.hadError()) {
-      var data = opensocial.data.extractJson_(item, key);
-      if (callbacks[key]) {
-        callbacks[key](key, data);
-      } else {
-        opensocial.data.DataContext.putDataSet(key, data);
-      }
+    var item = data.get(key);
+    if (callbacks[key]) {
+      callbacks[key](key, item);
+    } else {
+      opensocial.data.DataContext.putDataSet(key, item);
     }
-    // TODO: What should we do if there *is* an error?
   }
-};
-
-/**
- * Extract the JSON payload from the ResponseItem. This includes
- * iterating over an array of API objects and extracting their JSON into a
- * simple array structure.
- */
-opensocial.data.extractJson_ = function(responseItem, key) {
-  var data = responseItem.getData();
-  if (data.array_) {
-    var out = [];
-    for (var i = 0; i < data.array_.length; i++) {
-      out.push(data.array_[i].fields_);
-    }
-    data = out;
-    
-    // For os:PeopleRequests that request @groupId="self", crack the array
-    var request = opensocial.data.requests_[key];
-    if (request.tagName == "os:PeopleRequest") {
-      var groupId = request.getAttribute("groupId");
-      if ((!groupId || groupId == "@self") && data.length == 1) {
-        data = data[0];
-      }
-    }
-  } else {
-    data = data.fields_ || data;
-  }
-  return data;
 };
 
 
@@ -403,7 +371,7 @@ opensocial.data.registerRequestHandler = function(name, handler) {
     }
     ns = opensocial.data.NSMAP[tagParts[0]] = {};
   } else if (ns[tagParts[1]]) {
-    throw Error('Request handler ' + tagParts[1] + ' is already defined.');
+    throw 'Request handler ' + tagParts[1] + ' is already defined.';
   }
 
   ns[tagParts[1]] = handler;
@@ -533,38 +501,18 @@ opensocial.data.transformSpecialValue = function(value) {
 
 
 /**
- * Parses a string of comma-separated field names and adds the resulting array
- * (if any) to the params object.
- * @param {object} params The params object used to construct an Opensocial
- * DataRequest
- * @param {string} fieldStr A string containing comma-separated field names
- */
-opensocial.data.addFieldsToParams_ = function(params, fieldsStr) {
-  if (!fieldsStr) {
-    return;
-  }
-  var fields = fieldsStr.replace(/(^\s*|\s*$)/g, '').split(/\s*,\s*/);
-  params[opensocial.DataRequest.PeopleRequestFields.PROFILE_DETAILS] = fields;
-};
-
-
-/**
  * Anonymous function defines OpenSocial specific requests.
  * Automatically called when this file is loaded.
  */
 (function() {
   opensocial.data.registerRequestHandler("os:ViewerRequest", function(descriptor) {
-    var params = {};
-    opensocial.data.addFieldsToParams_(params, descriptor.getAttribute("fields"));
-    var req = opensocial.data.getCurrentAPIRequest().newFetchPersonRequest("VIEWER", params);
+    var req = opensocial.data.getCurrentAPIRequest().newFetchPersonRequest("VIEWER");
     // TODO: Support @fields param.
     opensocial.data.addToCurrentAPIRequest(req, descriptor.key);
   });
 
   opensocial.data.registerRequestHandler("os:OwnerRequest", function(descriptor) {
-    var params = {};
-    opensocial.data.addFieldsToParams_(params, descriptor.getAttribute("fields"));
-    var req = opensocial.data.getCurrentAPIRequest().newFetchPersonRequest("OWNER", params);
+    var req = opensocial.data.getCurrentAPIRequest().newFetchPersonRequest("OWNER");
     // TODO: Support @fields param.
     opensocial.data.addToCurrentAPIRequest(req, descriptor.key);
   });
@@ -577,11 +525,9 @@ opensocial.data.addFieldsToParams_ = function(params, fieldsStr) {
     if (groupId != "@self") {
       idSpec.groupId = opensocial.data.transformSpecialValue(groupId);
     }
-    var params = {};
-    opensocial.data.addFieldsToParams_(params, descriptor.getAttribute("fields"));
     // TODO: Support other params.
     var req = opensocial.data.getCurrentAPIRequest().newFetchPeopleRequest(
-        opensocial.newIdSpec(idSpec), params);
+        opensocial.newIdSpec(idSpec));
     // TODO: Annotate with the @ids property.
     opensocial.data.addToCurrentAPIRequest(req, descriptor.key);
   });

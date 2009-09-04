@@ -28,10 +28,6 @@ using pestaServer.Models.gadgets.http;
 
 namespace pestaServer.Models.gadgets
 {
-    /// <summary>
-    /// Summary description for JsFeatureLoader
-    /// </summary>
-    /// Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
     public class JsFeatureLoader
     {
         public static char FILE_SEPARATOR = ',';

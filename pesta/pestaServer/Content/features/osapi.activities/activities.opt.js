@@ -1,0 +1,1 @@
+var osapi=osapi||{};osapi.activities=function(){var a=function(c){c=c||{};osapi.base.ensureAppId(c);return osapi.newJsonRequest("activities.get",c)};var b=function(c){osapi.base.ensureAppId(c);return osapi.newJsonRequest("activities.create",c)};return{get:a,create:b}}();

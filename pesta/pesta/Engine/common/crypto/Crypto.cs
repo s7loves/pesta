@@ -17,7 +17,8 @@
  * specific language governing permissions and limitations under the License.
  */
 #endregion
-using System;using System.IO;
+using System;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 
@@ -28,7 +29,7 @@ namespace Pesta
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
+    
     /// </para>
     /// </remarks>
     public class Crypto

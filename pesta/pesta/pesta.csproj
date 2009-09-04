@@ -75,11 +75,30 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Engine\common\ResourceLoader.cs" />
+    <Compile Include="Engine\common\util\HashUtil.cs" />
+    <Compile Include="Engine\common\util\JsonConversionUtil.cs" />
+    <Compile Include="Engine\common\xml\XmlUtil.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="COPYING.txt" />
+    <Content Include="LICENSE.txt" />
+    <Content Include="NOTICE.txt" />
+    <Compile Include="DataAccess\AzureDbFetcher.cs" />
+    <Compile Include="DataAccess\IPestaDbProvider.cs" />
+    <Compile Include="DataAccess\LinqRaya.designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>LinqRaya.dbml</DependentUpon>
+    </Compile>
+    <Compile Include="DataAccess\RayaDbFetcher.cs" />
+    <Compile Include="Engine\auth\AnonymousAuthenticationHandler.cs" />
     <Compile Include="Engine\auth\AnonymousSecurityToken.cs" />
-    <Compile Include="Engine\auth\IAuthenticationHandler.cs" />
     <Compile Include="Engine\auth\AuthInfo.cs" />
     <Compile Include="Engine\auth\BasicSecurityToken.cs" />
     <Compile Include="Engine\auth\BasicSecurityTokenDecoder.cs" />
+    <Compile Include="Engine\auth\IAuthenticationHandler.cs" />
     <Compile Include="Engine\auth\ISecurityToken.cs" />
     <Compile Include="Engine\auth\SecurityTokenDecoder.cs" />
     <Compile Include="Engine\auth\SecurityTokenException.cs" />
@@ -89,125 +108,6 @@
     <Compile Include="Engine\common\crypto\BlobCrypterException.cs" />
     <Compile Include="Engine\common\crypto\BlobExpiredException.cs" />
     <Compile Include="Engine\common\crypto\Crypto.cs" />
-    <Compile Include="Engine\common\ResourceLoader.cs" />
-    <Compile Include="Engine\common\util\HashUtil.cs" />
-    <Compile Include="Engine\common\util\JsonConversionUtil.cs" />
-    <Compile Include="Engine\common\xml\XmlUtil.cs" />
-    <Compile Include="Utilities\CustomAttr.cs" />
-    <Compile Include="Utilities\EnumBaseType.cs" />
-    <Compile Include="Utilities\HashKey.cs" />
-    <Compile Include="Libraries\jayrock.json\BooleanObject.cs" />
-    <Compile Include="Libraries\jayrock.json\collections\KeyedCollection.cs" />
-    <Compile Include="Libraries\jayrock.json\Compat.cs" />
-    <Compile Include="Libraries\jayrock.json\configuration\DictionarySectionHandler.cs" />
-    <Compile Include="Libraries\jayrock.json\configuration\ListSectionHandler.cs" />
-    <Compile Include="Libraries\jayrock.json\configuration\TypeListSectionHandler.cs" />
-    <Compile Include="Libraries\jayrock.json\diagnostics\DebugString.cs" />
-    <Compile Include="Libraries\jayrock.json\DictionaryHelper.cs" />
-    <Compile Include="Libraries\jayrock.json\json\BufferedCharReader.cs" />
-    <Compile Include="Libraries\jayrock.json\json\conversion\AnyType.cs" />
-    <Compile Include="Libraries\jayrock.json\json\conversion\converters\AnyImporter.cs" />
-    <Compile Include="Libraries\jayrock.json\json\conversion\converters\ArrayImporter.cs" />
-    <Compile Include="Libraries\jayrock.json\json\conversion\converters\BooleanExporter.cs" />
-    <Compile Include="Libraries\jayrock.json\json\conversion\converters\BooleanImporter.cs" />
-    <Compile Include="Libraries\jayrock.json\json\conversion\converters\ByteArrayExporter.cs" />
-    <Compile Include="Libraries\jayrock.json\json\conversion\converters\ByteArrayImporter.cs" />
-    <Compile Include="Libraries\jayrock.json\json\conversion\converters\ComponentExporter.cs" />
-    <Compile Include="Libraries\jayrock.json\json\conversion\converters\ComponentImporter.cs" />
-    <Compile Include="Libraries\jayrock.json\json\conversion\converters\ControlExporter.cs" />
-    <Compile Include="Libraries\jayrock.json\json\conversion\converters\DataRowExporter.cs" />
-    <Compile Include="Libraries\jayrock.json\json\conversion\converters\DataRowViewExporter.cs" />
-    <Compile Include="Libraries\jayrock.json\json\conversion\converters\DataSetExporter.cs" />
-    <Compile Include="Libraries\jayrock.json\json\conversion\converters\DataTableExporter.cs" />
-    <Compile Include="Libraries\jayrock.json\json\conversion\converters\DataViewExporter.cs" />
-    <Compile Include="Libraries\jayrock.json\json\conversion\converters\DateTimeExporter.cs" />
-    <Compile Include="Libraries\jayrock.json\json\conversion\converters\DateTimeImporter.cs" />
-    <Compile Include="Libraries\jayrock.json\json\conversion\converters\DbDataRecordExporter.cs" />
-    <Compile Include="Libraries\jayrock.json\json\conversion\converters\DictionaryExporter.cs" />
-    <Compile Include="Libraries\jayrock.json\json\conversion\converters\DictionaryImporter.cs" />
-    <Compile Include="Libraries\jayrock.json\json\conversion\converters\EnumerableExporter.cs" />
-    <Compile Include="Libraries\jayrock.json\json\conversion\converters\EnumImporter.cs" />
-    <Compile Include="Libraries\jayrock.json\json\conversion\converters\ExportAwareExporter.cs" />
-    <Compile Include="Libraries\jayrock.json\json\conversion\converters\ExporterBase.cs" />
-    <Compile Include="Libraries\jayrock.json\json\conversion\converters\GuidImporter.cs" />
-    <Compile Include="Libraries\jayrock.json\json\conversion\converters\ImportAwareImporter.cs" />
-    <Compile Include="Libraries\jayrock.json\json\conversion\converters\ImporterBase.cs" />
-    <Compile Include="Libraries\jayrock.json\json\conversion\converters\JsonNumberExporter.cs" />
-    <Compile Include="Libraries\jayrock.json\json\conversion\converters\ListImporter.cs" />
-    <Compile Include="Libraries\jayrock.json\json\conversion\converters\NameValueCollectionExporter.cs" />
-    <Compile Include="Libraries\jayrock.json\json\conversion\converters\NameValueCollectionImporter.cs" />
-    <Compile Include="Libraries\jayrock.json\json\conversion\converters\NumberExporter.cs" />
-    <Compile Include="Libraries\jayrock.json\json\conversion\converters\NumberImporter.cs" />
-    <Compile Include="Libraries\jayrock.json\json\conversion\converters\StringExporter.cs" />
-    <Compile Include="Libraries\jayrock.json\json\conversion\converters\StringImporter.cs" />
-    <Compile Include="Libraries\jayrock.json\json\conversion\converters\UriImporter.cs" />
-    <Compile Include="Libraries\jayrock.json\json\conversion\CustomTypeDescriptor.cs" />
-    <Compile Include="Libraries\jayrock.json\json\conversion\ExportContext.cs" />
-    <Compile Include="Libraries\jayrock.json\json\conversion\ExporterCollection.cs" />
-    <Compile Include="Libraries\jayrock.json\json\conversion\ExporterListSectionHandler.cs" />
-    <Compile Include="Libraries\jayrock.json\json\conversion\IExporter.cs" />
-    <Compile Include="Libraries\jayrock.json\json\conversion\IImporter.cs" />
-    <Compile Include="Libraries\jayrock.json\json\conversion\IJsonExportable.cs" />
-    <Compile Include="Libraries\jayrock.json\json\conversion\IJsonImportable.cs" />
-    <Compile Include="Libraries\jayrock.json\json\conversion\ImportContext.cs" />
-    <Compile Include="Libraries\jayrock.json\json\conversion\ImporterCollection.cs" />
-    <Compile Include="Libraries\jayrock.json\json\conversion\ImporterListSectionHandler.cs" />
-    <Compile Include="Libraries\jayrock.json\json\conversion\IObjectMemberExporter.cs" />
-    <Compile Include="Libraries\jayrock.json\json\conversion\IObjectMemberImporter.cs" />
-    <Compile Include="Libraries\jayrock.json\json\conversion\JsonConvert.cs" />
-    <Compile Include="Libraries\jayrock.json\json\conversion\JsonDefaultValueAttribute.cs" />
-    <Compile Include="Libraries\jayrock.json\json\conversion\JsonExportAttribue.cs" />
-    <Compile Include="Libraries\jayrock.json\json\conversion\JsonIgnoreAttribute.cs" />
-    <Compile Include="Libraries\jayrock.json\json\conversion\JsonMemberNameAttribute.cs" />
-    <Compile Include="Libraries\jayrock.json\json\conversion\JsonMemberNamingConventionAttribute.cs" />
-    <Compile Include="Libraries\jayrock.json\json\conversion\PropertyCustomization.cs" />
-    <Compile Include="Libraries\jayrock.json\json\EmptyJsonWriter.cs" />
-    <Compile Include="Libraries\jayrock.json\json\InvalidMemberException.cs" />
-    <Compile Include="Libraries\jayrock.json\json\JsonArray.cs" />
-    <Compile Include="Libraries\jayrock.json\json\JsonBoolean.cs" />
-    <Compile Include="Libraries\jayrock.json\json\JsonException.cs" />
-    <Compile Include="Libraries\jayrock.json\json\JsonNull.cs" />
-    <Compile Include="Libraries\jayrock.json\json\JsonNumber.cs" />
-    <Compile Include="Libraries\jayrock.json\json\JsonObject.cs" />
-    <Compile Include="Libraries\jayrock.json\json\JsonReader.cs" />
-    <Compile Include="Libraries\jayrock.json\json\JsonReaderBase.cs" />
-    <Compile Include="Libraries\jayrock.json\json\JsonRecorder.cs" />
-    <Compile Include="Libraries\jayrock.json\json\JsonString.cs" />
-    <Compile Include="Libraries\jayrock.json\json\JsonTextReader.cs" />
-    <Compile Include="Libraries\jayrock.json\json\JsonTextWriter.cs" />
-    <Compile Include="Libraries\jayrock.json\json\JsonToken.cs" />
-    <Compile Include="Libraries\jayrock.json\json\JsonTokenClass.cs" />
-    <Compile Include="Libraries\jayrock.json\json\JsonWriter.cs" />
-    <Compile Include="Libraries\jayrock.json\json\JsonWriterBase.cs" />
-    <Compile Include="Libraries\jayrock.json\json\JsonWriterBracket.cs" />
-    <Compile Include="Libraries\jayrock.json\Mask.cs" />
-    <Compile Include="Libraries\jayrock.json\UnixTime.cs" />
-    <Compile Include="Libraries\oauth\OAuth.cs" />
-    <Compile Include="Libraries\oauth\OAuthAccessor.cs" />
-    <Compile Include="Libraries\oauth\OAuthConsumer.cs" />
-    <Compile Include="Libraries\oauth\OAuthException.cs" />
-    <Compile Include="Libraries\oauth\OAuthMessage.cs" />
-    <Compile Include="Libraries\oauth\OAuthProblemException.cs" />
-    <Compile Include="Libraries\oauth\OAuthServiceProvider.cs" />
-    <Compile Include="Libraries\oauth\OAuthValidator.cs" />
-    <Compile Include="Libraries\oauth\server\OAuthServlet.cs" />
-    <Compile Include="Libraries\oauth\signature\HMAC_SHA1.cs" />
-    <Compile Include="Libraries\oauth\signature\OAuthSignatureMethod.cs" />
-    <Compile Include="Libraries\oauth\signature\PLAINTEXT.cs" />
-    <Compile Include="Libraries\oauth\SimpleOAuthValidator.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="COPYING.txt" />
-    <Content Include="Libraries\jayrock.json\COPYING.txt" />
-    <Content Include="LICENSE.txt" />
-    <Content Include="NOTICE.txt" />
-    <Compile Include="DataAccess\LinqRaya.designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>LinqRaya.dbml</DependentUpon>
-    </Compile>
-    <Compile Include="Engine\auth\AnonymousAuthenticationHandler.cs" />
     <Compile Include="Engine\common\uri\Uri.cs" />
     <Compile Include="Engine\common\uri\UriBuilder.cs" />
     <Compile Include="Engine\protocol\ContentTypes.cs" />
@@ -216,36 +116,19 @@
     <Compile Include="Engine\protocol\conversion\BeanJsonConverter.cs" />
     <Compile Include="Engine\protocol\conversion\BeanXmlConverter.cs" />
     <Compile Include="Engine\protocol\conversion\DataContractJSConverter.cs" />
-    <Compile Include="Engine\protocol\conversion\DictionarySerializer.cs" />
     <Compile Include="Engine\protocol\conversion\JsonSurrogate.cs" />
     <Compile Include="Engine\protocol\ProtocolException.cs" />
     <Compile Include="Engine\protocol\RequestItem.cs" />
     <Compile Include="Engine\social\core\oauth\OAuthConsumerRequestAuthenticationHandler.cs" />
     <Compile Include="Engine\social\core\oauth\OAuthSecurityToken.cs" />
-    <Compile Include="Engine\social\model\Account.cs" />
-    <Compile Include="Engine\social\model\Activity.cs" />
-    <Compile Include="Engine\social\model\Address.cs" />
-    <Compile Include="Engine\social\model\BodyType.cs" />
-    <Compile Include="Engine\social\model\Drinker.cs" />
-    <Compile Include="Engine\social\model\ListField.cs" />
-    <Compile Include="Engine\social\model\LookingFor.cs" />
-    <Compile Include="Engine\social\model\MediaItem.cs" />
-    <Compile Include="Engine\social\model\Message.cs" />
-    <Compile Include="Engine\social\model\MessageCollection.cs" />
-    <Compile Include="Engine\social\model\Name.cs" />
-    <Compile Include="Engine\social\model\NetworkPresence.cs" />
-    <Compile Include="Engine\social\model\Organization.cs" />
-    <Compile Include="Engine\social\model\Person.cs" />
-    <Compile Include="Engine\social\model\Smoker.cs" />
-    <Compile Include="Engine\social\model\Url.cs" />
     <Compile Include="Engine\social\oauth\IOAuthLookupService.cs" />
     <Compile Include="Engine\social\oauth\SampleContainerOAuthLookupService.cs" />
     <Compile Include="Engine\social\ResponseError.cs" />
-    <Compile Include="Engine\social\spi\IActivityService.cs" />
-    <Compile Include="Engine\social\spi\IAppDataService.cs" />
     <Compile Include="Engine\social\spi\CollectionOptions.cs" />
     <Compile Include="Engine\social\spi\DataCollection.cs" />
     <Compile Include="Engine\social\spi\GroupId.cs" />
+    <Compile Include="Engine\social\spi\IActivityService.cs" />
+    <Compile Include="Engine\social\spi\IAppDataService.cs" />
     <Compile Include="Engine\social\spi\IMessagesService.cs" />
     <Compile Include="Engine\social\spi\IPersonService.cs" />
     <Compile Include="Engine\social\spi\IRestfulCollection.cs" />
@@ -253,30 +136,41 @@
     <Compile Include="Engine\social\spi\RestfulEntry.cs" />
     <Compile Include="Engine\social\spi\SocialSpiException.cs" />
     <Compile Include="Engine\social\spi\UserId.cs" />
-    <Compile Include="Libraries\oauth\Constants.cs" />
-    <Compile Include="Libraries\oauth\Rfc3986.cs" />
-    <Compile Include="Libraries\oauth\signature\RSA_SHA1.cs">
-      <SubType>Code</SubType>
+    <Compile Include="Libraries\OAuth\Constants.cs" />
+    <Compile Include="Libraries\OAuth\OAuth.cs" />
+    <Compile Include="Libraries\OAuth\OAuthAccessor.cs" />
+    <Compile Include="Libraries\OAuth\OAuthConsumer.cs" />
+    <Compile Include="Libraries\OAuth\OAuthException.cs" />
+    <Compile Include="Libraries\OAuth\OAuthMessage.cs" />
+    <Compile Include="Libraries\OAuth\OAuthProblemException.cs" />
+    <Compile Include="Libraries\OAuth\OAuthServiceProvider.cs" />
+    <Compile Include="Libraries\OAuth\OAuthValidator.cs" />
+    <Compile Include="Libraries\OAuth\Rfc3986.cs" />
+    <Compile Include="Libraries\OAuth\server\OAuthServlet.cs" />
+    <Compile Include="Libraries\OAuth\signature\HMAC_SHA1.cs" />
+    <Compile Include="Libraries\OAuth\signature\OAuthSignatureMethod.cs" />
+    <Compile Include="Libraries\OAuth\signature\PLAINTEXT.cs" />
+    <Compile Include="Libraries\OAuth\signature\RSA_SHA1.cs" />
+    <Compile Include="Libraries\OAuth\SimpleOAuthValidator.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Utilities\ASPNETMVC\StaticFileHandler.cs" />
+    <Compile Include="Utilities\CustomAttr.cs" />
     <Compile Include="Utilities\DateUtil.cs" />
     <Compile Include="Utilities\Dynamic.cs" />
+    <Compile Include="Utilities\EnumBaseType.cs" />
+    <Compile Include="Utilities\HashKey.cs" />
     <Compile Include="Utilities\Helpers\DateHelper.cs" />
-    <Compile Include="Utilities\Helpers\EnumHelper.cs" />
     <Compile Include="Utilities\Helpers\MD5Helper.cs" />
     <Compile Include="Utilities\Locale.cs" />
     <Compile Include="Utilities\PestaSettings.cs" />
     <Compile Include="Utilities\Preconditions.cs" />
     <Compile Include="Utilities\Provider.cs" />
     <Compile Include="Utilities\Singleton.cs" />
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <DependentUpon>Settings.settings</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
     <None Include="DataAccess\LinqRaya.dbml">
       <Generator>MSLinqToSQLGenerator</Generator>
       <LastGenOutput>LinqRaya.designer.cs</LastGenOutput>
@@ -289,6 +183,24 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Jayrock.JSON\Jayrock.csproj">
+      <Project>{4BBC1EFC-C930-403A-917D-C444B2A6E284}</Project>
+      <Name>Jayrock</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\raya.Data.WindowsAzure\raya.Data.WindowsAzure.csproj">
+      <Project>{995A11D7-00AC-4E16-B980-D95CF3A4CEC3}</Project>
+      <Name>raya.Data.WindowsAzure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\StorageClient\Lib\StorageClient.csproj">
+      <Project>{C6F30C10-E1C2-4327-BB6B-3160B479CCA1}</Project>
+      <Name>StorageClient</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\pesta.Data\pesta.Data.csproj">
+      <Project>{6D1D97EC-F037-4B70-B631-0628BAC6664C}</Project>
+      <Name>pesta.Data</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="DataAccess\canonicaldb.json" />

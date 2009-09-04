@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Text;
 using Pesta.Interop.oauth;
+using Pesta.Libraries.oauth;
 
 public class OpenSocialRequestValidator {
 

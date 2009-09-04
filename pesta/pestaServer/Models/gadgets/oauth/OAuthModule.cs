@@ -23,7 +23,7 @@ using Pesta.Engine.common.crypto;
 
 namespace pestaServer.Models.gadgets.oauth
 {
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
+    
     public class OAuthModule
     {
         private const String OAUTH_CONFIG = "config/oauth.json";

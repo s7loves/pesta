@@ -28,7 +28,7 @@ namespace pestaServer.Models.gadgets
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
+    
     /// </para>
     /// </remarks>
     public class AuthType : EnumBaseType<AuthType>

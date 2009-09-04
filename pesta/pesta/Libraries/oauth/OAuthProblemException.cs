@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright 2007 Netflix, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,16 +16,8 @@
 using System;
 using System.Collections.Generic;
 
-namespace Pesta.Interop.oauth
+namespace Pesta.Libraries.OAuth
 {
-    /// <summary>
-    /// Summary description for OAuthProblemException
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
-    /// </para>
-    /// </remarks>
     public class OAuthProblemException : OAuthException
     {
         public static readonly String OAUTH_PROBLEM = "oauth_problem";

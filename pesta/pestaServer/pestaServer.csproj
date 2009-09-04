@@ -133,10 +133,7 @@
     <Compile Include="Controllers\proxyController.cs" />
     <Compile Include="Controllers\restController.cs" />
     <Compile Include="Controllers\rpcController.cs" />
-    <Compile Include="DataAccess\IPestaDbProvider.cs" />
     <Compile Include="DataAccess\JsonDbOpensocialService.cs" />
-    <Compile Include="DataAccess\RayaAzureDbFetcher.cs" />
-    <Compile Include="DataAccess\RayaDbFetcher.cs" />
     <Compile Include="DataAccess\RayaService.cs" />
     <Compile Include="Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
@@ -445,7 +442,7 @@
     <Content Include="Views\Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="config\oauth.json" />
+    <Content Include="config\oauth.json" />
     <None Include="gadgets\files\samplecontainer\state.dtd" />
     <None Include="gadgets\files\sampledata\canonicaldb.json" />
   </ItemGroup>
@@ -472,8 +469,6 @@
     <Content Include="Content\features\core\core.opt.js" />
     <Content Include="Content\features\core\json.opt.js" />
     <Content Include="Content\features\core\legacy.opt.js" />
-    <Content Include="Content\features\core\log.js" />
-    <Content Include="Content\features\core\log.opt.js" />
     <Content Include="Content\features\core\prefs.opt.js" />
     <Content Include="Content\features\core\util.opt.js" />
     <Content Include="Content\features\dynamic-height\dynamic-height.opt.js" />
@@ -2302,6 +2297,7 @@
     <Content Include="Content\features\opensocial-0.8\opensocial8to9.opt.js" />
     <Content Include="Content\features\opensocial-base\fieldtranslations.opt.js" />
     <Content Include="Content\features\opensocial-base\jsonactivity.opt.js" />
+    <Content Include="Content\features\opensocial-base\jsonactivitytest.js" />
     <Content Include="Content\features\opensocial-base\jsonmessage.opt.js" />
     <Content Include="Content\features\opensocial-base\jsonmessagecollection.opt.js" />
     <Content Include="Content\features\opensocial-base\jsonperson.opt.js" />
@@ -2309,6 +2305,7 @@
     <Content Include="Content\features\opensocial-data\data.opt.js" />
     <Content Include="Content\features\opensocial-jsonrpc\jsonrpccontainer.opt.js" />
     <Content Include="Content\features\opensocial-reference\activity.opt.js" />
+    <Content Include="Content\features\opensocial-reference\activitytest.js" />
     <Content Include="Content\features\opensocial-reference\address.opt.js" />
     <Content Include="Content\features\opensocial-reference\bodytype.opt.js" />
     <Content Include="Content\features\opensocial-reference\collection.opt.js" />
@@ -2330,48 +2327,33 @@
     <Content Include="Content\features\opensocial-reference\phone.opt.js" />
     <Content Include="Content\features\opensocial-reference\responseitem.opt.js" />
     <Content Include="Content\features\opensocial-reference\url.opt.js" />
+    <Content Include="Content\features\opensocial-rest\feature.xml" />
+    <Content Include="Content\features\opensocial-rest\restfulcontainer.js" />
+    <Content Include="Content\features\opensocial-rest\restfulcontainer.opt.js" />
     <Content Include="Content\features\opensocial-templates\base.opt.js" />
     <Content Include="Content\features\opensocial-templates\compiler.opt.js" />
     <Content Include="Content\features\opensocial-templates\container.opt.js" />
-    <Content Include="Content\features\opensocial-templates\jsTemplate\jsevalcontext.js" />
-    <Content Include="Content\features\opensocial-templates\jsTemplate\jsevalcontext.opt.js" />
-    <Content Include="Content\features\opensocial-templates\jsTemplate\jstemplate.js" />
-    <Content Include="Content\features\opensocial-templates\jsTemplate\jstemplate.opt.js" />
-    <Content Include="Content\features\opensocial-templates\jsTemplate\util.js" />
-    <Content Include="Content\features\opensocial-templates\jsTemplate\util.opt.js" />
+    <Content Include="Content\features\opensocial-templates\jstemplate_debug.js" />
+    <Content Include="Content\features\opensocial-templates\jstemplate_debug.opt.js" />
     <Content Include="Content\features\opensocial-templates\loader.opt.js" />
     <Content Include="Content\features\opensocial-templates\namespaces.opt.js" />
     <Content Include="Content\features\opensocial-templates\os.opt.js" />
     <Content Include="Content\features\opensocial-templates\template.opt.js" />
     <Content Include="Content\features\opensocial-templates\util.opt.js" />
+    <Content Include="Content\features\osapi.activities\activities.js" />
+    <Content Include="Content\features\osapi.activities\feature.xml" />
+    <Content Include="Content\features\osapi.appdata\appdata.js" />
+    <Content Include="Content\features\osapi.appdata\feature.xml" />
+    <Content Include="Content\features\osapi.base\batch.js" />
+    <Content Include="Content\features\osapi.base\feature.xml" />
+    <Content Include="Content\features\osapi.base\jsonrequest.js" />
+    <Content Include="Content\features\osapi.base\makerequest.js" />
+    <Content Include="Content\features\osapi.base\util.js" />
+    <Content Include="Content\features\osapi.people\feature.xml" />
+    <Content Include="Content\features\osapi.people\people.js" />
     <Content Include="Content\features\osapi.ui\ui.opt.js" />
-    <Content Include="Content\features\osapi\batch.js" />
-    <Content Include="Content\features\osapi\batch.opt.js" />
-    <Content Include="Content\features\osapi\gadgetsrpctransport.js" />
-    <Content Include="Content\features\osapi\gadgetsrpctransport.opt.js" />
-    <Content Include="Content\features\osapi\jsonrequest.js" />
-    <Content Include="Content\features\osapi\jsonrequest.opt.js" />
-    <Content Include="Content\features\osapi\jsonrpctransport.js" />
-    <Content Include="Content\features\osapi\jsonrpctransport.opt.js" />
-    <Content Include="Content\features\osapi\osapi.js" />
-    <Content Include="Content\features\osapi\osapi.opt.js" />
-    <Content Include="Content\features\osapi\peoplehelpers.js" />
-    <Content Include="Content\features\osapi\peoplehelpers.opt.js" />
-    <Content Include="Content\features\osapi\util.js" />
-    <Content Include="Content\features\osapi\util.opt.js" />
     <Content Include="Content\features\pubsub\pubsub-router.opt.js" />
     <Content Include="Content\features\pubsub\pubsub.opt.js" />
-    <Content Include="Content\features\rpc\fe.transport.js" />
-    <Content Include="Content\features\rpc\fe.transport.opt.js" />
-    <Content Include="Content\features\rpc\ifpc.transport.js" />
-    <Content Include="Content\features\rpc\ifpc.transport.opt.js" />
-    <Content Include="Content\features\rpc\nix.transport.js" />
-    <Content Include="Content\features\rpc\nix.transport.opt.js" />
-    <Content Include="Content\features\rpc\rmr.transport.js" />
-    <Content Include="Content\features\rpc\rmr.transport.opt.js" />
-    <Content Include="Content\features\rpc\rpc.opt.js" />
-    <Content Include="Content\features\rpc\wpm.transport.js" />
-    <Content Include="Content\features\rpc\wpm.transport.opt.js" />
     <Content Include="Content\features\setprefs\setprefs.opt.js" />
     <Content Include="Content\features\settitle\settitle.opt.js" />
     <Content Include="Content\features\skins\skins.opt.js" />
@@ -2392,16 +2374,29 @@
   <ItemGroup>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Jayrock.JSON\Jayrock.csproj">
+      <Project>{4BBC1EFC-C930-403A-917D-C444B2A6E284}</Project>
+      <Name>Jayrock</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\pesta.Data\pesta.Data.csproj">
+      <Project>{6D1D97EC-F037-4B70-B631-0628BAC6664C}</Project>
+      <Name>pesta.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\raya.Data.WindowsAzure\raya.Data.WindowsAzure.csproj">
+      <Project>{995A11D7-00AC-4E16-B980-D95CF3A4CEC3}</Project>
+      <Name>raya.Data.WindowsAzure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\StorageClient\Lib\StorageClient.csproj">
+      <Project>{C6F30C10-E1C2-4327-BB6B-3160B479CCA1}</Project>
+      <Name>StorageClient</Name>
+    </ProjectReference>
     <ProjectReference Include="..\pesta\pesta.csproj">
       <Project>{6CD14C34-807B-4C7B-B110-79AFCF65E49B}</Project>
       <Name>pesta</Name>
     </ProjectReference>
-    <ProjectReference Include="C:\Users\sean\Documents\Visual Studio 2008\Projects\Azure samples\StorageClient\Lib\StorageClient.csproj">
-      <Project>{C6F30C10-E1C2-4327-BB6B-3160B479CCA1}</Project>
-      <Name>StorageClient</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Content\features\opensocial-templates\jsTemplate\" />
     <Folder Include="Models\common\auth\" />
     <Folder Include="Models\gadgets\parse\" />
     <Folder Include="Models\social\core\util\" />
@@ -2413,7 +2408,7 @@
   <Target Name="BeforeBuild">
   </Target>
   <Target Name="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
-    <YuiCompress Files="@(Content)" Type="JS" />
+    <!--YuiCompress Files="@(Content)" Type="JS" /-->
     <!--YuiCompress Files="@(CssContent)" Type="CSS" /-->
     <AspNetCompiler VirtualPath="temp" PhysicalPath="$(ProjectDir)\..\$(ProjectName)" />
   </Target>
@@ -2423,7 +2418,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>False</AutoAssignPort>
-          <DevelopmentServerPort>80</DevelopmentServerPort>
+          <DevelopmentServerPort>8000</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>http://localhost/pestaServer</IISUrl>
           <OverrideIISAppRootUrl>True</OverrideIISAppRootUrl>

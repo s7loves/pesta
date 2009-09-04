@@ -27,7 +27,7 @@ namespace pestaServer.Models.gadgets.rewrite
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
+    
     /// </para>
     /// </remarks>
     public interface ILinkRewriter
