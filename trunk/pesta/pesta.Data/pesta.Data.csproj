@@ -90,7 +90,7 @@
     <Compile Include="Url.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Jayrock.JSON\Jayrock.csproj">
+    <ProjectReference Include="..\libraries\Jayrock.JSON\Jayrock.csproj">
       <Project>{4BBC1EFC-C930-403A-917D-C444B2A6E284}</Project>
       <Name>Jayrock</Name>
     </ProjectReference>

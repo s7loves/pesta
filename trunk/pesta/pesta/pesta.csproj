@@ -211,11 +211,11 @@
     <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Jayrock.JSON\Jayrock.csproj">
+    <ProjectReference Include="..\libraries\Jayrock.JSON\Jayrock.csproj">
       <Project>{4BBC1EFC-C930-403A-917D-C444B2A6E284}</Project>
       <Name>Jayrock</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\StorageClient\Lib\StorageClient.csproj">
+    <ProjectReference Include="..\SDK\StorageClient\StorageClient.csproj">
       <Project>{C6F30C10-E1C2-4327-BB6B-3160B479CCA1}</Project>
       <Name>StorageClient</Name>
     </ProjectReference>
