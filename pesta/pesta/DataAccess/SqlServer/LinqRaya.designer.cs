@@ -9,7 +9,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Pesta.DataAccess
+namespace Pesta.DataAccess.SqlServer
 {
 	using System.Data.Linq;
 	using System.Data.Linq.Mapping;

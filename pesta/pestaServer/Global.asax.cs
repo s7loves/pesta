@@ -19,7 +19,7 @@
 #endregion
 using System.Web.Mvc;
 using System.Web.Routing;
-using raya.Data.WindowsAzure;
+using Pesta.DataAccess.Azure;
 
 namespace pestaServer
 {
