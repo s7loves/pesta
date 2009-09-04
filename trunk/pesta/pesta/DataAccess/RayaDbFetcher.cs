@@ -22,7 +22,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using Jayrock;
-using Pesta.DataAccess;
+using Pesta.DataAccess.SqlServer;
 using Pesta.Engine.social.spi;
 using Pesta.Utilities;
 

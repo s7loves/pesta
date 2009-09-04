@@ -4,744 +4,6 @@
         <name>StorageClient</name>
     </assembly>
     <members>
-        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.ResourceUriComponents">
-            <summary>
-            This type represents the different constituent parts that make up a resource Uri in the context of cloud services.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.ResourceUriComponents.#ctor(System.String,System.String,System.String)">
-            <summary>
-            Construct a ResourceUriComponents object.
-            </summary>
-            <param name="accountName">The account name that should become part of the URI.</param>
-            <param name="containerName">The container name (container, queue or table name) that should become part of the URI.</param>
-            <param name="remainingPart">Remaining part of the URI.</param>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.ResourceUriComponents.#ctor(System.String,System.String)">
-            <summary>
-            Construct a ResourceUriComponents object.        
-            </summary>
-            <param name="accountName">The account name that should become part of the URI.</param>
-            <param name="containerName">The container name (container, queue or table name) that should become part of the URI.</param>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.ResourceUriComponents.#ctor(System.String)">
-            <summary>
-            Construct a ResourceUriComponents object.        
-            </summary>
-            <param name="accountName">The account name that should become part of the URI.</param>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.ResourceUriComponents.#ctor">
-            <summary>
-            Construct a ResourceUriComponents object.        
-            </summary>
-        </member>
-        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.ResourceUriComponents.AccountName">
-            <summary>
-            The account name in the URI.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.ResourceUriComponents.ContainerName">
-            <summary>
-            This is really the first component (delimited by '/') after the account name. Since it happens to
-            be a container name in the context of all our storage services (containers in blob storage,
-            queues in the queue service and table names in table storage), it's named as ContainerName to make it more 
-            readable at the cost of slightly being incorrectly named.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.ResourceUriComponents.RemainingPart">
-            <summary>
-            The remaining string in the URI.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageCanonicalizer.CanonicalizeHttpRequest(System.Uri,Microsoft.Samples.ServiceHosting.StorageClient.ResourceUriComponents,System.String,System.String,System.String,System.Collections.Specialized.NameValueCollection)">
-            <summary>
-            Create a canonicalized string out of HTTP request header contents for signing 
-            blob/queue requests with the Shared Authentication scheme. 
-            </summary>
-            <param name="address">The uri address of the HTTP request.</param>
-            <param name="uriComponents">Components of the Uri extracted out of the request.</param>
-            <param name="method">The method of the HTTP request (GET/PUT, etc.).</param>
-            <param name="contentType">The content type of the HTTP request.</param>
-            <param name="date">The date of the HTTP request.</param>
-            <param name="headers">Should contain other headers of the HTTP request.</param>
-            <returns>A canonicalized string of the HTTP request.</returns>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageCanonicalizer.CanonicalizeHttpRequest(System.Net.HttpWebRequest,Microsoft.Samples.ServiceHosting.StorageClient.ResourceUriComponents)">
-            <summary>
-            Canonicalize HTTP header contents.
-            </summary>
-            <param name="request">An HttpWebRequest object.</param>
-            <param name="uriComponents">Components of the Uri extracted out of the request.</param>
-            <returns>The canonicalized string of the given HTTP request's header.</returns>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageCanonicalizer.ConvertDateTimeToHttpString(System.DateTime)">
-            <summary>
-            Creates a standard datetime string for the shared key lite authentication scheme.
-            </summary>
-            <param name="dateTime">DateTime value to convert to a string in the expected format.</param>
-            <returns></returns>
-        </member>
-        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.MessageCanonicalizer.CanonicalizedString">
-            <summary>
-            An internal class that stores the canonicalized string version of an HTTP request.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageCanonicalizer.CanonicalizedString.#ctor(System.String)">
-            <summary>
-            Constructor for the class.
-            </summary>
-            <param name="initialElement">The first canonicalized element to start the string with.</param>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageCanonicalizer.CanonicalizedString.AppendCanonicalizedElement(System.String)">
-            <summary>
-            Append additional canonicalized element to the string.
-            </summary>
-            <param name="element">An additional canonicalized element to append to the string.</param>
-        </member>
-        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.MessageCanonicalizer.CanonicalizedString.Value">
-            <summary>
-            Property for the canonicalized string.
-            </summary>
-        </member>
-        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.HttpRequestAccessor">
-            <summary>
-            Use this class to extract various header values from Http requests.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.HttpRequestAccessor.GetHeaderValues(System.Collections.Specialized.NameValueCollection,System.String)">
-            <summary>
-            A helper function for extracting HTTP header values from a NameValueCollection object.
-            </summary>
-            <param name="headers">A NameValueCollection object that should contain HTTP header name-values pairs.</param>
-            <param name="headerName">Name of the header that we want to get values of.</param>
-            <returns>A array list of values for the header. The values are in the same order as they are stored in the NameValueCollection object.</returns>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.HttpRequestAccessor.ConstructResourceUri(System.Uri,Microsoft.Samples.ServiceHosting.StorageClient.ResourceUriComponents,System.Boolean)">
-            <summary>
-            Constructs an URI given all its constituents
-            </summary>
-            <param name="endpoint">
-            This is the service endpoint in case of path-style URIs and a host suffix in case of host-style URIs
-            IMPORTANT: This does NOT include the service name or account name
-            </param>
-            <param name="uriComponents">Uri constituents</param>
-            <param name="pathStyleUri">Indicates whether to construct a path-style Uri (true) or host-style URI (false)</param>
-            <returns>Full uri</returns>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.HttpRequestAccessor.ConstructPathStyleResourceUri(System.Uri,Microsoft.Samples.ServiceHosting.StorageClient.ResourceUriComponents)">
-            <summary>
-            Constructs a path-style resource URI given all its constituents
-            </summary>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.HttpRequestAccessor.ConstructHostStyleResourceUri(System.Uri,Microsoft.Samples.ServiceHosting.StorageClient.ResourceUriComponents)">
-            <summary>
-            Constructs a host-style resource URI given all its constituents
-            </summary>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.HttpRequestAccessor.ConstructHostStyleAccountUri(System.Uri,System.String)">
-            <summary>
-            Given the host suffix part, service name and account name, this method constructs the account Uri
-            </summary>
-        </member>
-        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.SharedKeyCredentials">
-            <summary>
-            Objects of this class contain the credentials (name and key) of a storage account.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.SharedKeyCredentials.#ctor(System.String,System.Byte[])">
-            <summary>
-            Create a SharedKeyCredentials object given an account name and a shared key.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.SharedKeyCredentials.SignRequest(System.Net.HttpWebRequest,Microsoft.Samples.ServiceHosting.StorageClient.ResourceUriComponents)">
-            <summary>
-            Signs the request appropriately to make it an authenticated request.
-            Note that this method takes the URI components as decoding the URI components requires the knowledge
-            of whether the URI is in path-style or host-style and a host-suffix if it's host-style.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.SharedKeyCredentials.SignRequestForSharedKeyLite(System.Net.HttpWebRequest,Microsoft.Samples.ServiceHosting.StorageClient.ResourceUriComponents)">
-            <summary>
-            Signs requests using the SharedKeyLite authentication scheme with is used for the table storage service.
-            </summary>
-        </member>
-        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.StorageErrorCode">
-            <summary>
-            Error codes that can be returned by the storage service or the client library.
-            These are divided into server errors and client errors depending on which side
-            the error can be attributed to.
-            </summary>
-        </member>
-        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.StorageException">
-            <summary>
-            The base class for storage service exceptions
-            </summary>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.StorageException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Microsoft.Samples.ServiceHosting.StorageClient.StorageException"/> class with
-            serialized data.
-            </summary>
-            <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"/> object that contains serialized object
-            data about the exception being thrown</param>
-            <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext"/> object that contains contextual information
-            about the source or destionation. </param>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.StorageException.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
-            <summary>
-            Sets the <see cref="T:System.Runtime.Serialization.SerializationInfo"/> object with additional exception information
-            </summary>
-            <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"/> object that holds the 
-            serialized object data.</param>
-            <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext"/> object that contains contextual information
-            about the source or destionation. </param>
-        </member>
-        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.StorageException.StatusCode">
-            <summary>
-            The Http status code returned by the storage service
-            </summary>
-        </member>
-        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.StorageException.ErrorCode">
-            <summary>
-            The specific error code returned by the storage service
-            </summary>
-        </member>
-        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.StorageException.ExtendedErrorInformation">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.StorageServerException">
-            <summary>
-            Server exceptions are those due to server side problems.
-            These may be transient and requests resulting in such exceptions
-            can be retried with the same parameters.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.StorageServerException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Microsoft.Samples.ServiceHosting.StorageClient.StorageServerException"/> class with
-            serialized data.
-            </summary>
-            <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"/> object that contains serialized object
-            data about the exception being thrown</param>
-            <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext"/> object that contains contextual information
-            about the source or destionation. </param>
-        </member>
-        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.StorageClientException">
-            <summary>
-            Client side exceptions are due to incorrect parameters to the request.
-            These requests should not be retried with the same parameters
-            </summary>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.StorageClientException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Microsoft.Samples.ServiceHosting.StorageClient.StorageClientException"/> class with
-            serialized data.
-            </summary>
-            <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"/> object that contains serialized object
-            data about the exception being thrown</param>
-            <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext"/> object that contains contextual information
-            about the source or destionation. </param>
-        </member>
-        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.StorageErrorCodeStrings">
-            <summary>
-            Error code strings that are common to all storage services
-            </summary>
-        </member>
-        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.BlobErrorCodeStrings">
-            <summary>
-            Error code strings that are specific to blob service
-            </summary>
-        </member>
-        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.QueueErrorCodeStrings">
-            <summary>
-            Error code strings that are specific to queue service
-            </summary>
-        </member>
-        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.TableErrorCodeStrings">
-            <summary>
-            Error code strings that are specific to queue service
-            </summary>
-                public static class TableErrorCodeStrings
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.Utilities.ConvertDateTimeToHttpString(System.DateTime)">
-            <summary>
-            Converts the date time to a valid string form as per HTTP standards
-            </summary>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.Utilities.TryGetDateTimeFromHttpString(System.String,System.Nullable{System.DateTime}@)">
-            <summary>
-            Parse a string having the date time information in acceptable formats according to HTTP standards
-            </summary>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.Utilities.CopyStream(System.IO.Stream,System.IO.Stream)">
-            <summary>
-            Copies from one stream to another
-            </summary>
-            <param name="sourceStream">The stream to copy from</param>
-            <param name="destinationStream">The stream to copy to</param>
-        </member>
-        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.BlobStorage">
-            <summary>
-            The entry point of the blob storage API
-            </summary>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobStorage.Create(System.Uri,System.Nullable{System.Boolean},System.String,System.String)">
-            <summary>
-            Factory method for BlobStorage
-            </summary>
-            <param name="baseUri">The base URI of the blob storage service</param>
-            <param name="usePathStyleUris">If true, path-style URIs (http://baseuri/accountname/containername/objectname) are used.
-            If false host-style URIs (http://accountname.baseuri/containername/objectname) are used,
-            where baseuri is the URI of the service.
-            If null, the choice is made automatically: path-style URIs if host name part of base URI is an 
-            IP addres, host-style otherwise.</param>
-            <param name="accountName">The name of the storage account</param>
-            <param name="base64Key">Authentication key used for signing requests</param>
-            <returns>A newly created BlobStorage instance</returns>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobStorage.Create(Microsoft.Samples.ServiceHosting.StorageClient.StorageAccountInfo)">
-            <summary>
-            Factory method for BlobStorage
-            </summary>
-            <param name="accountInfo">Account information</param>
-            <returns>A newly created BlobStorage instance</returns>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobStorage.GetBlobContainer(System.String)">
-            <summary>
-            Get a reference to a newly created BlobContainer object.
-            This method does not make any calls to the storage service.
-            </summary>
-            <param name="containerName">The name of the container</param>
-            <returns>A reference to a newly created BlobContainer object</returns>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobStorage.ListBlobContainers">
-            <summary>
-            Lists the containers within the account.
-            </summary>
-            <returns>A list of containers</returns>
-        </member>
-        <member name="F:Microsoft.Samples.ServiceHosting.StorageClient.BlobStorage.DefaultTimeout">
-            <summary>
-            The default timeout
-            </summary>
-        </member>
-        <member name="F:Microsoft.Samples.ServiceHosting.StorageClient.BlobStorage.DefaultRetryPolicy">
-            <summary>
-            The default retry policy
-            </summary>
-        </member>
-        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.BlobStorage.Timeout">
-            <summary>
-            The time out for each request to the storage service.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.BlobStorage.RetryPolicy">
-            <summary>
-            The retry policy used for retrying requests
-            </summary>
-        </member>
-        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.BlobStorage.BaseUri">
-            <summary>
-            The base URI of the blob storage service
-            </summary>
-        </member>
-        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.BlobStorage.AccountName">
-            <summary>
-            The name of the storage account
-            </summary>
-        </member>
-        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.BlobStorage.UsePathStyleUris">
-            <summary>
-            Indicates whether to use/generate path-style or host-style URIs
-            </summary>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobStorageRest.GetBlobContainer(System.String)">
-            <summary>
-            Get a reference to a BlobContainer object with the given name.
-            This method does not make any calls to the storage service.
-            </summary>
-            <param name="containerName">The name of the container</param>
-            <returns>A reference to a newly created BlobContainer object</returns>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobStorageRest.ListBlobContainers">
-            <summary>
-            Lists the containers within the account.
-            </summary>
-            <returns>A list of containers</returns>
-        </member>
-        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainer">
-            <summary>
-            The blob container class.
-            Used to access and enumerate blobs in the container.
-            Storage key credentials are needed to access private blobs but not for public blobs.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainer.#ctor(System.Uri,System.String,System.String)">
-            <summary>
-            Use this constructor to access private blobs.
-            </summary>
-            <param name="baseUri">The base Uri for the storage endpoint</param>
-            <param name="accountName">Name of the storage account</param>
-            <param name="containerName">Name of the container</param>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainer.#ctor(System.Uri,System.Boolean,System.String,System.String,System.DateTime)">
-            <summary>
-            Use this constructor to access private blobs.
-            </summary>
-            <param name="baseUri">The base Uri for the storage endpoint</param>
-            <param name="usePathStyleUris">
-            If true, path-style URIs (http://baseuri/accountname/containername/objectname) are used and if false 
-            host-style URIs (http://accountname.baseuri/containername/objectname) are used, where baseuri is the 
-            URI of the service
-            </param>
-            <param name="accountName">Name of the storage account</param>
-            <param name="containerName">Name of the container</param>
-            <param name="lastModified">Date of last modification</param>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainer.CreateContainer">
-            <summary>
-            Create the container if it does not exist.
-            The container is created with private access control and no metadata.
-            </summary>
-            <returns>true if the container was created. false if the container already exists</returns>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainer.CreateContainer(System.Collections.Specialized.NameValueCollection,Microsoft.Samples.ServiceHosting.StorageClient.ContainerAccessControl)">
-            <summary>
-            Create the container with the specified metadata and access control if it does not exist
-            </summary>
-            <param name="metadata">The metadata for the container. Can be null to indicate no metadata</param>
-            <param name="accessControl">The access control (public or private) with which to create the container</param>
-            <returns>true if the container was created. false if the container already exists</returns>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainer.DoesContainerExist">
-            <summary>
-            Check if the blob container exists
-            </summary>
-            <returns>true if the container exists, false otherwise.</returns>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainer.GetContainerProperties">
-            <summary>
-            Get the properties for the container if it exists.
-            </summary>
-            <returns>The properties for the container if it exists, null otherwise</returns>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainer.GetContainerAccessControl">
-            <summary>
-            Get the access control permissions associated with the container.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainer.SetContainerAccessControl(Microsoft.Samples.ServiceHosting.StorageClient.ContainerAccessControl)">
-            <summary>
-            Set the access control permissions associated with the container.
-            </summary>
-            <param name="acl">The permission to set</param>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainer.DeleteContainer">
-            <summary>
-            Deletes the current container.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainer.DoesBlobExist(System.String)">
-            <summary>
-            Check if the blob container exists
-            </summary>
-            <param name="blobName">Name of the BLOB.</param>
-            <returns>true if the blob exists, false otherwise.</returns>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainer.CreateBlob(Microsoft.Samples.ServiceHosting.StorageClient.BlobProperties,Microsoft.Samples.ServiceHosting.StorageClient.BlobContents,System.Boolean)">
-            <summary>
-            Create a new blob or overwrite an existing blob.
-            </summary>
-            <param name="blobProperties">The properties of the blob</param>
-            <param name="blobContents">The contents of the blob</param>
-            <param name="overwrite">Should this request overwrite an existing blob ?</param>
-            <returns>true if the blob was created. false if the blob already exists and <paramref name="overwrite"/>was set to false</returns>
-            <remarks>The LastModifiedTime property of <paramref name="blobProperties"/> is set as a result of this call.
-            This method also has an effect on the ETag values that are managed by the service.</remarks>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainer.UpdateBlobIfNotModified(Microsoft.Samples.ServiceHosting.StorageClient.BlobProperties,Microsoft.Samples.ServiceHosting.StorageClient.BlobContents)">
-            <summary>
-            Updates an existing blob if it has not been modified since the specified time which is typically
-            the last modified time of the blob when you retrieved it.
-            Use this method to implement optimistic concurrency by avoiding clobbering changes to the blob
-            made by another writer.
-            </summary>
-            <param name="blob">The properties of the blob. This object should be one previously
-            obtained from a call to GetBlob or GetBlobProperties and have its LastModifiedTime property set.</param>
-            <param name="contents">The contents of the blob. The contents of the blob should be readable</param>
-            <returns>true if the blob was updated. false if the blob has changed since the last time</returns>
-            <remarks>The LastModifiedTime property of <paramref name="blob"/> is set as a result of this call.
-            This method also has an effect on the ETag values that are managed by the service if the update was 
-            successful.</remarks>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainer.GetBlob(System.String,Microsoft.Samples.ServiceHosting.StorageClient.BlobContents,System.Boolean)">
-            <summary>
-            Get the blob contents and properties if the blob exists
-            </summary>
-            <param name="name">The name of the blob</param>
-            <param name="blobContents">Object in which the contents are returned.
-            This object should contain a writable stream or should be a default constructed object.</param>
-            <param name="transferAsChunks">Should the blob be gotten in pieces. This requires more round-trips, but will retry smaller pieces in case of failure.</param>
-            <returns>The properties of the blob if the blob exists.</returns>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainer.GetBlobIfModified(Microsoft.Samples.ServiceHosting.StorageClient.BlobProperties,Microsoft.Samples.ServiceHosting.StorageClient.BlobContents,System.Boolean)">
-            <summary>
-            Gets the blob contents and properties if the blob has not been modified since the time specified.
-            Use this method if you have cached the contents of a blob and want to avoid retrieving the blob
-            if it has not changed since the last time you retrieved it.
-            </summary>
-            <param name="blobProperties">The properties of the blob obtained from an earlier call to GetBlob. This
-            parameter is updated by the call if the blob has been modified</param>
-            <param name="blobContents">Contains the stream to which the contents of the blob are written if it has been
-            modified</param>
-            <param name="transferAsChunks">Should the blob be gotten in pieces. This requires more round-trips, but will retry smaller pieces in case of failure.</param>
-            <returns>true if the blob has been modified, false otherwise</returns>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainer.GetBlobProperties(System.String)">
-            <summary>
-            Get the properties of the blob if it exists.
-            This method is also the simplest way to check if a blob exists.
-            </summary>
-            <param name="name">The name of the blob</param>
-            <returns>The properties of the blob if it exists. null otherwise.
-            The properties for the contents of the blob are not set</returns>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainer.UpdateBlobMetadata(Microsoft.Samples.ServiceHosting.StorageClient.BlobProperties)">
-            <summary>
-            Set the metadata of an existing blob.
-            </summary>
-            <param name="blobProperties">The blob properties object whose metadata is to be updated</param>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainer.UpdateBlobMetadataIfNotModified(Microsoft.Samples.ServiceHosting.StorageClient.BlobProperties)">
-            <summary>
-            Set the metadata of an existing blob if it has not been modified since it was last retrieved.
-            </summary>
-            <param name="blobProperties">The blob properties object whose metadata is to be updated.
-            Typically obtained by a previous call to GetBlob or GetBlobProperties</param>
-            <returns>true if the blob metadata was updated. false if it was not updated because the blob
-            has been modified</returns>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainer.DeleteBlob(System.String)">
-            <summary>
-            Delete a blob with the given name
-            </summary>
-            <param name="name">The name of the blob</param>
-            <returns>true if the blob exists and was successfully deleted, false if the blob does not exist</returns>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainer.DeleteBlobIfNotModified(Microsoft.Samples.ServiceHosting.StorageClient.BlobProperties,System.Boolean@)">
-            <summary>
-            Delete a blob with the given name if the blob has not been modified since it was last obtained.
-            Use this method for optimistic concurrency to avoid deleting a blob that has been modified since
-            the last time you retrieved it
-            </summary>
-            <param name="blob">A blob object (typically previously obtained from a GetBlob call)</param>
-            <param name="modified">This out parameter is set to true if the blob was not deleted because
-            it was modified</param>
-            <returns>true if the blob exists and was successfully deleted, false if the blob does not exist or was
-            not deleted because the blob was modified.</returns>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainer.ListBlobs(System.String,System.Boolean)">
-            <summary>
-            Enumerates all blobs with a given prefix.
-            </summary>
-            <param name="prefix"></param>
-            <param name="combineCommonPrefixes">If true common prefixes with "/" as seperator</param>
-            <returns>The list of blob properties and common prefixes</returns>
-        </member>
-        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainer.Timeout">
-            <summary>
-            The time out for each request to the storage service.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainer.RetryPolicy">
-            <summary>
-            The retry policy used for retrying requests
-            </summary>
-        </member>
-        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainer.BaseUri">
-            <summary>
-            The base URI of the blob storage service
-            </summary>
-        </member>
-        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainer.AccountName">
-            <summary>
-            The name of the storage account
-            </summary>
-        </member>
-        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainer.ContainerName">
-            <summary>
-            The name of the blob container.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainer.UsePathStyleUris">
-            <summary>
-            Indicates whether to use/generate path-style or host-style URIs
-            </summary>
-        </member>
-        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainer.ContainerUri">
-            <summary>
-            The URI of the container
-            </summary>
-        </member>
-        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainer.LastModifiedTime">
-            <summary>
-            The timestamp for last modification of container.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainerRest.CreateContainer(System.Collections.Specialized.NameValueCollection,Microsoft.Samples.ServiceHosting.StorageClient.ContainerAccessControl)">
-            <summary>
-            Create the container with the specified access control if it does not exist
-            </summary>
-            <param name="metadata">The metadata for the container. Can be null to indicate no metadata</param>
-            <param name="accessControl">The access control (public or private) with which to create the container</param>
-            <returns>true if the container was created. false if the container already exists</returns>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainerRest.GetContainerProperties">
-            <summary>
-            Get the properties for the container if it exists.
-            </summary>
-            <returns>The metadata for the container if it exists, null otherwise</returns>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainerRest.GetContainerAccessControl">
-            <summary>
-            Get the access control permissions associated with the container.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainerRest.SetContainerAccessControl(Microsoft.Samples.ServiceHosting.StorageClient.ContainerAccessControl)">
-            <summary>
-            Get the access control permissions associated with the container.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainerRest.CreateBlob(Microsoft.Samples.ServiceHosting.StorageClient.BlobProperties,Microsoft.Samples.ServiceHosting.StorageClient.BlobContents,System.Boolean)">
-            <summary>
-            Create a new blob or overwrite an existing blob.
-            </summary>
-            
-            <param name="blobProperties">The properties of the blob</param>
-            <param name="blobContents">The contents of the blob</param>
-            <param name="overwrite">Should this request overwrite an existing blob ?</param>
-            <returns>true if the blob was created. false if the blob already exists and <paramref name="overwrite"/>was set to false</returns>
-            <remarks>The LastModifiedTime property of <paramref name="blobProperties"/> is set as a result of this call</remarks>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainerRest.UpdateBlobIfNotModified(Microsoft.Samples.ServiceHosting.StorageClient.BlobProperties,Microsoft.Samples.ServiceHosting.StorageClient.BlobContents)">
-            <summary>
-            Updates an existing blob if it has not been modified since the specified time which is typically
-            the last modified time of the blob when you retrieved it.
-            Use this method to implement optimistic concurrency by avoiding clobbering changes to the blob
-            made by another writer.
-            </summary>
-            <param name="blobProperties">The properties of the blob. This object should be one previously
-            obtained from a call to GetBlob or GetBlobProperties and have its LastModifiedTime property set.</param>
-            <param name="contents">The contents of the blob. The contents of the blob should be readable</param>
-            <returns>true if the blob was updated. false if the blob has changed since the last time</returns>
-            <remarks>The LastModifiedTime property of <paramref name="properties"/> is set as a result of this call</remarks>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainerRest.GetBlob(System.String,Microsoft.Samples.ServiceHosting.StorageClient.BlobContents,System.Boolean)">
-            <summary>
-            Get the blob contents and properties if the blob exisits
-            </summary>
-            <param name="name">The name of the blob</param>
-            <param name="blobContents">Object in which the contents are returned.
-            This object should contain a writable stream or should be a default constructed object.</param>
-            <param name="transferAsChunks">Should the blob be gotten in pieces. This requires more round-trips, but will retry smaller piecs in case of failure.</param>
-            <returns>The properties of the blob if the blob exists.</returns>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainerRest.GetBlobIfModified(Microsoft.Samples.ServiceHosting.StorageClient.BlobProperties,Microsoft.Samples.ServiceHosting.StorageClient.BlobContents,System.Boolean)">
-            <summary>
-            Gets the blob contents and properties if the blob has not been modified since the time specified.
-            Use this method if you have cached the contents of a blob and want to avoid retrieving the blob
-            if it has not changed since the last time you retrieved it.
-            </summary>
-            <param name="blobProperties">The properties of the blob obtained from an earlier call to GetBlob. This
-            parameter is updated by the call if the blob has been modified</param>
-            <param name="blobContents">Contains the stream to which the contents of the blob are written if it has been
-            modified</param>
-            <param name="transferAsChunks">Should the blob be gotten in pieces. This requires more round-trips, but will retry smaller piecs in case of failure.</param>
-            <returns>true if the blob has been modified, false otherwise</returns>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainerRest.GetBlobProperties(System.String)">
-            <summary>
-            Get the properties of the blob if it exists.
-            This method is also the simplest way to check if a blob exists.
-            </summary>
-            <param name="name">The name of the blob</param>
-            <returns>The properties of the blob if it exists. null otherwise.
-            The properties for the contents of the blob are not set</returns>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainerRest.UpdateBlobMetadata(Microsoft.Samples.ServiceHosting.StorageClient.BlobProperties)">
-            <summary>
-            Set the metadata of an existing blob.
-            </summary>
-            <param name="blobProperties">The blob properties object whose metadata is to be updated</param>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainerRest.UpdateBlobMetadataIfNotModified(Microsoft.Samples.ServiceHosting.StorageClient.BlobProperties)">
-            <summary>
-            Set the metadata of an existing blob if it has not been modified since it was last retrieved.
-            </summary>
-            <param name="blobProperties">The blob properties object whose metadata is to be updated.
-            Typically obtained by a previous call to GetBlob or GetBlobProperties</param>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainerRest.DeleteBlob(System.String)">
-            <summary>
-            Delete a blob with the given name
-            </summary>
-            <param name="name">The name of the blob</param>
-            <returns>true if the blob exists and was successfully deleted, false if the blob does not exist</returns>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainerRest.DeleteBlobIfNotModified(Microsoft.Samples.ServiceHosting.StorageClient.BlobProperties,System.Boolean@)">
-            <summary>
-            Delete a blob with the given name if the blob has not been modified since it was last obtained.
-            Use this method for optimistic concurrency to avoid deleting a blob that has been modified since
-            the last time you retrieved it
-            </summary>
-            <param name="blob">A blob object (typically previously obtained from a GetBlob call)</param>
-            <param name="modified">This out parameter is set to true if the blob was not deleted because
-            it was modified</param>
-            <returns>true if the blob exists and was successfully deleted, false if the blob does not exist or was
-            not deleted because the blob was modified.</returns>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainerRest.ListBlobs(System.String,System.Boolean)">
-            <summary>
-            Enumerates all blobs with a given prefix.
-            </summary>
-            <param name="prefix"></param>
-            <param name="combineCommonPrefixes">If true common prefixes with "/" as seperator</param>
-            <returns>The list of blob properties and common prefixes</returns>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainerRest.PutLargeBlobImpl(Microsoft.Samples.ServiceHosting.StorageClient.BlobProperties,System.IO.Stream,System.Boolean,System.String)">
-            <summary>
-            Uploads a blob in chunks.
-            </summary>
-            <param name="blobProperties"></param>
-            <param name="stream"></param>
-            <param name="overwrite"></param>
-            <param name="eTag"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainerRest.DownloadData(System.String,System.IO.Stream,System.String,System.String,System.Int64,System.Int64,System.Collections.Specialized.NameValueCollection,System.Boolean@)">
-            <summary>
-            Helper method used for getting blobs, ranges of blobs and blob properties.
-            </summary>
-            <param name="blobName">Name of the blob</param>
-            <param name="stream">The output stream to write blob data to. Can be null if only retrieving blob properties</param>
-            <param name="eTagIfNoneMatch">The If-None-Match header. Used to avoid downloading blob data if the blob has not changed</param>
-            <param name="eTagIfMatch">The If-Match header. Used to ensure that all chunks of the blob are of the same blob</param>
-            <param name="offset">The offset of the blob data to begin downloading from. Set to 0 to download all data.</param>
-            <param name="length">The length of the blob data to download. Set to 0 to download all data</param>
-            <param name="nvc">Query paramters to add to the request.</param>
-            <param name="localModified">Whether the blob had been modfied with respect to the <paramref name="eTagIfNoneMatch"/></param>
-            <returns></returns>
-        </member>
-        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.XPathQueryHelper">
-            <summary>
-            Helper class for loading values from an XML segment
-            </summary>
-        </member>
         <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.TableStorageConstants">
             <summary>
             Class representing some important table storage constants.
@@ -1210,6 +472,627 @@
             Creates a TableRetryWrapperException object.
             </summary>
         </member>
+        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.BlobStorage">
+            <summary>
+            The entry point of the blob storage API
+            </summary>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobStorage.Create(System.Uri,System.Nullable{System.Boolean},System.String,System.String)">
+            <summary>
+            Factory method for BlobStorage
+            </summary>
+            <param name="baseUri">The base URI of the blob storage service</param>
+            <param name="usePathStyleUris">If true, path-style URIs (http://baseuri/accountname/containername/objectname) are used.
+            If false host-style URIs (http://accountname.baseuri/containername/objectname) are used,
+            where baseuri is the URI of the service.
+            If null, the choice is made automatically: path-style URIs if host name part of base URI is an 
+            IP addres, host-style otherwise.</param>
+            <param name="accountName">The name of the storage account</param>
+            <param name="base64Key">Authentication key used for signing requests</param>
+            <returns>A newly created BlobStorage instance</returns>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobStorage.Create(Microsoft.Samples.ServiceHosting.StorageClient.StorageAccountInfo)">
+            <summary>
+            Factory method for BlobStorage
+            </summary>
+            <param name="accountInfo">Account information</param>
+            <returns>A newly created BlobStorage instance</returns>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobStorage.GetBlobContainer(System.String)">
+            <summary>
+            Get a reference to a newly created BlobContainer object.
+            This method does not make any calls to the storage service.
+            </summary>
+            <param name="containerName">The name of the container</param>
+            <returns>A reference to a newly created BlobContainer object</returns>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobStorage.ListBlobContainers">
+            <summary>
+            Lists the containers within the account.
+            </summary>
+            <returns>A list of containers</returns>
+        </member>
+        <member name="F:Microsoft.Samples.ServiceHosting.StorageClient.BlobStorage.DefaultTimeout">
+            <summary>
+            The default timeout
+            </summary>
+        </member>
+        <member name="F:Microsoft.Samples.ServiceHosting.StorageClient.BlobStorage.DefaultRetryPolicy">
+            <summary>
+            The default retry policy
+            </summary>
+        </member>
+        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.BlobStorage.Timeout">
+            <summary>
+            The time out for each request to the storage service.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.BlobStorage.RetryPolicy">
+            <summary>
+            The retry policy used for retrying requests
+            </summary>
+        </member>
+        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.BlobStorage.BaseUri">
+            <summary>
+            The base URI of the blob storage service
+            </summary>
+        </member>
+        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.BlobStorage.AccountName">
+            <summary>
+            The name of the storage account
+            </summary>
+        </member>
+        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.BlobStorage.UsePathStyleUris">
+            <summary>
+            Indicates whether to use/generate path-style or host-style URIs
+            </summary>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobStorageRest.GetBlobContainer(System.String)">
+            <summary>
+            Get a reference to a BlobContainer object with the given name.
+            This method does not make any calls to the storage service.
+            </summary>
+            <param name="containerName">The name of the container</param>
+            <returns>A reference to a newly created BlobContainer object</returns>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobStorageRest.ListBlobContainers">
+            <summary>
+            Lists the containers within the account.
+            </summary>
+            <returns>A list of containers</returns>
+        </member>
+        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainer">
+            <summary>
+            The blob container class.
+            Used to access and enumerate blobs in the container.
+            Storage key credentials are needed to access private blobs but not for public blobs.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainer.#ctor(System.Uri,System.String,System.String)">
+            <summary>
+            Use this constructor to access private blobs.
+            </summary>
+            <param name="baseUri">The base Uri for the storage endpoint</param>
+            <param name="accountName">Name of the storage account</param>
+            <param name="containerName">Name of the container</param>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainer.#ctor(System.Uri,System.Boolean,System.String,System.String,System.DateTime)">
+            <summary>
+            Use this constructor to access private blobs.
+            </summary>
+            <param name="baseUri">The base Uri for the storage endpoint</param>
+            <param name="usePathStyleUris">
+            If true, path-style URIs (http://baseuri/accountname/containername/objectname) are used and if false 
+            host-style URIs (http://accountname.baseuri/containername/objectname) are used, where baseuri is the 
+            URI of the service
+            </param>
+            <param name="accountName">Name of the storage account</param>
+            <param name="containerName">Name of the container</param>
+            <param name="lastModified">Date of last modification</param>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainer.CreateContainer">
+            <summary>
+            Create the container if it does not exist.
+            The container is created with private access control and no metadata.
+            </summary>
+            <returns>true if the container was created. false if the container already exists</returns>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainer.CreateContainer(System.Collections.Specialized.NameValueCollection,Microsoft.Samples.ServiceHosting.StorageClient.ContainerAccessControl)">
+            <summary>
+            Create the container with the specified metadata and access control if it does not exist
+            </summary>
+            <param name="metadata">The metadata for the container. Can be null to indicate no metadata</param>
+            <param name="accessControl">The access control (public or private) with which to create the container</param>
+            <returns>true if the container was created. false if the container already exists</returns>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainer.DoesContainerExist">
+            <summary>
+            Check if the blob container exists
+            </summary>
+            <returns>true if the container exists, false otherwise.</returns>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainer.GetContainerProperties">
+            <summary>
+            Get the properties for the container if it exists.
+            </summary>
+            <returns>The properties for the container if it exists, null otherwise</returns>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainer.GetContainerAccessControl">
+            <summary>
+            Get the access control permissions associated with the container.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainer.SetContainerAccessControl(Microsoft.Samples.ServiceHosting.StorageClient.ContainerAccessControl)">
+            <summary>
+            Set the access control permissions associated with the container.
+            </summary>
+            <param name="acl">The permission to set</param>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainer.DeleteContainer">
+            <summary>
+            Deletes the current container.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainer.DoesBlobExist(System.String)">
+            <summary>
+            Check if the blob container exists
+            </summary>
+            <param name="blobName">Name of the BLOB.</param>
+            <returns>true if the blob exists, false otherwise.</returns>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainer.CreateBlob(Microsoft.Samples.ServiceHosting.StorageClient.BlobProperties,Microsoft.Samples.ServiceHosting.StorageClient.BlobContents,System.Boolean)">
+            <summary>
+            Create a new blob or overwrite an existing blob.
+            </summary>
+            <param name="blobProperties">The properties of the blob</param>
+            <param name="blobContents">The contents of the blob</param>
+            <param name="overwrite">Should this request overwrite an existing blob ?</param>
+            <returns>true if the blob was created. false if the blob already exists and <paramref name="overwrite"/>was set to false</returns>
+            <remarks>The LastModifiedTime property of <paramref name="blobProperties"/> is set as a result of this call.
+            This method also has an effect on the ETag values that are managed by the service.</remarks>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainer.UpdateBlobIfNotModified(Microsoft.Samples.ServiceHosting.StorageClient.BlobProperties,Microsoft.Samples.ServiceHosting.StorageClient.BlobContents)">
+            <summary>
+            Updates an existing blob if it has not been modified since the specified time which is typically
+            the last modified time of the blob when you retrieved it.
+            Use this method to implement optimistic concurrency by avoiding clobbering changes to the blob
+            made by another writer.
+            </summary>
+            <param name="blob">The properties of the blob. This object should be one previously
+            obtained from a call to GetBlob or GetBlobProperties and have its LastModifiedTime property set.</param>
+            <param name="contents">The contents of the blob. The contents of the blob should be readable</param>
+            <returns>true if the blob was updated. false if the blob has changed since the last time</returns>
+            <remarks>The LastModifiedTime property of <paramref name="blob"/> is set as a result of this call.
+            This method also has an effect on the ETag values that are managed by the service if the update was 
+            successful.</remarks>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainer.GetBlob(System.String,Microsoft.Samples.ServiceHosting.StorageClient.BlobContents,System.Boolean)">
+            <summary>
+            Get the blob contents and properties if the blob exists
+            </summary>
+            <param name="name">The name of the blob</param>
+            <param name="blobContents">Object in which the contents are returned.
+            This object should contain a writable stream or should be a default constructed object.</param>
+            <param name="transferAsChunks">Should the blob be gotten in pieces. This requires more round-trips, but will retry smaller pieces in case of failure.</param>
+            <returns>The properties of the blob if the blob exists.</returns>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainer.GetBlobIfModified(Microsoft.Samples.ServiceHosting.StorageClient.BlobProperties,Microsoft.Samples.ServiceHosting.StorageClient.BlobContents,System.Boolean)">
+            <summary>
+            Gets the blob contents and properties if the blob has not been modified since the time specified.
+            Use this method if you have cached the contents of a blob and want to avoid retrieving the blob
+            if it has not changed since the last time you retrieved it.
+            </summary>
+            <param name="blobProperties">The properties of the blob obtained from an earlier call to GetBlob. This
+            parameter is updated by the call if the blob has been modified</param>
+            <param name="blobContents">Contains the stream to which the contents of the blob are written if it has been
+            modified</param>
+            <param name="transferAsChunks">Should the blob be gotten in pieces. This requires more round-trips, but will retry smaller pieces in case of failure.</param>
+            <returns>true if the blob has been modified, false otherwise</returns>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainer.GetBlobProperties(System.String)">
+            <summary>
+            Get the properties of the blob if it exists.
+            This method is also the simplest way to check if a blob exists.
+            </summary>
+            <param name="name">The name of the blob</param>
+            <returns>The properties of the blob if it exists. null otherwise.
+            The properties for the contents of the blob are not set</returns>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainer.UpdateBlobMetadata(Microsoft.Samples.ServiceHosting.StorageClient.BlobProperties)">
+            <summary>
+            Set the metadata of an existing blob.
+            </summary>
+            <param name="blobProperties">The blob properties object whose metadata is to be updated</param>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainer.UpdateBlobMetadataIfNotModified(Microsoft.Samples.ServiceHosting.StorageClient.BlobProperties)">
+            <summary>
+            Set the metadata of an existing blob if it has not been modified since it was last retrieved.
+            </summary>
+            <param name="blobProperties">The blob properties object whose metadata is to be updated.
+            Typically obtained by a previous call to GetBlob or GetBlobProperties</param>
+            <returns>true if the blob metadata was updated. false if it was not updated because the blob
+            has been modified</returns>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainer.DeleteBlob(System.String)">
+            <summary>
+            Delete a blob with the given name
+            </summary>
+            <param name="name">The name of the blob</param>
+            <returns>true if the blob exists and was successfully deleted, false if the blob does not exist</returns>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainer.DeleteBlobIfNotModified(Microsoft.Samples.ServiceHosting.StorageClient.BlobProperties,System.Boolean@)">
+            <summary>
+            Delete a blob with the given name if the blob has not been modified since it was last obtained.
+            Use this method for optimistic concurrency to avoid deleting a blob that has been modified since
+            the last time you retrieved it
+            </summary>
+            <param name="blob">A blob object (typically previously obtained from a GetBlob call)</param>
+            <param name="modified">This out parameter is set to true if the blob was not deleted because
+            it was modified</param>
+            <returns>true if the blob exists and was successfully deleted, false if the blob does not exist or was
+            not deleted because the blob was modified.</returns>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainer.ListBlobs(System.String,System.Boolean)">
+            <summary>
+            Enumerates all blobs with a given prefix.
+            </summary>
+            <param name="prefix"></param>
+            <param name="combineCommonPrefixes">If true common prefixes with "/" as seperator</param>
+            <returns>The list of blob properties and common prefixes</returns>
+        </member>
+        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainer.Timeout">
+            <summary>
+            The time out for each request to the storage service.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainer.RetryPolicy">
+            <summary>
+            The retry policy used for retrying requests
+            </summary>
+        </member>
+        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainer.BaseUri">
+            <summary>
+            The base URI of the blob storage service
+            </summary>
+        </member>
+        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainer.AccountName">
+            <summary>
+            The name of the storage account
+            </summary>
+        </member>
+        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainer.ContainerName">
+            <summary>
+            The name of the blob container.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainer.UsePathStyleUris">
+            <summary>
+            Indicates whether to use/generate path-style or host-style URIs
+            </summary>
+        </member>
+        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainer.ContainerUri">
+            <summary>
+            The URI of the container
+            </summary>
+        </member>
+        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainer.LastModifiedTime">
+            <summary>
+            The timestamp for last modification of container.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainerRest.CreateContainer(System.Collections.Specialized.NameValueCollection,Microsoft.Samples.ServiceHosting.StorageClient.ContainerAccessControl)">
+            <summary>
+            Create the container with the specified access control if it does not exist
+            </summary>
+            <param name="metadata">The metadata for the container. Can be null to indicate no metadata</param>
+            <param name="accessControl">The access control (public or private) with which to create the container</param>
+            <returns>true if the container was created. false if the container already exists</returns>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainerRest.GetContainerProperties">
+            <summary>
+            Get the properties for the container if it exists.
+            </summary>
+            <returns>The metadata for the container if it exists, null otherwise</returns>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainerRest.GetContainerAccessControl">
+            <summary>
+            Get the access control permissions associated with the container.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainerRest.SetContainerAccessControl(Microsoft.Samples.ServiceHosting.StorageClient.ContainerAccessControl)">
+            <summary>
+            Get the access control permissions associated with the container.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainerRest.CreateBlob(Microsoft.Samples.ServiceHosting.StorageClient.BlobProperties,Microsoft.Samples.ServiceHosting.StorageClient.BlobContents,System.Boolean)">
+            <summary>
+            Create a new blob or overwrite an existing blob.
+            </summary>
+            
+            <param name="blobProperties">The properties of the blob</param>
+            <param name="blobContents">The contents of the blob</param>
+            <param name="overwrite">Should this request overwrite an existing blob ?</param>
+            <returns>true if the blob was created. false if the blob already exists and <paramref name="overwrite"/>was set to false</returns>
+            <remarks>The LastModifiedTime property of <paramref name="blobProperties"/> is set as a result of this call</remarks>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainerRest.UpdateBlobIfNotModified(Microsoft.Samples.ServiceHosting.StorageClient.BlobProperties,Microsoft.Samples.ServiceHosting.StorageClient.BlobContents)">
+            <summary>
+            Updates an existing blob if it has not been modified since the specified time which is typically
+            the last modified time of the blob when you retrieved it.
+            Use this method to implement optimistic concurrency by avoiding clobbering changes to the blob
+            made by another writer.
+            </summary>
+            <param name="blobProperties">The properties of the blob. This object should be one previously
+            obtained from a call to GetBlob or GetBlobProperties and have its LastModifiedTime property set.</param>
+            <param name="contents">The contents of the blob. The contents of the blob should be readable</param>
+            <returns>true if the blob was updated. false if the blob has changed since the last time</returns>
+            <remarks>The LastModifiedTime property of <paramref name="properties"/> is set as a result of this call</remarks>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainerRest.GetBlob(System.String,Microsoft.Samples.ServiceHosting.StorageClient.BlobContents,System.Boolean)">
+            <summary>
+            Get the blob contents and properties if the blob exisits
+            </summary>
+            <param name="name">The name of the blob</param>
+            <param name="blobContents">Object in which the contents are returned.
+            This object should contain a writable stream or should be a default constructed object.</param>
+            <param name="transferAsChunks">Should the blob be gotten in pieces. This requires more round-trips, but will retry smaller piecs in case of failure.</param>
+            <returns>The properties of the blob if the blob exists.</returns>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainerRest.GetBlobIfModified(Microsoft.Samples.ServiceHosting.StorageClient.BlobProperties,Microsoft.Samples.ServiceHosting.StorageClient.BlobContents,System.Boolean)">
+            <summary>
+            Gets the blob contents and properties if the blob has not been modified since the time specified.
+            Use this method if you have cached the contents of a blob and want to avoid retrieving the blob
+            if it has not changed since the last time you retrieved it.
+            </summary>
+            <param name="blobProperties">The properties of the blob obtained from an earlier call to GetBlob. This
+            parameter is updated by the call if the blob has been modified</param>
+            <param name="blobContents">Contains the stream to which the contents of the blob are written if it has been
+            modified</param>
+            <param name="transferAsChunks">Should the blob be gotten in pieces. This requires more round-trips, but will retry smaller piecs in case of failure.</param>
+            <returns>true if the blob has been modified, false otherwise</returns>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainerRest.GetBlobProperties(System.String)">
+            <summary>
+            Get the properties of the blob if it exists.
+            This method is also the simplest way to check if a blob exists.
+            </summary>
+            <param name="name">The name of the blob</param>
+            <returns>The properties of the blob if it exists. null otherwise.
+            The properties for the contents of the blob are not set</returns>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainerRest.UpdateBlobMetadata(Microsoft.Samples.ServiceHosting.StorageClient.BlobProperties)">
+            <summary>
+            Set the metadata of an existing blob.
+            </summary>
+            <param name="blobProperties">The blob properties object whose metadata is to be updated</param>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainerRest.UpdateBlobMetadataIfNotModified(Microsoft.Samples.ServiceHosting.StorageClient.BlobProperties)">
+            <summary>
+            Set the metadata of an existing blob if it has not been modified since it was last retrieved.
+            </summary>
+            <param name="blobProperties">The blob properties object whose metadata is to be updated.
+            Typically obtained by a previous call to GetBlob or GetBlobProperties</param>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainerRest.DeleteBlob(System.String)">
+            <summary>
+            Delete a blob with the given name
+            </summary>
+            <param name="name">The name of the blob</param>
+            <returns>true if the blob exists and was successfully deleted, false if the blob does not exist</returns>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainerRest.DeleteBlobIfNotModified(Microsoft.Samples.ServiceHosting.StorageClient.BlobProperties,System.Boolean@)">
+            <summary>
+            Delete a blob with the given name if the blob has not been modified since it was last obtained.
+            Use this method for optimistic concurrency to avoid deleting a blob that has been modified since
+            the last time you retrieved it
+            </summary>
+            <param name="blob">A blob object (typically previously obtained from a GetBlob call)</param>
+            <param name="modified">This out parameter is set to true if the blob was not deleted because
+            it was modified</param>
+            <returns>true if the blob exists and was successfully deleted, false if the blob does not exist or was
+            not deleted because the blob was modified.</returns>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainerRest.ListBlobs(System.String,System.Boolean)">
+            <summary>
+            Enumerates all blobs with a given prefix.
+            </summary>
+            <param name="prefix"></param>
+            <param name="combineCommonPrefixes">If true common prefixes with "/" as seperator</param>
+            <returns>The list of blob properties and common prefixes</returns>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainerRest.PutLargeBlobImpl(Microsoft.Samples.ServiceHosting.StorageClient.BlobProperties,System.IO.Stream,System.Boolean,System.String)">
+            <summary>
+            Uploads a blob in chunks.
+            </summary>
+            <param name="blobProperties"></param>
+            <param name="stream"></param>
+            <param name="overwrite"></param>
+            <param name="eTag"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.BlobContainerRest.DownloadData(System.String,System.IO.Stream,System.String,System.String,System.Int64,System.Int64,System.Collections.Specialized.NameValueCollection,System.Boolean@)">
+            <summary>
+            Helper method used for getting blobs, ranges of blobs and blob properties.
+            </summary>
+            <param name="blobName">Name of the blob</param>
+            <param name="stream">The output stream to write blob data to. Can be null if only retrieving blob properties</param>
+            <param name="eTagIfNoneMatch">The If-None-Match header. Used to avoid downloading blob data if the blob has not changed</param>
+            <param name="eTagIfMatch">The If-Match header. Used to ensure that all chunks of the blob are of the same blob</param>
+            <param name="offset">The offset of the blob data to begin downloading from. Set to 0 to download all data.</param>
+            <param name="length">The length of the blob data to download. Set to 0 to download all data</param>
+            <param name="nvc">Query paramters to add to the request.</param>
+            <param name="localModified">Whether the blob had been modfied with respect to the <paramref name="eTagIfNoneMatch"/></param>
+            <returns></returns>
+        </member>
+        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.XPathQueryHelper">
+            <summary>
+            Helper class for loading values from an XML segment
+            </summary>
+        </member>
+        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.ResourceUriComponents">
+            <summary>
+            This type represents the different constituent parts that make up a resource Uri in the context of cloud services.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.ResourceUriComponents.#ctor(System.String,System.String,System.String)">
+            <summary>
+            Construct a ResourceUriComponents object.
+            </summary>
+            <param name="accountName">The account name that should become part of the URI.</param>
+            <param name="containerName">The container name (container, queue or table name) that should become part of the URI.</param>
+            <param name="remainingPart">Remaining part of the URI.</param>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.ResourceUriComponents.#ctor(System.String,System.String)">
+            <summary>
+            Construct a ResourceUriComponents object.        
+            </summary>
+            <param name="accountName">The account name that should become part of the URI.</param>
+            <param name="containerName">The container name (container, queue or table name) that should become part of the URI.</param>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.ResourceUriComponents.#ctor(System.String)">
+            <summary>
+            Construct a ResourceUriComponents object.        
+            </summary>
+            <param name="accountName">The account name that should become part of the URI.</param>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.ResourceUriComponents.#ctor">
+            <summary>
+            Construct a ResourceUriComponents object.        
+            </summary>
+        </member>
+        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.ResourceUriComponents.AccountName">
+            <summary>
+            The account name in the URI.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.ResourceUriComponents.ContainerName">
+            <summary>
+            This is really the first component (delimited by '/') after the account name. Since it happens to
+            be a container name in the context of all our storage services (containers in blob storage,
+            queues in the queue service and table names in table storage), it's named as ContainerName to make it more 
+            readable at the cost of slightly being incorrectly named.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.ResourceUriComponents.RemainingPart">
+            <summary>
+            The remaining string in the URI.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageCanonicalizer.CanonicalizeHttpRequest(System.Uri,Microsoft.Samples.ServiceHosting.StorageClient.ResourceUriComponents,System.String,System.String,System.String,System.Collections.Specialized.NameValueCollection)">
+            <summary>
+            Create a canonicalized string out of HTTP request header contents for signing 
+            blob/queue requests with the Shared Authentication scheme. 
+            </summary>
+            <param name="address">The uri address of the HTTP request.</param>
+            <param name="uriComponents">Components of the Uri extracted out of the request.</param>
+            <param name="method">The method of the HTTP request (GET/PUT, etc.).</param>
+            <param name="contentType">The content type of the HTTP request.</param>
+            <param name="date">The date of the HTTP request.</param>
+            <param name="headers">Should contain other headers of the HTTP request.</param>
+            <returns>A canonicalized string of the HTTP request.</returns>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageCanonicalizer.CanonicalizeHttpRequest(System.Net.HttpWebRequest,Microsoft.Samples.ServiceHosting.StorageClient.ResourceUriComponents)">
+            <summary>
+            Canonicalize HTTP header contents.
+            </summary>
+            <param name="request">An HttpWebRequest object.</param>
+            <param name="uriComponents">Components of the Uri extracted out of the request.</param>
+            <returns>The canonicalized string of the given HTTP request's header.</returns>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageCanonicalizer.ConvertDateTimeToHttpString(System.DateTime)">
+            <summary>
+            Creates a standard datetime string for the shared key lite authentication scheme.
+            </summary>
+            <param name="dateTime">DateTime value to convert to a string in the expected format.</param>
+            <returns></returns>
+        </member>
+        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.MessageCanonicalizer.CanonicalizedString">
+            <summary>
+            An internal class that stores the canonicalized string version of an HTTP request.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageCanonicalizer.CanonicalizedString.#ctor(System.String)">
+            <summary>
+            Constructor for the class.
+            </summary>
+            <param name="initialElement">The first canonicalized element to start the string with.</param>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.MessageCanonicalizer.CanonicalizedString.AppendCanonicalizedElement(System.String)">
+            <summary>
+            Append additional canonicalized element to the string.
+            </summary>
+            <param name="element">An additional canonicalized element to append to the string.</param>
+        </member>
+        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.MessageCanonicalizer.CanonicalizedString.Value">
+            <summary>
+            Property for the canonicalized string.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.HttpRequestAccessor">
+            <summary>
+            Use this class to extract various header values from Http requests.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.HttpRequestAccessor.GetHeaderValues(System.Collections.Specialized.NameValueCollection,System.String)">
+            <summary>
+            A helper function for extracting HTTP header values from a NameValueCollection object.
+            </summary>
+            <param name="headers">A NameValueCollection object that should contain HTTP header name-values pairs.</param>
+            <param name="headerName">Name of the header that we want to get values of.</param>
+            <returns>A array list of values for the header. The values are in the same order as they are stored in the NameValueCollection object.</returns>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.HttpRequestAccessor.ConstructResourceUri(System.Uri,Microsoft.Samples.ServiceHosting.StorageClient.ResourceUriComponents,System.Boolean)">
+            <summary>
+            Constructs an URI given all its constituents
+            </summary>
+            <param name="endpoint">
+            This is the service endpoint in case of path-style URIs and a host suffix in case of host-style URIs
+            IMPORTANT: This does NOT include the service name or account name
+            </param>
+            <param name="uriComponents">Uri constituents</param>
+            <param name="pathStyleUri">Indicates whether to construct a path-style Uri (true) or host-style URI (false)</param>
+            <returns>Full uri</returns>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.HttpRequestAccessor.ConstructPathStyleResourceUri(System.Uri,Microsoft.Samples.ServiceHosting.StorageClient.ResourceUriComponents)">
+            <summary>
+            Constructs a path-style resource URI given all its constituents
+            </summary>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.HttpRequestAccessor.ConstructHostStyleResourceUri(System.Uri,Microsoft.Samples.ServiceHosting.StorageClient.ResourceUriComponents)">
+            <summary>
+            Constructs a host-style resource URI given all its constituents
+            </summary>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.HttpRequestAccessor.ConstructHostStyleAccountUri(System.Uri,System.String)">
+            <summary>
+            Given the host suffix part, service name and account name, this method constructs the account Uri
+            </summary>
+        </member>
+        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.SharedKeyCredentials">
+            <summary>
+            Objects of this class contain the credentials (name and key) of a storage account.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.SharedKeyCredentials.#ctor(System.String,System.Byte[])">
+            <summary>
+            Create a SharedKeyCredentials object given an account name and a shared key.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.SharedKeyCredentials.SignRequest(System.Net.HttpWebRequest,Microsoft.Samples.ServiceHosting.StorageClient.ResourceUriComponents)">
+            <summary>
+            Signs the request appropriately to make it an authenticated request.
+            Note that this method takes the URI components as decoding the URI components requires the knowledge
+            of whether the URI is in path-style or host-style and a host-suffix if it's host-style.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.SharedKeyCredentials.SignRequestForSharedKeyLite(System.Net.HttpWebRequest,Microsoft.Samples.ServiceHosting.StorageClient.ResourceUriComponents)">
+            <summary>
+            Signs requests using the SharedKeyLite authentication scheme with is used for the table storage service.
+            </summary>
+        </member>
         <member name="F:Microsoft.Samples.ServiceHosting.StorageClient.StorageHttpConstants.HeaderValues.DefaultContentType">
             <summary>
             This is the default content-type xStore uses when no content type is specified
@@ -1258,6 +1141,123 @@
             <summary>
             Table names that match against this regular expression are valid.
             </summary>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.Utilities.ConvertDateTimeToHttpString(System.DateTime)">
+            <summary>
+            Converts the date time to a valid string form as per HTTP standards
+            </summary>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.Utilities.TryGetDateTimeFromHttpString(System.String,System.Nullable{System.DateTime}@)">
+            <summary>
+            Parse a string having the date time information in acceptable formats according to HTTP standards
+            </summary>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.Utilities.CopyStream(System.IO.Stream,System.IO.Stream)">
+            <summary>
+            Copies from one stream to another
+            </summary>
+            <param name="sourceStream">The stream to copy from</param>
+            <param name="destinationStream">The stream to copy to</param>
+        </member>
+        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.StorageErrorCode">
+            <summary>
+            Error codes that can be returned by the storage service or the client library.
+            These are divided into server errors and client errors depending on which side
+            the error can be attributed to.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.StorageException">
+            <summary>
+            The base class for storage service exceptions
+            </summary>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.StorageException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.Samples.ServiceHosting.StorageClient.StorageException"/> class with
+            serialized data.
+            </summary>
+            <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"/> object that contains serialized object
+            data about the exception being thrown</param>
+            <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext"/> object that contains contextual information
+            about the source or destionation. </param>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.StorageException.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Sets the <see cref="T:System.Runtime.Serialization.SerializationInfo"/> object with additional exception information
+            </summary>
+            <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"/> object that holds the 
+            serialized object data.</param>
+            <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext"/> object that contains contextual information
+            about the source or destionation. </param>
+        </member>
+        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.StorageException.StatusCode">
+            <summary>
+            The Http status code returned by the storage service
+            </summary>
+        </member>
+        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.StorageException.ErrorCode">
+            <summary>
+            The specific error code returned by the storage service
+            </summary>
+        </member>
+        <member name="P:Microsoft.Samples.ServiceHosting.StorageClient.StorageException.ExtendedErrorInformation">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.StorageServerException">
+            <summary>
+            Server exceptions are those due to server side problems.
+            These may be transient and requests resulting in such exceptions
+            can be retried with the same parameters.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.StorageServerException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.Samples.ServiceHosting.StorageClient.StorageServerException"/> class with
+            serialized data.
+            </summary>
+            <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"/> object that contains serialized object
+            data about the exception being thrown</param>
+            <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext"/> object that contains contextual information
+            about the source or destionation. </param>
+        </member>
+        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.StorageClientException">
+            <summary>
+            Client side exceptions are due to incorrect parameters to the request.
+            These requests should not be retried with the same parameters
+            </summary>
+        </member>
+        <member name="M:Microsoft.Samples.ServiceHosting.StorageClient.StorageClientException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.Samples.ServiceHosting.StorageClient.StorageClientException"/> class with
+            serialized data.
+            </summary>
+            <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"/> object that contains serialized object
+            data about the exception being thrown</param>
+            <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext"/> object that contains contextual information
+            about the source or destionation. </param>
+        </member>
+        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.StorageErrorCodeStrings">
+            <summary>
+            Error code strings that are common to all storage services
+            </summary>
+        </member>
+        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.BlobErrorCodeStrings">
+            <summary>
+            Error code strings that are specific to blob service
+            </summary>
+        </member>
+        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.QueueErrorCodeStrings">
+            <summary>
+            Error code strings that are specific to queue service
+            </summary>
+        </member>
+        <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.TableErrorCodeStrings">
+            <summary>
+            Error code strings that are specific to queue service
+            </summary>
+                public static class TableErrorCodeStrings
         </member>
         <member name="T:Microsoft.Samples.ServiceHosting.StorageClient.QueueStorage">
             <summary>

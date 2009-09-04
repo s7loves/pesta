@@ -2382,10 +2382,6 @@
       <Project>{6D1D97EC-F037-4B70-B631-0628BAC6664C}</Project>
       <Name>pesta.Data</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\raya.Data.WindowsAzure\raya.Data.WindowsAzure.csproj">
-      <Project>{995A11D7-00AC-4E16-B980-D95CF3A4CEC3}</Project>
-      <Name>raya.Data.WindowsAzure</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\StorageClient\Lib\StorageClient.csproj">
       <Project>{C6F30C10-E1C2-4327-BB6B-3160B479CCA1}</Project>
       <Name>StorageClient</Name>

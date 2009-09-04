@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Jayrock;
 using pesta.Data;
+using Pesta.DataAccess.Azure;
 using Pesta.Engine.social.spi;
 using Pesta.Utilities;
-using raya.Data.WindowsAzure;
+using Pesta.DataAccess.Azure;
 
 namespace Pesta.DataAccess
 {
