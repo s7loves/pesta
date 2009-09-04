@@ -30,7 +30,7 @@ namespace pestaServer.Models.gadgets.servlet
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
+    
     /// </para>
     /// </remarks>
     public class JsonRpcGadgetContext : GadgetContext
@@ -42,7 +42,7 @@ namespace pestaServer.Models.gadgets.servlet
         private bool? debug;
         private bool? ignoreCache;
         private readonly Locale locale;
-        private readonly int moduleId;
+        private readonly string moduleId;
         private readonly RenderingContext renderingContext;
         private readonly URI url;
         private readonly UserPrefs userPrefs;
@@ -118,9 +118,9 @@ namespace pestaServer.Models.gadgets.servlet
             return locale;
         }
 
-        public override int getModuleId()
+        public override string getModuleId()
         {
-            if (moduleId == 0)
+            if (string.IsNullOrEmpty(moduleId))
             {
                 return base.getModuleId();
             }
@@ -183,15 +183,13 @@ namespace pestaServer.Models.gadgets.servlet
         * @return module id from the request, or null if not present
         * @throws JSONException
         */
-        private static int getModuleId(JsonObject json)
+        private static string getModuleId(JsonObject json)
         {
             if (json.Contains("moduleId"))
             {
-                int val = 0;
-                int.TryParse(json["moduleId"].ToString(), out val);
-                return val;
+                return json["moduleId"].ToString();
             }
-            return 0;
+            return null;
         }
 
         /**

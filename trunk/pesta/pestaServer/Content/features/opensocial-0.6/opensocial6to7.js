@@ -17,8 +17,6 @@
  * under the License.
  */
 
-/*global gadgets, opensocial */
-
 // If a gadget was written for the opensocial 0.6 apis and it wants to run in a
 // container that only supports 0.7, including this file should allow the gadget
 // to run without making any changes.
@@ -62,7 +60,7 @@ opensocial.ContentRequestParameters.AuthenticationType = {
 opensocial.Person.prototype.getField_v07 = opensocial.Person.prototype.getField;
 
 opensocial.Person.prototype.getField = function(fieldname) {
-  if (fieldname === opensocial.Person.Field.NAME) {
+  if (fieldname == opensocial.Person.Field.NAME) {
     return this.getField_v07(opensocial.Person.Field.NAME)
         .getField(opensocial.Name.Field.UNSTRUCTURED);
   } else {

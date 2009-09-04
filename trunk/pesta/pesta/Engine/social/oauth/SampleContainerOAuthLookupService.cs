@@ -22,19 +22,10 @@ using System.Collections.Generic;
 using System.IO;
 using Pesta.Engine.auth;
 using Pesta.Engine.social.core.oauth;
-using Pesta.Interop.oauth;
-using Pesta.Libraries.oauth;
+using Pesta.Libraries.OAuth;
 
 namespace Pesta.Engine.social.oauth
 {
-    /// <summary>
-    /// Summary description for SampleContainerOAuthLookupService
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
-    /// </para>
-    /// </remarks>
     public class SampleContainerOAuthLookupService : IOAuthLookupService
     {
         // If we were a real social network this would probably be a function

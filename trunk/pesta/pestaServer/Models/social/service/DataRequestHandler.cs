@@ -21,19 +21,10 @@ using System;
 using System.Collections.Generic;
 using Pesta.Engine.protocol;
 using Pesta.Engine.social;
-using Pesta.Engine.social.spi;
 
 
 namespace pestaServer.Models.social.service
 {
-    /// <summary>
-    /// Summary description for DataRequestHandler
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
-    /// </para>
-    /// </remarks>
     public abstract class DataRequestHandler
     {
         private static readonly List<String> GET_SYNONYMS = new List<string>(new [] { "get" });

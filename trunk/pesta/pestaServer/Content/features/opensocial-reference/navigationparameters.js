@@ -17,8 +17,6 @@
  * under the License.
  */
 
-/*global opensocial */
-
 /**
  * @fileoverview Representation of navigation parameters for RequestShareApp.
  */
@@ -125,7 +123,7 @@ opensocial.NavigationParameters.prototype.getField = function(key, opt_params) {
  * @param {Object} data The data to set
  */
 opensocial.NavigationParameters.prototype.setField = function(key, data) {
-  return (this.fields_[key] = data);
+  return this.fields_[key] = data;
 };
 
 

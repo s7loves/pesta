@@ -1,4 +1,4 @@
-﻿#region License, Terms and Conditions
+#region License, Terms and Conditions
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -19,19 +19,11 @@
 #endregion
 using System;
 using Pesta.Engine.auth;
-using Pesta.Interop.oauth;
+using Pesta.Libraries.OAuth;
 
 
 namespace pestaServer.Models.gadgets.oauth
 {
-    /// <summary>
-    /// Summary description for OAuthStore
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
-    /// </para>
-    /// </remarks>
     public abstract class OAuthStore
     {
         /**

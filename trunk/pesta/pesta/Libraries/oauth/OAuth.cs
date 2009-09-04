@@ -16,20 +16,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Web;
 using System.Text;
-using System.Text.RegularExpressions;
 
-namespace Pesta.Interop.oauth
+namespace Pesta.Libraries.OAuth
 {
-    /// <summary>
-    /// Summary description for OAuth
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
-    /// </para>
-    /// </remarks>
     public class OAuth
     {
         public static readonly int OAUTH_NONCE_LENGTH = 16;

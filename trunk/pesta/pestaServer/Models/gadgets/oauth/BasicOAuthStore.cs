@@ -1,4 +1,4 @@
-﻿#region License, Terms and Conditions
+#region License, Terms and Conditions
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -25,8 +25,8 @@ using Jayrock.Json;
 using Jayrock.Json.Conversion;
 using Pesta.Engine.auth;
 using Pesta.Engine.common;
-using Pesta.Interop.oauth;
-using Pesta.Interop.oauth.signature;
+using Pesta.Libraries.OAuth;
+using Pesta.Libraries.OAuth.signature;
 
 namespace pestaServer.Models.gadgets.oauth
 {
@@ -38,7 +38,7 @@ namespace pestaServer.Models.gadgets.oauth
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
+    
     /// </para>
     /// </remarks>
     public class BasicOAuthStore : OAuthStore

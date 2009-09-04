@@ -53,7 +53,6 @@ gadgets.util = function() {
 
   var parameters = null;
   var features = {};
-  var services = {};
   var onLoadHandlers = [];
 
   // Maps code points to the value to replace them with.
@@ -178,7 +177,7 @@ gadgets.util = function() {
      */
     makeEnum : function (values) {
       var obj = {};
-      for (var i = 0, v; (v = values[i]); ++i) {
+      for (var i = 0, v; v = values[i]; ++i) {
         obj[v] = v;
       }
       return obj;
@@ -193,7 +192,8 @@ gadgets.util = function() {
      * @member gadgets.util
      */
     getFeatureParameters : function (feature) {
-      return typeof features[feature] === "undefined" ? null : features[feature];
+      return typeof features[feature] === "undefined"
+          ? null : features[feature];
     },
 
     /**
@@ -206,18 +206,6 @@ gadgets.util = function() {
      */
     hasFeature : function (feature) {
       return typeof features[feature] !== "undefined";
-    },
-    
-    /**
-     * Returns the list of services supported by the server
-     * serving this gadget.
-     *
-     * @return {Object} List of Services that enumerate their methods
-     *
-     * @member gadgets.util
-     */
-    getServices : function () {
-      return services;
     },
 
     /**
@@ -267,10 +255,9 @@ gadgets.util = function() {
         }
       } else if (typeof input === "object" && opt_escapeObjects) {
         var newObject = {};
-        for (var field in input) {
-          if (input.hasOwnProperty(field)) {
-            newObject[gadgets.util.escapeString(field)] = gadgets.util.escape(input[field], true);
-          }
+        for (var field in input) if (input.hasOwnProperty(field)) {
+          newObject[gadgets.util.escapeString(field)]
+              = gadgets.util.escape(input[field], true);
         }
         return newObject;
       }

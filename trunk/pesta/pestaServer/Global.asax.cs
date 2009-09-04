@@ -19,8 +19,7 @@
 #endregion
 using System.Web.Mvc;
 using System.Web.Routing;
-using Microsoft.Samples.ServiceHosting.StorageClient;
-using pestaServer.DataAccess;
+using raya.Data.WindowsAzure;
 
 namespace pestaServer
 {
@@ -29,6 +28,10 @@ namespace pestaServer
 
     public class MvcApplication : System.Web.HttpApplication
     {
+#if AZURE
+        ApplicationInitAzureTables azureInit;
+#endif
+
         public static void RegisterRoutes(RouteCollection routes)
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
@@ -100,8 +103,12 @@ namespace pestaServer
         protected void Application_Start()
         {
             RegisterRoutes(RouteTable.Routes);
+        }
+
+        protected void Application_BeginRequest()
+        {
 #if AZURE
-            TableStorage.CreateTablesFromModel(typeof(RayaAzureContext));
+            azureInit = ApplicationInitAzureTables.Init;
 #endif
         }
     }

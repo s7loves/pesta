@@ -25,7 +25,7 @@ using Jayrock.Json.Conversion;
 
 namespace pestaServer.Models.common
 {
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
+    
     class JsonContainerConfig : ContainerConfig
     {
         private const String CONTAINER_KEY = "gadgets.container";

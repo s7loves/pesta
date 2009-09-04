@@ -28,14 +28,6 @@ using HttpResponseWrapper = pestaServer.Models.gadgets.http.HttpResponseWrapper;
 
 namespace pestaServer.Models.gadgets.servlet
 {
-    /// <summary>
-    /// Summary description for ProxyBase
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
-    /// </para>
-    /// </remarks>
     public abstract class ProxyBase
     {
         public const String URL_PARAM = "url";

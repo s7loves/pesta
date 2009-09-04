@@ -1,4 +1,4 @@
-﻿#region License, Terms and Conditions
+#region License, Terms and Conditions
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -20,18 +20,21 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using pesta.Data;
+using pesta.Data.Model.Helpers;
+using pesta.Data.SqlServer;
+using Pesta.DataAccess;
 using Pesta.Engine.auth;
 using Pesta.Engine.protocol;
 using Pesta.Engine.social;
-using Pesta.Engine.social.model;
 using Pesta.Engine.social.spi;
-using pestaServer.DataAccess;
 
-    public class RayaService : IPersonService, IActivityService, IAppDataService, IMessagesService
+public class RayaService : IPersonService, IActivityService, IAppDataService, IMessagesService
     {
         public readonly static RayaService Instance = new RayaService();
         protected RayaService()
         {
+
         }
 
         private class NameComparator : IComparer<Person>
@@ -44,7 +47,7 @@ using pestaServer.DataAccess;
             }
         }
 
-        private static HashSet<String> GetIdSet(UserId user, GroupId group, ISecurityToken token)
+        private HashSet<String> GetIdSet(UserId user, GroupId group, ISecurityToken token)
         {
             String userId = user.getUserId(token);
 
@@ -59,11 +62,19 @@ using pestaServer.DataAccess;
                 case GroupId.Type.all:
                 case GroupId.Type.friends:
                 case GroupId.Type.groupId:
-                    var friendIds = RayaDbFetcher.Get().GetFriendIds(int.Parse(userId)).ToList();
-                    for (int i = 0; i < friendIds.Count; i++)
+#if AZURE
+                    using (var db = new AzureDbFetcher())
+#else
+                    using (var db = new RayaDbFetcher())
+#endif
                     {
-                        returnVal.Add(friendIds[i].ToString());
+                        var friendIds = db.GetFriendIds(userId).ToList();
+                        for (int i = 0; i < friendIds.Count; i++)
+                        {
+                            returnVal.Add(friendIds[i]);
+                        }
                     }
+
                     break;
                 case GroupId.Type.self:
                     returnVal.Add(userId);
@@ -72,7 +83,7 @@ using pestaServer.DataAccess;
             return returnVal;
         }
 
-        private static HashSet<String> GetIdSet(IEnumerable<UserId> users, GroupId group, ISecurityToken token)
+        private HashSet<String> GetIdSet(IEnumerable<UserId> users, GroupId group, ISecurityToken token)
         {
             HashSet<String> ids = new HashSet<string>();
             foreach (UserId user in users)
@@ -87,9 +98,18 @@ using pestaServer.DataAccess;
         {
             int first = options.getFirst();
             int max = options.getMax();
+            Dictionary<string, Person> allPeople;
             HashSet<String> ids = GetIdSet(userId, groupId, token);
-            var allPeople = RayaDbFetcher.Get().GetPeople(ids, fields, options);
-            var totalSize = allPeople.Count;
+#if AZURE
+            using (var db = new AzureDbFetcher())
+#else
+            using (var db = new RayaDbFetcher())
+#endif
+            {
+                allPeople = db.GetPeople(ids, fields, options);
+            }
+                var totalSize = allPeople.Count;
+            
             var result = new List<Person>();
             if (first < totalSize)
             {
@@ -111,7 +131,7 @@ using pestaServer.DataAccess;
                 }
 
                 // We can pretend that by default the people are in top friends order
-                if (options.getSortBy().Equals(Person.Field.NAME.Value))
+                if (options.getSortBy().Equals(Person.Field.NAME.ToDescriptionString()))
                 {
                     result.Sort(new NameComparator());
                 }
@@ -153,9 +173,16 @@ using pestaServer.DataAccess;
                                             String appId, HashSet<String> fields, ISecurityToken token)
         {
             var ids = GetIdSet(userId, groupId, token);
-            var data = RayaDbFetcher.Get().GetAppData(ids, fields, appId);
-            
-            return data;
+#if AZURE
+            using (var db = new AzureDbFetcher())
+#else
+            using (var db = new RayaDbFetcher())
+#endif
+            {
+                var data = db.GetAppData(ids, fields, appId);
+
+                return data;
+            }
         }
 
 
@@ -174,11 +201,17 @@ using pestaServer.DataAccess;
             IEnumerator<string> iuserid = ids.GetEnumerator();
             iuserid.MoveNext();
             string userId = iuserid.Current;
-            if (!RayaDbFetcher.Get().DeleteAppData(userId, fields, appId))
+#if AZURE
+            using (var db = new AzureDbFetcher())
+#else
+            using (var db = new RayaDbFetcher())
+#endif
             {
-                throw new ProtocolException(ResponseError.INTERNAL_ERROR, "Internal server error");
+                if (!db.DeleteAppData(userId, fields, appId))
+                {
+                    throw new ProtocolException(ResponseError.INTERNAL_ERROR, "Internal server error");
+                }
             }
-            
         }
         
         public void updatePersonData(UserId userId, GroupId groupId,
@@ -194,9 +227,16 @@ using pestaServer.DataAccess;
                     foreach (var key in fields) 
                     {
                         var value = values[key];
-                        if (! RayaDbFetcher.Get().SetAppData(userId.getUserId(token), key, value, token.getAppId())) 
+#if AZURE
+                        using (var db = new AzureDbFetcher())
+#else
+                        using (var db = new RayaDbFetcher())
+#endif
                         {
-                            throw new ProtocolException(ResponseError.INTERNAL_ERROR, "Internal server error");
+                            if (! db.SetAppData(userId.getUserId(token), key, value, token.getAppId())) 
+                            {
+                                throw new ProtocolException(ResponseError.INTERNAL_ERROR, "Internal server error");
+                            }
                         }
                     }
                     break;
@@ -209,21 +249,35 @@ using pestaServer.DataAccess;
                 GroupId groupId, String appId, CollectionOptions options, HashSet<String> fields, ISecurityToken token)
         {
             var ids = GetIdSet(userIds, groupId, token);
-            var activities = RayaDbFetcher.Get().GetActivities(ids, appId, fields, options);
+#if AZURE
+            using (var db = new AzureDbFetcher())
+#else
+            using (var db = new RayaDbFetcher())
+#endif
+            {
+                var activities = db.GetActivities(ids, appId, fields, options);
 
-            return new RestfulCollection<Activity>(activities, options.getFirst(), activities.Count());
+                return new RestfulCollection<Activity>(activities, options.getFirst(), activities.Count());
+            }
         }
-        
-        public RestfulCollection<Activity> getActivities(UserId userId, GroupId groupId,
+
+    public RestfulCollection<Activity> getActivities(UserId userId, GroupId groupId,
                                                          String appId, HashSet<String> fields, HashSet<String> activityIds, ISecurityToken token)
         {
             var ids = GetIdSet(userId, groupId, token);
-            var activities = RayaDbFetcher.Get().GetActivities(ids, appId, fields, activityIds);
-
-
-            if (activities.Count != 0)
+#if AZURE
+            using (var db = new AzureDbFetcher())
+#else
+            using (var db = new RayaDbFetcher())
+#endif
             {
-                return new RestfulCollection<Activity>(activities);
+                var activities = db.GetActivities(ids, appId, fields, activityIds);
+
+
+                if (activities.Count != 0)
+                {
+                    return new RestfulCollection<Activity>(activities);
+                }
             }
             throw new ProtocolException(ResponseError.NOT_FOUND, "Activity not found");
         }
@@ -254,9 +308,16 @@ using pestaServer.DataAccess;
             }
             IEnumerator<string> iuserid = ids.GetEnumerator();
             iuserid.MoveNext();
-            if (!RayaDbFetcher.Get().DeleteActivities(iuserid.Current, appId, activityIds)) 
+#if AZURE
+                using (var db = new AzureDbFetcher())
+#else
+            using (var db = new RayaDbFetcher())
+#endif
             {
-                throw new ProtocolException(ResponseError.NOT_IMPLEMENTED, "Invalid activity id(s)");
+                if (!db.DeleteActivities(iuserid.Current, appId, activityIds))
+                {
+                    throw new ProtocolException(ResponseError.NOT_IMPLEMENTED, "Invalid activity id(s)");
+                }
             }
         }
 
@@ -269,7 +330,14 @@ using pestaServer.DataAccess;
                 {
                     throw new ProtocolException(ResponseError.UNAUTHORIZED, "unauthorized: Create activity permission denied.");
                 }
-                RayaDbFetcher.Get().CreateActivity(userId.getUserId(token), activity, token.getAppId());
+#if AZURE
+                using (var db = new AzureDbFetcher())
+#else
+                using (var db = new RayaDbFetcher())
+#endif
+                {
+                    db.CreateActivity(userId.getUserId(token), activity, token.getAppId());
+                }
             } 
             catch (Exception e) 
             {

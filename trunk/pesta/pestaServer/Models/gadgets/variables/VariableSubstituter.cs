@@ -22,7 +22,6 @@ using pestaServer.Models.gadgets.spec;
 
 namespace pestaServer.Models.gadgets.variables
 {
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
     public class VariableSubstituter
     {
         private readonly MessageBundleFactory messageBundleFactory;
@@ -47,7 +46,7 @@ namespace pestaServer.Models.gadgets.variables
             substituter.addSubstitutions(Substitutions.Type.MESSAGE, bundle.getMessages());
             BidiSubstituter.addSubstitutions(substituter, dir);
             substituter.addSubstitution(Substitutions.Type.MODULE, "ID",
-                                        context.getModuleId().ToString());
+                                        context.getModuleId());
             UserPrefSubstituter.addSubstitutions(substituter, spec, context.getUserPrefs());
 
             return spec.substitute(substituter);

@@ -17,8 +17,6 @@
  * under the License.
  */
 
-/*global opensocial */
-
 /**
  * @fileoverview DataResponse containing information about
  * friends, contacts, profile, app data, and activities.

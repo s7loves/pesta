@@ -32,7 +32,7 @@ using Uri=Pesta.Engine.common.uri.Uri;
 
 namespace pestaServer.Models.gadgets.servlet
 {
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
+    
     public class CajaContentRewriter : ContentRewriter
     {
         private class UriCallback2 : UriCallback

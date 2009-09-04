@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright 2007 Netflix, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,10 +18,10 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Text;
 using Jayrock;
-using Pesta.Interop.oauth;
-using Pesta.Interop.oauth.signature;
+using Pesta.Libraries.OAuth;
+using Pesta.Libraries.OAuth.signature;
 
-namespace Pesta.Libraries.oauth
+namespace Pesta.Libraries.OAuth
 {
     public class OAuthMessage
     {

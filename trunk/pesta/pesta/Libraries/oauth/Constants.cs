@@ -30,7 +30,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 
-namespace Pesta.Interop.oauth
+namespace Pesta.Libraries.OAuth
 {
     /// <summary>
     /// Constants used by OAuth.Net libraries

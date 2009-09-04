@@ -21,20 +21,11 @@ using System;
 using System.Web;
 using Pesta.Engine.auth;
 using Pesta.Engine.social.oauth;
-using Pesta.Interop.oauth;
-using Pesta.Interop.oauth.server;
-using Pesta.Libraries.oauth;
+using Pesta.Libraries.OAuth;
+using Pesta.Libraries.OAuth.server;
 
 namespace Pesta.Engine.social.core.oauth
 {
-    /// <summary>
-    /// Summary description for OAuthConsumerRequestAuthenticationHandler
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
-    /// </para>
-    /// </remarks>
     public class OAuthConsumerRequestAuthenticationHandler : IAuthenticationHandler
     {
         public static readonly String AUTH_OAUTH_CONSUMER_REQUEST = "OAuth-ConsumerRequest";

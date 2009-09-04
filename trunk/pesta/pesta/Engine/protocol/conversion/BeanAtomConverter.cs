@@ -1,4 +1,4 @@
-﻿#region License, Terms and Conditions
+#region License, Terms and Conditions
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -28,7 +28,7 @@ using System.Web;
 using System.Xml;
 using System.Xml.Serialization;
 using Jayrock;
-using Pesta.Engine.social.model;
+using pesta.Data;
 using Pesta.Engine.social.spi;
 
 namespace Pesta.Engine.protocol.conversion

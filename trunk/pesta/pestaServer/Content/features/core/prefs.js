@@ -59,20 +59,18 @@ var moduleId = 0;
  */
 function parseUrl() {
   var params = gadgets.util.getUrlParameters();
-  for (var i in params) {
-    if (params.hasOwnProperty(i)) {
-      if (i.indexOf("up_") === 0 && i.length > 3) {
-        prefs[i.substr(3)] = String(params[i]);
-      } else if (i === "country") {
-        country = params[i];
-      } else if (i === "lang") {
-        language = params[i];
-      } else if (i === "mid") {
-        moduleId = params[i];
-      }
+  for (var i in params) if (params.hasOwnProperty(i)) {
+    if (i.indexOf("up_") === 0 && i.length > 3) {
+      prefs[i.substr(3)] = String(params[i]);
+    } else if (i === "country") {
+      country = params[i];
+    } else if (i === "lang") {
+      language = params[i];
+    } else if (i === "mid") {
+      moduleId = params[i];
     }
   }
-}
+};
 
 /**
  * Sets default pref values for values left unspecified in the
@@ -80,11 +78,11 @@ function parseUrl() {
  */
 function mergeDefaults() {
   for (var name in defaultPrefs) {
-    if (typeof prefs[name] === 'undefined') {
+    if (!prefs[name]) {
       prefs[name] = defaultPrefs[name];
     }
   }
-}
+};
 
 /**
  * @class
@@ -120,10 +118,8 @@ gadgets.Prefs.setInternal_ = function(key, value) {
   if (typeof key === "string") {
     prefs[key] = value;
   } else {
-    for (var k in key) {
-      if (key.hasOwnProperty(k)) {
-        prefs[k] = key[k];
-      }
+    for (var k in key) if (key.hasOwnProperty(k)) {
+      prefs[k] = key[k];
     }
   }
 };
@@ -150,7 +146,6 @@ gadgets.Prefs.setDefaultPrefs_ = function(defprefs) {
  * @return {String} The preference; if not set, an empty string
  */
 gadgets.Prefs.prototype.getString = function(key) {
-  if (key === ".lang") { key = "lang"; }
   return prefs[key] ? esc(prefs[key]) : "";
 };
 

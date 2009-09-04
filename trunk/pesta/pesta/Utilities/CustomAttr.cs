@@ -22,15 +22,6 @@ using System;
 
 namespace Pesta.Utilities
 {
-    /// <summary>
-    /// Summary description for CustomAttr
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    ///  Apache Software License 2.0 2008 Pesta, Sean Lin M.T. (my6solutions.com)
-    /// </para>
-    /// </remarks>
-
     public class ImplementedBy : Attribute
     {
         /// <summary>

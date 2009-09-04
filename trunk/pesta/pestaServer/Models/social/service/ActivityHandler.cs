@@ -1,4 +1,4 @@
-﻿#region License, Terms and Conditions
+#region License, Terms and Conditions
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -21,8 +21,8 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Jayrock.Json;
+using pesta.Data;
 using Pesta.Engine.protocol;
-using Pesta.Engine.social.model;
 using Pesta.Engine.social.spi;
 
 namespace pestaServer.Models.social.service
@@ -32,7 +32,7 @@ namespace pestaServer.Models.social.service
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
+    
     /// </para>
     /// </remarks>
     public class ActivityHandler : DataRequestHandler

@@ -36,14 +36,14 @@ namespace pestaServer.Models.gadgets.oauth
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
+    
     /// </para>
     /// </remarks>
     public class OAuthResponseParams
     {
 
-        // Finds the values of sensitive response params: oauth_token_secret and oauth_session_handle
-        private static readonly Regex REMOVE_SECRETS = new Regex("(?<=(oauth_token_secret|oauth_session_handle)=)[^=& \t\r\n]*", RegexOptions.Compiled);
+        // Finds the values of sensitive response params: oauthToken_secret and oauth_session_handle
+        private static readonly Regex REMOVE_SECRETS = new Regex("(?<=(oauthToken_secret|oauth_session_handle)=)[^=& \t\r\n]*", RegexOptions.Compiled);
 
         // names for the JSON values we return to the client
         public static String CLIENT_STATE = "oauthState";

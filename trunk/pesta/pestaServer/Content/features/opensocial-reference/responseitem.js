@@ -17,8 +17,6 @@
  * under the License.
  */
 
-/*global opensocial */
-
 /**
  * @fileoverview ResponseItem containing information about a specific response
  * from the server.

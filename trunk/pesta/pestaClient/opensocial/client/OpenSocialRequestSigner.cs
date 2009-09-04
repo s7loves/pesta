@@ -26,6 +26,7 @@
 using System;
 using System.Collections.Generic;
 using Pesta.Interop.oauth;
+using Pesta.Libraries.oauth;
 
 public class OpenSocialRequestSigner {
 
@@ -135,7 +136,7 @@ public class OpenSocialRequestSigner {
     if (!String.IsNullOrEmpty(consumerKey) && !String.IsNullOrEmpty(consumerSecret))
     {
       OAuthMessage message =
-          new OAuthMessage(requestMethod, requestUrl.toString(), null);
+          new OAuthMessage(requestMethod, requestUrl.ToString(), null);
 
       if (!String.IsNullOrEmpty(postBody))
       {

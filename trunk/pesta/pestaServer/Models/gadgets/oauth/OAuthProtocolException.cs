@@ -19,9 +19,7 @@
 #endregion
 using System.Collections.Generic;
 using System;
-using Pesta.Interop.oauth;
-using Pesta.Libraries.oauth;
-
+using Pesta.Libraries.OAuth;
 
 namespace pestaServer.Models.gadgets.oauth
 {
@@ -42,7 +40,7 @@ namespace pestaServer.Models.gadgets.oauth
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
+    
     /// </para>
     /// </remarks>
     [Serializable]

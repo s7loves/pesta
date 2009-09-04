@@ -17,18 +17,9 @@
 using System;
 using System.Web;
 using System.Collections.Generic;
-using Pesta.Libraries.oauth;
 
-namespace Pesta.Interop.oauth.server
+namespace Pesta.Libraries.OAuth.server
 {
-    /// <summary>
-    /// Summary description for OAuthServlet
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
-    /// </para>
-    /// </remarks>
     public class OAuthServlet
     {
         /**

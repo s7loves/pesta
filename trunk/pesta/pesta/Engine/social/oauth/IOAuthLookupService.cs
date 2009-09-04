@@ -19,18 +19,10 @@
 #endregion
 using System;
 using Pesta.Engine.auth;
-using Pesta.Libraries.oauth;
+using Pesta.Libraries.OAuth;
 
 namespace Pesta.Engine.social.oauth
 {
-    /// <summary>
-    /// Summary description for OAuthLookupService
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
-    /// </para>
-    /// </remarks>
     public interface IOAuthLookupService
     {
         bool thirdPartyHasAccessToUser(OAuthMessage message, String appUrl, String userId);

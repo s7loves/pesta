@@ -1,4 +1,4 @@
-﻿#region License, Terms and Conditions
+#region License, Terms and Conditions
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -21,7 +21,6 @@ using System;
 using System.Collections.Generic;
 using System.Xml;
 using Pesta.Engine.common.xml;
-using Pesta.Interop;
 using Pesta.Utilities;
 using Uri=Pesta.Engine.common.uri.Uri;
 
@@ -32,7 +31,7 @@ namespace pestaServer.Models.gadgets.spec
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
+    
     /// </para>
     /// </remarks>
     public class OAuthService

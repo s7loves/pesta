@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright 2007 Netflix, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,17 +14,13 @@
  * limitations under the License.
  */
 using System;
-using System.Security;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 
 using System.Text;
 
-namespace Pesta.Interop.oauth.signature
+namespace Pesta.Libraries.OAuth.signature
 {
-    /// <summary>
-    /// Summary description for RSA_SHA1
-    /// </summary>
     public class RSA_SHA1 : OAuthSignatureMethod
     {
         readonly static public String PRIVATE_KEY = "RSA-SHA1.PrivateKey";
@@ -91,8 +87,8 @@ namespace Pesta.Interop.oauth.signature
             if (certificate.PublicKey == null)
             {
                 throw new Exception("a public key is required " +
-                                                " OAuthConsumer.setProperty when " +
-                                                "verifying RSA-SHA1 signatures.");
+                                    " OAuthConsumer.setProperty when " +
+                                    "verifying RSA-SHA1 signatures.");
             }
 
             using (HashAlgorithm hasher = HashAlgorithm.Create("SHA1"))
@@ -104,5 +100,5 @@ namespace Pesta.Interop.oauth.signature
                 return signatureDeformatter.VerifySignature(hash, signature);
             }
         }
-    } 
+    }
 }

@@ -1,0 +1,1 @@
+var osapi=osapi||{};osapi.makeRequest=function(){return function(a,c){var b=function(d){return gadgets.io.makeRequest(a,d,c)};return{isMakeRequest:true,execute:b}}}();

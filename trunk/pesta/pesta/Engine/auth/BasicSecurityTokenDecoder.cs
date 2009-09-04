@@ -1,4 +1,4 @@
-﻿#region License, Terms and Conditions
+#region License, Terms and Conditions
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Web;
+using pesta.Auth;
 using Pesta.Engine.common.crypto;
 using Pesta.Utilities;
 
@@ -31,7 +32,7 @@ namespace Pesta.Engine.auth
     /// </summary>
     /// <remarks>
     /// <para>
-    ///  Apache Software License 2.0 2008 Shindig ported to Pesta by Sean Lin M.T. (my6solutions.com)
+    
     /// </para>
     /// </remarks>
     public class BasicSecurityTokenDecoder : SecurityTokenDecoder

@@ -1,4 +1,4 @@
-﻿#region License, Terms and Conditions
+#region License, Terms and Conditions
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -21,9 +21,9 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Jayrock.Json;
+using pesta.Data;
 using Pesta.Engine.protocol;
 using Pesta.Engine.social;
-using Pesta.Engine.social.model;
 using Pesta.Engine.social.spi;
 using pestaServer.Models.common;
 
@@ -67,7 +67,7 @@ namespace pestaServer.Models.social.service
 
             GroupId groupId = request.getGroup();
             HashSet<String> optionalPersonId = new HashSet<string>(request.getListParameter("personId"));
-            HashSet<String> fields = request.getFields(Person.Field.DEFAULT_FIELDS);
+            HashSet<String> fields = request.getFields(Person.DEFAULT_FIELDS);
             HashSet<UserId> userIds = request.getUsers();
 
             // Preconditions
