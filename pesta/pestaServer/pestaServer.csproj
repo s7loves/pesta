@@ -2374,7 +2374,7 @@
   <ItemGroup>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Jayrock.JSON\Jayrock.csproj">
+    <ProjectReference Include="..\libraries\Jayrock.JSON\Jayrock.csproj">
       <Project>{4BBC1EFC-C930-403A-917D-C444B2A6E284}</Project>
       <Name>Jayrock</Name>
     </ProjectReference>
@@ -2382,7 +2382,7 @@
       <Project>{6D1D97EC-F037-4B70-B631-0628BAC6664C}</Project>
       <Name>pesta.Data</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\StorageClient\Lib\StorageClient.csproj">
+    <ProjectReference Include="..\SDK\StorageClient\StorageClient.csproj">
       <Project>{C6F30C10-E1C2-4327-BB6B-3160B479CCA1}</Project>
       <Name>StorageClient</Name>
     </ProjectReference>
