@@ -542,8 +542,8 @@ using pestaServer.Models.social.service;
                     msgColl.Put("id", msgCollId);
                     JsonArray messages = (JsonArray)msgColl["messages"];
                     int numMessages = (messages == null) ? 0 : messages.Length;
-                    msgColl.Put("total", numMessages.ToString());
-                    msgColl.Put("unread", numMessages.ToString());
+                    msgColl.Put("total", numMessages);
+                    msgColl.Put("unread", numMessages);
 
                     result.Add(filterFields<MessageCollection>(msgColl, fields));
                 }
