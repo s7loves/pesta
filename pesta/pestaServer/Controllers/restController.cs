@@ -27,6 +27,7 @@ using Pesta.Engine.protocol;
 using Pesta.Engine.protocol.conversion;
 using Pesta.Engine.social.spi;
 using System.Linq;
+using pestaServer.ActionFilters;
 using pestaServer.Models.social.service;
 
 namespace pestaServer.Controllers
@@ -39,7 +40,9 @@ namespace pestaServer.Controllers
                                           .Union(ContentTypes.ALLOWED_ATOM_CONTENT_TYPES);
 
         private static readonly String X_HTTP_METHOD_OVERRIDE = "X-HTTP-Method-Override";
-
+        
+        [CompressFilter]
+        [AuthenticationFilter]
         public void Index()
         {
             var httpMethod = Request.HttpMethod;
