@@ -25,8 +25,7 @@
  */
 using System;
 using System.Collections.Generic;
-using Pesta.Interop.oauth;
-using Pesta.Libraries.oauth;
+using Pesta.Libraries.OAuth;
 
 public class OpenSocialRequestSigner {
 
