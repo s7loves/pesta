@@ -117,7 +117,7 @@ namespace pestaServer.Controllers
                 }
             }
             servletResponse.ContentType = ContentTypes.OUTPUT_TEXT_CONTENT_TYPE;
-            servletResponse.StatusCode = responseItem.getErrorCode();
+            servletResponse.StatusCode = errorCode;
             servletResponse.StatusDescription = responseItem.getErrorMessage();
             servletResponse.Output.Write(responseItem.getErrorMessage());
         }
