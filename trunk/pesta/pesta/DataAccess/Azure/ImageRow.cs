@@ -1,8 +1,10 @@
-﻿using Microsoft.Samples.ServiceHosting.StorageClient;
+﻿
+
+using Microsoft.WindowsAzure.StorageClient;
 
 namespace Pesta.DataAccess.Azure
 {
-    public class ImageRow : TableStorageEntity
+    public class ImageRow : TableServiceEntity
     {
         public ImageRow()
         {

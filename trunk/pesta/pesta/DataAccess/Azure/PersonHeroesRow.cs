@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.Samples.ServiceHosting.StorageClient;
+using Microsoft.WindowsAzure.StorageClient;
+
 
 namespace Pesta.DataAccess.Azure
 {
-    public class PersonHeroesRow : TableStorageEntity
+    public class PersonHeroesRow : TableServiceEntity
     {
         public PersonHeroesRow()
         {

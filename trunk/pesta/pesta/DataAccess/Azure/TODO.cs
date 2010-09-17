@@ -4,11 +4,12 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Xml;
-using Microsoft.Samples.ServiceHosting.StorageClient;
+
+using Microsoft.WindowsAzure.StorageClient;
 
 namespace Pesta.DataAccess.Azure
 {
-    public class tagsCount : TableStorageEntity
+    public class tagsCount : TableServiceEntity
     {
         public tagsCount()
         {
@@ -21,7 +22,7 @@ namespace Pesta.DataAccess.Azure
         public int refid { get; set; }
     }
 
-    public class language : TableStorageEntity
+    public class language : TableServiceEntity
     {
         public int id { get; set; }
 
@@ -30,7 +31,7 @@ namespace Pesta.DataAccess.Azure
         public string name { get; set; }
     }
 
-    public class notification : TableStorageEntity
+    public class notification : TableServiceEntity
     {
         public notification()
         {
@@ -49,7 +50,7 @@ namespace Pesta.DataAccess.Azure
     }
 
 
-    public class oauthNonce : TableStorageEntity
+    public class oauthNonce : TableServiceEntity
     {
         public oauthNonce()
         {
@@ -64,7 +65,7 @@ namespace Pesta.DataAccess.Azure
         public long nonce_timestamp { get; set; }
     }
 
-    public class personJob : TableStorageEntity
+    public class personJob : TableServiceEntity
     {
         public personJob()
         {
@@ -80,7 +81,7 @@ namespace Pesta.DataAccess.Azure
         public int organization_id { get; set; }
     }
 
-    public class person_languages_spoken : TableStorageEntity
+    public class person_languages_spoken : TableServiceEntity
     {
         public person_languages_spoken()
         {
@@ -96,7 +97,7 @@ namespace Pesta.DataAccess.Azure
         public int language_id { get; set; }
     }
 
-    public class personQuote : TableStorageEntity
+    public class personQuote : TableServiceEntity
     {
         public personQuote()
         {
@@ -112,7 +113,7 @@ namespace Pesta.DataAccess.Azure
         public string quote { get; set; }
     }
 
-    public class personSchool : TableStorageEntity
+    public class personSchool : TableServiceEntity
     {
         public personSchool()
         {
@@ -129,7 +130,7 @@ namespace Pesta.DataAccess.Azure
     }
 
 
-    public class personSport : TableStorageEntity
+    public class personSport : TableServiceEntity
     {
         public personSport()
         {
@@ -146,7 +147,7 @@ namespace Pesta.DataAccess.Azure
     }
 
 
-    public class personTag : TableStorageEntity
+    public class personTag : TableServiceEntity
     {
         public personTag()
         {
@@ -163,7 +164,7 @@ namespace Pesta.DataAccess.Azure
     }
 
 
-    public class personTurnOff : TableStorageEntity
+    public class personTurnOff : TableServiceEntity
     {
         public personTurnOff()
         {
@@ -180,7 +181,7 @@ namespace Pesta.DataAccess.Azure
     }
 
 
-    public class personTurnOn : TableStorageEntity
+    public class personTurnOn : TableServiceEntity
     {
         public personTurnOn()
         {
@@ -197,7 +198,7 @@ namespace Pesta.DataAccess.Azure
     }
 
 
-    public class personTvShow : TableStorageEntity
+    public class personTvShow : TableServiceEntity
     {
         public personTvShow()
         {
@@ -213,7 +214,7 @@ namespace Pesta.DataAccess.Azure
         public string tv_show { get; set; }
     }
 
-    public class tag : TableStorageEntity
+    public class tag : TableServiceEntity
     {
         public tag()
         {

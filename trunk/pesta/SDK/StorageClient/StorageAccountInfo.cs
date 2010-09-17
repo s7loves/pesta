@@ -11,7 +11,7 @@ using System.Globalization;
 using System.Configuration;
 using System.Collections.Specialized;
 using System.Diagnostics;
-using Microsoft.ServiceHosting.ServiceRuntime;
+using Microsoft.WindowsAzure.ServiceRuntime;
 
 namespace Microsoft.Samples.ServiceHosting.StorageClient
 {
@@ -304,7 +304,7 @@ namespace Microsoft.Samples.ServiceHosting.StorageClient
             ret = TryGetAppSetting(configurationSetting);
 
             // settings in the csc file overload settings in Web.config
-            if (RoleManager.IsRoleManagerRunning)
+            if (RoleEnvironment.IsAvailable)
             {
                 string cscRet = TryGetConfigurationSetting(configurationSetting);
                 if (!string.IsNullOrEmpty(cscRet))
@@ -373,7 +373,7 @@ namespace Microsoft.Samples.ServiceHosting.StorageClient
 
 
             // settings in the csc file overload settings in Web.config
-            if (RoleManager.IsRoleManagerRunning)
+            if (RoleEnvironment.IsAvailable)
             {
                 // get config settings from the csc file
                 string cscName = TryGetConfigurationSetting(accountNameConfiguration);
@@ -512,9 +512,9 @@ namespace Microsoft.Samples.ServiceHosting.StorageClient
             string ret = null;
             try
             {
-                ret = RoleManager.GetConfigurationSetting(configName);
+                ret = RoleEnvironment.GetConfigurationSettingValue(configName);
             }
-            catch (RoleException)
+            catch (Exception)
             {
                 return null;
             }

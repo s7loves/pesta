@@ -1,9 +1,10 @@
 ﻿using System.Diagnostics;
-using Microsoft.Samples.ServiceHosting.StorageClient;
+using Microsoft.WindowsAzure.StorageClient;
+
 
 namespace Pesta.DataAccess.Azure
 {
-    public class ApplicationSettingRow : TableStorageEntity
+    public class ApplicationSettingRow : TableServiceEntity
     {
         public ApplicationSettingRow()
         {
