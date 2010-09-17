@@ -18,11 +18,11 @@
  */
 #endregion
 
-using Microsoft.Samples.ServiceHosting.StorageClient;
+using Microsoft.WindowsAzure.StorageClient;
 
 namespace Pesta.DataAccess.Azure
 {
-    public class MediaItemRow : TableStorageEntity
+    public class MediaItemRow : TableServiceEntity
     {
         public MediaItemRow()
         {

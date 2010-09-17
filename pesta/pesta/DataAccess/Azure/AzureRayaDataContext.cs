@@ -23,11 +23,13 @@
 using System;
 using System.Data.Services.Client;
 using System.Linq;
-using Microsoft.Samples.ServiceHosting.StorageClient;
+using Microsoft.WindowsAzure;
+using Microsoft.WindowsAzure.StorageClient;
 using Pesta.DataAccess.Azure;
 
 namespace Pesta.DataAccess.Azure
 {
+#if AZURE
     /// <summary>
     /// Used to init Table Storage from Application_BeginRequest only once by using the singleton pattern
     /// </summary>
@@ -37,11 +39,12 @@ namespace Pesta.DataAccess.Azure
 
         private ApplicationInitAzureTables()
         {
-            TableStorage.CreateTablesFromModel(typeof (AzureRayaDataContext));
+            CloudStorageAccount acc = CloudStorageAccount.DevelopmentStorageAccount;
+            CloudTableClient.CreateTablesFromModel(typeof (AzureRayaDataContext), acc.TableEndpoint.ToString(), acc.Credentials);
         }
     }
 
-    public class AzureRayaDataContext : TableStorageDataServiceContext, IDisposable
+    public class AzureRayaDataContext : TableServiceContext, IDisposable
     {
         public enum TableNames
         {
@@ -91,16 +94,9 @@ namespace Pesta.DataAccess.Azure
             tagsCounts
         }
 
-        public AzureRayaDataContext()
-            : base(StorageAccountInfo.GetDefaultTableStorageAccountFromConfiguration())
+        public AzureRayaDataContext(string baseAddress, StorageCredentials credentials) : base(baseAddress, credentials)
         {
-            RetryPolicy = RetryPolicies.RetryN(3, TimeSpan.FromSeconds(1));
-        }
-
-        public AzureRayaDataContext(StorageAccountInfo account)
-            : base(account)
-        {
-            RetryPolicy = RetryPolicies.RetryN(3, TimeSpan.FromSeconds(1));
+            RetryPolicy = RetryPolicies.Retry(3, TimeSpan.FromSeconds(1));
         }
 
         public IQueryable<ActivityRow> activities
@@ -326,4 +322,5 @@ namespace Pesta.DataAccess.Azure
             return this.SaveChanges();
         }
     }
+#endif
 }

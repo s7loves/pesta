@@ -18,12 +18,12 @@
  */
 #endregion
 using System.Diagnostics;
-using Microsoft.Samples.ServiceHosting.StorageClient;
+using Microsoft.WindowsAzure.StorageClient;
 using pesta.Data.Model;
 
 namespace Pesta.DataAccess.Azure
 {
-    public class PersonAddressRow : TableStorageEntity
+    public class PersonAddressRow : TableServiceEntity
     {
         public PersonAddressRow()
         {

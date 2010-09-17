@@ -10,6 +10,7 @@ using Pesta.DataAccess.Azure;
 
 namespace Pesta.DataAccess
 {
+#if AZURE
     public class AzureDbFetcher : IPestaDbProvider, IDisposable
     {
         private readonly string urlPrefix;
@@ -863,4 +864,5 @@ namespace Pesta.DataAccess
             return result;
         }
     }
+#endif
 }
